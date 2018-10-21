@@ -1,13 +1,16 @@
 package staticFileHandlers
 
-import "net/http"
+import ( 
+	"net/http"
+	"../helpers"
+)
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 
 	var message = `<html>
 
 	<head>
-    	<link rel="stylesheet" href="/files/styles">
+    	<link rel="stylesheet" href="/files/css/main">
 	</head>
 
 	<body>
@@ -40,9 +43,9 @@ func LoginPageHandler(w http.ResponseWriter, r *http.Request) {
 	<html>
 
 	<head>
-		<link rel="stylesheet" href="/files/styles">
-		<link rel="stylesheet" href="/files/login-styles"> 
-		<script src="/files/login"></script>
+		<link rel="stylesheet" href="/files/css/main">
+		<link rel="stylesheet" href="/files/css/login"> 
+		<script src="/files/js/login"></script>
 	</head>
 	
 	<body>
@@ -83,6 +86,7 @@ func LoginPageHandler(w http.ResponseWriter, r *http.Request) {
 	
 	</html>`
 
+	helpers.SetSessionCookie(w, r)
 	w.Header().Set("Content-Type", "text/html")
 	w.Write([]byte(message))
 }

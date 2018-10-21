@@ -2,7 +2,12 @@ package staticFileHandlers
 
 import "net/http"
 
-func CssHandler(w http.ResponseWriter, r *http.Request) {
+func CSSFileHandler() {
+    http.HandleFunc("/files/css/main", MainCSSHandler)
+    http.HandleFunc("/files/css/login", LoginCSSHandler)
+}
+
+func MainCSSHandler(w http.ResponseWriter, r *http.Request) {
 
     var message = `
     
@@ -54,7 +59,7 @@ func CssHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(message))
 }
 
-func LoginStyleHandler(w http.ResponseWriter, r *http.Request) {
+func LoginCSSHandler(w http.ResponseWriter, r *http.Request) {
 
     var message = `
     
@@ -64,7 +69,6 @@ func LoginStyleHandler(w http.ResponseWriter, r *http.Request) {
     }
     
     div.container {
-        width: 50%;
         height: 40em;
         margin: auto;
         display: inline-block;

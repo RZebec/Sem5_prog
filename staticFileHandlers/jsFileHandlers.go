@@ -2,7 +2,12 @@ package staticFileHandlers
 
 import "net/http"
 
-func JsHandler(w http.ResponseWriter, r *http.Request) {
+func JSFileHandler() {
+	http.HandleFunc("/files/js/index", IndexJSHandler)
+	http.HandleFunc("/files/js/login", LoginJSHandler)
+}
+
+func IndexJSHandler(w http.ResponseWriter, r *http.Request) {
 
 	var message = `        
 
@@ -18,7 +23,7 @@ func JsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(message))
 }
 
-func LoginHandler(w http.ResponseWriter, r *http.Request) {
+func LoginJSHandler(w http.ResponseWriter, r *http.Request) {
 
 	var message = `
 	
