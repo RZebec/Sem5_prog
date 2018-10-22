@@ -3,8 +3,8 @@ package staticFileHandlers
 import "net/http"
 
 func StaticFileHandler() {
-	http.HandleFunc("/", IndexHandler)
-	http.HandleFunc("/login", LoginPageHandler)
+	//http.HandleFunc("/files", IndexHandler)
+	//http.HandleFunc("/login", LoginPageHandler)
 	CSSFileHandler()
 	JSFileHandler()
 
