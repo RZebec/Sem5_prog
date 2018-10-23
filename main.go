@@ -1,24 +1,25 @@
 package main
 
 import (
-	"fmt"
-	"html"
-	"net/http"
-	"./ticketsystem/webserver/webui"
+	"./ticketsystem/webserver/config"
 	"./ticketsystem/webserver/core"
-
+	"./ticketsystem/webserver/core/session"
+	"./ticketsystem/webserver/webui"
+	"fmt"
+	"net/http"
+	"os"
+	"path"
+	"path/filepath"
 )
 
 func foohandler(w http.ResponseWriter, r *http.Request){
 	fmt.Println("Hello")
-	fmt.Println("Hello, %q", html.EscapeString(r.URL.Path))
 	w.Write([]byte("HHH"))
 	}
 
 
 func tempHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Hello")
-	fmt.Println("Hello Files, %q", html.EscapeString(r.URL.Path))
 	w.Write([]byte(r.URL.Path))
 }
 
@@ -35,6 +36,27 @@ func main() {
 	//var loginHandler(logger, SessionManager)
 	//staticFileHAndler := CreateNEw(config)
 	//authenticationHandler
+	config := config.Configuration{}
+	filePath, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err == nil {
+		config.LoginDataFolderPath = filePath
+	} else {
+		panic(err)
+	}
+
+
+	sessionManager := session.LoginSystem{}
+	err = sessionManager.Initialize(path.Join(config.LoginDataFolderPath, "LoginData"))
+	if err != nil {
+		panic(err)
+	}
+
+	go sessionManager.Register("testUser", "testPassword")
+	go sessionManager.Register("testUser", "testPassword")
+	go sessionManager.Register("testUser2", "testPassword2")
+	go sessionManager.Register("testUser3", "testPassword2")
+	go sessionManager.Register("testUser4", "testPassword2")
+	go sessionManager.Register("testUser5", "testPassword2")
 
 	exampleHandler := webui.ExampleHtmlHandler{Prefix: "Das ist mein Prefix"}
 	wrapper := core.Handler{Next: exampleHandler}
@@ -43,7 +65,7 @@ func main() {
 	http.HandleFunc("/files/", tempHandler)
 	http.HandleFunc("/example", wrapper.ServeHTTP )
 
-	if err := http.ListenAndServeTLS(":8080", "./ticketsystem/92860317_localhost.cert", "./ticketsystem/92860317_localhost.key", nil); err != nil {
+	if err := http.ListenAndServeTLS(":8080", "./ticketsystem/leaf.pem", "./ticketsystem/leaf.key", nil); err != nil {
 		panic(err)
 	}
 
