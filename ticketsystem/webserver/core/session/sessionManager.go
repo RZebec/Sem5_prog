@@ -1,7 +1,7 @@
 package session
 
 import (
-	"../helpers"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
 	"encoding/json"
 	"errors"
 	"fmt"

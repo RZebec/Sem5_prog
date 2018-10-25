@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./ticketsystem/webserver/config"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"./ticketsystem/webserver/core"
 	"./ticketsystem/webserver/core/session"
 	"./ticketsystem/webserver/webui"
