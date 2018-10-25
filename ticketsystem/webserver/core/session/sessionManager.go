@@ -1,6 +1,7 @@
 package session
 
 import (
+	"crypto/rand"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
 	"encoding/json"
 	"errors"
@@ -9,7 +10,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-	"crypto/rand"
 )
 
 /*
@@ -59,12 +59,12 @@ type inMemorySession struct {
 	The LoginSystem contains all parts to handle the access to user and session data.
 */
 type LoginSystem struct {
-	fileAccessMutex     sync.Mutex
-	loginDataFileName   string
-	loginDataFilePath   string
-	cachedUserDataMutex sync.RWMutex
-	cachedUserData      []storedUserData
-	currentSessions     map[string]inMemorySession
+	fileAccessMutex      sync.Mutex
+	loginDataFileName    string
+	loginDataFilePath    string
+	cachedUserDataMutex  sync.RWMutex
+	cachedUserData       []storedUserData
+	currentSessions      map[string]inMemorySession
 	currentSessionsMutex sync.RWMutex
 }
 
@@ -108,17 +108,17 @@ func (s *LoginSystem) Initialize(folderPath string) (err error) {
 
 // Refresh the token. The new token should be used for all following request.
 func (s *LoginSystem) RefreshToken(token string) (newToken string, err error) {
-	s.currentSessionsMutex.Lock()
-	defer s.currentSessionsMutex.Unlock()
-
-	valid, userId, userName,err := s.SessionIsValid(token)
+	valid, userId, userName, err := s.SessionIsValid(token)
 	if valid {
-		token, err := pseudo_uuid()
+		s.currentSessionsMutex.Lock()
+		defer s.currentSessionsMutex.Unlock()
+		newToken, err := pseudo_uuid()
 		if err != nil {
 			return "", err
 		}
-		s.currentSessions[token] = inMemorySession{userName: userName, userId: userId, sessionToken: token, sessionTimestamp: time.Now() }
-		return token, nil
+		s.currentSessions[newToken] = inMemorySession{userName: userName, userId: userId, sessionToken: newToken, sessionTimestamp: time.Now()}
+		delete(s.currentSessions, token)
+		return newToken, nil
 	} else {
 		return "", errors.New("unknown session")
 	}
@@ -151,7 +151,7 @@ func (s *LoginSystem) Register(userName string, password string) (success bool, 
 /*
 	Logout a user.
 */
-func (s *LoginSystem) Logout(authToken string)  {
+func (s *LoginSystem) Logout(authToken string) {
 	s.currentSessionsMutex.Lock()
 	defer s.currentSessionsMutex.Unlock()
 	delete(s.currentSessions, authToken)
@@ -160,16 +160,19 @@ func (s *LoginSystem) Logout(authToken string)  {
 // Check if the current session is valid. Also returns the user of the session.
 func (s *LoginSystem) SessionIsValid(token string) (isValid bool, userId int, userName string, err error) {
 	s.currentSessionsMutex.RLock()
-	defer s.currentSessionsMutex.RUnlock()
+
 	user, ok := s.currentSessions[token]
-	if	ok  {
-		if time.Now().Sub(user.sessionTimestamp) > time.Duration( 10*time.Minute)  {
+	if ok {
+		s.currentSessionsMutex.RUnlock()
+		if time.Now().Sub(user.sessionTimestamp) > time.Duration(10*time.Minute) {
 			s.currentSessionsMutex.Lock()
 			delete(s.currentSessions, token)
 			s.currentSessionsMutex.Unlock()
 			return false, -1, "", nil
 		}
 		return ok, user.userId, user.userName, nil
+	} else {
+		s.currentSessionsMutex.RUnlock()
 	}
 	return false, -1, "", nil
 }
@@ -194,14 +197,14 @@ func (s *LoginSystem) Login(userName string, password string) (success bool, aut
 	return false, "", errors.New("user not found")
 }
 
-func (s *LoginSystem) createSessionForUser(user storedUserData) (authToken string, err error){
+func (s *LoginSystem) createSessionForUser(user storedUserData) (authToken string, err error) {
 	s.currentSessionsMutex.Lock()
 	defer s.currentSessionsMutex.Unlock()
 	token, err := pseudo_uuid()
 	if err != nil {
 		return "", err
 	}
-	s.currentSessions[token] = inMemorySession{userName: user.UserName, userId: user.UserId, sessionToken: authToken, sessionTimestamp: time.Now() }
+	s.currentSessions[token] = inMemorySession{userName: user.UserName, userId: user.UserId, sessionToken: authToken, sessionTimestamp: time.Now()}
 	return token, nil
 }
 
@@ -218,7 +221,7 @@ func pseudo_uuid() (string, error) {
 
 /*
 	Check if the provided password for a user is correct.
- */
+*/
 func (s *LoginSystem) checkUserCredentials(user storedUserData, providedPassword string) (success bool) {
 	// TODO: Adjust with password salting and stuff....
 	return user.StoredPass == providedPassword
@@ -253,11 +256,15 @@ func (s *LoginSystem) registerNewUser(userName string, password string) (err err
 	if err != nil {
 		return err
 	}
-	newData := append(existingData, s.generateLoginData(userName, password, len(existingData)))
+	generatedLoginData := s.generateLoginData(userName, password, len(existingData))
+	newData := append(existingData, generatedLoginData)
 	err = s.writeJsonDataToFile(s.loginDataFilePath, newData)
 	if err != nil {
 		return err
 	}
+	s.cachedUserDataMutex.Lock()
+	defer s.cachedUserDataMutex.Unlock()
+	s.cachedUserData = append(s.cachedUserData, generatedLoginData)
 	return nil
 }
 

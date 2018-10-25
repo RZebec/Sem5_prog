@@ -2,7 +2,7 @@ package staticFileHandlers
 
 import ( 
 	"net/http"
-	"../helpers"
+	"de/vorlesung/projekt/IIIDDD/helpers"
 )
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {

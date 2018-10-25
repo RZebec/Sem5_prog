@@ -12,6 +12,7 @@ import (
 	"strings"
 	"sync"
 	"testing"
+	"time"
 )
 
 func prepareTempDirectory() (string, string, error){
@@ -112,7 +113,7 @@ func TestLoginSystem_Login_CorrectLoginData_LoggedIn(t *testing.T) {
 	assert.True(t, ok)
 }
 
-func TestLoginSystem_Login_IncrrectLoginData_NotLoggedIn(t *testing.T) {
+func TestLoginSystem_Login_IncorrectLoginData_NotLoggedIn(t *testing.T) {
 	testee := LoginSystem{}
 
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -128,7 +129,7 @@ func TestLoginSystem_Login_IncrrectLoginData_NotLoggedIn(t *testing.T) {
 	assert.True(t, success, "User should be registered")
 	assert.Nil(t, err)
 
-	// The user should no be logged in
+	// The user should not be logged in
 	success, token, err := testee.Login(userName, "test123")
 	assert.False(t, success, "User should not be logged in")
 	assert.Equal(t, "", token, "The token should not be empty")
@@ -140,11 +141,37 @@ func TestLoginSystem_Login_IncrrectLoginData_NotLoggedIn(t *testing.T) {
 }
 
 func TestLoginSystem_Logout(t *testing.T) {
-	assert.True(t, false)
+	testee := LoginSystem{}
+	testee.currentSessions = make(map[string]inMemorySession)
+
+	token := "1234567899+op"
+	testee.currentSessions[token] = inMemorySession{userId: 1, userName: "testUser",
+		sessionToken: "1234567899+op", sessionTimestamp: time.Now()}
+
+	valid, _, _, err := testee.SessionIsValid(token)
+	assert.True(t, valid, "User should have a session for this test")
+	assert.Nil(t, err)
+
+	testee.Logout(token)
+
+	valid, _, _, err = testee.SessionIsValid(token)
+	assert.False(t, valid, "User should be logged out")
 }
 
-func TestLoginSystem_RefreshToken(t *testing.T) {
-	assert.True(t, false)
+func TestLoginSystem_RefreshToken_ValidToken_TokenIsRefreshed(t *testing.T) {
+	testee := LoginSystem{}
+	testee.currentSessions = make(map[string]inMemorySession)
+
+
+	token := "1234567899+op"
+	testee.currentSessions[token] = inMemorySession{userId: 1, userName: "testUser",
+		sessionToken: token, sessionTimestamp: time.Now()}
+
+	newToken, _ :=testee.RefreshToken(token)
+	assert.NotEqual(t, token, newToken, "The new token should not be equal to the old token")
+
+	_, contains := testee.currentSessions[token]
+	assert.False(t, contains, "The old token should be removed")
 }
 func TestLoginSystem_Register_NoDataWasStored_UserIsRegistered(t *testing.T) {
 	testee := LoginSystem{}
@@ -195,10 +222,46 @@ func TestLoginSystem_Register_NoDataWasStored_UserIsRegistered(t *testing.T) {
 		assert.True(t, found)
 	}
 }
-func TestLoginSystem_SessionIsValid(t *testing.T) {
-	assert.True(t, false)
+func TestLoginSystem_SessionIsValid_IsValid(t *testing.T) {
+	testee := LoginSystem{}
+	testee.currentSessions = make(map[string]inMemorySession)
+
+	token := "1234567899+op"
+	testee.currentSessions[token] = inMemorySession{userId: 1, userName: "testUser",
+		sessionToken: token, sessionTimestamp: time.Now()}
+
+	valid, _, _, err := testee.SessionIsValid(token)
+	assert.True(t, valid, "User should have a session for this test")
+	assert.Nil(t, err)
 }
 
+func TestLoginSystem_SessionIsValid_IsInValid(t *testing.T) {
+	testee := LoginSystem{}
+	testee.currentSessions = make(map[string]inMemorySession)
+
+	token := "1234567899+op"
+	testee.currentSessions[token] = inMemorySession{userId: 1, userName: "testUser",
+		sessionToken: "1234567899+op", sessionTimestamp: time.Now()}
+
+	valid, _, _, err := testee.SessionIsValid("5698456")
+	assert.False(t, valid, "Session should be invalid")
+	assert.Nil(t, err)
+}
+
+func TestLoginSystem_SessionIsValid_SessionTimedOut(t *testing.T) {
+	testee := LoginSystem{}
+	testee.currentSessions = make(map[string]inMemorySession)
+
+	token := "1234567899+op"
+	// Set last update of session to 12 minutes ago.
+	timestamp := time.Now().Add(time.Duration(-12) * time.Minute)
+	testee.currentSessions[token] = inMemorySession{userId: 1, userName: "testUser",
+		sessionToken: "1234567899+op", sessionTimestamp: timestamp}
+
+	valid, _, _, err := testee.SessionIsValid(token)
+	assert.False(t, valid, "Session should be invalid")
+	assert.Nil(t, err)
+}
 func getDataFromFile(filePath string) (data []storedUserData, err error){
 	fileData, err := helpers.ReadAllDataFromFile(filePath)
 	if err != nil {
@@ -207,6 +270,51 @@ func getDataFromFile(filePath string) (data []storedUserData, err error){
 	parsedData := new([]storedUserData)
 	json.Unmarshal(fileData, &parsedData)
 	return *parsedData, nil
+}
+
+func TestLoginSystem_Register_ConcurrentAccess_AllRegistered(t *testing.T) {
+	// 250 concurrent user registrations are not expected, but his test is to
+	// ensure that the system is able to handle that.
+	numberOfRegistratiosn := 250
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	if err != nil {
+		t.Error(err)
+	}
+	err = testee.Initialize(folderPath)
+	// No error should occur:
+	assert.Nil(t, err)
+
+	waitGroup := sync.WaitGroup{}
+	waitGroup.Add(numberOfRegistratiosn)
+	for i := 0; i < numberOfRegistratiosn; i++ {
+
+		go func(number int) {
+			defer waitGroup.Done()
+			testee.Register("testUser" + strconv.Itoa(number), "testpassword" +  strconv.Itoa(number))
+		} (i)
+	}
+
+
+
+	// wait for all go routines to finish
+	waitGroup.Wait()
+	writtenData, err := getDataFromFile(testee.loginDataFilePath)
+	assert.Nil(t, err)
+
+	assert.Equal(t, numberOfRegistratiosn, len(writtenData))
+	for i := 0; i < numberOfRegistratiosn; i++  {
+		found := false
+		for _, v := range writtenData {
+			if strings.ToLower(v.UserName) == strings.ToLower("testUser" + strconv.Itoa(i)) {
+				found = true
+				break
+			}
+		}
+		assert.True(t, found)
+	}
 }
 
 const testLoginData = `[

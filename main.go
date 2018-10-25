@@ -2,9 +2,9 @@ package main
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
-	"./ticketsystem/webserver/core"
-	"./ticketsystem/webserver/core/session"
-	"./ticketsystem/webserver/webui"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui"
 	"fmt"
 	"net/http"
 	"os"
@@ -62,7 +62,7 @@ func main() {
 	http.HandleFunc("/files/", tempHandler)
 	http.HandleFunc("/example", wrapper.ServeHTTP )
 
-	if err := http.ListenAndServeTLS(":8080", "./ticketsystem/leaf.pem", "./ticketsystem/leaf.key", nil); err != nil {
+	if err := http.ListenAndServeTLS(":8080", "leaf.pem", "leaf.key", nil); err != nil {
 		panic(err)
 	}
 
