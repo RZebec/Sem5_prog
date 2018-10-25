@@ -4,10 +4,12 @@ import (
 	"../helpers"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"path"
 	"strings"
 	"sync"
 	"time"
+	"crypto/rand"
 )
 
 /*
@@ -15,7 +17,7 @@ import (
 */
 type SessionManager interface {
 	// Check if the current session is valid. Also returns the user of the session.
-	SessionIsValid(token string) (isValid bool, user User, err error)
+	SessionIsValid(token string) (isValid bool, userId int, userName string, err error)
 
 	// Refresh the token. The new token should be used for all following request.
 	RefreshToken(token string) (newToken string, err error)
@@ -40,7 +42,7 @@ type UserManager interface {
 	// Register a new user.
 	Register(userName string, password string) (success bool, err error)
 	// Logout a user.
-	Logout(authToken string) (err error)
+	Logout(authToken string)
 }
 
 /*
@@ -54,22 +56,16 @@ type inMemorySession struct {
 }
 
 /*
-	A private struct, used to cache the users.
-*/
-type usersData struct {
-	users []storedUserData
-}
-
-/*
 	The LoginSystem contains all parts to handle the access to user and session data.
 */
 type LoginSystem struct {
 	fileAccessMutex     sync.Mutex
 	loginDataFileName   string
 	loginDataFilePath   string
-	currentSessions     map[string]inMemorySession
 	cachedUserDataMutex sync.RWMutex
-	cachedUserData      usersData
+	cachedUserData      []storedUserData
+	currentSessions     map[string]inMemorySession
+	currentSessionsMutex sync.RWMutex
 }
 
 /*
@@ -112,8 +108,20 @@ func (s *LoginSystem) Initialize(folderPath string) (err error) {
 
 // Refresh the token. The new token should be used for all following request.
 func (s *LoginSystem) RefreshToken(token string) (newToken string, err error) {
-	// TODO Implement
-	return
+	s.currentSessionsMutex.Lock()
+	defer s.currentSessionsMutex.Unlock()
+
+	valid, userId, userName,err := s.SessionIsValid(token)
+	if valid {
+		token, err := pseudo_uuid()
+		if err != nil {
+			return "", err
+		}
+		s.currentSessions[token] = inMemorySession{userName: userName, userId: userId, sessionToken: token, sessionTimestamp: time.Now() }
+		return token, nil
+	} else {
+		return "", errors.New("unknown session")
+	}
 }
 
 /*
@@ -143,23 +151,77 @@ func (s *LoginSystem) Register(userName string, password string) (success bool, 
 /*
 	Logout a user.
 */
-func (s *LoginSystem) Logout(authToken string) (err error) {
-	// TODO Implement
-	return
+func (s *LoginSystem) Logout(authToken string)  {
+	s.currentSessionsMutex.Lock()
+	defer s.currentSessionsMutex.Unlock()
+	delete(s.currentSessions, authToken)
 }
 
 // Check if the current session is valid. Also returns the user of the session.
-func (s *LoginSystem) SessionIsValid(token string) (isValid bool, user User, err error) {
-	// TODO Implement
-	return
+func (s *LoginSystem) SessionIsValid(token string) (isValid bool, userId int, userName string, err error) {
+	s.currentSessionsMutex.RLock()
+	defer s.currentSessionsMutex.RUnlock()
+	user, ok := s.currentSessions[token]
+	if	ok  {
+		if time.Now().Sub(user.sessionTimestamp) > time.Duration( 10*time.Minute)  {
+			s.currentSessionsMutex.Lock()
+			delete(s.currentSessions, token)
+			s.currentSessionsMutex.Unlock()
+			return false, -1, "", nil
+		}
+		return ok, user.userId, user.userName, nil
+	}
+	return false, -1, "", nil
 }
 
 /*
 	Login in a user.
 */
 func (s *LoginSystem) Login(userName string, password string) (success bool, authToken string, err error) {
-	// TODO Implement
-	return
+	s.cachedUserDataMutex.RLock()
+	defer s.cachedUserDataMutex.RUnlock()
+
+	for _, v := range s.cachedUserData {
+		if strings.ToLower(v.UserName) == strings.ToLower(userName) {
+			valid := s.checkUserCredentials(v, password)
+			if valid {
+				var token, err = s.createSessionForUser(v)
+				return true, token, err
+			}
+		}
+	}
+
+	return false, "", errors.New("user not found")
+}
+
+func (s *LoginSystem) createSessionForUser(user storedUserData) (authToken string, err error){
+	s.currentSessionsMutex.Lock()
+	defer s.currentSessionsMutex.Unlock()
+	token, err := pseudo_uuid()
+	if err != nil {
+		return "", err
+	}
+	s.currentSessions[token] = inMemorySession{userName: user.UserName, userId: user.UserId, sessionToken: authToken, sessionTimestamp: time.Now() }
+	return token, nil
+}
+
+func pseudo_uuid() (string, error) {
+
+	b := make([]byte, 16)
+	_, er := rand.Read(b)
+	if er != nil {
+		return "", er
+	}
+
+	return fmt.Sprintf("%X-%X-%X-%X-%X", b[0:4], b[4:6], b[6:8], b[8:10], b[10:]), nil
+}
+
+/*
+	Check if the provided password for a user is correct.
+ */
+func (s *LoginSystem) checkUserCredentials(user storedUserData, providedPassword string) (success bool) {
+	// TODO: Adjust with password salting and stuff....
+	return user.StoredPass == providedPassword
 }
 
 /*
@@ -169,10 +231,10 @@ func (s *LoginSystem) checkIfUserExistsOnCache(userName string) bool {
 	// We want to read from the cache => get a read lock:
 	s.cachedUserDataMutex.RLock()
 	defer s.cachedUserDataMutex.RUnlock()
-	if s.cachedUserData.users == nil {
+	if s.cachedUserData == nil {
 		return false
 	} else {
-		for _, v := range s.cachedUserData.users {
+		for _, v := range s.cachedUserData {
 			if strings.ToLower(v.UserName) == strings.ToLower(userName) {
 				return true
 			}
@@ -212,6 +274,7 @@ func (s *LoginSystem) generateLoginData(userName string, password string, newId 
 */
 func (s *LoginSystem) setDefaultValues() {
 	s.loginDataFileName = "loginData.json"
+	s.currentSessions = make(map[string]inMemorySession)
 }
 
 /*
@@ -246,10 +309,9 @@ func (s *LoginSystem) readFileAndUpdateCache(filePath string) (err error) {
 
 	parsedData, err := s.readJsonDataFromFile(filePath)
 	if parsedData != nil {
-		s.cachedUserData.users = parsedData
+		s.cachedUserData = parsedData
 	} else {
-		s.cachedUserData = *new(usersData)
-		s.cachedUserData.users = *new([]storedUserData)
+		s.cachedUserData = *new([]storedUserData)
 	}
 	return
 }

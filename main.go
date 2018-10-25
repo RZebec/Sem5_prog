@@ -51,15 +51,12 @@ func main() {
 		panic(err)
 	}
 
-	go sessionManager.Register("testUser", "testPassword")
-	go sessionManager.Register("testUser", "testPassword")
-	go sessionManager.Register("testUser2", "testPassword2")
-	go sessionManager.Register("testUser3", "testPassword2")
-	go sessionManager.Register("testUser4", "testPassword2")
-	go sessionManager.Register("testUser5", "testPassword2")
+
 
 	exampleHandler := webui.ExampleHtmlHandler{Prefix: "Das ist mein Prefix"}
 	wrapper := core.Handler{Next: exampleHandler}
+
+
 
 	http.HandleFunc("/", foohandler)
 	http.HandleFunc("/files/", tempHandler)

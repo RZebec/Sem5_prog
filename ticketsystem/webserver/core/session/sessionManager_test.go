@@ -1,18 +1,30 @@
 package session
 
 import (
+	"../helpers"
 	"encoding/json"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"testing"
-	"strconv"
-	"../helpers"
 )
 
+func prepareTempDirectory() (string, string, error){
+	// Creating a temp directory and remove it after the test:
+	rootPath, err := ioutil.TempDir("", "test")
+	defer os.RemoveAll(rootPath)
+	if err != nil {
+		return "", "", err
+	}
+	// Create a path in the temp directory, the following path to a folder will not exist:
+	notExistingFolderPath := path.Join(rootPath, "testDirectory")
+	return notExistingFolderPath, rootPath,	nil
+}
 
 
 func TestLoginSystem_Initialize_InvalidPath_ErrorReturned(t *testing.T) {
@@ -25,54 +37,46 @@ func TestLoginSystem_Initialize_InvalidPath_ErrorReturned(t *testing.T) {
 func TestLoginSystem_Initialize_FolderDoesNotExist_FolderCreated(t *testing.T) {
 	testee := LoginSystem{}
 
-	// Creating a temp directory and remove it after the test:
-	folderPath, err := ioutil.TempDir("", "test")
-	defer os.RemoveAll(folderPath)
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
 	if err != nil {
 		t.Error(err)
 	}
-	// Create a path in the temp directory, the following path to a folder will not exist:
-	notExistingFolderPath := path.Join(folderPath, "testDirectory")
-	err = testee.Initialize(notExistingFolderPath)
+	err = testee.Initialize(folderPath)
 	// No error should occur:
 	assert.Nil(t, err)
-	assert.DirExists(t, notExistingFolderPath)
-	assert.FileExists(t, path.Join(notExistingFolderPath, "loginData.json"))
+	assert.DirExists(t, folderPath)
+	assert.FileExists(t, path.Join(folderPath, "loginData.json"))
 }
 
 
 func TestLoginSystem_Initialize_DataFileAlreadyExists_DataIsLoaded(t *testing.T) {
 	testee := LoginSystem{}
 
-	// Creating a temp directory and remove it after the test:
-	folderPath, err := ioutil.TempDir("", "test")
-	//defer os.RemoveAll(folderPath)
-	if err != nil {
-		t.Error(err)
-	}
-	// Create a path in the temp directory, the following path to a folder will not exist:
-	newFolderPath := path.Join(folderPath, "testDirectory")
-	helpers.CreateFolderPath(newFolderPath)
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
 	// Write example data to the file
-	sampleDataPath := path.Join(newFolderPath, "loginData.json")
+	sampleDataPath := path.Join(folderPath, "loginData.json")
 	writeTestDataToFile(t, sampleDataPath)
 
-	err = testee.Initialize(newFolderPath)
+	err = testee.Initialize(folderPath)
 	// No error should occur:
 	assert.Nil(t, err)
 
 	assert.NotNil(t, testee.cachedUserData)
-	assert.NotNil(t, testee.cachedUserData.users)
+	assert.NotNil(t, testee.cachedUserData)
 
 	testData := getTestLoginData()
 	t.Log("TestDataSize" + strconv.Itoa(len(testData)))
-	assert.Equal(t, len(testee.cachedUserData.users), len(testData))
-	assert.ElementsMatch(t, testee.cachedUserData.users, testData)
+	assert.Equal(t, len(testData), len(testee.cachedUserData))
+	assert.ElementsMatch(t, testee.cachedUserData, testData)
 }
 
-func writeTestDataToFile(t *testing.T, sampleDataPath string) {
+func writeTestDataToFile(t *testing.T, filePath string) {
+	os.MkdirAll(filepath.Dir(filePath), 0644)
 	sampleData := []byte(testLoginData)
-	err := ioutil.WriteFile(sampleDataPath, sampleData, 0644)
+	err := ioutil.WriteFile(filePath, sampleData, 0644)
 	assert.Nil(t, err)
 }
 
@@ -83,8 +87,56 @@ func getTestLoginData()([]storedUserData){
 	return *parsedData
 }
 
-func TestLoginSystem_Login(t *testing.T) {
-	assert.True(t, false)
+func TestLoginSystem_Login_CorrectLoginData_LoggedIn(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+	err = testee.Initialize(folderPath)
+	assert.Nil(t, err)
+
+	userName := "testUser"
+	password := "secret"
+	success, err := testee.Register(userName, password)
+
+	assert.True(t, success, "User should be registered")
+	assert.Nil(t, err)
+
+	success, token, err := testee.Login(userName, password)
+	t.Log(success)
+	assert.True(t, success, "User should be logged in")
+	assert.NotEmpty(t, token, "The token should not be empty")
+	sessions := testee.currentSessions
+	_, ok := sessions[token]
+	assert.True(t, ok)
+}
+
+func TestLoginSystem_Login_IncrrectLoginData_NotLoggedIn(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+	err = testee.Initialize(folderPath)
+	assert.Nil(t, err)
+
+	userName := "testUser"
+	password := "secret"
+	success, err := testee.Register(userName, password)
+
+	assert.True(t, success, "User should be registered")
+	assert.Nil(t, err)
+
+	// The user should no be logged in
+	success, token, err := testee.Login(userName, "test123")
+	assert.False(t, success, "User should not be logged in")
+	assert.Equal(t, "", token, "The token should not be empty")
+
+	// A session should not be created
+	sessions := testee.currentSessions
+	_, ok := sessions[token]
+	assert.False(t, ok)
 }
 
 func TestLoginSystem_Logout(t *testing.T) {
@@ -97,15 +149,12 @@ func TestLoginSystem_RefreshToken(t *testing.T) {
 func TestLoginSystem_Register_NoDataWasStored_UserIsRegistered(t *testing.T) {
 	testee := LoginSystem{}
 
-	// Creating a temp directory and remove it after the test:
-	folderPath, err := ioutil.TempDir("", "test")
-	defer os.RemoveAll(folderPath)
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
 	if err != nil {
 		t.Error(err)
 	}
-	// Create a path in the temp directory, the following path to a folder will not exist:
-	tempFolderPath := path.Join(folderPath, "testDirectory")
-	err = testee.Initialize(tempFolderPath)
+	err = testee.Initialize(folderPath)
 	// No error should occur:
 	assert.Nil(t, err)
 
