@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-var loginTemplate = `
+var loginPageTemplate = `
 	<!DOCTYPE html>
 	<html>
 
@@ -60,6 +60,7 @@ type LoginPageData struct {
 }
 
 func (l LoginPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
 	// Checks if the User is already logged in and if so redirects him to the start page
 	if l.IsUserLoggedIn {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -72,7 +73,7 @@ func (l LoginPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		l.IsLoginFailed = IsLoginFailed
 	}
 
-	t, _ := template.New("login").Parse(loginTemplate)
+	t, _ := template.New("login").Parse(loginPageTemplate)
 
 	data := LoginPageData{
 		IsLoginFailed: l.IsLoginFailed,

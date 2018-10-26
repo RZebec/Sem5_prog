@@ -49,25 +49,27 @@ func main() {
 		panic(err)
 	}
 
+	sessionManager.Register("example@test.com", "1234")
+
 	exampleHandler := webui.ExampleHtmlHandler{Prefix: "Das ist mein Prefix"}
 	wrapper := core.Handler{Next: exampleHandler}
 
-	http.HandleFunc("/", foohandler)
+	indexPageHandler := webui.IndexPageHandler{}
+	indexPageWrapper := core.Handler{Next: indexPageHandler}
+	http.HandleFunc("/", indexPageWrapper.ServeHTTP)
+
 	http.HandleFunc("/example", wrapper.ServeHTTP)
 
 	filesHandler := webui.FilesHandler{}
-	filesWrapper := core.Handler{Next: filesHandler}
-	http.HandleFunc("/files/", filesWrapper.ServeHTTP)
+	http.HandleFunc("/files/", filesHandler.ServeHTTP)
 
 	loginPageHandler := login.LoginPageHandler{IsUserLoggedIn: false, IsLoginFailed: false}
-	loginPageWrapper := core.Handler{Next: loginPageHandler}
-	http.HandleFunc("/login", loginPageWrapper.ServeHTTP)
+	http.HandleFunc("/login", loginPageHandler.ServeHTTP)
 
-	loginHandler := login.LoginHandler{UserManager: &sessionManager, LoginPageHandler: loginPageHandler}
-	loginWrapper := core.Handler{Next: loginHandler}
-	http.HandleFunc("/user_login", loginWrapper.ServeHTTP)
+	loginHandler := login.LoginHandler{UserManager: &sessionManager}
+	http.HandleFunc("/user_login", loginHandler.ServeHTTP)
 
-	logoutHandler := webui.LogoutHandler{}
+	logoutHandler := webui.LogoutHandler{UserManager: &sessionManager}
 	logoutWrapper := core.Handler{Next: logoutHandler}
 	http.HandleFunc("/user_logout", logoutWrapper.ServeHTTP)
 

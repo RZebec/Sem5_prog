@@ -10,7 +10,6 @@ import (
 
 type LoginHandler struct {
 	UserManager      session.UserManager
-	LoginPageHandler LoginPageHandler
 }
 
 func (l LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -19,12 +18,6 @@ func (l LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	} else {
 		userName := r.FormValue("userName")
 		password := r.FormValue("password")
-
-		//success, err := l.UserManager.Register(userName, password)
-
-		//if err != nil {
-		//	fmt.Println(err.Error())
-		//}
 
 		success, token, err := l.UserManager.Login(userName, password)
 

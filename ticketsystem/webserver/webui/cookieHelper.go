@@ -18,3 +18,13 @@ func (c Cookie) SetCookie(w http.ResponseWriter, r *http.Request) {
 	}
 	http.SetCookie(w, &cookie)
 }
+
+func (c Cookie) RemoveCookie(w http.ResponseWriter, r *http.Request) {
+	cookie := http.Cookie{
+		Name:     c.Name,
+		Value:    "",
+		HttpOnly: true,
+		Path:     "/",
+	}
+	http.SetCookie(w, &cookie)
+}
