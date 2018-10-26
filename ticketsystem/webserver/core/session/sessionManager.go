@@ -199,7 +199,7 @@ func (s *LoginSystem) Login(userName string, password string) (success bool, aut
 
 /*
 	Create a session for a user. Returns the token or an error.
- */
+*/
 func (s *LoginSystem) createSessionForUser(user storedUserData) (authToken string, err error) {
 	s.currentSessionsMutex.Lock()
 	defer s.currentSessionsMutex.Unlock()
@@ -211,11 +211,10 @@ func (s *LoginSystem) createSessionForUser(user storedUserData) (authToken strin
 	return token, nil
 }
 
-
 /*
 	Generate a UUID.
 	Source: https://stackoverflow.com/questions/15130321/is-there-a-method-to-generate-a-uuid-with-go-language
- */
+*/
 func generateUUID() (string, error) {
 	b := make([]byte, 16)
 	_, er := rand.Read(b)

@@ -305,9 +305,9 @@ func TestLoginSystem_Register_ConcurrentAccess_AllRegistered(t *testing.T) {
 }
 
 /*
-	Register a user with an invalid password should not be possible.
+	Register a user with an invalid username should not be possible.
 */
-func TestLoginSystem_Register_InvalidPassword_NotSuccessful(t *testing.T) {
+func TestLoginSystem_Register_InvalidUsername_NotSuccessful(t *testing.T) {
 	testee := LoginSystem{}
 
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -322,6 +322,53 @@ func TestLoginSystem_Register_InvalidPassword_NotSuccessful(t *testing.T) {
 	assert.False(t, success, "register operation should not be successful")
 	assert.Error(t, err, "userName should be invalid")
 	assert.Equal(t, "userName not valid", err.Error())
+}
+
+/*
+	Register a user with an invalid password should not be possible.
+*/
+func TestLoginSystem_Register_InvalidPassword_NotSuccessful(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	if err != nil {
+		t.Error(err)
+	}
+	err = testee.Initialize(folderPath)
+	assert.Nil(t, err)
+
+	success, err := testee.Register("testuser", "")
+	assert.False(t, success, "register operation should not be successful")
+	assert.Error(t, err, "userName should be invalid")
+	assert.Equal(t, "password not valid", err.Error())
+}
+
+/*
+	Register multiple users with the same user name should not be possible..
+*/
+func TestLoginSystem_Register_UserNameAlreadyTaken(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	if err != nil {
+		t.Error(err)
+	}
+	err = testee.Initialize(folderPath)
+	assert.Nil(t, err)
+
+	userName := "testuser"
+	password := "1234"
+
+	success, err := testee.Register(userName, password)
+	assert.True(t, success, "register operation should be successful")
+	assert.Nil(t, err)
+
+	success, err = testee.Register(userName, password)
+	assert.False(t, success, "register operation should not be successful")
+	assert.NotNil(t, err)
+	assert.Equal(t, "user with this name already exists", err.Error())
 }
 
 /*
