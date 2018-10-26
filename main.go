@@ -12,25 +12,23 @@ import (
 	"path/filepath"
 )
 
-func foohandler(w http.ResponseWriter, r *http.Request){
+func foohandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Hello")
 	w.Write([]byte("HHH"))
-	}
-
+}
 
 func tempHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Hello")
 	w.Write([]byte(r.URL.Path))
 }
 
-
 func main() {
 	// Core functionality
 	// var logger = ...
-	// var sessionmanager = 
+	// var sessionmanager =
 
 	//
-    // interface logger ( LogDebug(), LogInfo())
+	// interface logger ( LogDebug(), LogInfo())
 	//
 	// Website Handlers
 	//var loginHandler(logger, SessionManager)
@@ -44,30 +42,22 @@ func main() {
 		panic(err)
 	}
 
-
 	sessionManager := session.LoginSystem{}
 	err = sessionManager.Initialize(path.Join(config.LoginDataFolderPath, "LoginData"))
 	if err != nil {
 		panic(err)
 	}
 
-
-
 	exampleHandler := webui.ExampleHtmlHandler{Prefix: "Das ist mein Prefix"}
 	wrapper := core.Handler{Next: exampleHandler}
 
-
-
 	http.HandleFunc("/", foohandler)
 	http.HandleFunc("/files/", tempHandler)
-	http.HandleFunc("/example", wrapper.ServeHTTP )
+	http.HandleFunc("/example", wrapper.ServeHTTP)
 
 	if err := http.ListenAndServeTLS(":8080", "leaf.pem", "leaf.key", nil); err != nil {
 		panic(err)
 	}
-
-
-
 
 	//staticFileHandlers.StaticFileHandler()
 }

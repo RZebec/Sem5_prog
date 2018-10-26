@@ -3,12 +3,20 @@
   <component name="ChangeListManager">
     <list default="true" id="d72a36f5-044f-48d5-9693-34cee9f0b8ce" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configuration/configuration.go" beforeDir="false" afterPath="$PROJECT_DIR$/configuration/configuration.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/cookieHelper.go" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/cookieHelper.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/staticFileHandlers/cssFileHandlers.go" beforeDir="false" afterPath="$PROJECT_DIR$/staticFileHandlers/cssFileHandlers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/staticFileHandlers/filesHandler.go" beforeDir="false" afterPath="$PROJECT_DIR$/staticFileHandlers/filesHandler.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/staticFileHandlers/htmlFileHandlers.go" beforeDir="false" afterPath="$PROJECT_DIR$/staticFileHandlers/htmlFileHandlers.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ticketsystem/leaf.key" beforeDir="false" afterPath="$PROJECT_DIR$/leaf.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ticketsystem/leaf.pem" beforeDir="false" afterPath="$PROJECT_DIR$/leaf.pem" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/staticFileHandlers/jsFileHandlers.go" beforeDir="false" afterPath="$PROJECT_DIR$/staticFileHandlers/jsFileHandlers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/config/configuration.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/config/configuration.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/core/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/core/handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/core/helpers/fileAccess.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/core/helpers/fileAccess.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/core/session/User.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/core/session/User.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/core/session/sessionManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/core/session/sessionManager.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/core/session/sessionManager_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/core/session/sessionManager_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/webui/exampleHtmlHandler.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/webui/exampleHtmlHandler.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,10 +27,12 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/Sem5_prog$go_test_session.out" NAME="go test session Coverage Results" MODIFIED="1540397922017" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/Sem5_prog$go_test_Sem5_prog.out" NAME="go test Sem5_prog Coverage Results" MODIFIED="1540398178573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/IIIDDD$go_test_Sem5_prog.out" NAME="go test Sem5_prog Coverage Results" MODIFIED="1540540583006" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/IIIDDD$go_test_session.out" NAME="go test session Coverage Results" MODIFIED="1540541657853" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/IIIDDD$TestLoginSystem_Initialize_InvalidPath_ErrorReturned_in_sessionManager_test_go.out" NAME="TestLoginSystem_Initialize_InvalidPath_ErrorReturned in sessionManager_test.go Coverage Results" MODIFIED="1540488932022" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
   <component name="CoverageViewManager">
-    <option name="myElementSize" value="515" />
+    <option name="myElementSize" value="227" />
   </component>
   <component name="FUSProjectUsageTrigger">
     <session id="-1817885971">
@@ -109,33 +119,34 @@
     <session id="-165454710">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="3" />
+          <entry key="project.closed" value="4" />
           <entry key="project.open.time.1" value="1" />
           <entry key="project.open.time.12" value="1" />
           <entry key="project.open.time.13" value="1" />
           <entry key="project.open.time.15" value="1" />
-          <entry key="project.opened" value="4" />
+          <entry key="project.open.time.8" value="1" />
+          <entry key="project.opened" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="go" value="1446" />
+          <entry key="go" value="3516" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Go" value="1446" />
+          <entry key="Go" value="3516" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="go" value="14" />
+          <entry key="go" value="16" />
           <entry key="s" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Go" value="14" />
+          <entry key="Go" value="16" />
           <entry key="x86 Plan9 Assembly" value="2" />
         </counts>
       </usages-collector>
@@ -148,14 +159,35 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="434">
-              <caret line="64" column="59" selection-start-line="64" selection-start-column="59" selection-end-line="64" selection-end-column="59" />
+            <state relative-caret-position="340">
+              <caret line="50" selection-start-line="50" selection-end-line="50" />
               <folding>
                 <element signature="e#14#321#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/core/session/sessionManager.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3893">
+              <caret line="229" column="57" lean-forward="true" selection-start-line="229" selection-start-column="57" selection-end-line="229" selection-end-column="57" />
+              <folding>
+                <element signature="e#17#178#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/core/session/sessionManager_test.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="207">
+              <caret line="14" column="10" lean-forward="true" selection-start-line="14" selection-start-column="10" selection-end-line="14" selection-end-column="10" />
             </state>
           </provider>
         </entry>
@@ -175,9 +207,10 @@
       <find>file</find>
       <find>Val</find>
       <find>../helpers</find>
-      <find>Register</find>
       <find>Ini</find>
       <find>refresh</find>
+      <find>Register</find>
+      <find>unknown</find>
     </findStrings>
   </component>
   <component name="GOROOT" path="C:\Go" />
@@ -206,9 +239,9 @@
         <option value="$PROJECT_DIR$/ticketsystem/webserver/core/helpers/helpers.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/core/helpers/fileAccess.go" />
         <option value="$PROJECT_DIR$/staticFileHandlers/htmlFileHandlers.go" />
+        <option value="$PROJECT_DIR$/main.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/core/session/sessionManager_test.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/core/session/sessionManager.go" />
-        <option value="$PROJECT_DIR$/main.go" />
       </list>
     </option>
   </component>
@@ -231,6 +264,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -283,7 +317,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -315,12 +348,21 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build main.go">
+  <component name="RunManager" selected="Go Test.go test session">
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="Sem5_prog" />
       <working_directory value="$PROJECT_DIR$/" />
       <kind value="FILE" />
       <filePath value="$PROJECT_DIR$/main.go" />
+      <package value="de/vorlesung/projekt/IIIDDD" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build sessionManager.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="Sem5_prog" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/ticketsystem/webserver/core/session/sessionManager.go" />
       <package value="de/vorlesung/projekt/IIIDDD" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
@@ -335,28 +377,6 @@
       <pattern value="^TestLoginSystem_Initialize_InvalidPath_ErrorReturned$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestLoginSystem_Login_CorrectLoginData_LoggedIn in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="Sem5_prog" />
-      <working_directory value="$PROJECT_DIR$/ticketsystem/webserver/core/session" />
-      <framework value="gotest" />
-      <kind value="PACKAGE" />
-      <package value="de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session" />
-      <directory value="$PROJECT_DIR$/" />
-      <filePath value="$PROJECT_DIR$/" />
-      <pattern value="^TestLoginSystem_Login_CorrectLoginData_LoggedIn$" />
-      <method v="2" />
-    </configuration>
-    <configuration name="TestLoginSystem_RefreshToken_ValidToken_TokenIsRefreshed in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="Sem5_prog" />
-      <working_directory value="$PROJECT_DIR$/ticketsystem/webserver/core/session" />
-      <framework value="gotest" />
-      <kind value="PACKAGE" />
-      <package value="de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session" />
-      <directory value="$PROJECT_DIR$/" />
-      <filePath value="$PROJECT_DIR$/" />
-      <pattern value="^TestLoginSystem_RefreshToken_ValidToken_TokenIsRefreshed$" />
-      <method v="2" />
-    </configuration>
     <configuration name="go test Sem5_prog" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="Sem5_prog" />
       <working_directory value="$PROJECT_DIR$" />
@@ -366,39 +386,34 @@
       <filePath value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
+    <configuration name="go test session" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="Sem5_prog" />
+      <working_directory value="$PROJECT_DIR$/ticketsystem/webserver/core/session" />
+      <framework value="gotest" />
+      <kind value="DIRECTORY" />
+      <package value="de/vorlesung/projekt/IIIDDD" />
+      <directory value="$PROJECT_DIR$/ticketsystem/webserver/core/session" />
+      <filePath value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Go Test.TestLoginSystem_Initialize_InvalidPath_ErrorReturned in sessionManager_test.go" />
       <item itemvalue="Go Test.go test Sem5_prog" />
-      <item itemvalue="Go Test.TestLoginSystem_Login_CorrectLoginData_LoggedIn in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session" />
-      <item itemvalue="Go Test.TestLoginSystem_RefreshToken_ValidToken_TokenIsRefreshed in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session" />
       <item itemvalue="Go Build.go build main.go" />
+      <item itemvalue="Go Build.go build sessionManager.go" />
+      <item itemvalue="Go Test.go test session" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.go test session" />
+        <item itemvalue="Go Build.go build sessionManager.go" />
+        <item itemvalue="Go Test.go test Sem5_prog" />
         <item itemvalue="Go Build.go build main.go" />
         <item itemvalue="Go Test.TestLoginSystem_Initialize_InvalidPath_ErrorReturned in sessionManager_test.go" />
-        <item itemvalue="Go Test.TestLoginSystem_RefreshToken_ValidToken_TokenIsRefreshed in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session" />
-        <item itemvalue="Go Test.TestLoginSystem_Login_CorrectLoginData_LoggedIn in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session" />
-        <item itemvalue="Go Test.go test Sem5_prog" />
       </list>
     </recent_temporary>
   </component>
   <component name="TestHistory">
-    <history-entry file="TestLoginSystem_Login_CorrectLoginData_LoggedIn_in_de_vorlesung_projekt_IIIDDD_ticketsystem_webserver_core_session - 2018.10.25 at 19h 02m 48s.xml">
-      <configuration name="TestLoginSystem_Login_CorrectLoginData_LoggedIn in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestLoginSystem_RefreshToken_ValidToken_TokenIsRefreshed_in_de_vorlesung_projekt_IIIDDD_ticketsystem_webserver_core_session - 2018.10.25 at 19h 25m 54s.xml">
-      <configuration name="TestLoginSystem_RefreshToken_ValidToken_TokenIsRefreshed in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestLoginSystem_Initialize_InvalidPath_ErrorReturned_in_sessionManager_test_go - 2018.10.25 at 19h 26m 58s.xml">
-      <configuration name="TestLoginSystem_Initialize_InvalidPath_ErrorReturned in sessionManager_test.go" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestLoginSystem_Initialize_InvalidPath_ErrorReturned_in_sessionManager_test_go - 2018.10.25 at 19h 27m 06s.xml">
-      <configuration name="TestLoginSystem_Initialize_InvalidPath_ErrorReturned in sessionManager_test.go" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestLoginSystem_Initialize_InvalidPath_ErrorReturned_in_sessionManager_test_go - 2018.10.25 at 19h 27m 11s.xml">
-      <configuration name="TestLoginSystem_Initialize_InvalidPath_ErrorReturned in sessionManager_test.go" configurationId="GoTestRunConfiguration" />
-    </history-entry>
     <history-entry file="TestLoginSystem_Initialize_InvalidPath_ErrorReturned_in_sessionManager_test_go - 2018.10.25 at 19h 28m 17s.xml">
       <configuration name="TestLoginSystem_Initialize_InvalidPath_ErrorReturned in sessionManager_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
@@ -414,6 +429,21 @@
     <history-entry file="TestLoginSystem_Initialize_InvalidPath_ErrorReturned_in_sessionManager_test_go - 2018.10.25 at 19h 35m 34s.xml">
       <configuration name="TestLoginSystem_Initialize_InvalidPath_ErrorReturned in sessionManager_test.go" configurationId="GoTestRunConfiguration" />
     </history-entry>
+    <history-entry file="go_test_Sem5_prog - 2018.10.26 at 09h 56m 30s.xml">
+      <configuration name="go test Sem5_prog" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="go_test_session - 2018.10.26 at 10h 00m 17s.xml">
+      <configuration name="go test session" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="go_test_session - 2018.10.26 at 10h 04m 47s.xml">
+      <configuration name="go test session" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="go_test_session - 2018.10.26 at 10h 05m 28s.xml">
+      <configuration name="go test session" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="go_test_session - 2018.10.26 at 10h 14m 19s.xml">
+      <configuration name="go test session" configurationId="GoTestRunConfiguration" />
+    </history-entry>
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -428,20 +458,20 @@
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17270789" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17430703" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.4968017" weight="0.32939914" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49253732" visible="true" weight="0.23712446" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49200428" weight="0.31330472" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4914712" visible="true" weight="0.23712446" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4914712" weight="0.31330472" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.4989339" weight="0.32832617" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.4978678" weight="0.32832617" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5074627" side_tool="true" visible="true" weight="0.23712446" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50852877" side_tool="true" visible="true" weight="0.23712446" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -460,24 +490,18 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/ticketsystem/webserver/core/handler.go</url>
-          <line>19</line>
+          <line>18</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/ticketsystem/webserver/core/handler.go</url>
-          <line>21</line>
+          <line>20</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/main.go</url>
-          <line>55</line>
+          <line>50</line>
           <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/ticketsystem/webserver/core/session/sessionManager_test.go</url>
-          <line>169</line>
-          <properties />
-          <option name="timeStamp" value="13" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -513,9 +537,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketsystem/92860317_localhost.cert">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketsystem/92860317_localhost.cert" />
     <entry file="file://C:/Go/src/net/http/server.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="39746">
@@ -633,26 +655,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/core/session/sessionManager_test.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="255" column="52" selection-start-line="255" selection-start-column="52" selection-end-line="255" selection-end-column="52" />
-          <folding>
-            <element signature="e#17#234#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/core/session/sessionManager.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2102">
-          <caret line="79" column="63" lean-forward="true" selection-start-line="79" selection-start-column="63" selection-end-line="79" selection-end-column="63" />
-          <folding>
-            <element signature="e#17#178#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Go/src/runtime/proc.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="212">
@@ -676,10 +678,27 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="434">
-          <caret line="64" column="59" selection-start-line="64" selection-start-column="59" selection-end-line="64" selection-end-column="59" />
+        <state relative-caret-position="340">
+          <caret line="50" selection-start-line="50" selection-end-line="50" />
           <folding>
             <element signature="e#14#321#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/core/session/sessionManager_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="14" column="10" lean-forward="true" selection-start-line="14" selection-start-column="10" selection-end-line="14" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/core/session/sessionManager.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3893">
+          <caret line="229" column="57" lean-forward="true" selection-start-line="229" selection-start-column="57" selection-end-line="229" selection-end-column="57" />
+          <folding>
+            <element signature="e#17#178#0" expanded="true" />
           </folding>
         </state>
       </provider>

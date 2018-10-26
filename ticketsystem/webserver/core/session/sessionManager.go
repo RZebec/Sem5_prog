@@ -112,7 +112,7 @@ func (s *LoginSystem) RefreshToken(token string) (newToken string, err error) {
 	if valid {
 		s.currentSessionsMutex.Lock()
 		defer s.currentSessionsMutex.Unlock()
-		newToken, err := pseudo_uuid()
+		newToken, err := generateUUID()
 		if err != nil {
 			return "", err
 		}
@@ -197,10 +197,13 @@ func (s *LoginSystem) Login(userName string, password string) (success bool, aut
 	return false, "", errors.New("user not found")
 }
 
+/*
+	Create a session for a user. Returns the token or an error.
+ */
 func (s *LoginSystem) createSessionForUser(user storedUserData) (authToken string, err error) {
 	s.currentSessionsMutex.Lock()
 	defer s.currentSessionsMutex.Unlock()
-	token, err := pseudo_uuid()
+	token, err := generateUUID()
 	if err != nil {
 		return "", err
 	}
@@ -208,8 +211,12 @@ func (s *LoginSystem) createSessionForUser(user storedUserData) (authToken strin
 	return token, nil
 }
 
-func pseudo_uuid() (string, error) {
 
+/*
+	Generate a UUID.
+	Source: https://stackoverflow.com/questions/15130321/is-there-a-method-to-generate-a-uuid-with-go-language
+ */
+func generateUUID() (string, error) {
 	b := make([]byte, 16)
 	_, er := rand.Read(b)
 	if er != nil {
