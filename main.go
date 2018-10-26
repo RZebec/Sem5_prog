@@ -5,6 +5,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/login"
 	"fmt"
 	"net/http"
 	"os"
@@ -52,8 +53,23 @@ func main() {
 	wrapper := core.Handler{Next: exampleHandler}
 
 	http.HandleFunc("/", foohandler)
-	http.HandleFunc("/files/", tempHandler)
 	http.HandleFunc("/example", wrapper.ServeHTTP)
+
+	filesHandler := webui.FilesHandler{}
+	filesWrapper := core.Handler{Next: filesHandler}
+	http.HandleFunc("/files/", filesWrapper.ServeHTTP)
+
+	loginPageHandler := login.LoginPageHandler{IsUserLoggedIn: false, IsLoginFailed: false}
+	loginPageWrapper := core.Handler{Next: loginPageHandler}
+	http.HandleFunc("/login", loginPageWrapper.ServeHTTP)
+
+	loginHandler := login.LoginHandler{UserManager: &sessionManager, LoginPageHandler: loginPageHandler}
+	loginWrapper := core.Handler{Next: loginHandler}
+	http.HandleFunc("/user_login", loginWrapper.ServeHTTP)
+
+	logoutHandler := webui.LogoutHandler{}
+	logoutWrapper := core.Handler{Next: logoutHandler}
+	http.HandleFunc("/user_logout", logoutWrapper.ServeHTTP)
 
 	if err := http.ListenAndServeTLS(":8080", "leaf.pem", "leaf.key", nil); err != nil {
 		panic(err)
