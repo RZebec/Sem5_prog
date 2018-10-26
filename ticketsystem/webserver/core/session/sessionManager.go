@@ -1,3 +1,6 @@
+/*
+	The session package handles the users and the session.
+*/
 package session
 
 import (

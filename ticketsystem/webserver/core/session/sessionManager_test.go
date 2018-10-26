@@ -3,6 +3,7 @@ package session
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
 	"encoding/json"
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
@@ -14,6 +15,85 @@ import (
 	"testing"
 	"time"
 )
+
+/*
+	Example for the initialization.
+*/
+func ExampleLoginSystem_Initialize() {
+	loginSystem := LoginSystem{}
+	loginSystem.Initialize("pathToFolderToUse")
+}
+
+/*
+	Example for the registration of a user.
+*/
+func ExampleLoginSystem_Register() {
+	loginSystem := LoginSystem{}
+	// The path will be created if it does not exist, but this is only an example, so it will be removed again.
+	pathToFolderWhichShouldBeUsed := "pathToFolder/subFolder/subSubFolder"
+	defer os.RemoveAll(pathToFolderWhichShouldBeUsed)
+
+	loginSystem.Initialize(pathToFolderWhichShouldBeUsed)
+
+
+	loginSystem.Register("UserName", "UserPassword")
+}
+
+/*
+	Example for the login.
+*/
+func ExampleLoginSystem_Login() {
+	loginSystem := LoginSystem{}
+	loginSystem.Initialize("pathToFolderToUse")
+
+	loginSystem.Login("UserName", "UserPassword")
+}
+
+/*
+	Example for the logout.
+*/
+func ExampleLoginSystem_Logout() {
+	loginSystem := LoginSystem{}
+	loginSystem.Initialize("pathToFolderToUse")
+
+	token := "1563.....534sf2"
+
+	loginSystem.Logout(token)
+}
+
+/*
+	Example for the refresh of a token.
+*/
+func ExampleLoginSystem_RefreshToken() {
+	loginSystem := LoginSystem{}
+	loginSystem.Initialize("pathToFolderToUse")
+
+	token := "1563.....534sf2"
+	// The token will be changed:
+	token, _ = loginSystem.RefreshToken(token)
+}
+
+/*
+	Example to check if a session is valid.
+*/
+func ExampleLoginSystem_SessionIsValid() {
+	loginSystem := LoginSystem{}
+	loginSystem.currentSessions = make(map[string]inMemorySession)
+
+	token := "1234567899+op"
+	loginSystem.currentSessions[token] = inMemorySession{userId: 1, userName: "max.mustermann@mail.com",
+		sessionToken: token, sessionTimestamp: time.Now()}
+
+	valid, userId, userName, _ := loginSystem.SessionIsValid(token)
+	fmt.Println(valid)
+	fmt.Println(userId)
+	fmt.Println(userName)
+	// Output:
+	// true
+	// 1
+	// max.mustermann@mail.com
+
+}
 
 /*
 	Initializing the login system with an invalid path should return an error.
