@@ -1,7 +1,7 @@
 /*
 	The session package handles the users and the session.
 */
-package session
+package user
 
 import (
 	"crypto/rand"
@@ -16,14 +16,20 @@ import (
 )
 
 /*
-	The session manager provides functions to keep a session alive or to check if the session is valid.
+	The user context provides functions to keep a session alive or to check if the session is valid and to register,
+	login or logout at user.
 */
-type SessionManager interface {
+type UserContext interface {
 	// Check if the current session is valid. Also returns the user of the session.
 	SessionIsValid(token string) (isValid bool, userId int, userName string, err error)
-
 	// Refresh the token. The new token should be used for all following request.
 	RefreshToken(token string) (newToken string, err error)
+	// Login a user.
+	Login(userName string, password string) (success bool, authToken string, err error)
+	// Register a new user.
+	Register(userName string, password string) (success bool, err error)
+	// Logout a user.
+	Logout(authToken string)
 }
 
 /*
@@ -34,18 +40,6 @@ type storedUserData struct {
 	UserId     int
 	StoredPass string
 	StoredSalt string
-}
-
-/*
-	Interface for the UserManager. Provides functions to register, login or logout at user.
-*/
-type UserManager interface {
-	// Login in a user.
-	Login(userName string, password string) (success bool, authToken string, err error)
-	// Register a new user.
-	Register(userName string, password string) (success bool, err error)
-	// Logout a user.
-	Logout(authToken string)
 }
 
 /*

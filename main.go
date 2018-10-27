@@ -3,7 +3,8 @@ package main
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui"
 	"fmt"
 	"net/http"
@@ -31,22 +32,38 @@ func main() {
 	// interface logger ( LogDebug(), LogInfo())
 	//
 	// Website Handlers
-	//var loginHandler(logger, SessionManager)
+
 	//staticFileHAndler := CreateNEw(config)
 	//authenticationHandler
 	config := config.Configuration{}
 	filePath, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err == nil {
 		config.LoginDataFolderPath = filePath
+		config.TicketDataFolderPath = path.Join(filePath, "Tickets")
 	} else {
 		panic(err)
 	}
 
-	sessionManager := session.LoginSystem{}
-	err = sessionManager.Initialize(path.Join(config.LoginDataFolderPath, "LoginData"))
+	userContext := user.LoginSystem{}
+	err = userContext.Initialize(path.Join(config.LoginDataFolderPath, "LoginData"))
 	if err != nil {
 		panic(err)
 	}
+
+	ticketContext := ticket.TicketManager{}
+	ticketContext.Initialize(config.TicketDataFolderPath)
+
+	ticket, err := ticketContext.CreateNewTicket("TestTitle", ticket.Creator{Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
+		ticket.MessageEntry{Id: 22, CreatorMail: "test@test.de", Content: "TestContent", OnlyInternal: false})
+	fmt.Println(ticket)
+	fmt.Println(err)
+	exists, ticket := ticketContext.GetTicketById(2)
+	fmt.Println(exists)
+	fmt.Println(ticket)
+
+	g := ticketContext.GetAllTicketInfo()
+	fmt.Println(len(g))
+
 
 	exampleHandler := webui.ExampleHtmlHandler{Prefix: "Das ist mein Prefix"}
 	wrapper := core.Handler{Next: exampleHandler}

@@ -1,4 +1,4 @@
-package session
+package user
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
@@ -34,7 +34,6 @@ func ExampleLoginSystem_Register() {
 	defer os.RemoveAll(pathToFolderWhichShouldBeUsed)
 
 	loginSystem.Initialize(pathToFolderWhichShouldBeUsed)
-
 
 	loginSystem.Register("UserName", "UserPassword")
 }
