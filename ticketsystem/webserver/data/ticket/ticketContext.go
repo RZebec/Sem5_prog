@@ -8,18 +8,25 @@ import (
 	"path"
 	"regexp"
 	"sync"
+	"time"
 )
 
+/*
+	Interface for the ticket context.
+*/
 type TicketContext interface {
-	CreateNewTicketForInternalUser(title string, creator Creator, editor user.User, initialMessage MessageEntry) (*Ticket, error)
+	CreateNewTicketForInternalUser(title string, editor user.User, initialMessage MessageEntry) (*Ticket, error)
 	CreateNewTicket(title string, creator Creator, initialMessage MessageEntry) (*Ticket, error)
 	GetTicketById(id int) (Ticket, error)
-	GetAllTicketInfo() ([]TicketInfo)
+	GetAllTicketInfo() []TicketInfo
 	AppendMessageToTicket(ticketId int, message MessageEntry) (*Ticket, error)
-
 }
 
-func (t *TicketManager) AppendMessageToTicket(ticketId int, message MessageEntry) (*Ticket, error){
+// TODO: Set LastModification Time and Create method for info modification
+/*
+	Append a message to a ticket.
+*/
+func (t *TicketManager) AppendMessageToTicket(ticketId int, message MessageEntry) (*Ticket, error) {
 	exists, ticket := t.GetTicketById(ticketId)
 	if exists {
 		ticket.messages = append(ticket.messages, message)
@@ -33,18 +40,24 @@ func (t *TicketManager) AppendMessageToTicket(ticketId int, message MessageEntry
 	}
 }
 
-func (t *TicketManager) GetAllTicketInfo() ([]TicketInfo) {
+/*
+	Get all existing ticket information.
+*/
+func (t *TicketManager) GetAllTicketInfo() []TicketInfo {
 	t.cachedTicketsMutex.RLock()
 	defer t.cachedTicketsMutex.RUnlock()
 
-	ticketInfos := []TicketInfo{}
-	for _, ticket := range t.cachedTickets{
+	var ticketInfos []TicketInfo
+	for _, ticket := range t.cachedTickets {
 		ticketInfos = append(ticketInfos, ticket.info)
 	}
 	return ticketInfos
 }
 
-func (t *TicketManager) GetTicketById(id int) (bool, *Ticket){
+/*
+	Get a ticket by its id. Returns false if the ticket does not exist.
+*/
+func (t *TicketManager) GetTicketById(id int) (bool, *Ticket) {
 	value, ok := t.cachedTickets[id]
 	if ok {
 		return true, &value
@@ -52,7 +65,9 @@ func (t *TicketManager) GetTicketById(id int) (bool, *Ticket){
 	return false, nil
 }
 
-
+/*
+	The ticket manager handles the access to the tickets.
+*/
 type TicketManager struct {
 	cachedTickets      map[int]Ticket
 	cachedTicketIds    []int
@@ -60,6 +75,9 @@ type TicketManager struct {
 	ticketFolderPath   string
 }
 
+/*
+	Initialize the TicketManager with the given folder path. The folder is used to load and store the ticket data.
+*/
 func (t *TicketManager) Initialize(folderPath string) error {
 	if folderPath == "" {
 		return errors.New("path to login data storage can not be a empty string.")
@@ -82,6 +100,69 @@ func (t *TicketManager) Initialize(folderPath string) error {
 	return nil
 }
 
+/*
+	Create a new ticket for a internal user. The
+*/
+func (t *TicketManager) CreateNewTicketForInternalUser(title string, editor user.User, initialMessage MessageEntry) (*Ticket, error) {
+	t.cachedTicketsMutex.Lock()
+	defer t.cachedTicketsMutex.Unlock()
+
+	newId := maxIntInArray(t.cachedTicketIds) + 1
+	t.cachedTicketIds = append(t.cachedTicketIds, newId)
+
+	newTicket, err := createNewEmptyTicket(t.ticketFolderPath, newId)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not create ticket")
+	}
+	newTicket.info.Id = newId
+	newTicket.info.Creator = ConvertToCreator(editor)
+	newTicket.info.HasEditor = true
+	newTicket.info.Editor = editor
+	newTicket.info.Title = title
+	initialMessage.Id = 0
+	initialMessage.CreatorMail = editor.Mail
+	initialMessage.CreationTime = time.Now()
+	newTicket.messages = append(newTicket.messages, initialMessage)
+
+	newTicket.persist()
+	t.cachedTickets[newId] = *newTicket
+	t.cachedTicketIds = append(t.cachedTicketIds, newId)
+	return newTicket, nil
+
+}
+
+/*
+	Create a new ticket.
+*/
+func (t *TicketManager) CreateNewTicket(title string, creator Creator, initialMessage MessageEntry) (*Ticket, error) {
+
+	t.cachedTicketsMutex.Lock()
+	defer t.cachedTicketsMutex.Unlock()
+
+	newId := maxIntInArray(t.cachedTicketIds) + 1
+
+	newTicket, err := createNewEmptyTicket(t.ticketFolderPath, newId)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not create ticket")
+	}
+	newTicket.info.Id = newId
+	newTicket.info.Creator = creator
+	newTicket.info.HasEditor = false
+	newTicket.info.Title = title
+	initialMessage.Id = 0
+	initialMessage.CreatorMail = creator.Mail
+	initialMessage.CreationTime = time.Now()
+	newTicket.messages = append(newTicket.messages, initialMessage)
+
+	newTicket.persist()
+	t.cachedTickets[newId] = *newTicket
+	t.cachedTicketIds = append(t.cachedTicketIds, newId)
+	return newTicket, nil
+}
+
+/*
+	Read the existing tickets from the file system.
+*/
 func (t *TicketManager) readExistingTickets() error {
 	t.cachedTicketsMutex.Lock()
 	defer t.cachedTicketsMutex.Unlock()
@@ -108,55 +189,9 @@ func (t *TicketManager) readExistingTickets() error {
 	return nil
 }
 
-func (t *TicketManager) CreateNewTicketForInternalUser(title string, creator Creator, editor user.User, initialMessage MessageEntry) (*Ticket, error) {
-	t.cachedTicketsMutex.Lock()
-	defer t.cachedTicketsMutex.Unlock()
-
-	newId := maxIntInArray(t.cachedTicketIds)
-	t.cachedTicketIds = append(t.cachedTicketIds, newId)
-
-	newTicket, err := createNewEmptyTicket(t.ticketFolderPath, newId)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not create ticket")
-	}
-	newTicket.info.Id = newId
-	newTicket.info.Creator = creator
-	newTicket.info.HasEditor = true
-	newTicket.info.Editor = editor
-	newTicket.info.Title = title
-	initialMessage.Id = 0
-	initialMessage.CreatorMail = creator.Mail
-	newTicket.messages = append(newTicket.messages, initialMessage)
-
-	t.cachedTickets[newId] = *newTicket
-	return newTicket, nil
-
-}
-func (t *TicketManager) CreateNewTicket(title string, creator Creator, initialMessage MessageEntry) (*Ticket, error) {
-
-	t.cachedTicketsMutex.Lock()
-	defer t.cachedTicketsMutex.Unlock()
-
-	newId := maxIntInArray(t.cachedTicketIds) + 1
-
-	newTicket, err := createNewEmptyTicket(t.ticketFolderPath, newId)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not create ticket")
-	}
-	newTicket.info.Id = newId
-	newTicket.info.Creator = creator
-	newTicket.info.HasEditor = false
-	newTicket.info.Title = title
-	initialMessage.Id = 0
-	initialMessage.CreatorMail = creator.Mail
-	newTicket.messages = append(newTicket.messages, initialMessage)
-
-	newTicket.persist()
-	t.cachedTickets[newId] = *newTicket
-	t.cachedTicketIds = append(t.cachedTicketIds, newId)
-	return newTicket, nil
-}
-
+/*
+	Get the max value in an array.
+*/
 func maxIntInArray(values []int) int {
 	if len(values) == 0 {
 		return 0

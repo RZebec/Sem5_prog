@@ -20,16 +20,25 @@ type Ticket struct {
 	accessMutex sync.RWMutex
 }
 
+/*
+	The struct represents the stored ticket data.
+*/
 type storedTicket struct {
-	Info        TicketInfo
-	Messages    []MessageEntry
+	Info     TicketInfo
+	Messages []MessageEntry
 }
 
-func (t *Ticket) getTicketDataToStore() (storedTicket){
+/*
+	Transforms the ticket data to a store-able data type.
+*/
+func (t *Ticket) transformToPersistenceData() storedTicket {
 	return storedTicket{Info: t.info, Messages: t.messages}
 }
 
-func (t *Ticket) getTicketForStoredData(storedData storedTicket)(){
+/*
+	Loads the data from a store-able data type into the ticket.
+*/
+func (t *Ticket) loadDataFromPersistenceData(storedData storedTicket) {
 	t.info = storedData.Info
 	t.messages = storedData.Messages
 }
@@ -80,7 +89,7 @@ func initializeFromFile(filePath string) (*Ticket, error) {
 	parsedData := new(storedTicket)
 	json.Unmarshal(fileValue, &parsedData)
 	ticket.filePath = filePath
-	ticket.getTicketForStoredData(*parsedData)
+	ticket.loadDataFromPersistenceData(*parsedData)
 	return ticket, nil
 }
 
@@ -104,7 +113,7 @@ func createNewEmptyTicket(folderPath string, id int) (*Ticket, error) {
 		}
 	}
 
-	filePath := path.Join(folderPath, (strconv.Itoa(id) + ".json"))
+	filePath := path.Join(folderPath, strconv.Itoa(id)+".json")
 	alreadyExists, err := helpers.FilePathExists(filePath)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not check if path already exists")
@@ -139,7 +148,7 @@ func (t *Ticket) persist() error {
 	}
 	t.accessMutex.Lock()
 	defer t.accessMutex.Unlock()
-	jsonData, err := json.MarshalIndent(t.getTicketDataToStore(), "", "    ")
+	jsonData, err := json.MarshalIndent(t.transformToPersistenceData(), "", "    ")
 	if err != nil {
 		return errors.Wrap(err, "could not save ticket to file")
 	}

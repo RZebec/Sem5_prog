@@ -35,7 +35,7 @@ func ExampleLoginSystem_Register() {
 
 	loginSystem.Initialize(pathToFolderWhichShouldBeUsed)
 
-	loginSystem.Register("UserName", "UserPassword")
+	loginSystem.Register("UserName", "UserPassword", "firstName", "lastName")
 }
 
 /*
@@ -140,10 +140,8 @@ func TestLoginSystem_Initialize_DataFileAlreadyExists_DataIsLoaded(t *testing.T)
 	assert.Nil(t, err)
 
 	assert.NotNil(t, testee.cachedUserData)
-	assert.NotNil(t, testee.cachedUserData)
 
 	testData := getTestLoginData()
-	t.Log("TestDataSize" + strconv.Itoa(len(testData)))
 	assert.Equal(t, len(testData), len(testee.cachedUserData))
 	assert.ElementsMatch(t, testee.cachedUserData, testData)
 }
@@ -162,13 +160,15 @@ func TestLoginSystem_Login_CorrectLoginData_LoggedIn(t *testing.T) {
 
 	userName := "testUser"
 	password := "secret"
-	success, err := testee.Register(userName, password)
+	firstName := "max"
+	lastName := "muster"
+	success, err := testee.Register(userName, password, firstName, lastName)
 
 	assert.True(t, success, "User should be registered")
 	assert.Nil(t, err)
 
 	success, token, err := testee.Login(userName, password)
-	t.Log(success)
+
 	assert.True(t, success, "User should be logged in")
 	assert.NotEmpty(t, token, "The token should not be empty")
 	sessions := testee.currentSessions
@@ -190,7 +190,9 @@ func TestLoginSystem_Login_IncorrectLoginData_NotLoggedIn(t *testing.T) {
 
 	userName := "testUser"
 	password := "secret"
-	success, err := testee.Register(userName, password)
+	firstName := "max"
+	lastName := "muster"
+	success, err := testee.Register(userName, password, firstName, lastName)
 
 	assert.True(t, success, "User should be registered")
 	assert.Nil(t, err)
@@ -276,7 +278,7 @@ func TestLoginSystem_Register_NoDataWasStored_UserIsRegistered(t *testing.T) {
 	// No error should occur:
 	assert.Nil(t, err)
 
-	success, err := testee.Register("testUser1", "testpassword1")
+	success, err := testee.Register("testUser1", "testpassword1", "max", "muster")
 	assert.True(t, success, "user should be registered")
 	assert.Nil(t, err)
 
@@ -284,7 +286,9 @@ func TestLoginSystem_Register_NoDataWasStored_UserIsRegistered(t *testing.T) {
 	assert.Nil(t, err)
 
 	assert.Equal(t, 1, len(writtenData))
-	assert.Equal(t, writtenData[0].UserName, "testUser1")
+	assert.Equal(t, writtenData[0].Mail, "testUser1")
+	assert.Equal(t, writtenData[0].FirstName, "max")
+	assert.Equal(t, writtenData[0].LastName, "muster")
 }
 
 /*
@@ -361,7 +365,8 @@ func TestLoginSystem_Register_ConcurrentAccess_AllRegistered(t *testing.T) {
 
 		go func(number int) {
 			defer waitGroup.Done()
-			testee.Register("testUser"+strconv.Itoa(number), "testpassword"+strconv.Itoa(number))
+			testee.Register("testUser"+strconv.Itoa(number), "testpassword"+strconv.Itoa(number),
+				"firstName"+strconv.Itoa(number), "lastName"+strconv.Itoa(number))
 		}(i)
 	}
 
@@ -374,7 +379,7 @@ func TestLoginSystem_Register_ConcurrentAccess_AllRegistered(t *testing.T) {
 	for i := 0; i < numberOfRegistrations; i++ {
 		found := false
 		for _, v := range writtenData {
-			if strings.ToLower(v.UserName) == strings.ToLower("testUser"+strconv.Itoa(i)) {
+			if strings.ToLower(v.Mail) == strings.ToLower("testUser"+strconv.Itoa(i)) {
 				found = true
 				break
 			}
@@ -397,7 +402,7 @@ func TestLoginSystem_Register_InvalidUsername_NotSuccessful(t *testing.T) {
 	err = testee.Initialize(folderPath)
 	assert.Nil(t, err)
 
-	success, err := testee.Register("", "1234")
+	success, err := testee.Register("", "1234", "max", "muster")
 	assert.False(t, success, "register operation should not be successful")
 	assert.Error(t, err, "userName should be invalid")
 	assert.Equal(t, "userName not valid", err.Error())
@@ -417,7 +422,7 @@ func TestLoginSystem_Register_InvalidPassword_NotSuccessful(t *testing.T) {
 	err = testee.Initialize(folderPath)
 	assert.Nil(t, err)
 
-	success, err := testee.Register("testuser", "")
+	success, err := testee.Register("testuser", "", "max", "muster")
 	assert.False(t, success, "register operation should not be successful")
 	assert.Error(t, err, "userName should be invalid")
 	assert.Equal(t, "password not valid", err.Error())
@@ -439,12 +444,14 @@ func TestLoginSystem_Register_UserNameAlreadyTaken(t *testing.T) {
 
 	userName := "testuser"
 	password := "1234"
+	firstName := "Peter"
+	lastName := "Meier"
 
-	success, err := testee.Register(userName, password)
+	success, err := testee.Register(userName, password, firstName, lastName)
 	assert.True(t, success, "register operation should be successful")
 	assert.Nil(t, err)
 
-	success, err = testee.Register(userName, password)
+	success, err = testee.Register(userName, password, firstName, lastName)
 	assert.False(t, success, "register operation should not be successful")
 	assert.NotNil(t, err)
 	assert.Equal(t, "user with this name already exists", err.Error())
@@ -503,39 +510,51 @@ func getDataFromFile(filePath string) (data []storedUserData, err error) {
 */
 const testLoginData = `[
 	{
-		"UserName": "testUser",
+		"Mail": "testUser",
 		"UserId": 0,
+		"FirstName": "Max0",
+		"LastName": "Maximum0",
 		"StoredPass": "testPassword",
 		"StoredSalt": "1234"
 	},
 	{
-		"UserName": "testUser",
+		"Mail": "testUser",
 		"UserId": 1,
+		"FirstName": "Max1",
+		"LastName": "Maximum1",
 		"StoredPass": "testPassword",
 		"StoredSalt": "1234"
 	},
 	{
-		"UserName": "testUser3",
+		"Mail": "testUser3",
 		"UserId": 2,
+		"FirstName": "Max2",
+		"LastName": "Maximum2",
 		"StoredPass": "testPassword2",
 		"StoredSalt": "1234"
 	},
 	{
-		"UserName": "testUser2",
+		"Mail": "testUser2",
 		"UserId": 3,
+		"FirstName": "Max3",
+		"LastName": "Maximum3",
 		"StoredPass": "testPassword2",
 		"StoredSalt": "1234"
 	},
 	{
-		"UserName": "testUser4",
+		"Mail": "testUser4",
 		"UserId": 4,
+		"FirstName": "Max4",
+		"LastName": "Maximum4",
 		"StoredPass": "testPassword2",
 		"StoredSalt": "1234"
 	},
 	{
-		"UserName": "testUser5",
+		"Mail": "testUser5",
 		"UserId": 5,
+		"FirstName": "Max5",
+		"LastName": "Maximum5",
 		"StoredPass": "testPassword2",
 		"StoredSalt": "1234"
 	}
-	]`
+]`

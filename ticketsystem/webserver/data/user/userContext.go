@@ -36,8 +36,10 @@ type UserContext interface {
 	Represents the stored data. Used for serialization and storage.
 */
 type storedUserData struct {
-	UserName   string
+	Mail       string
 	UserId     int
+	FirstName  string
+	LastName   string
 	StoredPass string
 	StoredSalt string
 }
@@ -124,7 +126,7 @@ func (s *LoginSystem) RefreshToken(token string) (newToken string, err error) {
 /*
 	Register a new user.
 */
-func (s *LoginSystem) Register(userName string, password string) (success bool, err error) {
+func (s *LoginSystem) Register(userName string, password string, firstName string, lastName string) (success bool, err error) {
 	if userName == "" {
 		// TODO: Validator for username
 		return false, errors.New("userName not valid")
@@ -133,12 +135,18 @@ func (s *LoginSystem) Register(userName string, password string) (success bool, 
 		// TODO: Validator for password
 		return false, errors.New("password not valid")
 	}
+	if firstName == "" {
+		return false, errors.New("firstName not valid")
+	}
+	if lastName == "" {
+		return false, errors.New("lastName not valid")
+	}
 	// Check if user already exists. There can not be multiple users with the same username:
 	if s.checkIfUserExistsOnCache(userName) {
 		return false, errors.New("user with this name already exists")
 	}
 	// Register the new user:
-	er := s.registerNewUser(userName, password)
+	er := s.registerNewUser(userName, password, firstName, lastName)
 	if er != nil {
 		return false, errors.New("could not create new user. reason: " + er.Error())
 	}
@@ -182,7 +190,7 @@ func (s *LoginSystem) Login(userName string, password string) (success bool, aut
 	defer s.cachedUserDataMutex.RUnlock()
 
 	for _, v := range s.cachedUserData {
-		if strings.ToLower(v.UserName) == strings.ToLower(userName) {
+		if strings.ToLower(v.Mail) == strings.ToLower(userName) {
 			valid := s.checkUserCredentials(v, password)
 			if valid {
 				var token, err = s.createSessionForUser(v)
@@ -204,7 +212,7 @@ func (s *LoginSystem) createSessionForUser(user storedUserData) (authToken strin
 	if err != nil {
 		return "", err
 	}
-	s.currentSessions[token] = inMemorySession{userName: user.UserName, userId: user.UserId, sessionToken: authToken, sessionTimestamp: time.Now()}
+	s.currentSessions[token] = inMemorySession{userName: user.Mail, userId: user.UserId, sessionToken: authToken, sessionTimestamp: time.Now()}
 	return token, nil
 }
 
@@ -241,7 +249,7 @@ func (s *LoginSystem) checkIfUserExistsOnCache(userName string) bool {
 		return false
 	} else {
 		for _, v := range s.cachedUserData {
-			if strings.ToLower(v.UserName) == strings.ToLower(userName) {
+			if strings.ToLower(v.Mail) == strings.ToLower(userName) {
 				return true
 			}
 		}
@@ -252,14 +260,14 @@ func (s *LoginSystem) checkIfUserExistsOnCache(userName string) bool {
 /*
 	Register a new user.
 */
-func (s *LoginSystem) registerNewUser(userName string, password string) (err error) {
+func (s *LoginSystem) registerNewUser(userName string, password string, firstName string, lastName string) (err error) {
 	s.fileAccessMutex.Lock()
 	defer s.fileAccessMutex.Unlock()
 	existingData, err := s.readJsonDataFromFile(s.loginDataFilePath)
 	if err != nil {
 		return err
 	}
-	generatedLoginData := s.generateLoginData(userName, password, len(existingData))
+	generatedLoginData := s.generateLoginData(userName, password, len(existingData)+1, firstName, lastName)
 	newData := append(existingData, generatedLoginData)
 	err = s.writeJsonDataToFile(s.loginDataFilePath, newData)
 	if err != nil {
@@ -274,9 +282,15 @@ func (s *LoginSystem) registerNewUser(userName string, password string) (err err
 /*
 	Generates the login data.
 */
-func (s *LoginSystem) generateLoginData(userName string, password string, newId int) (userData storedUserData) {
+func (s *LoginSystem) generateLoginData(userName string, password string, newId int,
+	firstName string, lastName string) (userData storedUserData) {
 	// TODO: Adjust with password salting and stuff....
-	return storedUserData{UserName: userName, StoredPass: password, StoredSalt: "1234", UserId: newId}
+	return storedUserData{Mail: userName,
+		StoredPass: password,
+		StoredSalt: "1234",
+		UserId:     newId,
+		FirstName:  firstName,
+		LastName:   lastName}
 }
 
 /*
@@ -291,7 +305,6 @@ func (s *LoginSystem) setDefaultValues() {
 	Read the json data from the file.
 */
 func (s *LoginSystem) readJsonDataFromFile(filePath string) (data []storedUserData, err error) {
-
 	fileValue, err := helpers.ReadAllDataFromFile(filePath)
 	if err != nil {
 		return nil, err

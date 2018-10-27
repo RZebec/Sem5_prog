@@ -53,17 +53,26 @@ func main() {
 	ticketContext := ticket.TicketManager{}
 	ticketContext.Initialize(config.TicketDataFolderPath)
 
-	ticket, err := ticketContext.CreateNewTicket("TestTitle", ticket.Creator{Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
-		ticket.MessageEntry{Id: 22, CreatorMail: "test@test.de", Content: "TestContent", OnlyInternal: false})
-	fmt.Println(ticket)
-	fmt.Println(err)
+	ticketg, err := ticketContext.CreateNewTicket("TestTitle", ticket.Creator{Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
+		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent", OnlyInternal: false})
+	fmt.Println(ticketg)
+	ticketg, err = ticketContext.CreateNewTicket("TestTitle2", ticket.Creator{Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
+		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent", OnlyInternal: false})
+
+	ticketg, err = ticketContext.CreateNewTicketForInternalUser("TestTitle", user.User{UserId: 1, Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
+		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent", OnlyInternal: false})
+	fmt.Println(ticketg)
+
+	ticketg, err = ticketContext.CreateNewTicketForInternalUser("TestTitle", user.User{UserId: 2, Mail: "peter@test.de", FirstName: "Peter", LastName: "Test"},
+		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent", OnlyInternal: true})
+	fmt.Println(ticketg)
+
 	exists, ticket := ticketContext.GetTicketById(2)
 	fmt.Println(exists)
 	fmt.Println(ticket)
 
 	g := ticketContext.GetAllTicketInfo()
 	fmt.Println(len(g))
-
 
 	exampleHandler := webui.ExampleHtmlHandler{Prefix: "Das ist mein Prefix"}
 	wrapper := core.Handler{Next: exampleHandler}
@@ -72,7 +81,7 @@ func main() {
 	http.HandleFunc("/files/", tempHandler)
 	http.HandleFunc("/example", wrapper.ServeHTTP)
 
-	if err := http.ListenAndServeTLS(":8080", "leaf.pem", "leaf.key", nil); err != nil {
+	if err := http.ListenAndServeTLS(":8080", "cert.pem", "key.pem", nil); err != nil {
 		panic(err)
 	}
 

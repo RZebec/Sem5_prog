@@ -1,8 +1,8 @@
 package ticket
 
 import (
-	"time"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"time"
 )
 
 /*
@@ -12,7 +12,7 @@ type TicketInfo struct {
 	Id                   int
 	Title                string
 	Editor               user.User
-	HasEditor			 bool
+	HasEditor            bool
 	Creator              Creator
 	CreationTime         time.Time
 	LastModificationTime time.Time
