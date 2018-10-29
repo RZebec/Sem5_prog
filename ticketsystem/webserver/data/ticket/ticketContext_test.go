@@ -16,7 +16,10 @@ import (
 	"time"
 )
 
-func TestTicketManager_GetAllTicketInfo_NoTickets_EmptyArray(t *testing.T) {
+/*
+	Getting the ticket infos when no tickets exists, should return a empty array.
+*/
+func TestTicketManager_GetAllTicketInfo_NoTickets_EmptyArrayReturned(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
 	defer os.RemoveAll(rootPath)
 	assert.Nil(t, err)
@@ -28,6 +31,9 @@ func TestTicketManager_GetAllTicketInfo_NoTickets_EmptyArray(t *testing.T) {
 	assert.Equal(t, 0, len(tickets))
 }
 
+/*
+	Getting the ticket infos when ticket exist, should return the infos for the existing tickets.
+*/
 func TestTicketManager_GetAllTicketInfo_TicketsExist_TicketInfoReturned(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
 	defer os.RemoveAll(rootPath)
@@ -63,14 +69,9 @@ func TestTicketManager_GetAllTicketInfo_TicketsExist_TicketInfoReturned(t *testi
 	}
 }
 
-func readTicketFromFile(filePath string) (*Ticket, error) {
-	ticket, err := initializeFromFile(filePath)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not load ticker")
-	}
-	return ticket, nil
-}
-
+/*
+	Creating tickets for internal users in a concurrent way, should create all tickets.
+*/
 func TestTicketManager_CreateNewTicketsForInternalUser_ConcurrentAccess_AllCreated(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
 	defer os.RemoveAll(rootPath)
@@ -87,9 +88,9 @@ func TestTicketManager_CreateNewTicketsForInternalUser_ConcurrentAccess_AllCreat
 		go func(number int) {
 			defer waitGroup.Done()
 			id := strconv.Itoa(number)
-			user := user.User{Mail: id + "@web.de", UserId: number, FirstName: "firstName" + id, LastName: "lastName" + id }
+			user := user.User{Mail: id + "@web.de", UserId: number, FirstName: "firstName" + id, LastName: "lastName" + id}
 			initialMessage := MessageEntry{Id: 45, CreatorMail: user.Mail, Content: "This is a test" + id, OnlyInternal: false}
-			testee.CreateNewTicketForInternalUser("newTestTitle" + id, user, initialMessage)
+			testee.CreateNewTicketForInternalUser("newTestTitle"+id, user, initialMessage)
 
 		}(i)
 	}
@@ -98,13 +99,13 @@ func TestTicketManager_CreateNewTicketsForInternalUser_ConcurrentAccess_AllCreat
 
 	assert.Equal(t, numberOfCreatedTickets, len(tickets), "all ticket info should be cached")
 	// Check if ticket data is correct
-	for i := 0; i < numberOfCreatedTickets; i++{
+	for i := 0; i < numberOfCreatedTickets; i++ {
 		id := strconv.Itoa(i)
 		expectedCreator := Creator{Mail: id + "@web.de", FirstName: "firstName" + id, LastName: "lastName" + id}
 		expectedTitle := "newTestTitle" + id
 		found := false
 
-		for _, ticket := range tickets  {
+		for _, ticket := range tickets {
 			if ticket.Title == expectedTitle {
 				found = true
 				assert.Equal(t, expectedCreator, ticket.Creator, "the creator should be set")
@@ -115,6 +116,9 @@ func TestTicketManager_CreateNewTicketsForInternalUser_ConcurrentAccess_AllCreat
 	}
 }
 
+/*
+	Creating tickets for external users in a concurrent way, should create all tickets.
+*/
 func TestTicketManager_CreateNewTickets_ConcurrentAccess_AllCreated(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
 	defer os.RemoveAll(rootPath)
@@ -133,7 +137,7 @@ func TestTicketManager_CreateNewTickets_ConcurrentAccess_AllCreated(t *testing.T
 			id := strconv.Itoa(number)
 			creator := Creator{Mail: id + "@web.de", FirstName: "Alex" + id, LastName: "Wagner" + id}
 			initialMessage := MessageEntry{Id: 45, CreatorMail: creator.Mail, Content: "This is a test" + id, OnlyInternal: false}
-			testee.CreateNewTicket("newTestTitle" + id, creator, initialMessage)
+			testee.CreateNewTicket("newTestTitle"+id, creator, initialMessage)
 
 		}(i)
 	}
@@ -142,13 +146,13 @@ func TestTicketManager_CreateNewTickets_ConcurrentAccess_AllCreated(t *testing.T
 
 	assert.Equal(t, numberOfCreatedTickets, len(tickets), "all ticket info should be cached")
 	// Check if ticket data is correct
-	for i := 0; i < numberOfCreatedTickets; i++{
+	for i := 0; i < numberOfCreatedTickets; i++ {
 		id := strconv.Itoa(i)
 		expectedCreator := Creator{Mail: id + "@web.de", FirstName: "Alex" + id, LastName: "Wagner" + id}
 		expectedTitle := "newTestTitle" + id
 		found := false
 
-		for _, ticket := range tickets  {
+		for _, ticket := range tickets {
 			if ticket.Title == expectedTitle {
 				found = true
 				assert.Equal(t, expectedCreator, ticket.Creator, "the creator should be set")
@@ -159,6 +163,9 @@ func TestTicketManager_CreateNewTickets_ConcurrentAccess_AllCreated(t *testing.T
 	}
 }
 
+/*
+	Creating a ticket should really create it.
+*/
 func TestTicketManager_CreateNewTicket_TicketCreated(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
 	defer os.RemoveAll(rootPath)
@@ -180,9 +187,12 @@ func TestTicketManager_CreateNewTicket_TicketCreated(t *testing.T) {
 
 	storedTicket, err := readTicketFromFile(createdTicket.filePath)
 
-	assertNewTickedWithStoredTicket(t, newTicket, storedTicket)
+	assertTicket(t, newTicket, storedTicket)
 }
 
+/*
+	Creating a ticket for a internal user should really create the ticket.
+*/
 func TestTicketManager_CreateNewTicketForInternalUser_TicketCreated(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
 	defer os.RemoveAll(rootPath)
@@ -204,39 +214,12 @@ func TestTicketManager_CreateNewTicketForInternalUser_TicketCreated(t *testing.T
 
 	storedTicket, err := readTicketFromFile(createdTicket.filePath)
 
-	assertNewTickedWithStoredTicket(t, newTicket, storedTicket)
+	assertTicket(t, newTicket, storedTicket)
 }
 
-func assertNewTickedWithStoredTicket(t *testing.T, expected *Ticket, actual *Ticket) {
-	// Id is set, so this can not be compared:
-	// FilePath can not be compared
-	// Creation- and LastModificationTime can not be compared
-
-	// Compare ticket info
-	assert.Equal(t, expected.info.Title, actual.info.Title, "the title should be stored")
-	assert.Equal(t, expected.info.Editor, actual.info.Editor, "the editor should be stored")
-	assert.Equal(t, expected.info.HasEditor, actual.info.HasEditor, "the hasEditor field should be stored")
-	assert.Equal(t, expected.info.Creator, actual.info.Creator, "the creator should be stored")
-
-	// Compare messages
-	assert.Equal(t, len(expected.messages), len(actual.Messages()))
-	sort.Slice(expected.messages, func(i, j int) bool {
-		return expected.messages[i].Id < expected.messages[j].Id
-	})
-	sort.Slice(actual.messages, func(i, j int) bool {
-		return actual.messages[i].Id < actual.messages[j].Id
-	})
-
-	for i, expectedMessage := range expected.messages {
-		actualMessage := actual.messages[i]
-		// Creation time can not be compared
-		assert.Equal(t, expectedMessage.Id, actualMessage.Id, "message id should be equal")
-		assert.Equal(t, expectedMessage.CreatorMail, actualMessage.CreatorMail, "creator should be equal")
-		assert.Equal(t, expectedMessage.OnlyInternal, actualMessage.OnlyInternal, " only internal should be equal")
-		assert.Equal(t, expectedMessage.Content, actualMessage.Content, "content should be equal")
-	}
-}
-
+/*
+	Initializing the ticket manager with existing tickets, should load the ticket.
+*/
 func TestTicketManager_Initialize_TicketsExist_TicketsAreLoaded(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
 	defer os.RemoveAll(rootPath)
@@ -252,6 +235,9 @@ func TestTicketManager_Initialize_TicketsExist_TicketsAreLoaded(t *testing.T) {
 	assert.Equal(t, 4, len(testee.cachedTicketIds))
 }
 
+/*
+	Initializing the ticket manager when no ticket exist, should initialize without problems.
+*/
 func TestTicketManager_Initialize_NoTicketsExist_Initialized(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
 	defer os.RemoveAll(rootPath)
@@ -264,6 +250,9 @@ func TestTicketManager_Initialize_NoTicketsExist_Initialized(t *testing.T) {
 	assert.Equal(t, 0, len(testee.cachedTicketIds))
 }
 
+/*
+	Initializing the ticket manager with a invalid path, should return an error.
+*/
 func TestTicketManager_Initialize_InvalidFolderPath(t *testing.T) {
 	testee := TicketManager{}
 	err := testee.Initialize("")
@@ -271,9 +260,11 @@ func TestTicketManager_Initialize_InvalidFolderPath(t *testing.T) {
 }
 
 // TODO: Add test for tickets
-// TODO: Add multiple tickets in a concurrent way
 // TODO: Add examples
 
+/*
+	Appending a ticket to a message should append the message to the ticket.
+*/
 func TestTicketManager_AppendMessageToTicket_MessageAppended(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
 	defer os.RemoveAll(rootPath)
@@ -288,7 +279,7 @@ func TestTicketManager_AppendMessageToTicket_MessageAppended(t *testing.T) {
 
 	// Id should be set by the context:
 	message := MessageEntry{Id: 9999, CreatorMail: "max@muster.de", CreationTime: time.Now(),
-	Content: "This is a appended message", OnlyInternal: false}
+		Content: "This is a appended message", OnlyInternal: false}
 	ticket, err := testee.AppendMessageToTicket(newTicket.Info().Id, message)
 	assert.Nil(t, err)
 
@@ -301,6 +292,9 @@ func TestTicketManager_AppendMessageToTicket_MessageAppended(t *testing.T) {
 	}
 }
 
+/*
+	Write the test data to a folder.
+*/
 func writeTestDataToFolder(folderPath string) error {
 	sampleData := []byte(firstTestTicket)
 	// First ticket: id 1
@@ -340,6 +334,9 @@ func writeTestDataToFolder(folderPath string) error {
 	return nil
 }
 
+/*
+	Prepare a temporary directory for tests.
+*/
 func prepareTempDirectory() (string, string, error) {
 	// Creating a temp directory and remove it after the test:
 	rootPath, err := ioutil.TempDir("", "test")
@@ -350,4 +347,48 @@ func prepareTempDirectory() (string, string, error) {
 	// Create a path in the temp directory, the following path to a folder will not exist:
 	notExistingFolderPath := path.Join(rootPath, "testDirectory")
 	return notExistingFolderPath, rootPath, nil
+}
+
+/*
+	Read a ticket from a given file.
+*/
+func readTicketFromFile(filePath string) (*Ticket, error) {
+	ticket, err := initializeFromFile(filePath)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not load ticker")
+	}
+	return ticket, nil
+}
+
+/*
+	Asserting a ticket.
+*/
+func assertTicket(t *testing.T, expected *Ticket, actual *Ticket) {
+	// Id is set, so this can not be compared:
+	// FilePath can not be compared
+	// Creation- and LastModificationTime can not be compared
+
+	// Compare ticket info
+	assert.Equal(t, expected.info.Title, actual.info.Title, "the title should be stored")
+	assert.Equal(t, expected.info.Editor, actual.info.Editor, "the editor should be stored")
+	assert.Equal(t, expected.info.HasEditor, actual.info.HasEditor, "the hasEditor field should be stored")
+	assert.Equal(t, expected.info.Creator, actual.info.Creator, "the creator should be stored")
+
+	// Compare messages
+	assert.Equal(t, len(expected.messages), len(actual.Messages()))
+	sort.Slice(expected.messages, func(i, j int) bool {
+		return expected.messages[i].Id < expected.messages[j].Id
+	})
+	sort.Slice(actual.messages, func(i, j int) bool {
+		return actual.messages[i].Id < actual.messages[j].Id
+	})
+
+	for i, expectedMessage := range expected.messages {
+		actualMessage := actual.messages[i]
+		// Creation time can not be compared
+		assert.Equal(t, expectedMessage.Id, actualMessage.Id, "message id should be equal")
+		assert.Equal(t, expectedMessage.CreatorMail, actualMessage.CreatorMail, "creator should be equal")
+		assert.Equal(t, expectedMessage.OnlyInternal, actualMessage.OnlyInternal, " only internal should be equal")
+		assert.Equal(t, expectedMessage.Content, actualMessage.Content, "content should be equal")
+	}
 }

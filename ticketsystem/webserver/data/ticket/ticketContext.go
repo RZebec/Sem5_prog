@@ -31,7 +31,7 @@ func (t *TicketManager) AppendMessageToTicket(ticketId int, message MessageEntry
 	if exists {
 		ticket.messages = append(ticket.messages, message)
 		// Fix the id of the message
-		for i := range ticket.messages  {
+		for i := range ticket.messages {
 			ticket.messages[i].Id = i
 		}
 		err := ticket.persist()
