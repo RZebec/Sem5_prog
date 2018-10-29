@@ -1,6 +1,7 @@
 package login
 
 import (
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
 	"html/template"
@@ -53,7 +54,7 @@ var loginPageTemplate = `
 	</html>`
 
 type LoginPageHandler struct {
-	AccessTokenCookie helpers.Cookie
+	Config			config.Configuration
 	SessionManager session.SessionManager
 }
 
@@ -64,7 +65,7 @@ type loginPageData struct {
 func (l LoginPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// Checks if the User is already logged in and if so redirects him to the start page
-	isUserLoggedIn, _ := helpers.UserIsLoggedInCheck(r, l.SessionManager, l.AccessTokenCookie)
+	isUserLoggedIn, _ := helpers.UserIsLoggedInCheck(r, l.SessionManager, l.Config.AccessTokenCookieName)
 
 	if isUserLoggedIn {
 		http.Redirect(w, r, "/", http.StatusSeeOther)

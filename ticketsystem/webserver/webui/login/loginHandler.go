@@ -1,6 +1,7 @@
 package login
 
 import (
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
 	"fmt"
@@ -10,7 +11,7 @@ import (
 
 type LoginHandler struct {
 	UserManager session.UserManager
-	AccessTokenCookie helpers.Cookie
+	Config 	config.Configuration
 }
 
 func (l LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -27,8 +28,7 @@ func (l LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if success {
-			l.AccessTokenCookie.Value = token
-			l.AccessTokenCookie.SetCookie(w, r)
+			helpers.SetCookie(w, r, l.Config.AccessTokenCookieName, token)
 			http.Redirect(w, r, "/", 302)
 		} else {
 			http.Redirect(w, r, "/login?IsLoginFailed=true", 302)

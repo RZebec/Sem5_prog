@@ -8,11 +8,11 @@ import (
 /*
 	Function used to check if a user is logged in and if the session of the aforementioned user is valid.
  */
-func UserIsLoggedInCheck(r *http.Request, sessionManager session.SessionManager, accessTokenCookie Cookie) (isUserLoggedIn bool, accessTokenValue string) {
+func UserIsLoggedInCheck(r *http.Request, sessionManager session.SessionManager, accessTokenCookieName string) (isUserLoggedIn bool, accessTokenValue string) {
 	userIsLoggedIn := false
 	token := ""
 
-	cookie, err := r.Cookie(accessTokenCookie.Name)
+	cookie, err := r.Cookie(accessTokenCookieName)
 
 	if err == nil {
 		token = cookie.Value

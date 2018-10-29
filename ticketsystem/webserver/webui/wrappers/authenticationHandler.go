@@ -1,6 +1,7 @@
 package wrappers
 
 import (
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/accessdenied"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
@@ -13,13 +14,14 @@ type HttpHandler interface {
 
 type AuthenticationHandler struct {
 	Next              HttpHandler
-	AccessTokenCookie helpers.Cookie
+	Config 			config.Configuration
 	SessionManager    session.SessionManager
 }
 
-func (h *AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+// todo: no pointer maybe
+func (h AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	userIsLoggedIn, token := helpers.UserIsLoggedInCheck(r, h.SessionManager, h.AccessTokenCookie)
+	userIsLoggedIn, token := helpers.UserIsLoggedInCheck(r, h.SessionManager, h.Config.AccessTokenCookieName)
 
 	if userIsLoggedIn {
 		newToken, err := h.SessionManager.RefreshToken(token)
@@ -28,8 +30,7 @@ func (h *AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 			panic(err)
 		}
 
-		h.AccessTokenCookie.Value = newToken
-		h.AccessTokenCookie.SetCookie(w, r)
+		helpers.SetCookie(w, r,  h.Config.AccessTokenCookieName, newToken)
 
 		h.Next.ServeHTTP(w, r)
 	} else {

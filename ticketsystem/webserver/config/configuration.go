@@ -1,8 +1,7 @@
 package config
 
-import "de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
-
+// Todo: Cookie name only
 type Configuration struct {
 	LoginDataFolderPath string
-	AccessTokenCookie helpers.Cookie
+	AccessTokenCookieName string
 }
