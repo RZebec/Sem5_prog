@@ -8,7 +8,7 @@ import (
 )
 
 type LogoutHandler struct {
-	UserManager session.UserManager
+	UserManager       session.UserManager
 	AccessTokenCookie helpers.Cookie
 }
 

@@ -41,6 +41,7 @@ func main() {
 		panic(err)
 	}
 
+	// TODO: Remove later, for test purposes only
 	config.AccessTokenCookie = helpers.Cookie{Name: "Access-Token"}
 	sessionManager.Register("example@test.com", "1234")
 

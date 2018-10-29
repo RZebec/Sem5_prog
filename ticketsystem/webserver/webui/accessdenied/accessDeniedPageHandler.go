@@ -41,8 +41,7 @@ type accessDeniedPageData struct {
 
 func (l AccessDeniedPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	data := accessDeniedPageData{
-	}
+	data := accessDeniedPageData{}
 
 	// Todo: HANDLE Template parsing error
 	t, _ := template.New("accessDenied").Parse(accessDeniedTemplate)

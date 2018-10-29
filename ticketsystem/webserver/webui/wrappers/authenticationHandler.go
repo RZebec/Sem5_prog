@@ -12,9 +12,9 @@ type HttpHandler interface {
 }
 
 type AuthenticationHandler struct {
-	Next HttpHandler
+	Next              HttpHandler
 	AccessTokenCookie helpers.Cookie
-	SessionManager session.SessionManager
+	SessionManager    session.SessionManager
 }
 
 func (h *AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
