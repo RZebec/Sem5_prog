@@ -3,13 +3,13 @@ package staticFileHandlers
 import "net/http"
 
 func CSSFileHandler() {
-    http.HandleFunc("/files/css/main", MainCSSHandler)
-    http.HandleFunc("/files/css/login", LoginCSSHandler)
+	http.HandleFunc("/files/css/main", MainCSSHandler)
+	http.HandleFunc("/files/css/login", LoginCSSHandler)
 }
 
 func MainCSSHandler(w http.ResponseWriter, r *http.Request) {
 
-    var message = `
+	var message = `
     
     /* Add a black background color to the top navigation */
     .topnav {
@@ -61,7 +61,7 @@ func MainCSSHandler(w http.ResponseWriter, r *http.Request) {
 
 func LoginCSSHandler(w http.ResponseWriter, r *http.Request) {
 
-    var message = `
+	var message = `
     
     h2 {
         color: #ffffff;

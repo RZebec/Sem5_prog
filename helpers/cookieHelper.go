@@ -2,18 +2,18 @@ package helpers
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"net/http"
-    "log"
 )
 
 func SetSessionCookie(w http.ResponseWriter, r *http.Request) {
 	uuid := GenerateUUID()
 	c := http.Cookie{
-	  Name: "SessionID",
-	  Value: uuid,
-	  HttpOnly: true,
-	  Path: "/",
+		Name:     "SessionID",
+		Value:    uuid,
+		HttpOnly: true,
+		Path:     "/",
 	}
 	http.SetCookie(w, &c)
 	// Still needs setting the SessionID in the Database
@@ -23,9 +23,8 @@ func GenerateUUID() string {
 	b := make([]byte, 16)
 	_, err := rand.Read(b)
 	if err != nil {
-    	log.Fatal(err)
+		log.Fatal(err)
 	}
 	uuid := fmt.Sprintf("%x-%x-%x-%x-%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
-	return uuid;
+	return uuid
 }
-  
