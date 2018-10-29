@@ -49,7 +49,7 @@ type storedUserData struct {
 */
 type inMemorySession struct {
 	userId           int
-	userName         string
+	userMail         string
 	sessionToken     string
 	sessionTimestamp time.Time
 }
@@ -115,7 +115,7 @@ func (s *LoginSystem) RefreshToken(token string) (newToken string, err error) {
 		if err != nil {
 			return "", err
 		}
-		s.currentSessions[newToken] = inMemorySession{userName: userName, userId: userId, sessionToken: newToken, sessionTimestamp: time.Now()}
+		s.currentSessions[newToken] = inMemorySession{userMail: userName, userId: userId, sessionToken: newToken, sessionTimestamp: time.Now()}
 		delete(s.currentSessions, token)
 		return newToken, nil
 	} else {
@@ -175,7 +175,7 @@ func (s *LoginSystem) SessionIsValid(token string) (isValid bool, userId int, us
 			s.currentSessionsMutex.Unlock()
 			return false, -1, "", nil
 		}
-		return ok, user.userId, user.userName, nil
+		return ok, user.userId, user.userMail, nil
 	} else {
 		s.currentSessionsMutex.RUnlock()
 	}
@@ -212,7 +212,7 @@ func (s *LoginSystem) createSessionForUser(user storedUserData) (authToken strin
 	if err != nil {
 		return "", err
 	}
-	s.currentSessions[token] = inMemorySession{userName: user.Mail, userId: user.UserId, sessionToken: authToken, sessionTimestamp: time.Now()}
+	s.currentSessions[token] = inMemorySession{userMail: user.Mail, userId: user.UserId, sessionToken: authToken, sessionTimestamp: time.Now()}
 	return token, nil
 }
 

@@ -80,7 +80,7 @@ func ExampleLoginSystem_SessionIsValid() {
 	loginSystem.currentSessions = make(map[string]inMemorySession)
 
 	token := "1234567899+op"
-	loginSystem.currentSessions[token] = inMemorySession{userId: 1, userName: "max.mustermann@mail.com",
+	loginSystem.currentSessions[token] = inMemorySession{userId: 1, userMail: "max.mustermann@mail.com",
 		sessionToken: token, sessionTimestamp: time.Now()}
 
 	valid, userId, userName, _ := loginSystem.SessionIsValid(token)
@@ -216,7 +216,7 @@ func TestLoginSystem_Logout_SessionExists_UserLoggedOut(t *testing.T) {
 	testee.currentSessions = make(map[string]inMemorySession)
 
 	token := "1234567899+op"
-	testee.currentSessions[token] = inMemorySession{userId: 1, userName: "testUser",
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
 		sessionToken: "1234567899+op", sessionTimestamp: time.Now()}
 
 	valid, _, _, err := testee.SessionIsValid(token)
@@ -237,7 +237,7 @@ func TestLoginSystem_RefreshToken_ValidToken_TokenIsRefreshed(t *testing.T) {
 	testee.currentSessions = make(map[string]inMemorySession)
 
 	token := "1234567899+op"
-	testee.currentSessions[token] = inMemorySession{userId: 1, userName: "testUser",
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
 		sessionToken: token, sessionTimestamp: time.Now()}
 
 	newToken, _ := testee.RefreshToken(token)
@@ -255,7 +255,7 @@ func TestLoginSystem_RefreshToken_UnknownToken_ErrorReturned(t *testing.T) {
 	testee.currentSessions = make(map[string]inMemorySession)
 
 	token := "1234567899+op"
-	testee.currentSessions[token] = inMemorySession{userId: 1, userName: "testUser",
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
 		sessionToken: token, sessionTimestamp: time.Now()}
 
 	newToken, err := testee.RefreshToken("1234")
@@ -299,7 +299,7 @@ func TestLoginSystem_SessionIsValid_IsValid(t *testing.T) {
 	testee.currentSessions = make(map[string]inMemorySession)
 
 	token := "1234567899+op"
-	testee.currentSessions[token] = inMemorySession{userId: 1, userName: "testUser",
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
 		sessionToken: token, sessionTimestamp: time.Now()}
 
 	valid, _, _, err := testee.SessionIsValid(token)
@@ -315,7 +315,7 @@ func TestLoginSystem_SessionIsValid_IsInValid(t *testing.T) {
 	testee.currentSessions = make(map[string]inMemorySession)
 
 	token := "1234567899+op"
-	testee.currentSessions[token] = inMemorySession{userId: 1, userName: "testUser",
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
 		sessionToken: "1234567899+op", sessionTimestamp: time.Now()}
 
 	valid, _, _, err := testee.SessionIsValid("5698456")
@@ -333,7 +333,7 @@ func TestLoginSystem_SessionIsValid_SessionTimedOut(t *testing.T) {
 	token := "1234567899+op"
 	// Set last update of session to 12 minutes ago.
 	timestamp := time.Now().Add(time.Duration(-12) * time.Minute)
-	testee.currentSessions[token] = inMemorySession{userId: 1, userName: "testUser",
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
 		sessionToken: "1234567899+op", sessionTimestamp: timestamp}
 
 	valid, _, _, err := testee.SessionIsValid(token)
