@@ -5,6 +5,9 @@ import (
 	"strings"
 )
 
+/*
+	The Javascript file for the login system.
+ */
 var loginScript = `
 
 	function validate() {
@@ -43,6 +46,9 @@ var loginScript = `
     	}
 	};`
 
+/*
+	The handler for the script(Javascript) files.
+ */
 func HandelScript(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/javascript")
 

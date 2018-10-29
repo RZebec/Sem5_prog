@@ -5,6 +5,9 @@ import (
 	"net/http"
 )
 
+/*
+	Html template for the Access Denied Page.
+ */
 var accessDeniedTemplate = `
 	<!DOCTYPE html>
 	<html>
@@ -33,9 +36,15 @@ var accessDeniedTemplate = `
 	
 	</html>`
 
+/*
+	Structure for the Access Denied Page Handler.
+ */
 type AccessDeniedPageHandler struct {
 }
 
+/*
+	Structure for the Access Denied Page Data.
+ */
 type accessDeniedPageData struct {
 }
 

@@ -1,6 +1,8 @@
 package webui
 
 import (
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
 	"html/template"
 	"net/http"
 )
@@ -33,7 +35,8 @@ var indexPageTemplate = `<html>
 	</html>`
 
 type IndexPageHandler struct {
-	IsUserLoggedIn bool
+	AccessTokenCookie helpers.Cookie
+	SessionManager session.SessionManager
 }
 
 type indexPageData struct {
@@ -43,9 +46,11 @@ type indexPageData struct {
 func (i IndexPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.New("index").Parse(indexPageTemplate)
 
+	isUserLoggedIn, _ := helpers.UserIsLoggedInCheck(r, i.SessionManager, i.AccessTokenCookie)
+
 	// Todo: HANDLE Template parsing error
 	data := indexPageData{
-		IsUserLoggedIn: i.IsUserLoggedIn,
+		IsUserLoggedIn: isUserLoggedIn,
 	}
 
 	t.Execute(w, data)

@@ -5,6 +5,9 @@ import (
 	"strings"
 )
 
+/*
+	The main CSS file.
+*/
 var mainStyle = `
     
     /* Add a black background color to the top navigation */
@@ -61,6 +64,9 @@ var mainStyle = `
     	width: 50%;
     }`
 
+/*
+	The CSS file for the login page.
+*/
 var loginStyle = `
     
     h2 {
@@ -106,6 +112,9 @@ var loginStyle = `
 		color: red;
 	}`
 
+/*
+	The handler for the style(css) files.
+ */
 func HandelStyle(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/css")
 

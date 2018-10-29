@@ -45,13 +45,13 @@ func main() {
 	config.AccessTokenCookie = helpers.Cookie{Name: "Access-Token"}
 	sessionManager.Register("example@test.com", "1234")
 
-	indexPageHandler := webui.IndexPageHandler{}
+	indexPageHandler := webui.IndexPageHandler{SessionManager: &sessionManager, AccessTokenCookie: config.AccessTokenCookie}
 	http.HandleFunc("/", indexPageHandler.ServeHTTP)
 
 	filesHandler := files.FilesHandler{}
 	http.HandleFunc("/files/", filesHandler.ServeHTTP)
 
-	loginPageHandler := login.LoginPageHandler{IsUserLoggedIn: false}
+	loginPageHandler := login.LoginPageHandler{SessionManager: &sessionManager, AccessTokenCookie: config.AccessTokenCookie}
 	http.HandleFunc("/login", loginPageHandler.ServeHTTP)
 
 	loginHandler := login.LoginHandler{UserManager: &sessionManager, AccessTokenCookie: config.AccessTokenCookie}

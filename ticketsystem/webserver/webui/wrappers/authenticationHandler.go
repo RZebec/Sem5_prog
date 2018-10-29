@@ -19,17 +19,18 @@ type AuthenticationHandler struct {
 
 func (h *AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	UserIsLoggedIn := false
+	userIsLoggedIn, token := helpers.UserIsLoggedInCheck(r, h.SessionManager, h.AccessTokenCookie)
 
-	c, err := r.Cookie(h.AccessTokenCookie.Name)
+	if userIsLoggedIn {
+		newToken, err := h.SessionManager.RefreshToken(token)
 
-	if err == nil {
-		UserIsLoggedIn, _, _, err = h.SessionManager.SessionIsValid(c.Value)
-	} else {
-		// TODO: Handle the Error
-	}
+		if err != nil {
+			panic(err)
+		}
 
-	if UserIsLoggedIn {
+		h.AccessTokenCookie.Value = newToken
+		h.AccessTokenCookie.SetCookie(w, r)
+
 		h.Next.ServeHTTP(w, r)
 	} else {
 		accessDeniedHandler := accessdenied.AccessDeniedPageHandler{}
