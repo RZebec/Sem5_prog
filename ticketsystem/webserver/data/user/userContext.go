@@ -27,7 +27,7 @@ type UserContext interface {
 	// Login a user.
 	Login(userName string, password string) (success bool, authToken string, err error)
 	// Register a new user.
-	Register(userName string, password string) (success bool, err error)
+	Register(userName string, password string, firstName string, lastName string) (success bool, err error)
 	// Logout a user.
 	Logout(authToken string)
 }
