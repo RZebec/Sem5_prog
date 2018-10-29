@@ -2,7 +2,7 @@ package wrappers
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/accessdenied"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
 	"net/http"
@@ -15,16 +15,16 @@ type HttpHandler interface {
 type AuthenticationHandler struct {
 	Next              HttpHandler
 	Config 			config.Configuration
-	SessionManager    session.SessionManager
+	UserContext user.UserContext
 }
 
 // todo: no pointer maybe
 func (h AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	userIsLoggedIn, token := helpers.UserIsLoggedInCheck(r, h.SessionManager, h.Config.AccessTokenCookieName)
+	userIsLoggedIn, token := helpers.UserIsLoggedInCheck(r, h.UserContext, h.Config.AccessTokenCookieName)
 
 	if userIsLoggedIn {
-		newToken, err := h.SessionManager.RefreshToken(token)
+		newToken, err := h.UserContext.RefreshToken(token)
 
 		if err != nil {
 			panic(err)

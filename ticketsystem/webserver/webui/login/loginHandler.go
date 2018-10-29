@@ -2,15 +2,14 @@ package login
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
-	"fmt"
 	"net/http"
 	"strings"
 )
 
 type LoginHandler struct {
-	UserManager session.UserManager
+	UserContext user.UserContext
 	Config 	config.Configuration
 }
 
@@ -21,10 +20,10 @@ func (l LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		userName := r.FormValue("userName")
 		password := r.FormValue("password")
 
-		success, token, err := l.UserManager.Login(userName, password)
+		success, token, err := l.UserContext.Login(userName, password)
 
 		if err != nil {
-			fmt.Println(err.Error())
+			// TODO: handle error
 		}
 
 		if success {

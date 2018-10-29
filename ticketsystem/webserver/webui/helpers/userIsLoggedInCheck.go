@@ -1,14 +1,14 @@
 package helpers
 
 import (
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"net/http"
 )
 
 /*
 	Function used to check if a user is logged in and if the session of the aforementioned user is valid.
  */
-func UserIsLoggedInCheck(r *http.Request, sessionManager session.SessionManager, accessTokenCookieName string) (isUserLoggedIn bool, accessTokenValue string) {
+func UserIsLoggedInCheck(r *http.Request, userContext user.UserContext, accessTokenCookieName string) (isUserLoggedIn bool, accessTokenValue string) {
 	userIsLoggedIn := false
 	token := ""
 
@@ -16,7 +16,7 @@ func UserIsLoggedInCheck(r *http.Request, sessionManager session.SessionManager,
 
 	if err == nil {
 		token = cookie.Value
-		userIsLoggedIn, _, _, err = sessionManager.SessionIsValid(token)
+		userIsLoggedIn, _, _, err = userContext.SessionIsValid(token)
 	}
 
 	return userIsLoggedIn, token

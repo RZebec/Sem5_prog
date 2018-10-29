@@ -4,4 +4,5 @@ package config
 type Configuration struct {
 	LoginDataFolderPath string
 	AccessTokenCookieName string
+	TicketDataFolderPath string
 }
