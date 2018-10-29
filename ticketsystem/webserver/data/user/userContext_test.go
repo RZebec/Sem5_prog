@@ -429,6 +429,46 @@ func TestLoginSystem_Register_InvalidPassword_NotSuccessful(t *testing.T) {
 }
 
 /*
+	Register a user with an invalid first name should not be possible.
+*/
+func TestLoginSystem_Register_InvalidFirstName_NotSuccessful(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	if err != nil {
+		t.Error(err)
+	}
+	err = testee.Initialize(folderPath)
+	assert.Nil(t, err)
+
+	success, err := testee.Register("testuser", "1234", "", "muster")
+	assert.False(t, success, "register operation should not be successful")
+	assert.Error(t, err, "firstName should be invalid")
+	assert.Equal(t, "firstName not valid", err.Error())
+}
+
+/*
+	Register a user with a invalid last name should not be possible.
+*/
+func TestLoginSystem_Register_InvalidLastName_NotSuccessful(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	if err != nil {
+		t.Error(err)
+	}
+	err = testee.Initialize(folderPath)
+	assert.Nil(t, err)
+
+	success, err := testee.Register("testuser", "1234", "max", "")
+	assert.False(t, success, "register operation should not be successful")
+	assert.Error(t, err, "lastName should be invalid")
+	assert.Equal(t, "lastName not valid", err.Error())
+}
+
+/*
 	Register multiple users with the same user name should not be possible..
 */
 func TestLoginSystem_Register_UserNameAlreadyTaken(t *testing.T) {

@@ -35,13 +35,14 @@ func (t *TicketManager) AppendMessageToTicket(ticketId int, message MessageEntry
 			ticket.messages[i].Id = i
 		}
 		err := ticket.persist()
+		if err != nil {
+			return nil, errors.Wrap(err, "could not append message to ticket")
+		}
+
 		t.cachedTicketsMutex.Lock()
 		defer t.cachedTicketsMutex.Unlock()
 		t.cachedTickets[ticket.info.Id] = *ticket
 
-		if err != nil {
-			return nil, errors.Wrap(err, "could not append message to ticket")
-		}
 		return ticket, nil
 	} else {
 		return nil, errors.New("ticket does not exist")

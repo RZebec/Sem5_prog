@@ -263,7 +263,7 @@ func TestTicketManager_Initialize_InvalidFolderPath(t *testing.T) {
 // TODO: Add examples
 
 /*
-	Appending a ticket to a message should append the message to the ticket.
+	Appending a message to a ticket should append the message to the ticket.
 */
 func TestTicketManager_AppendMessageToTicket_MessageAppended(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -290,6 +290,24 @@ func TestTicketManager_AppendMessageToTicket_MessageAppended(t *testing.T) {
 	for i, message := range storedTicket.messages {
 		assert.Equal(t, i, message.Id, "the id should be in order")
 	}
+}
+
+/*
+	Appending a message to a non existing ticket should return a error.
+*/
+func TestTicketManager_AppendMessageToTicket_TicketDoesNotExist_ErrorReturned(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	message := MessageEntry{Id: 9999, CreatorMail: "max@muster.de", CreationTime: time.Now(),
+		Content: "This is a appended message", OnlyInternal: false}
+	_, err = testee.AppendMessageToTicket(999, message)
+	assert.Equal(t, "ticket does not exist", err.Error())
+
 }
 
 /*
