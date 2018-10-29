@@ -7,7 +7,7 @@ import (
 
 /*
 	Function used to check if a user is logged in and if the session of the aforementioned user is valid.
- */
+*/
 func UserIsLoggedInCheck(r *http.Request, userContext user.UserContext, accessTokenCookieName string) (isUserLoggedIn bool, accessTokenValue string) {
 	userIsLoggedIn := false
 	token := ""

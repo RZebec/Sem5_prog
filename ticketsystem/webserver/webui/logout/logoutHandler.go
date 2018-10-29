@@ -8,11 +8,17 @@ import (
 	"strings"
 )
 
+/*
+	Structure for the Logout handler.
+*/
 type LogoutHandler struct {
 	UserContext user.UserContext
-	Config	config.Configuration
+	Config      config.Configuration
 }
 
+/*
+	The Logout handler.
+*/
 func (l LogoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if strings.ToLower(r.Method) != "get" {
 		w.WriteHeader(http.StatusMethodNotAllowed)

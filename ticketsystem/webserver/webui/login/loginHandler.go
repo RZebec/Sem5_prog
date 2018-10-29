@@ -8,11 +8,17 @@ import (
 	"strings"
 )
 
+/*
+	Structure for the Login handler.
+*/
 type LoginHandler struct {
 	UserContext user.UserContext
-	Config 	config.Configuration
+	Config      config.Configuration
 }
 
+/*
+	The Login handler.
+*/
 func (l LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if strings.ToLower(r.Method) != "post" {
 		w.WriteHeader(http.StatusMethodNotAllowed)

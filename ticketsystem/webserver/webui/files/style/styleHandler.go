@@ -114,7 +114,7 @@ var loginStyle = `
 
 /*
 	The handler for the style(css) files.
- */
+*/
 func HandelStyle(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/css")
 

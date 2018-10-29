@@ -8,17 +8,25 @@ import (
 	"net/http"
 )
 
+/*
+	Interface for the Http Handler.
+*/
 type HttpHandler interface {
 	ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
 
+/*
+	Structure for the authentication handler wrapper.
+*/
 type AuthenticationHandler struct {
-	Next              HttpHandler
-	Config 			config.Configuration
+	Next        HttpHandler
+	Config      config.Configuration
 	UserContext user.UserContext
 }
 
-// todo: no pointer maybe
+/*
+	The Authentication handler wrapper.
+*/
 func (h AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	userIsLoggedIn, token := helpers.UserIsLoggedInCheck(r, h.UserContext, h.Config.AccessTokenCookieName)
@@ -30,7 +38,7 @@ func (h AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 			panic(err)
 		}
 
-		helpers.SetCookie(w, r,  h.Config.AccessTokenCookieName, newToken)
+		helpers.SetCookie(w, r, h.Config.AccessTokenCookieName, newToken)
 
 		h.Next.ServeHTTP(w, r)
 	} else {

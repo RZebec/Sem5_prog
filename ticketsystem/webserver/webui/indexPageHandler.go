@@ -8,6 +8,9 @@ import (
 	"net/http"
 )
 
+/*
+	Html template for the Index Page.
+*/
 var indexPageTemplate = `<html>
 
 	<head>
@@ -35,15 +38,24 @@ var indexPageTemplate = `<html>
 
 	</html>`
 
+/*
+	Structure for the Index Page Handler.
+*/
 type IndexPageHandler struct {
-	Config config.Configuration
+	Config      config.Configuration
 	UserContext user.UserContext
 }
 
+/*
+	Structure for the Index Page Data.
+*/
 type indexPageData struct {
 	IsUserLoggedIn bool
 }
 
+/*
+	The Index Page handler.
+*/
 func (i IndexPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.New("index").Parse(indexPageTemplate)
 

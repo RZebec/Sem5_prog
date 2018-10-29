@@ -9,6 +9,9 @@ import (
 	"strconv"
 )
 
+/*
+	Html template for the Login Page.
+*/
 var loginPageTemplate = `
 	<!DOCTYPE html>
 	<html>
@@ -53,15 +56,24 @@ var loginPageTemplate = `
 	
 	</html>`
 
+/*
+	Structure for the Login Page Handler.
+*/
 type LoginPageHandler struct {
-	Config			config.Configuration
+	Config      config.Configuration
 	UserContext user.UserContext
 }
 
+/*
+	Structure for the Login Page Data.
+*/
 type loginPageData struct {
 	IsLoginFailed bool
 }
 
+/*
+	The Login Page handler.
+*/
 func (l LoginPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// Checks if the User is already logged in and if so redirects him to the start page

@@ -12,5 +12,6 @@
 *.out
 
 # GoLand
+.idea/
 .idea/workspace.xml
 *.iml
