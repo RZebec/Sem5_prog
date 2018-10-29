@@ -52,10 +52,9 @@ var loginPageTemplate = `
 
 type LoginPageHandler struct {
 	IsUserLoggedIn bool
-	IsLoginFailed  bool
 }
 
-type LoginPageData struct {
+type loginPageData struct {
 	IsLoginFailed bool
 }
 
@@ -69,14 +68,15 @@ func (l LoginPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	queryValues := r.URL.Query()
 	IsLoginFailed, err := strconv.ParseBool(queryValues.Get("IsLoginFailed"))
 
-	if err == nil {
-		l.IsLoginFailed = IsLoginFailed
+	if err != nil {
+		// TODO: Handle error
 	}
 
+	// Todo: HANDLE Template parsing error
 	t, _ := template.New("login").Parse(loginPageTemplate)
 
-	data := LoginPageData{
-		IsLoginFailed: l.IsLoginFailed,
+	data := loginPageData{
+		IsLoginFailed: IsLoginFailed,
 	}
 
 	t.Execute(w, data)

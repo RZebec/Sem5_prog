@@ -17,14 +17,16 @@ var indexPageTemplate = `<html>
 	
 			<span>OP-Ticket-System</span>
 
-			{{if .IsUserLoggedIn }}
-				<a href="/logout">Logout</a>
+			{{if .IsUserLoggedIn}}
+				<a href="/user_logout">Logout</a>
 			{{else}}
 				<a href="/login">Login</a>
 			{{end}}
 		</div>
 		<div class="content">
-			This is the Index Page
+			<div class="container">
+				<h1>This is the Index Page</h1>
+			</div>
 		</div>
 	</body>
 
@@ -34,14 +36,15 @@ type IndexPageHandler struct {
 	IsUserLoggedIn bool
 }
 
-type IndexPageData struct {
+type indexPageData struct {
 	IsUserLoggedIn bool
 }
 
 func (i IndexPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.New("index").Parse(indexPageTemplate)
 
-	data := IndexPageData{
+	// Todo: HANDLE Template parsing error
+	data := indexPageData{
 		IsUserLoggedIn: i.IsUserLoggedIn,
 	}
 

@@ -45,11 +45,20 @@ var mainStyle = `
         font-size: 20px;
     }
 
-    .content {
+    div.content {
         background-color: #333;
         width: 100%;
         color: white;
 		font-size: 17px;
+     	text-align: center;
+    }
+
+    div.container {
+		text-align: center;
+        height: 40em;
+        margin: 5em auto auto 5em;
+        display: inline-block;
+    	width: 50%;
     }`
 
 var loginStyle = `
@@ -58,14 +67,8 @@ var loginStyle = `
         text-align: center;
     }
     
-    div.container {
-        height: 40em;
-        margin: auto;
-        display: inline-block;
-    	width: 50%;
-    }
-    
     div.main {
+		text-align: left;
         width: 10em;
         padding: 0.5em 1.5em 0.75em;
         border: 2px solid gray;

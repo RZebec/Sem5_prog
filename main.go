@@ -2,26 +2,18 @@ package main
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/files"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/login"
-	"fmt"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/logout"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"net/http"
 	"os"
 	"path"
 	"path/filepath"
 )
-
-func foohandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Hello")
-	w.Write([]byte("HHH"))
-}
-
-func tempHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Hello")
-	w.Write([]byte(r.URL.Path))
-}
 
 func main() {
 	// Core functionality
@@ -49,28 +41,23 @@ func main() {
 		panic(err)
 	}
 
+	config.AccessTokenCookie = helpers.Cookie{Name: "Access-Token"}
 	sessionManager.Register("example@test.com", "1234")
 
-	exampleHandler := webui.ExampleHtmlHandler{Prefix: "Das ist mein Prefix"}
-	wrapper := core.Handler{Next: exampleHandler}
-
 	indexPageHandler := webui.IndexPageHandler{}
-	indexPageWrapper := core.Handler{Next: indexPageHandler}
-	http.HandleFunc("/", indexPageWrapper.ServeHTTP)
+	http.HandleFunc("/", indexPageHandler.ServeHTTP)
 
-	http.HandleFunc("/example", wrapper.ServeHTTP)
-
-	filesHandler := webui.FilesHandler{}
+	filesHandler := files.FilesHandler{}
 	http.HandleFunc("/files/", filesHandler.ServeHTTP)
 
-	loginPageHandler := login.LoginPageHandler{IsUserLoggedIn: false, IsLoginFailed: false}
+	loginPageHandler := login.LoginPageHandler{IsUserLoggedIn: false}
 	http.HandleFunc("/login", loginPageHandler.ServeHTTP)
 
-	loginHandler := login.LoginHandler{UserManager: &sessionManager}
+	loginHandler := login.LoginHandler{UserManager: &sessionManager, AccessTokenCookie: config.AccessTokenCookie}
 	http.HandleFunc("/user_login", loginHandler.ServeHTTP)
 
-	logoutHandler := webui.LogoutHandler{UserManager: &sessionManager}
-	logoutWrapper := core.Handler{Next: logoutHandler}
+	logoutHandler := logout.LogoutHandler{UserManager: &sessionManager, AccessTokenCookie: config.AccessTokenCookie}
+	logoutWrapper := wrappers.AuthenticationHandler{Next: logoutHandler, AccessTokenCookie: config.AccessTokenCookie, SessionManager: &sessionManager}
 	http.HandleFunc("/user_logout", logoutWrapper.ServeHTTP)
 
 	if err := http.ListenAndServeTLS(":8080", "leaf.pem", "leaf.key", nil); err != nil {

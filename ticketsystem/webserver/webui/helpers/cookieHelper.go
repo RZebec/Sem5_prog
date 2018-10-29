@@ -1,4 +1,4 @@
-package webui
+package helpers
 
 import (
 	"net/http"
@@ -27,4 +27,14 @@ func (c Cookie) RemoveCookie(w http.ResponseWriter, r *http.Request) {
 		Path:     "/",
 	}
 	http.SetCookie(w, &cookie)
+}
+
+func (c Cookie) RefreshCookieValue(r *http.Request) {
+	cookie, err := r.Cookie(c.Name)
+
+	if err != nil {
+		// TODO: Handle error
+	} else {
+		c.Value = cookie.Value
+	}
 }

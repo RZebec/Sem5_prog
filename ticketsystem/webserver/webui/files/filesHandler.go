@@ -1,8 +1,8 @@
-package webui
+package files
 
 import (
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/script"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/style"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/files/script"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/files/style"
 	"net/http"
 	"strings"
 )

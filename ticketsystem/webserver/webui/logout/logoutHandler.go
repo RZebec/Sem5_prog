@@ -1,27 +1,23 @@
-package webui
+package logout
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/session"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
 	"net/http"
 	"strings"
 )
 
 type LogoutHandler struct {
 	UserManager session.UserManager
+	AccessTokenCookie helpers.Cookie
 }
 
 func (l LogoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if strings.ToLower(r.Method) != "get" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {
-		c, _ := r.Cookie("Access-Token")
-
-		cookie := Cookie{Name: "Access-Token", Value: c.Value}
-
-		if cookie.Value != "" {
-			l.UserManager.Logout(cookie.Value)
-			cookie.RemoveCookie(w, r)
-			http.Redirect(w, r, "/", 302)
-		}
+		l.UserManager.Logout(l.AccessTokenCookie.Value)
+		l.AccessTokenCookie.RemoveCookie(w, r)
+		http.Redirect(w, r, "/", 302)
 	}
 }
