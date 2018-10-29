@@ -30,7 +30,15 @@ func (t *TicketManager) AppendMessageToTicket(ticketId int, message MessageEntry
 	exists, ticket := t.GetTicketById(ticketId)
 	if exists {
 		ticket.messages = append(ticket.messages, message)
+		// Fix the id of the message
+		for i := range ticket.messages  {
+			ticket.messages[i].Id = i
+		}
 		err := ticket.persist()
+		t.cachedTicketsMutex.Lock()
+		defer t.cachedTicketsMutex.Unlock()
+		t.cachedTickets[ticket.info.Id] = *ticket
+
 		if err != nil {
 			return nil, errors.Wrap(err, "could not append message to ticket")
 		}
