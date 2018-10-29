@@ -8,6 +8,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/files"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/login"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/logout"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/register"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"fmt"
 	"net/http"
@@ -79,6 +80,12 @@ func main() {
 
 	filesHandler := files.FilesHandler{}
 	http.HandleFunc("/files/", filesHandler.ServeHTTP)
+
+	registerPageHandler := register.RegisterPageHandler{UserContext: &userContext, Config: config}
+	http.HandleFunc("/register", registerPageHandler.ServeHTTP)
+
+	registerHandler := register.RegisterHandler{UserContext: &userContext, Config: config}
+	http.HandleFunc("/user_register", registerHandler.ServeHTTP)
 
 	loginPageHandler := login.LoginPageHandler{UserContext: &userContext, Config: config}
 	http.HandleFunc("/login", loginPageHandler.ServeHTTP)

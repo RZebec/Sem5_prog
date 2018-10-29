@@ -25,7 +25,7 @@ var accessDeniedTemplate = `
 			<span>OP-Ticket-System</span>
 
 			<a href="/login">Login</a>
-
+			<a href="/register">Register</a>
 		</div>
 		<div class="content">
 			<div class="container">

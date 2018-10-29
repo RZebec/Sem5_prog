@@ -29,7 +29,7 @@ var loginPageTemplate = `
 			<span>OP-Ticket-System</span>
 
 			<a class="active" href="/login">Login</a>
-
+			<a href="/register">Register</a>
 		</div>
 		<div class="content">
 			<div class="container">
@@ -84,7 +84,7 @@ func (l LoginPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	queryValues := r.URL.Query()
-	IsLoginFailed, err := strconv.ParseBool(queryValues.Get("IsLoginFailed"))
+	isLoginFailed, err := strconv.ParseBool(queryValues.Get("IsLoginFailed"))
 
 	if err != nil {
 		// TODO: Handle error
@@ -94,7 +94,7 @@ func (l LoginPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.New("login").Parse(loginPageTemplate)
 
 	data := loginPageData{
-		IsLoginFailed: IsLoginFailed,
+		IsLoginFailed: isLoginFailed,
 	}
 
 	t.Execute(w, data)

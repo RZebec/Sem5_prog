@@ -27,6 +27,7 @@ var indexPageTemplate = `<html>
 				<a href="/user_logout">Logout</a>
 			{{else}}
 				<a href="/login">Login</a>
+				<a href="/register">Register</a>
 			{{end}}
 		</div>
 		<div class="content">
