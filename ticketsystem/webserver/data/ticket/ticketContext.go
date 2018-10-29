@@ -22,7 +22,6 @@ type TicketContext interface {
 	AppendMessageToTicket(ticketId int, message MessageEntry) (*Ticket, error)
 }
 
-// TODO: Set LastModification Time and Create method for info modification
 /*
 	Append a message to a ticket.
 */
@@ -34,6 +33,7 @@ func (t *TicketManager) AppendMessageToTicket(ticketId int, message MessageEntry
 		for i := range ticket.messages {
 			ticket.messages[i].Id = i
 		}
+		ticket.info.LastModificationTime = time.Now()
 		err := ticket.persist()
 		if err != nil {
 			return nil, errors.Wrap(err, "could not append message to ticket")

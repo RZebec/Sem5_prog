@@ -3,6 +3,7 @@ package ticket
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"fmt"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
@@ -15,6 +16,117 @@ import (
 	"testing"
 	"time"
 )
+
+/*
+	Example for the initialization of the ticket manager.
+*/
+func ExampleTicketManager_Initialize() {
+	ticketContext := TicketManager{}
+	err := ticketContext.Initialize("pathToTicketFolder")
+	fmt.Println(err)
+	// Output:
+	// <nil>
+}
+
+/*
+	Example to get a ticket by its id.
+*/
+func ExampleTicketManager_GetTicketById() {
+	ticketContext := TicketManager{}
+	initializeWithTempTicketForExample(&ticketContext)
+
+	exists, ticket := ticketContext.GetTicketById(1)
+	fmt.Println(exists)
+	fmt.Println(ticket.Info().Id)
+	// Output:
+	// true
+	// 1
+}
+
+/*
+	Example to get all ticket infos.
+*/
+func ExampleTicketManager_GetAllTicketInfo() {
+	ticketContext := TicketManager{}
+	initializeWithTempTicketForExample(&ticketContext)
+
+	ticket := ticketContext.GetAllTicketInfo()
+	fmt.Println(ticket[0].Id)
+	fmt.Println(ticket[0].Title)
+	// Output:
+	// 1
+	// Example_TicketTitle
+}
+
+/*
+	Example to create a new ticket for an internal user.
+*/
+func ExampleTicketManager_CreateNewTicketForInternalUser() {
+	// Preparation for example:
+	folderPath, rootPath, _ := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	user := user.User{Mail: "test1234@web.de", FirstName: "Alex", LastName: "Wagner"}
+	initialMessage := MessageEntry{Id: 1, CreatorMail: user.Mail, Content: "This is a test", OnlyInternal: false}
+	newTicket, err := testee.CreateNewTicketForInternalUser("Example_TestTitle", user, initialMessage)
+
+	fmt.Println(err)
+	fmt.Println(newTicket.Info().Title)
+	// Output:
+	// <nil>
+	// Example_TestTitle
+}
+
+/*
+	Example to create a new ticket.
+*/
+func ExampleTicketManager_CreateNewTicket() {
+	// Preparation for example:
+	folderPath, rootPath, _ := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	creator := Creator{Mail: "test1234@web.de", FirstName: "Alex", LastName: "Wagner"}
+	initialMessage := MessageEntry{Id: 1, CreatorMail: creator.Mail, Content: "This is a test", OnlyInternal: false}
+	newTicket, err := testee.CreateNewTicket("Example_TestTitle", creator, initialMessage)
+
+	fmt.Println(err)
+	fmt.Println(newTicket.Info().Title)
+	// Output:
+	// <nil>
+	// Example_TestTitle
+}
+
+/*
+	Example to append a new message to a ticket.
+*/
+func ExampleTicketManager_AppendMessageToTicket() {
+	ticketContext := TicketManager{}
+	folderPath := initializeWithTicketForExample(&ticketContext)
+	defer os.RemoveAll(folderPath)
+
+	exists, ticket := ticketContext.GetTicketById(1)
+	fmt.Println(exists)
+	fmt.Println(len(ticket.Messages()))
+
+	newMessage := MessageEntry{CreatorMail: "alex@wagner.de", Content: "This is the message", OnlyInternal: false}
+
+	updatedTicket, _ := ticketContext.AppendMessageToTicket(ticket.Info().Id, newMessage)
+
+	fmt.Println(len(updatedTicket.Messages()))
+	fmt.Println(updatedTicket.Messages()[1].Content)
+
+	// Output:
+	// true
+	// 1
+	// 2
+	// This is the message
+}
 
 /*
 	Getting the ticket infos when no tickets exists, should return a empty array.
@@ -202,7 +314,7 @@ func TestTicketManager_CreateNewTicketForInternalUser_TicketCreated(t *testing.T
 	testee.Initialize(folderPath)
 
 	user := user.User{Mail: "test1234@web.de", FirstName: "Alex", LastName: "Wagner"}
-	initialMessage := MessageEntry{Id: 45, CreatorMail: user.Mail, Content: "This is a test", OnlyInternal: false}
+	initialMessage := MessageEntry{Id: 1, CreatorMail: user.Mail, Content: "This is a test", OnlyInternal: false}
 	newTicket, err := testee.CreateNewTicketForInternalUser("newTestTitle", user, initialMessage)
 
 	exists, createdTicket := testee.GetTicketById(newTicket.info.Id)
@@ -258,9 +370,6 @@ func TestTicketManager_Initialize_InvalidFolderPath(t *testing.T) {
 	err := testee.Initialize("")
 	assert.Error(t, err, "folderPath is invalid")
 }
-
-// TODO: Add test for tickets
-// TODO: Add examples
 
 /*
 	Appending a message to a ticket should append the message to the ticket.
@@ -409,4 +518,23 @@ func assertTicket(t *testing.T, expected *Ticket, actual *Ticket) {
 		assert.Equal(t, expectedMessage.OnlyInternal, actualMessage.OnlyInternal, " only internal should be equal")
 		assert.Equal(t, expectedMessage.Content, actualMessage.Content, "content should be equal")
 	}
+}
+func initializeWithTempTicketForExample(c *TicketManager) {
+	folderPath, rootPath, _ := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	c.Initialize(folderPath)
+
+	creator := Creator{Mail: "test@test.de", FirstName: "Alex", LastName: "Wagner"}
+	initialMessage := MessageEntry{Id: 1, CreatorMail: creator.Mail, Content: "This is a test", OnlyInternal: false}
+	c.CreateNewTicket("Example_TicketTitle", creator, initialMessage)
+}
+
+func initializeWithTicketForExample(c *TicketManager) string {
+	folderPath, rootPath, _ := prepareTempDirectory()
+	c.Initialize(folderPath)
+
+	creator := Creator{Mail: "test@test.de", FirstName: "Alex", LastName: "Wagner"}
+	initialMessage := MessageEntry{Id: 1, CreatorMail: creator.Mail, Content: "This is a test", OnlyInternal: false}
+	c.CreateNewTicket("Example_TicketTitle", creator, initialMessage)
+	return rootPath
 }
