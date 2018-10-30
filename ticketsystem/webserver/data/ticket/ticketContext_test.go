@@ -21,8 +21,10 @@ import (
 	Example for the initialization of the ticket manager.
 */
 func ExampleTicketManager_Initialize() {
+	// Just to clean up after the example:
+	defer os.RemoveAll("/temp/pathToTicketFolder")
 	ticketContext := TicketManager{}
-	err := ticketContext.Initialize("pathToTicketFolder")
+	err := ticketContext.Initialize("/temp/pathToTicketFolder")
 	fmt.Println(err)
 	// Output:
 	// <nil>
