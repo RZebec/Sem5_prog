@@ -387,7 +387,7 @@ func TestTicketManager_AppendMessageToTicket_MessageAppended(t *testing.T) {
 	creator := Creator{Mail: "test1234@web.de", FirstName: "Alex", LastName: "Wagner"}
 	initialMessage := MessageEntry{Id: 45, CreatorMail: creator.Mail, Content: "This is a test", OnlyInternal: false}
 	newTicket, err := testee.CreateNewTicket("newTestTitle", creator, initialMessage)
-	
+
 	// Id should be set by the context:
 	message := MessageEntry{Id: 9999, CreatorMail: "max@muster.de", CreationTime: time.Now(),
 		Content: "This is a appended message", OnlyInternal: false}

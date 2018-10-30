@@ -20,8 +20,8 @@ type TicketInfo struct {
 
 /*
 	Copy the TicketInfo.
- */
-func (s *TicketInfo) Copy() (TicketInfo){
+*/
+func (s *TicketInfo) Copy() TicketInfo {
 	return TicketInfo{Id: s.Id, Title: s.Title, Editor: s.Editor.Copy(), HasEditor: s.HasEditor,
 		Creator: s.Creator.Copy(), CreationTime: s.CreationTime,
 		LastModificationTime: s.LastModificationTime}

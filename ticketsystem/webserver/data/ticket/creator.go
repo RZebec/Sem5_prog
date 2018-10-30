@@ -20,7 +20,7 @@ func ConvertToCreator(user user.User) Creator {
 
 /*
 	Copy the creator struct.
- */
-func (s *Creator) Copy() (Creator){
+*/
+func (s *Creator) Copy() Creator {
 	return Creator{Mail: s.Mail, FirstName: s.FirstName, LastName: s.LastName}
 }
