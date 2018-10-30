@@ -12,3 +12,11 @@ type MessageEntry struct {
 	Content      string
 	OnlyInternal bool
 }
+
+/*
+	Copy a MessageEntry.
+ */
+func (s *MessageEntry) Copy() (MessageEntry){
+	return MessageEntry{Id: s.Id, CreatorMail: s.CreatorMail, CreationTime: s.CreationTime,
+		Content: s.Content, OnlyInternal: s.OnlyInternal}
+}

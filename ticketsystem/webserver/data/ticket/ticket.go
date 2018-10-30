@@ -27,6 +27,16 @@ type storedTicket struct {
 	Info     TicketInfo
 	Messages []MessageEntry
 }
+/*
+	Copy a ticket.
+ */
+func (t *Ticket) Copy() (*Ticket){
+	copiedMessages := *new([]MessageEntry)
+	for _, message := range t.messages  {
+		copiedMessages = append(copiedMessages, message.Copy())
+	}
+	return &Ticket{info: t.info.Copy(), messages: copiedMessages, filePath: t.filePath, accessMutex: t.accessMutex}
+}
 
 /*
 	Transforms the ticket data to a store-able data type.

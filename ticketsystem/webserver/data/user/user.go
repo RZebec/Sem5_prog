@@ -10,6 +10,16 @@ type User struct {
 	LastName  string
 }
 
+/*
+	Get the user name string.
+ */
 func (u *User) GetUserNameString() string {
 	return u.FirstName + " " + u.LastName
+}
+
+/*
+	Copy the user.
+ */
+func (u *User) Copy() (User){
+	return User{Mail: u.Mail, UserId: u.UserId, FirstName: u.FirstName, LastName: u.LastName}
 }

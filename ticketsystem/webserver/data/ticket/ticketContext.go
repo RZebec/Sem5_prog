@@ -43,7 +43,7 @@ func (t *TicketManager) AppendMessageToTicket(ticketId int, message MessageEntry
 		defer t.cachedTicketsMutex.Unlock()
 		t.cachedTickets[ticket.info.Id] = *ticket
 
-		return ticket, nil
+		return ticket.Copy(), nil
 	} else {
 		return nil, errors.New("ticket does not exist")
 	}
@@ -58,7 +58,7 @@ func (t *TicketManager) GetAllTicketInfo() []TicketInfo {
 
 	var ticketInfos []TicketInfo
 	for _, ticket := range t.cachedTickets {
-		ticketInfos = append(ticketInfos, ticket.info)
+		ticketInfos = append(ticketInfos, ticket.info.Copy())
 	}
 	return ticketInfos
 }
@@ -69,7 +69,7 @@ func (t *TicketManager) GetAllTicketInfo() []TicketInfo {
 func (t *TicketManager) GetTicketById(id int) (bool, *Ticket) {
 	value, ok := t.cachedTickets[id]
 	if ok {
-		return true, &value
+		return true, value.Copy()
 	}
 	return false, nil
 }
@@ -136,7 +136,7 @@ func (t *TicketManager) CreateNewTicketForInternalUser(title string, editor user
 	newTicket.persist()
 	t.cachedTickets[newId] = *newTicket
 	t.cachedTicketIds = append(t.cachedTicketIds, newId)
-	return newTicket, nil
+	return newTicket.Copy(), nil
 
 }
 
@@ -166,7 +166,7 @@ func (t *TicketManager) CreateNewTicket(title string, creator Creator, initialMe
 	newTicket.persist()
 	t.cachedTickets[newId] = *newTicket
 	t.cachedTicketIds = append(t.cachedTicketIds, newId)
-	return newTicket, nil
+	return newTicket.Copy(), nil
 }
 
 /*
