@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bufio"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
@@ -9,8 +11,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"path"
-	"path/filepath"
 )
 
 func foohandler(w http.ResponseWriter, r *http.Request) {
@@ -24,28 +24,20 @@ func tempHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// Core functionality
-	// var logger = ...
-	// var sessionmanager =
-
-	//
-	// interface logger ( LogDebug(), LogInfo())
-	//
-	// Website Handlers
-
-	//staticFileHAndler := CreateNEw(config)
-	//authenticationHandler
+	logger := logging.ConsoleLogger{SetTimeStamp: true}
 	config := config.Configuration{}
-	filePath, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	if err == nil {
-		config.LoginDataFolderPath = filePath
-		config.TicketDataFolderPath = path.Join(filePath, "Tickets")
-	} else {
-		panic(err)
+	config.RegisterFlags()
+	config.BindFlags()
+
+	if !config.ValidateConfiguration(logger) {
+		fmt.Println("Configuration is not valid. Press enter to exit application.")
+		reader := bufio.NewReader(os.Stdin)
+		reader.ReadByte()
+		return
 	}
 
 	userContext := user.LoginSystem{}
-	err = userContext.Initialize(path.Join(config.LoginDataFolderPath, "LoginData"))
+	err := userContext.Initialize(config.LoginDataFolderPath)
 	if err != nil {
 		panic(err)
 	}
@@ -81,7 +73,7 @@ func main() {
 	http.HandleFunc("/files/", tempHandler)
 	http.HandleFunc("/example", wrapper.ServeHTTP)
 
-	if err := http.ListenAndServeTLS(":8080", "cert.pem", "key.pem", nil); err != nil {
+	if err := http.ListenAndServeTLS(config.GetUrl(), config.CertificatePath, config.CertificateKeyPath, nil); err != nil {
 		panic(err)
 	}
 
