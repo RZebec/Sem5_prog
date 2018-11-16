@@ -73,7 +73,7 @@ func main() {
 	http.HandleFunc("/files/", tempHandler)
 	http.HandleFunc("/example", wrapper.ServeHTTP)
 
-	if err := http.ListenAndServeTLS(config.GetUrl(), config.CertificatePath, config.CertificateKeyPath, nil); err != nil {
+	if err := http.ListenAndServeTLS(config.GetServiceUrl(), config.CertificatePath, config.CertificateKeyPath, nil); err != nil {
 		panic(err)
 	}
 
