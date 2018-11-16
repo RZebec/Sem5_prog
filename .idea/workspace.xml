@@ -3,8 +3,30 @@
   <component name="ChangeListManager">
     <list default="true" id="d72a36f5-044f-48d5-9693-34cee9f0b8ce" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configuration/configuration.go" beforeDir="false" afterPath="$PROJECT_DIR$/configuration/configuration.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/cookieHelper.go" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/cookieHelper.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/staticFileHandlers/cssFileHandlers.go" beforeDir="false" afterPath="$PROJECT_DIR$/staticFileHandlers/cssFileHandlers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/staticFileHandlers/filesHandler.go" beforeDir="false" afterPath="$PROJECT_DIR$/staticFileHandlers/filesHandler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/staticFileHandlers/htmlFileHandlers.go" beforeDir="false" afterPath="$PROJECT_DIR$/staticFileHandlers/htmlFileHandlers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/staticFileHandlers/jsFileHandlers.go" beforeDir="false" afterPath="$PROJECT_DIR$/staticFileHandlers/jsFileHandlers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/logging/logger.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/logging/logger.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/logging/logger_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/logging/logger_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/config/configuration.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/config/configuration.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/config/configuration_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/config/configuration_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/core/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/core/handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/creator.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/creator.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/creator_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/creator_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/message.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/message_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/message_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticket.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticket.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketInfo.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketInfo.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticket_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticket_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketinfo_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketinfo_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/data/user/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/data/user/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/data/user/user_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/data/user/user_test.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,13 +37,13 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/Sem5_prog$go_test_session.out" NAME="go test session Coverage Results" MODIFIED="1540397922017" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/Sem5_prog$go_test_Sem5_prog.out" NAME="go test Sem5_prog Coverage Results" MODIFIED="1540398178573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/IIIDDD$go_test_config.out" NAME="go test config Coverage Results" MODIFIED="1542366287920" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/IIIDDD$go_test_config.out" NAME="go test config Coverage Results" MODIFIED="1542381395853" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/IIIDDD$go_test_session.out" NAME="go test session Coverage Results" MODIFIED="1540543940603" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/IIIDDD$go_test_Sem5_prog.out" NAME="go test Sem5_prog Coverage Results" MODIFIED="1540661665755" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/IIIDDD$go_test_Sem5_prog.out" NAME="go test Sem5_prog Coverage Results" MODIFIED="1542381571972" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/IIIDDD$TestLoginSystem_Initialize_InvalidPath_ErrorReturned_in_sessionManager_test_go.out" NAME="TestLoginSystem_Initialize_InvalidPath_ErrorReturned in sessionManager_test.go Coverage Results" MODIFIED="1540488932022" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
   <component name="CoverageViewManager">
-    <option name="myElementSize" value="402" />
+    <option name="myElementSize" value="345" />
   </component>
   <component name="FUSProjectUsageTrigger">
     <session id="-1817885971">
@@ -114,35 +136,35 @@
           <entry key="project.open.time.12" value="1" />
           <entry key="project.open.time.13" value="1" />
           <entry key="project.open.time.14" value="1" />
-          <entry key="project.open.time.15" value="2" />
+          <entry key="project.open.time.15" value="3" />
           <entry key="project.open.time.18" value="1" />
           <entry key="project.open.time.8" value="1" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="10" />
+          <entry key="project.opened" value="11" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="7" />
-          <entry key="go" value="17439" />
+          <entry key="go" value="18478" />
           <entry key="txt" value="15" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Go" value="17439" />
+          <entry key="Go" value="18478" />
           <entry key="PLAIN_TEXT" value="22" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="go" value="83" />
+          <entry key="go" value="86" />
           <entry key="s" value="7" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Go" value="83" />
+          <entry key="Go" value="86" />
           <entry key="x86 Plan9 Assembly" value="7" />
         </counts>
       </usages-collector>
@@ -157,23 +179,50 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/config/configuration.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="670">
-              <caret line="46" column="80" selection-start-line="46" selection-start-column="50" selection-end-line="46" selection-end-column="80" />
+            <state relative-caret-position="68">
+              <caret line="10" column="2" selection-start-line="10" selection-start-column="2" selection-end-line="10" selection-end-column="2" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/core/helpers/fileAccess.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="187">
+              <caret line="11" column="5" selection-start-line="11" selection-start-column="5" selection-end-line="11" selection-end-column="5" />
+              <folding>
+                <element signature="e#17#56#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/config/configuration_test.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
-              <folding>
-                <element signature="e#16#75#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="425">
+              <caret line="75" column="22" selection-start-line="75" selection-start-column="22" selection-end-line="75" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticket_test.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="204">
+              <caret line="17" column="36" selection-start-line="17" selection-start-column="36" selection-end-line="17" selection-end-column="36" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext_test.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="470" column="21" selection-start-line="470" selection-start-column="21" selection-end-line="470" selection-end-column="47" />
             </state>
           </provider>
         </entry>
@@ -333,6 +382,14 @@
               <item name="webserver" type="462c0819:PsiDirectoryNode" />
               <item name="data" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="IIIDDD" type="b2602c69:ProjectViewProjectNode" />
+              <item name="IIIDDD" type="462c0819:PsiDirectoryNode" />
+              <item name="ticketsystem" type="462c0819:PsiDirectoryNode" />
+              <item name="webserver" type="462c0819:PsiDirectoryNode" />
+              <item name="data" type="462c0819:PsiDirectoryNode" />
+              <item name="ticket" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -370,7 +427,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Test.go test config">
+  <component name="RunManager" selected="Go Test.go test Sem5_prog">
     <configuration name="go build main.go flags" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true">
       <module name="Sem5_prog" />
       <working_directory value="$PROJECT_DIR$/" />
@@ -428,43 +485,43 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.go test Sem5_prog" />
         <item itemvalue="Go Test.go test config" />
         <item itemvalue="Go Test.ExampleConfiguration_ValidateConfiguration_PortIsInvalid_ReturnsFalse in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config" />
         <item itemvalue="Go Build.go build main.go flags" />
         <item itemvalue="Go Build.go build main.go" />
-        <item itemvalue="Go Test.go test Sem5_prog" />
       </list>
     </recent_temporary>
   </component>
   <component name="TestHistory">
-    <history-entry file="go_test_Sem5_prog - 2018.10.27 at 12h 35m 18s.xml">
-      <configuration name="go test Sem5_prog" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestLoginSystem_Initialize_DataFileAlreadyExists_DataIsLoaded_in_de_vorlesung_projekt_IIIDDD_ticketsystem_webserver_data_user - 2018.10.27 at 17h 23m 10s.xml">
-      <configuration name="TestLoginSystem_Initialize_DataFileAlreadyExists_DataIsLoaded in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestLoginSystem_Initialize_DataFileAlreadyExists_DataIsLoaded_in_de_vorlesung_projekt_IIIDDD_ticketsystem_webserver_data_user - 2018.10.27 at 17h 26m 09s.xml">
-      <configuration name="TestLoginSystem_Initialize_DataFileAlreadyExists_DataIsLoaded in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestLoginSystem_Initialize_DataFileAlreadyExists_DataIsLoaded_in_de_vorlesung_projekt_IIIDDD_ticketsystem_webserver_data_user - 2018.10.27 at 17h 33m 00s.xml">
-      <configuration name="TestLoginSystem_Initialize_DataFileAlreadyExists_DataIsLoaded in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestLoginSystem_Initialize_DataFileAlreadyExists_DataIsLoaded_in_de_vorlesung_projekt_IIIDDD_ticketsystem_webserver_data_user - 2018.10.27 at 17h 34m 23s.xml">
-      <configuration name="TestLoginSystem_Initialize_DataFileAlreadyExists_DataIsLoaded in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="go_test_Sem5_prog - 2018.10.27 at 19h 34m 39s.xml">
-      <configuration name="go test Sem5_prog" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="ExampleConfiguration_ValidateConfiguration_PortIsInvalid_ReturnsFalse_in_de_vorlesung_projekt_IIIDDD_ticketsystem_webserver_config - 2018.11.16 at 12h 01m 15s.xml">
-      <configuration name="ExampleConfiguration_ValidateConfiguration_PortIsInvalid_ReturnsFalse in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="go_test_config - 2018.11.16 at 12h 01m 43s.xml">
+    <history-entry file="go_test_config - 2018.11.16 at 15h 50m 32s.xml">
       <configuration name="go test config" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="go_test_config - 2018.11.16 at 12h 02m 23s.xml">
+    <history-entry file="go_test_config - 2018.11.16 at 15h 59m 12s.xml">
       <configuration name="go test config" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="go_test_config - 2018.11.16 at 12h 04m 50s.xml">
+    <history-entry file="go_test_config - 2018.11.16 at 16h 05m 20s.xml">
+      <configuration name="go test config" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="go_test_config - 2018.11.16 at 16h 06m 26s.xml">
+      <configuration name="go test config" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="go_test_config - 2018.11.16 at 16h 10m 42s.xml">
+      <configuration name="go test config" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="go_test_config - 2018.11.16 at 16h 12m 27s.xml">
+      <configuration name="go test config" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="go_test_config - 2018.11.16 at 16h 13m 49s.xml">
+      <configuration name="go test config" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="go_test_config - 2018.11.16 at 16h 14m 39s.xml">
+      <configuration name="go test config" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="go_test_config - 2018.11.16 at 16h 15m 58s.xml">
+      <configuration name="go test config" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="go_test_config - 2018.11.16 at 16h 16m 38s.xml">
       <configuration name="go test config" configurationId="GoTestRunConfiguration" />
     </history-entry>
   </component>
@@ -481,7 +538,7 @@
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18230277" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18443497" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -502,7 +559,7 @@
       <window_info anchor="right" id="Coverage" order="4" side_tool="true" visible="true" weight="0.24040511" />
     </layout>
     <layout-to-restore>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17750533" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18443497" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -515,12 +572,12 @@
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.49733475" weight="0.32832617" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.51226014" side_tool="true" visible="true" weight="0.23712446" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.51226014" side_tool="true" weight="0.23712446" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Database" order="3" />
-      <window_info anchor="right" id="Coverage" order="4" side_tool="true" weight="0.36433262" />
+      <window_info active="true" anchor="right" id="Coverage" order="4" side_tool="true" visible="true" weight="0.24040511" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -549,7 +606,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/main.go</url>
-          <line>75</line>
+          <line>67</line>
           <option name="timeStamp" value="31" />
         </line-breakpoint>
       </breakpoints>
@@ -771,13 +828,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext_test.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="194" column="26" selection-start-line="194" selection-start-column="26" selection-end-line="194" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Go/src/path/path.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="280">
@@ -820,16 +870,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/core/helpers/fileAccess.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="20" column="1" selection-start-line="20" selection-start-column="1" selection-end-line="20" selection-end-column="1" />
-          <folding>
-            <element signature="e#17#56#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ticketsystem/logging/logger.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1071">
@@ -851,20 +891,41 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/config/configuration_test.go">
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/core/helpers/fileAccess.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
+        <state relative-caret-position="187">
+          <caret line="11" column="5" selection-start-line="11" selection-start-column="5" selection-end-line="11" selection-end-column="5" />
           <folding>
-            <element signature="e#16#75#0" expanded="true" />
+            <element signature="e#17#56#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticket_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="17" column="36" selection-start-line="17" selection-start-column="36" selection-end-line="17" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="470" column="21" selection-start-line="470" selection-start-column="21" selection-end-line="470" selection-end-column="47" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/config/configuration.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="670">
-          <caret line="46" column="80" selection-start-line="46" selection-start-column="50" selection-end-line="46" selection-end-column="80" />
+        <state relative-caret-position="68">
+          <caret line="10" column="2" selection-start-line="10" selection-start-column="2" selection-end-line="10" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/config/configuration_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="75" column="22" selection-start-line="75" selection-start-column="22" selection-end-line="75" selection-end-column="22" />
         </state>
       </provider>
     </entry>

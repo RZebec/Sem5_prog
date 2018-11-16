@@ -3,13 +3,16 @@ package config
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"fmt"
+	"github.com/stretchr/testify/assert"
+	"io/ioutil"
+	"log"
+	"os"
 	"testing"
 )
 
-func TestConfiguration_GetServiceUrl(t *testing.T) {
-
-}
-
+/*
+	Example for validation of a configuration with a invalid (negative) port value.
+*/
 func ExampleConfiguration_ValidateConfiguration_PortIsNegative_ReturnsFalse() {
 	logger := logging.ConsoleLogger{}
 	config := Configuration{}
@@ -23,6 +26,9 @@ func ExampleConfiguration_ValidateConfiguration_PortIsNegative_ReturnsFalse() {
 	// false
 }
 
+/*
+	Example for validation of a configuration with a invalid (too big) port value.
+*/
 func ExampleConfiguration_ValidateConfiguration_PortIsToBig_ReturnsFalse() {
 	logger := logging.ConsoleLogger{}
 	config := Configuration{}
@@ -30,16 +36,72 @@ func ExampleConfiguration_ValidateConfiguration_PortIsToBig_ReturnsFalse() {
 
 	config.Port = 99999999
 	valid := config.ValidateConfiguration(logger)
-	fmt.Print(valid)
+	fmt.Println(valid)
 	//Output:
 	// <Error>[Configuration]: Invalid port. Provided value: 99999999
 	// false
 }
 
+/*
+	Validation should fail, if the certificate file does not exist.
+*/
 func TestConfiguration_ValidateConfiguration_CertificateDoesNotExist_ReturnsFalse(t *testing.T) {
+	logger := logging.ConsoleLogger{}
+	config := Configuration{}
+	config.BindFlags()
 
+	// The path should not exist.
+	config.CertificatePath = "/Temp/test/jspemdusoem.key"
+	valid := config.ValidateConfiguration(logger)
+	fmt.Println(valid)
+	//Output:
+	// <Error>[Configuration]: Certificate path does not exist
+	// false
 }
 
-func TestConfiguration_ValidateConfiguration_CertificateKeyDoesNotExist_ReturnsFalse(t *testing.T) {
+/*
+	Validation should fail, if the certificate key does not exist.
+*/
+func ExampleConfiguration_ValidateConfiguration_CertificateKeyDoesNotExist_ReturnsFalse() {
+	// Create a temporary file for the certificate. Otherwise the certificate key file would not be checked.
+	tmpfile, err := ioutil.TempFile("", "example")
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	defer os.Remove(tmpfile.Name()) // clean up
+
+	logger := logging.ConsoleLogger{}
+	config := Configuration{}
+	config.BindFlags()
+
+	// The path should not exist.
+	config.CertificatePath = tmpfile.Name()
+	config.CertificateKeyPath = "Temp/sdsodk"
+
+	valid := config.ValidateConfiguration(logger)
+	fmt.Println(valid)
+	//Output:
+	// <Error>[Configuration]: Certificate key path does not exist
+	// false
+}
+
+/*
+	Default values should be set.
+*/
+func TestConfiguration_RegisterAndBindFlags(t *testing.T) {
+	config := Configuration{}
+
+	config.RegisterFlags()
+	config.BindFlags()
+
+	// Default values should be set:
+	assert.Equal(t, "localhost", config.BaseUrl, "default value for host should be set")
+	assert.Equal(t, 9000, config.Port, "default value for port should be set")
+	assert.Equal(t, "key.pem", config.CertificateKeyPath, "default value for certificate key file should be set")
+	assert.Equal(t, "cert.pem", config.CertificatePath, "default value for certificate should be set")
+	assert.Equal(t, "data/tickets", config.TicketDataFolderPath, "default value for ticket data path should be set")
+	assert.Equal(t, "data/login", config.LoginDataFolderPath, "default value for login data path should be set")
+
+	assert.Equal(t, "localhost:9000", config.GetServiceUrl(), "url and port should be concatenated")
 }
