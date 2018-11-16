@@ -31,7 +31,7 @@ func (l ConsoleLogger) LogDebug(prefix string, message string) {
 	if l.SetTimeStamp {
 		timestamp = time.Now().Format("2006-01-02 15:04:05") + ":"
 	}
-	fmt.Printf("%v<%v>[%v]: %v", timestamp, "Debug", prefix, message)
+	fmt.Printf("%v<%v>[%v]: %v\n", timestamp, "Debug", prefix, message)
 }
 
 /*
@@ -42,7 +42,7 @@ func (l ConsoleLogger) LogInfo(prefix string, message string) {
 	if l.SetTimeStamp {
 		timestamp = time.Now().Format("2006-01-02 15:04:05") + ":"
 	}
-	fmt.Printf("%v<%v>[%v]: %v", timestamp, "Info", prefix, message)
+	fmt.Printf("%v<%v>[%v]: %v\n", timestamp, "Info", prefix, message)
 }
 
 /*
@@ -53,7 +53,7 @@ func (l ConsoleLogger) LogWarning(prefix string, message string) {
 	if l.SetTimeStamp {
 		timestamp = time.Now().Format("2006-01-02 15:04:05") + ":"
 	}
-	fmt.Printf("%v<%v>[%v]: %v", timestamp, "Warning", prefix, message)
+	fmt.Printf("%v<%v>[%v]: %v\n", timestamp, "Warning", prefix, message)
 }
 
 /*
@@ -64,5 +64,5 @@ func (l ConsoleLogger) LogError(prefix string, err error) {
 	if l.SetTimeStamp {
 		timestamp = time.Now().Format("2006-01-02 15:04:05") + ":"
 	}
-	fmt.Printf("%v<%v>[%v]: %v", timestamp, "Error", prefix, err.Error())
+	fmt.Printf("%v<%v>[%v]: %v\n", timestamp, "Error", prefix, err.Error())
 }
