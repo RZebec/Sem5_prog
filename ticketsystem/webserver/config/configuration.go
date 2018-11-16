@@ -1,5 +1,6 @@
 package config
 
 type Configuration struct {
-	LoginDataFolderPath string
+	LoginDataFolderPath  string
+	TicketDataFolderPath string
 }
