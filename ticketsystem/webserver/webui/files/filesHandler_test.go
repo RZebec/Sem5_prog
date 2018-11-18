@@ -103,7 +103,7 @@ var expectedScript = `
 /*
 	Files Handler returns valid Script File.
 	Test template source: https://blog.questionable.services/article/testing-http-handlers-go/
- */
+*/
 func TestFilesHandler_Script(t *testing.T) {
 	// Create a request to pass to our handler. We don't have any query parameters for now, so we'll
 	// pass 'nil' as the third parameter.
@@ -138,7 +138,7 @@ func TestFilesHandler_Script(t *testing.T) {
 /*
 	Files Handler returns valid Style File.
 	Test template source: https://blog.questionable.services/article/testing-http-handlers-go/
- */
+*/
 func TestFilesHandler_Style(t *testing.T) {
 	// Create a request to pass to our handler. We don't have any query parameters for now, so we'll
 	// pass 'nil' as the third parameter.
@@ -169,4 +169,3 @@ func TestFilesHandler_Style(t *testing.T) {
 			rr.Body.String(), expected)
 	}
 }
-

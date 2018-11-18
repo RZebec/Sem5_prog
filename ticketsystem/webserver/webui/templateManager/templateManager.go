@@ -8,28 +8,47 @@ import (
 	"net/http"
 )
 
+/*
+	Inspiration from source: https://hackernoon.com/golang-template-2-template-composition-and-how-to-organize-template-files-4cb40bcdf8f6
+*/
+
 var bufpool *helpers.BufferPool
 
-// create a buffer pool
+// Create a buffer pool
 func init() {
 	bufpool = helpers.NewBufferPool(64)
 	log.Println("buffer allocation successful")
 }
 
+/*
+	Map for the parsed templates.
+*/
 var templates map[string]*template.Template
 
+/*
+	Struct for the template error.
+*/
 type TemplateError struct {
-	s string
+	message string
 }
 
+/*
+	Function that returns the error message.
+*/
 func (e *TemplateError) Error() string {
-	return e.s
+	return e.message
 }
 
+/*
+	Function for defining an template error.
+*/
 func NewError(text string) error {
 	return &TemplateError{text}
 }
 
+/*
+	Loads all available templates from their corresponding strings in the template map.
+*/
 func LoadTemplates() (err error) {
 
 	if templates == nil {
@@ -45,27 +64,18 @@ func LoadTemplates() (err error) {
 		fmt.Print(err)
 	}
 
+	addTemplate(indexPage, "IndexPage", baseTemplate)
+	addTemplate(registerPage, "RegisterPage", baseTemplate)
 	addTemplate(loginPage, "LoginPage", baseTemplate)
+	addTemplate(accessDeniedPage, "AccessDeniedPage", baseTemplate)
 
 	return nil
 }
 
 /*
-	Parses multiple template Strings
-	Source: https://stackoverflow.com/questions/41856021/how-to-parse-multiple-strings-into-a-template-with-go
- */
-func parseTemplates(templs ...string) (t *template.Template, err error) {
-	t = template.New("_all")
-
-	for i, templ := range templs {
-		if _, err = t.New(fmt.Sprint("_", i)).Parse(templ); err != nil {
-			return
-		}
-	}
-
-	return
-}
-
+	Helper function.
+	Adds a template to the template map with the corresponding name and template string.
+*/
 func addTemplate(templateString string, templateName string, baseTemplate *template.Template) {
 	var err error
 
@@ -86,6 +96,9 @@ func addTemplate(templateString string, templateName string, baseTemplate *templ
 	}
 }
 
+/*
+	Renders the needed template with the given name and the needed page data.
+*/
 func RenderTemplate(w http.ResponseWriter, name string, data interface{}) error {
 	tmpl, ok := templates[name]
 

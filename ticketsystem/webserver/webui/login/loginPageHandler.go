@@ -43,11 +43,11 @@ func (l LoginPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// TODO: Handle error
 	}
 
-	loginPageData := loginPageData{
+	data := loginPageData{
 		IsLoginFailed: isLoginFailed,
 	}
 
-	templateRenderError := templateManager.RenderTemplate(w, "LoginPage", loginPageData)
+	templateRenderError := templateManager.RenderTemplate(w, "LoginPage", data)
 
 	if templateRenderError != nil {
 		// TODO: Handle error

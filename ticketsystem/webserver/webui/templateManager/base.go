@@ -2,7 +2,7 @@ package templateManager
 
 /*
 	Base Html template.
- */
+*/
 var base = `
 	{{ define "Base" }}
 	<!DOCTYPE html>
