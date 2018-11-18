@@ -11,6 +11,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/login"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/logout"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/register"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"fmt"
 	"net/http"
@@ -59,6 +60,8 @@ func main() {
 
 	g := ticketContext.GetAllTicketInfo()
 	fmt.Println(len(g))
+
+	templateManager.LoadTemplates()
 
 	// TODO: Remove later, for test purposes only
 	config.AccessTokenCookieName = "Access-Token"
