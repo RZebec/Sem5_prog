@@ -7,12 +7,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/files"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/login"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/logout"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/register"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"fmt"
 	"net/http"
 	"os"
@@ -70,27 +65,12 @@ func main() {
 
 	}
 
-	indexPageHandler := webui.IndexPageHandler{UserContext: &userContext, Config: config}
-	http.HandleFunc("/", indexPageHandler.ServeHTTP)
+	handlerManager := webui.HandlerManager{
+		UserContext: &userContext,
+		Config: config,
+	}
 
-	filesHandler := files.FilesHandler{}
-	http.HandleFunc("/files/", filesHandler.ServeHTTP)
-
-	registerPageHandler := register.RegisterPageHandler{UserContext: &userContext, Config: config}
-	http.HandleFunc("/register", registerPageHandler.ServeHTTP)
-
-	registerHandler := register.RegisterHandler{UserContext: &userContext, Config: config}
-	http.HandleFunc("/user_register", registerHandler.ServeHTTP)
-
-	loginPageHandler := login.LoginPageHandler{UserContext: &userContext, Config: config}
-	http.HandleFunc("/login", loginPageHandler.ServeHTTP)
-
-	loginHandler := login.LoginHandler{UserContext: &userContext, Config: config}
-	http.HandleFunc("/user_login", loginHandler.ServeHTTP)
-
-	logoutHandler := logout.LogoutHandler{UserContext: &userContext, Config: config}
-	logoutWrapper := wrappers.AuthenticationHandler{Next: logoutHandler, Config: config, UserContext: &userContext}
-	http.HandleFunc("/user_logout", logoutWrapper.ServeHTTP)
+	handlerManager.StartServices()
 
 	if err := http.ListenAndServeTLS(config.GetServiceUrl(), config.CertificatePath, config.CertificateKeyPath, nil); err != nil {
 		panic(err)

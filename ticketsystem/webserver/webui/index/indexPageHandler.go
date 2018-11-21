@@ -1,4 +1,4 @@
-package webui
+package index
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
