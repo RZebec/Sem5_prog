@@ -1,9 +1,9 @@
-package templateManager
+package pages
 
 /*
 	Html template for the Access Denied Page.
 */
-var accessDeniedPage = `
+var AccessDeniedPage = `
 	{{ define "Title" }} Access Denied {{ end }}
 
 	{{ define "StylesAndScripts" }} {{ end }}

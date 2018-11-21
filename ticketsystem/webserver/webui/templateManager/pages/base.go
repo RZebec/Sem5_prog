@@ -1,9 +1,9 @@
-package templateManager
+package pages
 
 /*
 	Base Html template.
 */
-var base = `
+var Base = `
 	{{ define "Base" }}
 	<!DOCTYPE html>
 	<html>

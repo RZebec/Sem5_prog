@@ -17,7 +17,7 @@ import (
 type TicketContext interface {
 	CreateNewTicketForInternalUser(title string, editor user.User, initialMessage MessageEntry) (*Ticket, error)
 	CreateNewTicket(title string, creator Creator, initialMessage MessageEntry) (*Ticket, error)
-	GetTicketById(id int) (Ticket, error)
+	GetTicketById(id int) (*Ticket, error)
 	GetAllTicketInfo() []TicketInfo
 	AppendMessageToTicket(ticketId int, message MessageEntry) (*Ticket, error)
 }
@@ -26,8 +26,8 @@ type TicketContext interface {
 	Append a message to a ticket.
 */
 func (t *TicketManager) AppendMessageToTicket(ticketId int, message MessageEntry) (*Ticket, error) {
-	exists, ticket := t.GetTicketById(ticketId)
-	if exists {
+	ticket, err := t.GetTicketById(ticketId)
+	if err == nil {
 		ticket.messages = append(ticket.messages, message)
 		// Fix the id of the message
 		for i := range ticket.messages {
@@ -45,7 +45,7 @@ func (t *TicketManager) AppendMessageToTicket(ticketId int, message MessageEntry
 
 		return ticket.Copy(), nil
 	} else {
-		return nil, errors.New("ticket does not exist")
+		return nil, err
 	}
 }
 
@@ -66,12 +66,12 @@ func (t *TicketManager) GetAllTicketInfo() []TicketInfo {
 /*
 	Get a ticket by its id. Returns false if the ticket does not exist.
 */
-func (t *TicketManager) GetTicketById(id int) (bool, *Ticket) {
+func (t *TicketManager) GetTicketById(id int) (*Ticket, error) {
 	value, ok := t.cachedTickets[id]
 	if ok {
-		return true, value.Copy()
+		return value.Copy(), nil
 	}
-	return false, nil
+	return nil, errors.New("no tickets found for the the given id.")
 }
 
 /*

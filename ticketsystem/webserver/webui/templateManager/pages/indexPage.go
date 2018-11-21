@@ -1,9 +1,9 @@
-package templateManager
+package pages
 
 /*
 	Html template for the Index Page.
 */
-var indexPage = `	
+var IndexPage = `	
 
 	{{ define "Title" }} Home {{ end }}
 

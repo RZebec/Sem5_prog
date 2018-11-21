@@ -1,10 +1,10 @@
-package templateManager
+package pages
 
 /*
-	Html template for the Register Page.
+	Html template for the Login Page.
 */
-var registerPage = `
-	{{ define "Title" }} Register {{ end }}
+var LoginPage = `
+	{{ define "Title" }} Login {{ end }}
 
 	{{ define "StylesAndScripts" }}
 		<link rel="stylesheet" href="/files/style/login"> 
@@ -17,27 +17,23 @@ var registerPage = `
 	
 			<span>OP-Ticket-System</span>
 
-			<a href="/login">Login</a>
-			<a class="active" href="/register">Register</a>
+			<a class="active" href="/login">Login</a>
+			<a href="/register">Register</a>
 		</div>
 		<div class="content">
 			<div class="container">
 				<div class="main">
-					<h2>Register</h2>
-					<form id="form_id" method="post" name="myform" action="/user_register">
-						<label>First Name:</label>
-						<input type="text" name="first_name" id="first_name" />
-						<label>Last Name:</label>
-						<input type="text" name="last_name" id="last_name" />
+					<h2>Login</h2>
+					<form id="form_id" method="post" name="myform" action="/user_login">
 						<label>Username:</label>
 						<input type="text" name="userName" id="userName" />
 						<label>Password:</label>
 						<input type="password" name="password" id="password" />
-						<button type="submit" id="submitLogin" class="submit-button" disabled>Register</button>
+						<button type="submit" id="submitLogin" class="submit-button" disabled>Login</button>
 					</form>
-					{{if .IsRegisteringFailed }}
+					{{if .IsLoginFailed }}
 					<span class="error-message">
-							Registering Failed!
+							Login Failed!
 					</span>
 					</br>
         			{{end}}
@@ -45,7 +41,4 @@ var registerPage = `
 				</div>
 			</div>
 		</div>
-	</body>
-	
-	</html>
 	{{ end }}`

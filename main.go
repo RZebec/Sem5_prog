@@ -67,6 +67,7 @@ func main() {
 
 	handlerManager := webui.HandlerManager{
 		UserContext: &userContext,
+		TicketContext: &ticketContext,
 		Config: config,
 	}
 

@@ -2,18 +2,21 @@ package webui
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/files"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/index"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/login"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/logout"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/register"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/ticketexplorer"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"net/http"
 )
 
 type HandlerManager struct {
 	UserContext user.UserContext
+	TicketContext ticket.TicketContext
 	Config config.Configuration
 }
 
@@ -39,4 +42,7 @@ func (handlerManager *HandlerManager) StartServices() {
 	logoutHandler := logout.LogoutHandler{UserContext: handlerManager.UserContext, Config: handlerManager.Config}
 	logoutWrapper := wrappers.AuthenticationHandler{Next: logoutHandler, UserContext: handlerManager.UserContext, Config: handlerManager.Config}
 	http.HandleFunc("/user_logout", logoutWrapper.ServeHTTP)
+
+	ticketExplorerHandler := ticketexplorer.TicketExplorerPageHandler{UserContext: handlerManager.UserContext, TicketContext: handlerManager.TicketContext, Config: handlerManager.Config}
+	http.HandleFunc("/tickets", ticketExplorerHandler.ServeHTTP)
 }

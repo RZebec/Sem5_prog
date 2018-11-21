@@ -54,14 +54,6 @@ var mainStyle = `
         color: white;
 		font-size: 17px;
      	text-align: center;
-    }
-
-    div.container {
-		text-align: center;
-        height: 40em;
-        margin: 5em auto auto 5em;
-        display: inline-block;
-    	width: 50%;
     }`
 
 /*
@@ -110,7 +102,38 @@ var loginStyle = `
 
 	.error-message{
 		color: red;
-	}`
+	}
+
+	div.container {
+		text-align: center;
+        height: 40em;
+        margin: 5em auto auto 5em;
+        display: inline-block;
+    	width: 50%;
+    }`
+
+var ticketStyle = `
+    
+    h2 {
+        text-align: center;
+    }
+    
+    div.main {
+		text-align: left;
+        width: 20em;
+        padding: 0.5em 1.5em 0.75em;
+        border: 2px solid gray;
+        border-radius: 10px;
+        float: left;
+        margin-top: 1.5em;
+    }
+    
+    div.container {
+		text-align: center;
+		width: 80%;
+        margin: 5em auto auto 5em;
+        display: inline-block;
+    }`
 
 /*
 	The handler for the style(css) files.
@@ -125,5 +148,7 @@ func HandelStyle(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(mainStyle))
 	case "login":
 		w.Write([]byte(loginStyle))
+	case "tickets":
+		w.Write([]byte(ticketStyle))
 	}
 }

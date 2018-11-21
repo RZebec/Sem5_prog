@@ -2,6 +2,7 @@ package templateManager
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
 	"fmt"
 	"html/template"
 	"log"
@@ -57,17 +58,18 @@ func LoadTemplates() (err error) {
 
 	baseTemplate := template.New("Base")
 
-	baseTemplate, err = baseTemplate.Parse(base)
+	baseTemplate, err = baseTemplate.Parse(pages.Base)
 
 	if err != nil {
 		// TODO: Handle error
 		fmt.Print(err)
 	}
 
-	addTemplate(indexPage, "IndexPage", baseTemplate)
-	addTemplate(registerPage, "RegisterPage", baseTemplate)
-	addTemplate(loginPage, "LoginPage", baseTemplate)
-	addTemplate(accessDeniedPage, "AccessDeniedPage", baseTemplate)
+	addTemplate(pages.IndexPage, "IndexPage", baseTemplate)
+	addTemplate(pages.RegisterPage, "RegisterPage", baseTemplate)
+	addTemplate(pages.LoginPage, "LoginPage", baseTemplate)
+	addTemplate(pages.AccessDeniedPage, "AccessDeniedPage", baseTemplate)
+	addTemplate(pages.TicketExplorerPage, "TicketExplorerPage", baseTemplate)
 
 	return nil
 }
