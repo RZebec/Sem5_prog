@@ -75,14 +75,14 @@ var TicketViewPage = `
 								var lastModificationTime = new Date({{.TicketInfo.LastModificationTime}});
 								var options = {
         							weekday: "short",
-        							year: "numeric",
+        							year: "2-digit",
         							month: "2-digit",
         							day: "2-digit",
         							hour: "2-digit",
         							minute: "2-digit",
         							second: "2-digit"
     							};
-								creationTime = creationTime.toLocaleDateString("de-DE", options);
+								creationTime = creationTime.toLocaleDateString("en-GB", options);
 								lastModificationTime = lastModificationTime.toLocaleDateString("de-DE", options);
 								document.getElementById("creationTime").innerHTML = creationTime;
 								document.getElementById("lastModificationTime").innerHTML = lastModificationTime;
@@ -93,6 +93,45 @@ var TicketViewPage = `
 								</button>
 							</td>
                         </tr>
+					</table>
+					<table>
+						<tr>
+							<th>
+								Creator
+                            </th>
+                            <th>
+                                Message
+                            </th>
+                            <th>
+                                Created on
+                            </th>
+						</tr>
+                        {{range .Messages}}
+                        <tr>
+							<td>
+                                {{.CreatorMail}}
+                            </td>
+                            <td>
+                                {{.Content}}
+                            </td>
+                            <td id="creationTime_{{.Id}}">
+                            </td>
+							<script>
+								var creationTime = new Date({{.CreationTime}});
+								var options = {
+        							weekday: "short",
+        							year: "2-digit",
+        							month: "2-digit",
+        							day: "2-digit",
+        							hour: "2-digit",
+        							minute: "2-digit",
+        							second: "2-digit"
+    							};
+								creationTime = creationTime.toLocaleDateString("en-GB", options);
+								document.getElementById("creationTime_{{.Id}}").innerHTML = creationTime;
+							</script>
+                        </tr>
+						{{end}}
 					</table>
 				</div>
 			</div>

@@ -1,4 +1,4 @@
-package ticketexplorer
+package ticketExplorer
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"

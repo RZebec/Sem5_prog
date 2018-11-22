@@ -35,18 +35,36 @@ func main() {
 	ticketContext := ticket.TicketManager{}
 	ticketContext.Initialize(config.TicketDataFolderPath)
 
-	ticketg, err := ticketContext.CreateNewTicket("TestTitle", ticket.Creator{Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
-		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent", OnlyInternal: false})
-	fmt.Println(ticketg)
-	ticketg, err = ticketContext.CreateNewTicket("TestTitle2", ticket.Creator{Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
-		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent", OnlyInternal: false})
+	testMessageContent := `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ultrices congue mi eget consequat. Nulla facilisi. 
+						Maecenas bibendum diam eget lectus sagittis mollis.Fusce vel tempus nisl. Quisque sollicitudin ultrices tristique. 
+						Integer a nisi vitae justo hendrerit facilisis. Integer a eros eu erat euismod tristique vitae vitae orci. 
+						Nunc tincidunt faucibus turpis, sed cursus tellus dapibus ut. Aliquam metus ligula, elementum eu auctor at, rutrum at nulla. 
+						Mauris sit amet mauris vel velit congue rhoncus. Donec a dolor luctus, mattis ligula vitae, elementum libero. Morbi pellentesque scelerisque suscipit. 
+						Etiam sit amet tincidunt ex. Vivamus quis magna ornare, elementum arcu ac, rhoncus tellus. Nullam ullamcorper pharetra sodales. 
+						Nunc purus nibh, vestibulum quis ex non, ornare congue nibh. Nulla sagittis magna aliquet malesuada gravida. `
 
-	ticketg, err = ticketContext.CreateNewTicketForInternalUser("TestTitle", user.User{UserId: 1, Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
-		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent", OnlyInternal: false})
+	testMessages := []ticket.MessageEntry{
+		{Id: 0, CreatorMail: "test@test.de", Content: testMessageContent, OnlyInternal: false},
+		{Id: 1, CreatorMail: "test1@test.de", Content: testMessageContent, OnlyInternal: false},
+		{Id: 2, CreatorMail: "test2@test.de", Content: testMessageContent, OnlyInternal: true},
+		{Id: 3, CreatorMail: "test3@test.de", Content: testMessageContent, OnlyInternal: false},
+	}
+
+
+	ticketg, err := ticketContext.CreateNewTicket("TestTitle", ticket.Creator{Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"}, testMessages[0])
+	ticketContext.AppendMessageToTicket(1, testMessages[1])
+	ticketContext.AppendMessageToTicket(1, testMessages[3])
 	fmt.Println(ticketg)
 
-	ticketg, err = ticketContext.CreateNewTicketForInternalUser("TestTitle", user.User{UserId: 2, Mail: "peter@test.de", FirstName: "Peter", LastName: "Test"},
-		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent", OnlyInternal: true})
+	ticketg, err = ticketContext.CreateNewTicket("TestTitle2", ticket.Creator{Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"}, testMessages[0])
+	ticketContext.AppendMessageToTicket(2, testMessages[1])
+	ticketContext.AppendMessageToTicket(2, testMessages[3])
+	fmt.Println(ticketg)
+
+	ticketg, err = ticketContext.CreateNewTicketForInternalUser("TestTitle", user.User{UserId: 1, Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"}, testMessages[2])
+	fmt.Println(ticketg)
+
+	ticketg, err = ticketContext.CreateNewTicketForInternalUser("TestTitle", user.User{UserId: 2, Mail: "peter@test.de", FirstName: "Peter", LastName: "Test"}, testMessages[2])
 	fmt.Println(ticketg)
 
 	exists, ticket := ticketContext.GetTicketById(2)

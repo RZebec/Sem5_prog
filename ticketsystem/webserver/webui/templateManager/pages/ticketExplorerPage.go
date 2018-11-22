@@ -76,15 +76,15 @@ var TicketExplorerPage = `
 								var lastModificationTime = new Date({{.LastModificationTime}});
 								var options = {
         							weekday: "short",
-        							year: "numeric",
+        							year: "2-digit",
         							month: "2-digit",
         							day: "2-digit",
         							hour: "2-digit",
         							minute: "2-digit",
         							second: "2-digit"
     							};
-								creationTime = creationTime.toLocaleDateString("de-DE", options);
-								lastModificationTime = lastModificationTime.toLocaleDateString("de-DE", options);
+								creationTime = creationTime.toLocaleDateString("en-GB", options);
+								lastModificationTime = lastModificationTime.toLocaleDateString("en-GB", options);
 								document.getElementById("creationTime_{{.Id}}").innerHTML = creationTime;
 								document.getElementById("lastModificationTime_{{.Id}}").innerHTML = lastModificationTime;
 							</script>
