@@ -49,16 +49,17 @@ var mainStyle = `
     }
 
 	body {
-		font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif; 
+		font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif;
+		height: 100%;
 	}
 
     div.content {
         background-color: #333;
         width: 100%;
+		min-height: 92vh;
         color: white;
 		font-size: 17px;
      	text-align: center;
-		min-height: 45em;
     }
 	
 	div.container {

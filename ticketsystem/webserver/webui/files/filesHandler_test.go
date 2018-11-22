@@ -46,20 +46,24 @@ var expectedStyle = `
         font-size: 20px;
     }
 
+	body {
+		font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif; 
+	}
+
     div.content {
         background-color: #333;
         width: 100%;
         color: white;
 		font-size: 17px;
      	text-align: center;
+		min-height: 45em;
     }
-
-    div.container {
+	
+	div.container {
 		text-align: center;
-        height: 40em;
-        margin: 5em auto auto 5em;
+        margin: 3em 1em auto 1em;
         display: inline-block;
-    	width: 50%;
+    	width: 100em;
     }`
 
 var expectedScript = `

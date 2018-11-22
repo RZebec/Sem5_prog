@@ -37,8 +37,8 @@ func ExampleTicketManager_GetTicketById() {
 	ticketContext := TicketManager{}
 	initializeWithTempTicketForExample(&ticketContext)
 
-	exists, ticket := ticketContext.GetTicketById(1)
-	fmt.Println(exists)
+	ticket, err := ticketContext.GetTicketById(1)
+	fmt.Println(err == nil)
 	fmt.Println(ticket.Info().Id)
 	// Output:
 	// true
@@ -112,8 +112,8 @@ func ExampleTicketManager_AppendMessageToTicket() {
 	folderPath := initializeWithTicketForExample(&ticketContext)
 	defer os.RemoveAll(folderPath)
 
-	exists, ticket := ticketContext.GetTicketById(1)
-	fmt.Println(exists)
+	ticket, err := ticketContext.GetTicketById(1)
+	fmt.Println(err == nil)
 	fmt.Println(len(ticket.Messages()))
 
 	newMessage := MessageEntry{CreatorMail: "alex@wagner.de", Content: "This is the message", OnlyInternal: false}
@@ -292,12 +292,12 @@ func TestTicketManager_CreateNewTicket_TicketCreated(t *testing.T) {
 	initialMessage := MessageEntry{Id: 45, CreatorMail: creator.Mail, Content: "This is a test", OnlyInternal: false}
 	newTicket, err := testee.CreateNewTicket("newTestTitle", creator, initialMessage)
 
-	exists, createdTicket := testee.GetTicketById(newTicket.info.Id)
-	assert.True(t, exists, "the ticket should be created")
+	createdTicket, err := testee.GetTicketById(newTicket.info.Id)
+	assert.True(t, err == nil, "the ticket should be created")
 
 	// Validate that the file is created:
-	exists, _ = helpers.FilePathExists(createdTicket.filePath)
-	assert.True(t, exists, "the ticket file should be created")
+	_, err = helpers.FilePathExists(createdTicket.filePath)
+	assert.True(t, err == nil, "the ticket file should be created")
 
 	storedTicket, err := readTicketFromFile(createdTicket.filePath)
 
@@ -319,12 +319,12 @@ func TestTicketManager_CreateNewTicketForInternalUser_TicketCreated(t *testing.T
 	initialMessage := MessageEntry{Id: 1, CreatorMail: user.Mail, Content: "This is a test", OnlyInternal: false}
 	newTicket, err := testee.CreateNewTicketForInternalUser("newTestTitle", user, initialMessage)
 
-	exists, createdTicket := testee.GetTicketById(newTicket.info.Id)
-	assert.True(t, exists, "the ticket should be created")
+	createdTicket, err := testee.GetTicketById(newTicket.info.Id)
+	assert.True(t, err == nil, "the ticket should be created")
 
 	// Validate that the file is created:
-	exists, _ = helpers.FilePathExists(createdTicket.filePath)
-	assert.True(t, exists, "the ticket file should be created")
+	_, err = helpers.FilePathExists(createdTicket.filePath)
+	assert.True(t, err == nil, "the ticket file should be created")
 
 	storedTicket, err := readTicketFromFile(createdTicket.filePath)
 
@@ -394,8 +394,8 @@ func TestTicketManager_AppendMessageToTicket_MessageAppended(t *testing.T) {
 	ticket, err := testee.AppendMessageToTicket(newTicket.Info().Id, message)
 	assert.Nil(t, err)
 
-	found, storedTicket := testee.GetTicketById(newTicket.info.Id)
-	assert.True(t, found)
+	storedTicket, err := testee.GetTicketById(newTicket.info.Id)
+	assert.True(t, err == nil)
 	assert.Equal(t, ticket, storedTicket)
 
 	for i, message := range storedTicket.messages {
@@ -417,7 +417,7 @@ func TestTicketManager_AppendMessageToTicket_TicketDoesNotExist_ErrorReturned(t 
 	message := MessageEntry{Id: 9999, CreatorMail: "max@muster.de", CreationTime: time.Now(),
 		Content: "This is a appended message", OnlyInternal: false}
 	_, err = testee.AppendMessageToTicket(999, message)
-	assert.Equal(t, "ticket does not exist", err.Error())
+	assert.Equal(t, "no tickets found for the the given id.", err.Error())
 
 }
 

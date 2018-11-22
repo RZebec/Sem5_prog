@@ -39,6 +39,7 @@ func (t TicketViewPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	if isUserLoggedIn {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
 	}
 
 	URLPath := strings.Split(r.URL.Path, "/")
@@ -47,26 +48,28 @@ func (t TicketViewPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	if idConversionError != nil {
 		//TODO: Handle Error
-		http.Redirect(w, r, "/", http.StatusInternalServerError)
+		http.Redirect(w, r, "/", http.StatusBadRequest)
+		return
 	}
 
-	ticket, ticketError := t.TicketContext.GetTicketById(id)
+	ticket, err := t.TicketContext.GetTicketById(id)
 
-	if ticketError != nil {
+	if err != nil {
 		//TODO: Handle error
-		http.Redirect(w, r, "/", http.StatusInternalServerError)
+		http.Redirect(w, r, "/", http.StatusBadRequest)
+		return
 	}
 
 	data := TicketViewPageData {
 		IsUserLoggedIn: isUserLoggedIn,
 		TicketInfo: ticket.Info(),
 		Messages: ticket.Messages(),
-
 	}
 
 	templateRenderError := templateManager.RenderTemplate(w, "TicketViewPage", data)
 
 	if templateRenderError != nil {
 		// TODO: Handle error
+		return
 	}
 }

@@ -4,15 +4,11 @@
     <list default="true" id="d72a36f5-044f-48d5-9693-34cee9f0b8ce" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/webui/files/filesHandler_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/webui/files/filesHandler_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/webui/files/style/styleHandler.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/webui/files/style/styleHandler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/webui/handlerManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/webui/handlerManager.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/accessDeniedPage.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/accessDeniedPage.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/indexPage.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/indexPage.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/loginPage.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/loginPage.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/registerPage.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/registerPage.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/ticketExplorerPage.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/ticketExplorerPage.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/templateManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/templateManager.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/webui/ticketexplorer/ticketExplorerHandlerPage.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/webui/ticketexplorer/ticketExplorerPageHandler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/templateManager_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/templateManager_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketsystem/webserver/webui/ticketView/ticketViewPageHandler.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketsystem/webserver/webui/ticketView/ticketViewPageHandler.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -176,23 +172,23 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="go" value="109" />
+          <entry key="go" value="116" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Go" value="109" />
+          <entry key="Go" value="116" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="go" value="5811" />
+          <entry key="go" value="6042" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="CSS" value="44" />
-          <entry key="Go" value="5515" />
+          <entry key="Go" value="5746" />
           <entry key="HTML" value="252" />
         </counts>
       </usages-collector>
@@ -205,141 +201,83 @@
     </session>
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.45344943">
-      <split-first>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/ticketExplorerPage.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-969">
-                  <caret line="3" column="41" selection-start-line="3" selection-start-column="41" selection-end-line="3" selection-end-column="41" />
-                  <folding>
-                    <element signature="e#1400#1406#0" expanded="true" />
-                    <element signature="e#1464#1470#0" expanded="true" />
-                    <element signature="e#1783#1789#0" expanded="true" />
-                    <element signature="e#1844#1850#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/loginPage.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="270">
-                  <caret line="33" column="108" selection-start-line="33" selection-start-column="24" selection-end-line="33" selection-end-column="108" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/ticketexplorer/ticketExplorerPageHandler.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="537">
-                  <caret line="52" column="1" selection-start-line="11" selection-end-line="52" selection-end-column="1" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/ticketView/ticketViewPageHandler.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="426">
-                  <caret line="62" column="36" selection-start-line="62" selection-start-column="36" selection-end-line="62" selection-end-column="36" />
-                  <folding>
-                    <element signature="e#20#316#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/templateManager.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="598">
-                  <caret line="72" column="68" selection-start-line="72" selection-start-column="68" selection-end-line="72" selection-end-column="68" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/ticketViewPage.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="360">
-                  <caret line="81" column="54" lean-forward="true" selection-start-line="81" selection-start-column="54" selection-end-line="81" selection-end-column="54" />
-                  <folding>
-                    <element signature="e#1396#1402#0" expanded="true" />
-                    <element signature="e#1471#1477#0" expanded="true" />
-                    <element signature="e#1812#1818#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/handlerManager.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="555">
-                  <caret line="50" column="29" selection-start-line="50" selection-start-column="29" selection-end-line="50" selection-end-column="29" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/files/filesHandler.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="225">
-                  <caret line="20" column="39" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="39" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/files/style/styleHandler.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="240">
-                  <caret line="124" column="11" selection-start-line="124" selection-start-column="11" selection-end-line="124" selection-end-column="11" />
-                  <folding>
-                    <element signature="e#15#48#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketInfo.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="150">
-                  <caret line="13" column="25" selection-start-line="13" selection-start-column="25" selection-end-line="13" selection-end-column="25" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticket.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-105">
-                  <caret line="25" column="17" selection-start-line="25" selection-start-column="5" selection-end-line="25" selection-end-column="17" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-270">
-                  <caret line="42" column="43" selection-start-line="42" selection-start-column="43" selection-end-line="42" selection-end-column="43" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-second>
-    </splitter>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/files/style/styleHandler.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="420">
+              <caret line="58" column="22" selection-start-line="58" selection-start-column="22" selection-end-line="58" selection-end-column="22" />
+              <folding>
+                <element signature="e#15#48#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-570">
+              <caret line="19" column="4" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/ticketView/ticketViewPageHandler.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="105">
+              <caret line="37" column="53" selection-start-line="37" selection-start-column="53" selection-end-line="37" selection-end-column="53" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://C:/Go/src/net/http/h2_bundle.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="158">
+              <caret line="5857" selection-start-line="5857" selection-end-line="5857" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/files/filesHandler_test.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="615">
+              <caret line="66" column="6" selection-start-line="66" selection-start-column="6" selection-end-line="66" selection-end-column="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/templateManager_test.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="45">
+              <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/templateManager_testdata.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="278">
+              <caret line="36" column="11" selection-start-line="36" selection-start-column="11" selection-end-line="36" selection-end-column="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext_test.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="687">
+              <caret line="117" lean-forward="true" selection-start-line="117" selection-end-line="117" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -371,9 +309,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/staticFileHelpers/cssFileHandlers.go" />
-        <option value="$PROJECT_DIR$/staticFileHelpers/htmlFileHandlers.go" />
-        <option value="$PROJECT_DIR$/staticFileHandlers/filesHandler.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/handler.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/htmlWrapper.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/exampleHtmlHandler.go" />
@@ -406,7 +341,6 @@
         <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/indexPageHandler.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/base.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/accessdenied/accessDeniedPageHandler_test.go" />
-        <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/templateManager_test.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/ticketExplorerPage.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/base.go" />
         <option value="$PROJECT_DIR$/main.go" />
@@ -415,13 +349,17 @@
         <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/indexPage.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/accessDeniedPage.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/ticketexplorer/ticketExplorerHandlerPage.go" />
-        <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/files/style/styleHandler.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/ticketExplorerPage.go" />
-        <option value="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/templateManager.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/handlerManager.go" />
-        <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/ticketView/ticketViewPageHandler.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/ticketViewPage.go" />
+        <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/files/filesHandler_test.go" />
+        <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/templateManager_test.go" />
+        <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/templateManager_testdata.go" />
+        <option value="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext.go" />
+        <option value="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext_test.go" />
+        <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/ticketView/ticketViewPageHandler.go" />
+        <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/files/style/styleHandler.go" />
       </list>
     </option>
   </component>
@@ -468,63 +406,7 @@
               <item name="IIIDDD" type="462c0819:PsiDirectoryNode" />
               <item name="ticketsystem" type="462c0819:PsiDirectoryNode" />
               <item name="webserver" type="462c0819:PsiDirectoryNode" />
-              <item name="data" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IIIDDD" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IIIDDD" type="462c0819:PsiDirectoryNode" />
-              <item name="ticketsystem" type="462c0819:PsiDirectoryNode" />
-              <item name="webserver" type="462c0819:PsiDirectoryNode" />
-              <item name="data" type="462c0819:PsiDirectoryNode" />
-              <item name="ticket" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IIIDDD" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IIIDDD" type="462c0819:PsiDirectoryNode" />
-              <item name="ticketsystem" type="462c0819:PsiDirectoryNode" />
-              <item name="webserver" type="462c0819:PsiDirectoryNode" />
               <item name="webui" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IIIDDD" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IIIDDD" type="462c0819:PsiDirectoryNode" />
-              <item name="ticketsystem" type="462c0819:PsiDirectoryNode" />
-              <item name="webserver" type="462c0819:PsiDirectoryNode" />
-              <item name="webui" type="462c0819:PsiDirectoryNode" />
-              <item name="files" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IIIDDD" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IIIDDD" type="462c0819:PsiDirectoryNode" />
-              <item name="ticketsystem" type="462c0819:PsiDirectoryNode" />
-              <item name="webserver" type="462c0819:PsiDirectoryNode" />
-              <item name="webui" type="462c0819:PsiDirectoryNode" />
-              <item name="register" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IIIDDD" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IIIDDD" type="462c0819:PsiDirectoryNode" />
-              <item name="ticketsystem" type="462c0819:PsiDirectoryNode" />
-              <item name="webserver" type="462c0819:PsiDirectoryNode" />
-              <item name="webui" type="462c0819:PsiDirectoryNode" />
-              <item name="templateManager" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IIIDDD" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IIIDDD" type="462c0819:PsiDirectoryNode" />
-              <item name="ticketsystem" type="462c0819:PsiDirectoryNode" />
-              <item name="webserver" type="462c0819:PsiDirectoryNode" />
-              <item name="webui" type="462c0819:PsiDirectoryNode" />
-              <item name="templateManager" type="462c0819:PsiDirectoryNode" />
-              <item name="pages" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IIIDDD" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IIIDDD" type="462c0819:PsiDirectoryNode" />
-              <item name="ticketsystem" type="462c0819:PsiDirectoryNode" />
-              <item name="webserver" type="462c0819:PsiDirectoryNode" />
-              <item name="webui" type="462c0819:PsiDirectoryNode" />
-              <item name="ticketexplorer" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="IIIDDD" type="b2602c69:ProjectViewProjectNode" />
@@ -581,7 +463,18 @@
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
-    <configuration name="TestErrorHandling in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="ExampleTicketManager_GetTicketById in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="Sem5_prog" />
+      <working_directory value="$PROJECT_DIR$/ticketsystem/webserver/data/ticket" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^ExampleTicketManager_GetTicketById$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestAccessDeniedPageRendering in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="Sem5_prog" />
       <working_directory value="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager" />
       <framework value="gotest" />
@@ -589,7 +482,7 @@
       <package value="de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager" />
       <directory value="$PROJECT_DIR$/" />
       <filePath value="$PROJECT_DIR$/" />
-      <pattern value="^TestErrorHandling$" />
+      <pattern value="^TestAccessDeniedPageRendering$" />
       <method v="2" />
     </configuration>
     <configuration name="TestLoginPageRendering in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -612,62 +505,52 @@
       <filePath value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
-    <configuration name="templateManager_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="Sem5_prog" />
-      <working_directory value="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager" />
-      <framework value="gotest" />
-      <kind value="FILE" />
-      <package value="de/vorlesung/projekt/IIIDDD" />
-      <directory value="$PROJECT_DIR$/" />
-      <filePath value="$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/templateManager_test.go" />
-      <method v="2" />
-    </configuration>
     <list>
       <item itemvalue="Go Test.go test Sem5_prog" />
       <item itemvalue="Go Test.TestLoginPageRendering in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager" />
-      <item itemvalue="Go Test.TestErrorHandling in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager" />
-      <item itemvalue="Go Test.templateManager_test.go" />
       <item itemvalue="Go Build.go build main.go" />
+      <item itemvalue="Go Test.TestAccessDeniedPageRendering in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager" />
+      <item itemvalue="Go Test.ExampleTicketManager_GetTicketById in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build main.go" />
         <item itemvalue="Go Test.go test Sem5_prog" />
-        <item itemvalue="Go Test.TestErrorHandling in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager" />
-        <item itemvalue="Go Test.templateManager_test.go" />
+        <item itemvalue="Go Test.ExampleTicketManager_GetTicketById in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket" />
+        <item itemvalue="Go Test.TestAccessDeniedPageRendering in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager" />
         <item itemvalue="Go Test.TestLoginPageRendering in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager" />
       </list>
     </recent_temporary>
   </component>
   <component name="TestHistory">
-    <history-entry file="TestErrorHandling_in_de_vorlesung_projekt_IIIDDD_ticketsystem_webserver_webui_templateManager - 2018.11.21 at 11h 23m 49s.xml">
-      <configuration name="TestErrorHandling in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager" configurationId="GoTestRunConfiguration" />
+    <history-entry file="TestAccessDeniedPageRendering_in_de_vorlesung_projekt_IIIDDD_ticketsystem_webserver_webui_templateManager - 2018.11.22 at 11h 10m 45s.xml">
+      <configuration name="TestAccessDeniedPageRendering in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestErrorHandling_in_de_vorlesung_projekt_IIIDDD_ticketsystem_webserver_webui_templateManager - 2018.11.21 at 11h 26m 04s.xml">
-      <configuration name="TestErrorHandling in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="templateManager_test_go - 2018.11.21 at 11h 26m 32s.xml">
-      <configuration name="templateManager_test.go" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestErrorHandling_in_de_vorlesung_projekt_IIIDDD_ticketsystem_webserver_webui_templateManager - 2018.11.21 at 11h 27m 30s.xml">
-      <configuration name="TestErrorHandling in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="go_test_Sem5_prog - 2018.11.21 at 11h 27m 43s.xml">
+    <history-entry file="go_test_Sem5_prog - 2018.11.22 at 11h 10m 52s.xml">
       <configuration name="go test Sem5_prog" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestErrorHandling_in_de_vorlesung_projekt_IIIDDD_ticketsystem_webserver_webui_templateManager - 2018.11.21 at 11h 30m 55s.xml">
-      <configuration name="TestErrorHandling in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="go_test_Sem5_prog - 2018.11.21 at 11h 31m 12s.xml">
+    <history-entry file="go_test_Sem5_prog - 2018.11.22 at 11h 12m 28s.xml">
       <configuration name="go test Sem5_prog" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="go_test_Sem5_prog - 2018.11.21 at 11h 31m 29s.xml">
+    <history-entry file="go_test_Sem5_prog - 2018.11.22 at 11h 14m 38s.xml">
       <configuration name="go test Sem5_prog" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="go_test_Sem5_prog - 2018.11.21 at 13h 06m 10s.xml">
+    <history-entry file="ExampleTicketManager_GetTicketById_in_de_vorlesung_projekt_IIIDDD_ticketsystem_webserver_data_ticket - 2018.11.22 at 11h 20m 24s.xml">
+      <configuration name="ExampleTicketManager_GetTicketById in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="go_test_Sem5_prog - 2018.11.22 at 11h 20m 37s.xml">
       <configuration name="go test Sem5_prog" configurationId="GoTestRunConfiguration" />
     </history-entry>
-    <history-entry file="go_test_Sem5_prog - 2018.11.21 at 19h 16m 14s.xml">
+    <history-entry file="go_test_Sem5_prog - 2018.11.22 at 11h 24m 23s.xml">
+      <configuration name="go test Sem5_prog" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="go_test_Sem5_prog - 2018.11.22 at 11h 25m 36s.xml">
+      <configuration name="go test Sem5_prog" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="go_test_Sem5_prog - 2018.11.22 at 11h 26m 37s.xml">
+      <configuration name="go test Sem5_prog" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="go_test_Sem5_prog - 2018.11.22 at 11h 26m 46s.xml">
       <configuration name="go test Sem5_prog" configurationId="GoTestRunConfiguration" />
     </history-entry>
   </component>
@@ -684,20 +567,20 @@
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1641791" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1641791" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49626866" weight="0.32939914" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.74626863" visible="true" weight="0.25883576" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4904051" weight="0.31330472" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.74520254" visible="true" weight="0.44282743" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.56449896" weight="0.45738044" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.4989339" weight="0.32832617" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.4978678" weight="0.32832617" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.25373134" side_tool="true" visible="true" weight="0.25883576" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.25479743" side_tool="true" visible="true" weight="0.44282743" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -765,27 +648,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://C:/Go/src/testing/testing.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="222">
-          <caret line="829" selection-start-line="829" selection-end-line="829" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Go/src/runtime/asm_amd64.s">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
-          <caret line="521" selection-start-line="521" selection-end-line="521" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Go/src/runtime/panic.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="492" column="35" selection-start-line="492" selection-start-column="35" selection-end-line="492" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/core/session/sessionManager_test.go" />
     <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/core/session/sessionManager.go" />
     <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/layouts.go" />
@@ -829,18 +691,6 @@
     <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/wrappers/authenticationHandler.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-193" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/templateManager_test.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="167">
-          <caret line="160" column="77" selection-start-line="160" selection-start-column="77" selection-end-line="160" selection-end-column="77" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/files/filesHandler_test.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2070" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/accessdenied/accessDeniedPageHandler.go">
@@ -969,30 +819,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/files/style/styleHandler.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="124" column="11" selection-start-line="124" selection-start-column="11" selection-end-line="124" selection-end-column="11" />
-          <folding>
-            <element signature="e#15#48#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/files/filesHandler.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="20" column="39" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/ticketexplorer/ticketExplorerPageHandler.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="537">
-          <caret line="52" column="1" selection-start-line="11" selection-end-line="52" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketInfo.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
@@ -1000,54 +826,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-270">
-          <caret line="42" column="43" selection-start-line="42" selection-start-column="43" selection-end-line="42" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/templateManager.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="598">
           <caret line="72" column="68" selection-start-line="72" selection-start-column="68" selection-end-line="72" selection-end-column="68" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/ticketExplorerPage.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-969">
-          <caret line="3" column="41" selection-start-line="3" selection-start-column="41" selection-end-line="3" selection-end-column="41" />
-          <folding>
-            <element signature="e#1400#1406#0" expanded="true" />
-            <element signature="e#1464#1470#0" expanded="true" />
-            <element signature="e#1783#1789#0" expanded="true" />
-            <element signature="e#1844#1850#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticket.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-105">
-          <caret line="25" column="17" selection-start-line="25" selection-start-column="5" selection-end-line="25" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/ticketView/ticketViewPageHandler.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="426">
-          <caret line="62" column="36" selection-start-line="62" selection-start-column="36" selection-end-line="62" selection-end-column="36" />
-          <folding>
-            <element signature="e#20#316#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/handlerManager.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="555">
-          <caret line="50" column="29" selection-start-line="50" selection-start-column="29" selection-end-line="50" selection-end-column="29" />
         </state>
       </provider>
     </entry>
@@ -1059,6 +841,106 @@
             <element signature="e#1396#1402#0" expanded="true" />
             <element signature="e#1471#1477#0" expanded="true" />
             <element signature="e#1812#1818#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/ticketexplorer/ticketExplorerPageHandler.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="575">
+          <caret line="52" column="1" selection-start-line="11" selection-end-line="52" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/pages/ticketExplorerPage.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-955">
+          <caret line="3" column="41" selection-start-line="3" selection-start-column="41" selection-end-line="3" selection-end-column="41" />
+          <folding>
+            <element signature="e#1400#1406#0" expanded="true" />
+            <element signature="e#1464#1470#0" expanded="true" />
+            <element signature="e#1783#1789#0" expanded="true" />
+            <element signature="e#1844#1850#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/handlerManager.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="555">
+          <caret line="50" column="29" selection-start-line="50" selection-start-column="29" selection-end-line="50" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/files/filesHandler.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="20" column="39" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticket.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-105">
+          <caret line="25" column="17" selection-start-line="25" selection-start-column="5" selection-end-line="25" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/files/filesHandler_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="615">
+          <caret line="66" column="6" selection-start-line="66" selection-start-column="6" selection-end-line="66" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/templateManager_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/templateManager/templateManager_testdata.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="278">
+          <caret line="36" column="11" selection-start-line="36" selection-start-column="11" selection-end-line="36" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="687">
+          <caret line="117" lean-forward="true" selection-start-line="117" selection-end-line="117" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/data/ticket/ticketContext.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-570">
+          <caret line="19" column="4" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Go/src/net/http/h2_bundle.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="5857" selection-start-line="5857" selection-end-line="5857" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/ticketView/ticketViewPageHandler.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="37" column="53" selection-start-line="37" selection-start-column="53" selection-end-line="37" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/webui/files/style/styleHandler.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="58" column="22" selection-start-line="58" selection-start-column="22" selection-end-line="58" selection-end-column="22" />
+          <folding>
+            <element signature="e#15#48#0" expanded="true" />
           </folding>
         </state>
       </provider>
