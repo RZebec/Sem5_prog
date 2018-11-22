@@ -48,12 +48,24 @@ var mainStyle = `
         font-size: 20px;
     }
 
+	body {
+		font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif; 
+	}
+
     div.content {
         background-color: #333;
         width: 100%;
         color: white;
 		font-size: 17px;
      	text-align: center;
+		min-height: 45em;
+    }
+	
+	div.container {
+		text-align: center;
+        margin: 3em 1em auto 1em;
+        display: inline-block;
+    	width: 100em;
     }`
 
 /*
@@ -102,37 +114,51 @@ var loginStyle = `
 
 	.error-message{
 		color: red;
-	}
-
-	div.container {
-		text-align: center;
-        height: 40em;
-        margin: 5em auto auto 5em;
-        display: inline-block;
-    	width: 50%;
-    }`
+	}`
 
 var ticketStyle = `
     
     h2 {
         text-align: center;
     }
-    
-    div.main {
+
+	table {
 		text-align: left;
-        width: 20em;
-        padding: 0.5em 1.5em 0.75em;
-        border: 2px solid gray;
-        border-radius: 10px;
-        float: left;
-        margin-top: 1.5em;
-    }
+    	border-collapse: collapse;
+    	width: 95em;
+		margin: 0.5em 1.5em 0.75em 1.5em;
+	}
+
+	table td, table th {
+   		border: 1px solid #595959;
+    	padding: 0.3em;
+	}
+
+	table tr:nth-child(even){background-color: #595959;}
+
+	table tr:hover {background-color: #737373;}
+
+	table th {
+    	padding-top: 0.3em;
+    	padding-bottom: 0.3em;
+    	text-align: left;
+    	background-color: #4CAF50;
+    	color: white;
+	}
+
+	.view-button {
+    	background-color: #4caf50;
+    	color: white;
+    	cursor: pointer;
+    	width: 100%;
+    	outline: none;
+    	border: none;
+    	height: 2em;
+    	text-decoration: none;
+	}
     
-    div.container {
-		text-align: center;
-		width: 80%;
-        margin: 5em auto auto 5em;
-        display: inline-block;
+    .view-button:hover {
+        background-color: rgba(76, 175, 79, 0.466);
     }`
 
 /*

@@ -11,6 +11,8 @@ var AccessDeniedPage = `
 	{{ define "Content" }}
 		<div class="topnav">
 			<a href="/">Home</a>
+
+			<a href="/tickets">Tickets</a>
 	
 			<span>OP-Ticket-System</span>
 

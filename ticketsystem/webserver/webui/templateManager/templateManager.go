@@ -70,6 +70,7 @@ func LoadTemplates() (err error) {
 	addTemplate(pages.LoginPage, "LoginPage", baseTemplate)
 	addTemplate(pages.AccessDeniedPage, "AccessDeniedPage", baseTemplate)
 	addTemplate(pages.TicketExplorerPage, "TicketExplorerPage", baseTemplate)
+	addTemplate(pages.TicketViewPage, "TicketViewPage", baseTemplate)
 
 	return nil
 }

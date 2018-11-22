@@ -17,7 +17,7 @@ import (
 type TicketContext interface {
 	CreateNewTicketForInternalUser(title string, editor user.User, initialMessage MessageEntry) (*Ticket, error)
 	CreateNewTicket(title string, creator Creator, initialMessage MessageEntry) (*Ticket, error)
-	GetTicketById(id int) (*Ticket, error)
+	GetTicketById(id int) (Ticket, error)
 	GetAllTicketInfo() []TicketInfo
 	AppendMessageToTicket(ticketId int, message MessageEntry) (*Ticket, error)
 }
@@ -41,7 +41,7 @@ func (t *TicketManager) AppendMessageToTicket(ticketId int, message MessageEntry
 
 		t.cachedTicketsMutex.Lock()
 		defer t.cachedTicketsMutex.Unlock()
-		t.cachedTickets[ticket.info.Id] = *ticket
+		t.cachedTickets[ticket.info.Id] = ticket
 
 		return ticket.Copy(), nil
 	} else {
@@ -66,12 +66,12 @@ func (t *TicketManager) GetAllTicketInfo() []TicketInfo {
 /*
 	Get a ticket by its id. Returns false if the ticket does not exist.
 */
-func (t *TicketManager) GetTicketById(id int) (*Ticket, error) {
+func (t *TicketManager) GetTicketById(id int) (Ticket, error) {
 	value, ok := t.cachedTickets[id]
 	if ok {
-		return value.Copy(), nil
+		return value, nil
 	}
-	return nil, errors.New("no tickets found for the the given id.")
+	return value, errors.New("no tickets found for the the given id.")
 }
 
 /*

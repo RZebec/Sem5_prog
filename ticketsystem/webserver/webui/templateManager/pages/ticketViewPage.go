@@ -1,11 +1,11 @@
 package pages
 
 /*
-	Html template for the Ticket Explorer Page.
+	Html template for the Ticket View Page.
 */
-var TicketExplorerPage = `	
+var TicketViewPage = `
 
-	{{ define "Title" }} Tickets {{ end }}
+	{{ define "Title" }} Ticket {{ end }}
 
 	{{ define "StylesAndScripts" }}
 		<link rel="stylesheet" href="/files/style/tickets"> 
@@ -48,32 +48,31 @@ var TicketExplorerPage = `
                             </th>
 							<th></th>
 						</tr>
-                        {{range .TicketInfo}}
                         <tr>
                             <td>
-                                {{.Title}}
+                                {{.TicketInfo.Title}}
                             </td>
                             <td>
-                                {{if .HasEditor}}
-                                    {{.Editor.LastName}},&nbsp;
-                                    {{.Editor.FirstName}}&nbsp;
-                                    {{.Editor.Mail}}
+                                {{if .TicketInfo.HasEditor}}
+                                    {{.TicketInfo.Editor.LastName}},&nbsp;
+                                    {{.TicketInfo.Editor.FirstName}}&nbsp;
+                                    {{.TicketInfo.Editor.Mail}}
                                 {{else}}
                                     Ticket has no editor
                                 {{end}}
                             </td>
                             <td>
-                                {{.Creator.LastName}},&nbsp;
-                                {{.Creator.FirstName}}&nbsp;
-                                {{.Creator.Mail}}
+                                {{.TicketInfo.Creator.LastName}},&nbsp;
+                                {{.TicketInfo.Creator.FirstName}}&nbsp;
+                                {{.TicketInfo.Creator.Mail}}
                             </td>
-                            <td id="creationTime_{{.Id}}">
+                            <td id="creationTime">
                             </td>
-                            <td id="lastModificationTime_{{.Id}}">
+                            <td id="lastModificationTime">
                             </td>
 							<script>
-								var creationTime = new Date({{.CreationTime}});
-								var lastModificationTime = new Date({{.LastModificationTime}});
+								var creationTime = new Date({{.TicketInfo.CreationTime}});
+								var lastModificationTime = new Date({{.TicketInfo.LastModificationTime}});
 								var options = {
         							weekday: "short",
         							year: "numeric",
@@ -85,16 +84,15 @@ var TicketExplorerPage = `
     							};
 								creationTime = creationTime.toLocaleDateString("de-DE", options);
 								lastModificationTime = lastModificationTime.toLocaleDateString("de-DE", options);
-								document.getElementById("creationTime_{{.Id}}").innerHTML = creationTime;
-								document.getElementById("lastModificationTime_{{.Id}}").innerHTML = lastModificationTime;
+								document.getElementById("creationTime").innerHTML = creationTime;
+								document.getElementById("lastModificationTime").innerHTML = lastModificationTime;
 							</script>
 							<td>
-								<button class="view-button" onclick="location.href='ticket/{{.Id}}';">
-									View
+								<button class="view-button" onclick="location.href='ticket_edit/{{.TicketInfo.Id}}';">
+									Edit
 								</button>
 							</td>
                         </tr>
-						{{end}}
 					</table>
 				</div>
 			</div>
