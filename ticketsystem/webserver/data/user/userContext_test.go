@@ -167,13 +167,57 @@ func TestLoginSystem_Login_CorrectLoginData_LoggedIn(t *testing.T) {
 	assert.True(t, success, "User should be registered")
 	assert.Nil(t, err)
 
-	success, token, err := testee.Login(userName, password)
+	success, token, err := testee.Login("Admin@Admin.de", "ChangeMe2018!")
+	assert.True(t, success, "Admin should be logged in")
+
+	createdUserId := -1
+	for _, entry := range testee.cachedUserData {
+		if entry.Mail == userName {
+			createdUserId = entry.UserId
+			break
+		}
+	}
+	unlocked, err := testee.UnlockAccount(token, createdUserId)
+	assert.True(t, unlocked, "user should be unlocked")
+
+	success, token, err = testee.Login(userName, password)
 
 	assert.True(t, success, "User should be logged in")
 	assert.NotEmpty(t, token, "The token should not be empty")
 	sessions := testee.currentSessions
 	_, ok := sessions[token]
 	assert.True(t, ok)
+}
+
+/*
+	Logging in with a valid login, but the account has not been unlocked.
+	Should result in a failed login.
+*/
+func TestLoginSystem_Login_CorrectLoginData_LockedAccount_NotLoggedIn(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+	err = testee.Initialize(folderPath)
+	assert.Nil(t, err)
+
+	userName := "testUser"
+	password := "secret"
+	firstName := "max"
+	lastName := "muster"
+	success, err := testee.Register(userName, password, firstName, lastName)
+
+	assert.True(t, success, "User should be registered")
+	assert.Nil(t, err)
+
+	success, token, err := testee.Login(userName, password)
+
+	assert.False(t, success, "User should not be logged in")
+	assert.Empty(t, token, "The token should be empty")
+	sessions := testee.currentSessions
+	_, ok := sessions[token]
+	assert.False(t, ok)
 }
 
 /*
@@ -290,6 +334,7 @@ func TestLoginSystem_Register_NoDataWasStored_UserIsRegistered(t *testing.T) {
 	assert.Equal(t, "testUser1", writtenData[1].Mail)
 	assert.Equal(t, "max", writtenData[1].FirstName)
 	assert.Equal(t, RegisteredUser, writtenData[1].Role)
+	assert.Equal(t, WaitingToBeUnlocked, writtenData[1].State)
 }
 
 /*
@@ -316,6 +361,7 @@ func TestLoginSystem_Register_NoDataWasStored_DefaultAccountIsCreated(t *testing
 	assert.Equal(t, "AdminUser", writtenData[0].FirstName)
 	assert.Equal(t, "AdminUser", writtenData[0].LastName)
 	assert.Equal(t, Admin, writtenData[0].Role)
+	assert.Equal(t, Active, writtenData[0].State)
 }
 
 /*
@@ -524,6 +570,327 @@ func TestLoginSystem_Register_UserNameAlreadyTaken(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Equal(t, "user with this name already exists", err.Error())
 }
+/*
+	It should be possible to unlock a account through the admin.
+ */
+func TestLoginSystem_UnlockAccount_AccountUnlocked(t *testing.T) {
+	testee := LoginSystem{}
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+	err = testee.Initialize(folderPath)
+	assert.Nil(t, err)
+
+	// Register a user. The user should then be in the state of "WaitingToBeUnlocked".
+	userName := "testUser"
+	password := "secret"
+	firstName := "max"
+	lastName := "muster"
+	success, err := testee.Register(userName, password, firstName, lastName)
+
+	found := false
+	createdUserId := -1
+	for _, entry := range testee.cachedUserData {
+		if entry.Mail == userName {
+			assert.Equal(t, WaitingToBeUnlocked, entry.State)
+			found = true
+			createdUserId = entry.UserId
+			break
+		}
+	}
+	assert.True(t, found, "User should be registered and state should be set to waiting to be unlocked.")
+	assert.True(t, success, "User should be registered")
+	assert.Nil(t, err)
+
+	// Login with the admin and unlock the user:
+	success, token, err := testee.Login("Admin@Admin.de", "ChangeMe2018!")
+	assert.True(t, success, "Admin should be logged in")
+
+	unlocked, err := testee.UnlockAccount(token, createdUserId)
+	assert.Nil(t, err)
+	assert.True(t, unlocked, "User account should be unlocked")
+
+	// Validate that the user is unlocked:
+	found = false
+	for _, entry := range testee.cachedUserData {
+		if entry.Mail == userName {
+			assert.Equal(t, Active, entry.State, "User account state should now be set to active")
+			found = true
+			createdUserId = entry.UserId
+			break
+		}
+	}
+	assert.True(t, found, "User should be unlocked and the cache should be updated.")
+}
+
+/**
+	Trying to unlock a account with a user witch is not a admin should fail.
+ */
+func TestLoginSystem_UnlockAccount_NoAdminRole(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+	// Write example data to the file
+	sampleDataPath := path.Join(folderPath, "loginData.json")
+	writeTestDataToFile(t, sampleDataPath)
+
+	err = testee.Initialize(folderPath)
+
+	// Register a user. The user should then be in the state of "WaitingToBeUnlocked".
+	userName := "NewlyCreatedTestUser"
+	password := "secret"
+	firstName := "max"
+	lastName := "muster"
+	success, err := testee.Register(userName, password, firstName, lastName)
+
+	found := false
+	createdUserId := -1
+	for _, entry := range testee.cachedUserData {
+		if entry.Mail == userName {
+			assert.Equal(t, WaitingToBeUnlocked, entry.State)
+			found = true
+			createdUserId = entry.UserId
+			break
+		}
+	}
+	assert.True(t, found, "User should be registered and state should be set to waiting to be unlocked.")
+	assert.True(t, success, "User should be registered")
+	assert.Nil(t, err)
+
+	// Log in with a user which is no admin:
+	success, token, err := testee.Login("testUser", "testPassword")
+	assert.True(t, success, "User should be logged in")
+
+	// Unlocking should not be possible:
+	unlocked, err := testee.UnlockAccount(token, createdUserId)
+	assert.NotNil(t, err)
+	assert.False(t, unlocked, "User account should not be unlocked")
+	assert.Equal(t, "current session has no permission to unlock accounts", err.Error())
+
+	// Assert that the user is not unlocked:
+	found = false
+	for _, entry := range testee.cachedUserData {
+		if entry.UserId == createdUserId {
+			assert.Equal(t, WaitingToBeUnlocked, entry.State)
+			found = true
+			createdUserId = entry.UserId
+			break
+		}
+	}
+	assert.True(t, found, "User state should still be set to waiting to be unlocked.")
+}
+
+/*
+	Unlocking a account witch is not in the correct state should return an error.
+ */
+func TestLoginSystem_UnlockAccount_AccountInWrongState(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+	// Write example data to the file
+	sampleDataPath := path.Join(folderPath, "loginData.json")
+	writeTestDataToFile(t, sampleDataPath)
+
+	err = testee.Initialize(folderPath)
+
+	// Assert that the target user is already unlocked and set to active:
+	found := false
+	createdUserId := -1
+	for _, entry := range testee.cachedUserData {
+		if entry.Mail == "testUser3" {
+			assert.Equal(t, Active, entry.State)
+			found = true
+			createdUserId = entry.UserId
+			break
+		}
+	}
+	assert.True(t, found, "User should be registered and state should be set to active.")
+	assert.Nil(t, err)
+
+	// Login with the admin to execute the operation:
+	success, token, err := testee.Login("testAdmin", "testPassword2")
+	assert.True(t, success, "Admin should be logged in")
+
+	// Assert that the account can not be unlocked again:
+	unlocked, err := testee.UnlockAccount(token, createdUserId)
+	assert.NotNil(t, err)
+	assert.False(t, unlocked, "User account should not be unlocked")
+	assert.Equal(t, "can not unlock a account, which is not in the waiting to be unlocked state", err.Error())
+}
+
+/*
+	Unlocking a account with an unknown id should return a error message.
+ */
+func TestLoginSystem_UnlockAccount_UnknownAccount(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+	// Write example data to the file
+	sampleDataPath := path.Join(folderPath, "loginData.json")
+	writeTestDataToFile(t, sampleDataPath)
+
+	err = testee.Initialize(folderPath)
+
+	// Login with the admin to execute the operation:
+	success, token, err := testee.Login("testAdmin", "testPassword2")
+	assert.True(t, success, "Admin should be logged in")
+
+	// Assert that a error message is returned.
+	unlocked, err := testee.UnlockAccount(token, 9999)
+	assert.NotNil(t, err)
+	assert.False(t, unlocked, "User account should not be unlocked")
+	assert.Equal(t, "user to unlock not found", err.Error())
+}
+
+/*
+	Enable the vacation mode for the own account.
+ */
+func TestLoginSystem_EnableVacationMode_Enabled(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+	// Write example data to the file
+	sampleDataPath := path.Join(folderPath, "loginData.json")
+	writeTestDataToFile(t, sampleDataPath)
+
+	err = testee.Initialize(folderPath)
+
+	// Login and assert that the state is set to active:
+	success, token, err := testee.Login("testUser5", "testPassword")
+	assert.True(t, success, "User should be logged in")
+
+	found := false
+	for _, entry := range testee.cachedUserData {
+		if entry.Mail == "testUser5" {
+			assert.Equal(t, Active, entry.State)
+			found = true
+			break
+		}
+	}
+	assert.True(t, found, "User should be registered and state should be active.")
+	assert.Nil(t, err)
+
+	// Enable the vacation mode:
+	err = testee.EnableVacationMode(token)
+	assert.Nil(t, err)
+
+	// Assert that the vacation mode has been set.
+	found = false
+	for _, entry := range testee.cachedUserData {
+		if entry.Mail == "testUser5" {
+			assert.Equal(t, OnVacation, entry.State)
+			found = true
+			break
+		}
+	}
+	assert.True(t, found, "User state should be set to on vacation.")
+	assert.Nil(t, err)
+}
+
+
+/*
+	Disabling the vacation mode should be possible.
+ */
+func TestLoginSystem_DisableVacationMode_Disabled(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+	// Write example data to the file
+	sampleDataPath := path.Join(folderPath, "loginData.json")
+	writeTestDataToFile(t, sampleDataPath)
+
+	err = testee.Initialize(folderPath)
+
+	// Login and set the vacation mode:
+	success, token, err := testee.Login("testUser5", "testPassword")
+	assert.True(t, success, "User should be logged in")
+
+	found := false
+	for _, entry := range testee.cachedUserData {
+		if entry.Mail == "testUser5" {
+			assert.Equal(t, Active, entry.State)
+			found = true
+			break
+		}
+	}
+	assert.True(t, found, "User should be registered and state should be active.")
+	assert.Nil(t, err)
+
+	err = testee.EnableVacationMode(token)
+	assert.Nil(t, err)
+
+	// Assert that the validation mode is set:
+	found = false
+	for _, entry := range testee.cachedUserData {
+		if entry.Mail == "testUser5" {
+			assert.Equal(t, OnVacation, entry.State)
+			found = true
+			break
+		}
+	}
+	assert.True(t, found, "User state should be set to on vacation.")
+	assert.Nil(t, err)
+
+	// Disable the vacation mode and assert that is has been disabled:
+	err = testee.DisableVacationMode(token)
+	assert.Nil(t, err)
+
+	found = false
+	for _, entry := range testee.cachedUserData {
+		if entry.Mail == "testUser5" {
+			assert.Equal(t, Active, entry.State)
+			found = true
+			break
+		}
+	}
+	assert.True(t, found, "User state should be set to active.")
+	assert.Nil(t, err)
+}
+
+/*
+	Disabling the vacation mode while the user is not in the vacation mode, should return a error message.
+ */
+func TestLoginSystem_DisableVacationMode_WrongState(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+	// Write example data to the file
+	sampleDataPath := path.Join(folderPath, "loginData.json")
+	writeTestDataToFile(t, sampleDataPath)
+
+	err = testee.Initialize(folderPath)
+
+	// Login and validate that the user is not in vacation mode:
+	success, token, err := testee.Login("testUser5", "testPassword")
+	assert.True(t, success, "User should be logged in")
+
+	found := false
+	for _, entry := range testee.cachedUserData {
+		if entry.Mail == "testUser5" {
+			assert.Equal(t, Active, entry.State)
+			found = true
+			break
+		}
+	}
+	assert.True(t, found, "User should be registered and state should be active.")
+	assert.Nil(t, err)
+
+	// Disable the vacation mode and validate the error message:
+	err = testee.DisableVacationMode(token)
+	assert.Equal(t, "can not set account to active, when it is not on vacation mode", err.Error())
+}
 
 /*
 	Preparing a temporary directory for tests, which need access to the file system.
@@ -584,16 +951,18 @@ const testLoginData = `[
 		"LastName": "Maximum0",
 		"StoredPass": "testPassword",
 		"StoredSalt": "1234",
-		"Role": 2
+		"Role": 2,
+        "State": 1
 	},
 	{
-		"Mail": "testUser",
+		"Mail": "testUser5",
 		"UserId": 1,
 		"FirstName": "Max1",
 		"LastName": "Maximum1",
 		"StoredPass": "testPassword",
 		"StoredSalt": "1234",
-		"Role": 2
+		"Role": 2,
+        "State": 1
 	},
 	{
 		"Mail": "testUser3",
@@ -602,7 +971,8 @@ const testLoginData = `[
 		"LastName": "Maximum2",
 		"StoredPass": "testPassword2",
 		"StoredSalt": "1234",
-		"Role": 2
+		"Role": 2,
+        "State": 1
 	},
 	{
 		"Mail": "testUser2",
@@ -611,7 +981,8 @@ const testLoginData = `[
 		"LastName": "Maximum3",
 		"StoredPass": "testPassword2",
 		"StoredSalt": "1234",
-		"Role": 2
+		"Role": 2,
+        "State": 1
 	},
 	{
 		"Mail": "testUser4",
@@ -620,15 +991,17 @@ const testLoginData = `[
 		"LastName": "Maximum4",
 		"StoredPass": "testPassword2",
 		"StoredSalt": "1234",
-		"Role": 2
+		"Role": 2,
+        "State": 1
 	},
 	{
-		"Mail": "testUser5",
+		"Mail": "testAdmin",
 		"UserId": 5,
 		"FirstName": "Max5",
 		"LastName": "Maximum5",
 		"StoredPass": "testPassword2",
 		"StoredSalt": "1234",
-		"Role": 2
+		"Role": 1,
+        "State": 1
 	}
 ]`
