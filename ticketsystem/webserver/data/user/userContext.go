@@ -35,7 +35,9 @@ type UserContext interface {
 	// Disable the vacation mode. Only possible for the currently logged-in account.
 	DisableVacationMode(token string) (err error)
 	// Unlock a account which is waiting to be unlocked. The current session needs the permission to do this.
-	UnlockAccount(currentToken string, userIdToUnlock int) (unlocked bool, err error)
+	UnlockAccount(currentUserToken string, userIdToUnlock int) (unlocked bool, err error)
+	// Changing the password of a user should be possible, but only for the user himself.
+	ChangePassword(currentUserToken string, currentUserPassword string, newPassword string) (changed bool, err error)
 }
 
 /*
@@ -141,6 +143,36 @@ func (s *LoginSystem) Register(userName string, password string, firstName strin
 	}
 	return true, nil
 }
+
+/*
+	Change the password for the user of the given session.
+ */
+func (s *LoginSystem) ChangePassword(currentUserToken string, currentUserPassword string, newPassword string) (changed bool, err error){
+	isValid, userId, userName, err := s.SessionIsValid(currentUserToken)
+	if err != nil {
+		return false, err
+	}
+	if !isValid {
+		return false, errors.New("invalid session token")
+	}
+
+	//s.cachedUserDataMutex.RLock()
+	//defer s.cachedUserDataMutex.RUnlock()
+
+	for _, v := range s.cachedUserData {
+		if strings.ToLower(v.Mail) == strings.ToLower(userName) && v.UserId == userId {
+			valid := s.checkUserCredentials(v, currentUserPassword)
+			if valid {
+				user := User{Mail: v.Mail, UserId: v.UserId, FirstName: v.FirstName, LastName: v.LastName, Role: v.Role,
+					State: v.State}
+				//s.cachedUserDataMutex.RUnlock()
+				return s.changeUserPassword(user, newPassword)
+			}
+		}
+	}
+	return false, errors.New("user password could not be changed")
+}
+
 
 /*
 	Logout a user.
@@ -521,4 +553,35 @@ func (s *LoginSystem) checkIfUserIsInAdminRole(userId int) (isAdmin bool) {
 		}
 	}
 	return false
+}
+
+func (s *LoginSystem) changeUserPassword(user User, newPassword string) (bool, error) {
+	s.fileAccessMutex.Lock()
+	defer s.fileAccessMutex.Unlock()
+
+	data, err := s.readJsonDataFromFile(s.loginDataFilePath)
+	if err != nil {
+		return false, err
+	}
+	found := false
+	for index, entry := range data {
+		if entry.UserId == user.UserId {
+			generatedLoginData := s.generateLoginData(user.Mail, newPassword, user.UserId, user.FirstName,
+				user.LastName, user.Role, user.State)
+			data[index] = generatedLoginData
+			found = true
+			break
+		}
+	}
+	if found {
+		err = s.writeJsonDataToFile(s.loginDataFilePath, data)
+		if err != nil {
+			return false, err
+		}
+	} else {
+		return false, errors.New("user to unlock not found")
+	}
+
+	s.readFileAndUpdateCache(s.loginDataFilePath)
+	return true, nil
 }

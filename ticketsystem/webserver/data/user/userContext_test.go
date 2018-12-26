@@ -147,6 +147,113 @@ func TestLoginSystem_Initialize_DataFileAlreadyExists_DataIsLoaded(t *testing.T)
 }
 
 /*
+	A user should be able to change his own password.
+*/
+func TestLoginSystem_ChangePassword_PasswordChanged(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+	// Write example data to the file
+	sampleDataPath := path.Join(folderPath, "loginData.json")
+	writeTestDataToFile(t, sampleDataPath)
+
+	err = testee.Initialize(folderPath)
+	// No error should occur:
+	assert.Nil(t, err)
+
+	userName := "testUser4"
+	userPassword := "testPassword2"
+	newPassword := "Test1234!"
+	// The user should be logged in
+	success, token, err := testee.Login(userName, userPassword)
+	assert.True(t, success, "User should not be logged in")
+	assert.NotEmpty(t, token, "The token should not be empty")
+
+	changed, err := testee.ChangePassword(token, userPassword, newPassword)
+	assert.True(t, changed, "The password should be changed")
+	assert.Nil(t, err)
+
+	found := false
+	for _, entry := range testee.cachedUserData {
+		if entry.Mail == userName {
+			assert.Equal(t, newPassword, entry.StoredPass)
+			found = true
+			break
+		}
+	}
+	assert.True(t, found, "User should be found.")
+
+	// Assert that the stored password has been changed:
+	writtenData, err := getDataFromFile(testee.loginDataFilePath)
+	assert.Nil(t, err)
+	found = false
+	for _, entry := range writtenData {
+		if entry.Mail == userName {
+			assert.Equal(t, newPassword, entry.StoredPass)
+			found = true
+			break
+		}
+	}
+	assert.True(t, found, "Written user should be found.")
+}
+
+/*
+	A user should be able to change his own password.
+*/
+func TestLoginSystem_ChangePassword_InvalidPassword_PasswordNotChanged(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+	// Write example data to the file
+	sampleDataPath := path.Join(folderPath, "loginData.json")
+	writeTestDataToFile(t, sampleDataPath)
+
+	err = testee.Initialize(folderPath)
+	// No error should occur:
+	assert.Nil(t, err)
+
+	userName := "testUser4"
+	oldPassword := "testPassword2"
+	newPassword := "Test1234!"
+	// The user should be logged in
+	success, token, err := testee.Login(userName, oldPassword)
+	assert.True(t, success, "User should not be logged in")
+	assert.NotEmpty(t, token, "The token should not be empty")
+
+	// Use a wrong password
+	changed, err := testee.ChangePassword(token, oldPassword+"545", newPassword)
+	assert.False(t, changed, "The password should not be changed")
+	assert.Equal(t, "user password could not be changed", err.Error())
+
+	found := false
+	for _, entry := range testee.cachedUserData {
+		if entry.Mail == userName {
+			assert.Equal(t, oldPassword, entry.StoredPass)
+			found = true
+			break
+		}
+	}
+	assert.True(t, found, "User should be found.")
+
+	// Assert that the written data has not been changed:
+	writtenData, err := getDataFromFile(testee.loginDataFilePath)
+	assert.Nil(t, err)
+	found = false
+	for _, entry := range writtenData {
+		if entry.Mail == userName {
+			assert.Equal(t, oldPassword, entry.StoredPass)
+			found = true
+			break
+		}
+	}
+	assert.True(t, found, "Written user should be found.")
+}
+
+/*
 	Logging in with a valid login, should result in a new session.
 */
 func TestLoginSystem_Login_CorrectLoginData_LoggedIn(t *testing.T) {
@@ -244,7 +351,7 @@ func TestLoginSystem_Login_IncorrectLoginData_NotLoggedIn(t *testing.T) {
 	// The user should not be logged in
 	success, token, err := testee.Login(userName, "test123")
 	assert.False(t, success, "User should not be logged in")
-	assert.Equal(t, "", token, "The token should not be empty")
+	assert.Equal(t, "", token, "The token should be empty")
 
 	// A session should not be created
 	sessions := testee.currentSessions
@@ -570,9 +677,10 @@ func TestLoginSystem_Register_UserNameAlreadyTaken(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Equal(t, "user with this name already exists", err.Error())
 }
+
 /*
 	It should be possible to unlock a account through the admin.
- */
+*/
 func TestLoginSystem_UnlockAccount_AccountUnlocked(t *testing.T) {
 	testee := LoginSystem{}
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -624,8 +732,8 @@ func TestLoginSystem_UnlockAccount_AccountUnlocked(t *testing.T) {
 }
 
 /**
-	Trying to unlock a account with a user witch is not a admin should fail.
- */
+Trying to unlock a account with a user witch is not a admin should fail.
+*/
 func TestLoginSystem_UnlockAccount_NoAdminRole(t *testing.T) {
 	testee := LoginSystem{}
 
@@ -684,7 +792,7 @@ func TestLoginSystem_UnlockAccount_NoAdminRole(t *testing.T) {
 
 /*
 	Unlocking a account witch is not in the correct state should return an error.
- */
+*/
 func TestLoginSystem_UnlockAccount_AccountInWrongState(t *testing.T) {
 	testee := LoginSystem{}
 
@@ -724,7 +832,7 @@ func TestLoginSystem_UnlockAccount_AccountInWrongState(t *testing.T) {
 
 /*
 	Unlocking a account with an unknown id should return a error message.
- */
+*/
 func TestLoginSystem_UnlockAccount_UnknownAccount(t *testing.T) {
 	testee := LoginSystem{}
 
@@ -750,7 +858,7 @@ func TestLoginSystem_UnlockAccount_UnknownAccount(t *testing.T) {
 
 /*
 	Enable the vacation mode for the own account.
- */
+*/
 func TestLoginSystem_EnableVacationMode_Enabled(t *testing.T) {
 	testee := LoginSystem{}
 
@@ -795,10 +903,9 @@ func TestLoginSystem_EnableVacationMode_Enabled(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-
 /*
 	Disabling the vacation mode should be possible.
- */
+*/
 func TestLoginSystem_DisableVacationMode_Disabled(t *testing.T) {
 	testee := LoginSystem{}
 
@@ -859,7 +966,7 @@ func TestLoginSystem_DisableVacationMode_Disabled(t *testing.T) {
 
 /*
 	Disabling the vacation mode while the user is not in the vacation mode, should return a error message.
- */
+*/
 func TestLoginSystem_DisableVacationMode_WrongState(t *testing.T) {
 	testee := LoginSystem{}
 
