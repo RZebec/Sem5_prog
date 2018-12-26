@@ -42,6 +42,7 @@ type storedUserData struct {
 	LastName   string
 	StoredPass string
 	StoredSalt string
+	Role       UserRole
 }
 
 /*
@@ -71,37 +72,17 @@ type LoginSystem struct {
 	Initializes the LoginSystem. Uses the provided folder path to store the data.
 */
 func (s *LoginSystem) Initialize(folderPath string) (err error) {
-	s.setDefaultValues()
-	// Validate the provided path:
-	if folderPath == "" {
-		return errors.New("path to login data storage can not be a empty string")
-	}
-	// We are going to execute file operations => set the lock:
-	s.fileAccessMutex.Lock()
-	defer s.fileAccessMutex.Unlock()
-
-	// Create the path to the folder (if necessary):
-	s.loginDataFilePath = path.Join(folderPath, s.loginDataFileName)
-	pathExists, er := helpers.FilePathExists(folderPath)
+	var er = s.initializeFiles(folderPath)
 	if er != nil {
 		return er
 	}
-	if !pathExists {
-		er = helpers.CreateFolderPath(folderPath)
+	if len(s.cachedUserData) == 0 {
+		er := s.registerNewUser("Admin@Admin.de", "ChangeMe2018!", "AdminUser", "AdminUser", Admin)
 		if er != nil {
 			return er
 		}
 	}
-	// Create the storage file (if necessary):
-	er = helpers.CreateFileIfNotExists(s.loginDataFilePath)
-	if er != nil {
-		return er
-	}
-	// Read the data from the file and fill the cache:
-	er = s.readFileAndUpdateCache(s.loginDataFilePath)
-	if er != nil {
-		return er
-	}
+
 	return
 }
 
@@ -146,7 +127,7 @@ func (s *LoginSystem) Register(userName string, password string, firstName strin
 		return false, errors.New("user with this name already exists")
 	}
 	// Register the new user:
-	er := s.registerNewUser(userName, password, firstName, lastName)
+	er := s.registerNewUser(userName, password, firstName, lastName, RegisteredUser)
 	if er != nil {
 		return false, errors.New("could not create new user. reason: " + er.Error())
 	}
@@ -200,6 +181,42 @@ func (s *LoginSystem) Login(userName string, password string) (success bool, aut
 	}
 
 	return false, "", errors.New("user not found")
+}
+
+func (s *LoginSystem) initializeFiles(folderPath string) (err error) {
+	s.setDefaultValues()
+	// Validate the provided path:
+	if folderPath == "" {
+		return errors.New("path to login data storage can not be a empty string")
+	}
+	// We are going to execute file operations => set the lock:
+	s.fileAccessMutex.Lock()
+	defer s.fileAccessMutex.Unlock()
+
+	// Create the path to the folder (if necessary):
+	s.loginDataFilePath = path.Join(folderPath, s.loginDataFileName)
+	pathExists, er := helpers.FilePathExists(folderPath)
+	if er != nil {
+		return er
+	}
+	if !pathExists {
+		er = helpers.CreateFolderPath(folderPath)
+		if er != nil {
+			return er
+		}
+	}
+	// Create the storage file (if necessary):
+	er = helpers.CreateFileIfNotExists(s.loginDataFilePath)
+	if er != nil {
+		return er
+	}
+	// Read the data from the file and fill the cache:
+	er = s.readFileAndUpdateCache(s.loginDataFilePath)
+	if er != nil {
+		return er
+	}
+
+	return
 }
 
 /*
@@ -260,14 +277,14 @@ func (s *LoginSystem) checkIfUserExistsOnCache(userName string) bool {
 /*
 	Register a new user.
 */
-func (s *LoginSystem) registerNewUser(userName string, password string, firstName string, lastName string) (err error) {
+func (s *LoginSystem) registerNewUser(userName string, password string, firstName string, lastName string, role UserRole) (err error) {
 	s.fileAccessMutex.Lock()
 	defer s.fileAccessMutex.Unlock()
 	existingData, err := s.readJsonDataFromFile(s.loginDataFilePath)
 	if err != nil {
 		return err
 	}
-	generatedLoginData := s.generateLoginData(userName, password, len(existingData)+1, firstName, lastName)
+	generatedLoginData := s.generateLoginData(userName, password, len(existingData)+1, firstName, lastName, role)
 	newData := append(existingData, generatedLoginData)
 	err = s.writeJsonDataToFile(s.loginDataFilePath, newData)
 	if err != nil {
@@ -283,14 +300,15 @@ func (s *LoginSystem) registerNewUser(userName string, password string, firstNam
 	Generates the login data.
 */
 func (s *LoginSystem) generateLoginData(userName string, password string, newId int,
-	firstName string, lastName string) (userData storedUserData) {
+	firstName string, lastName string, role UserRole) (userData storedUserData) {
 	// TODO: Adjust with password salting and stuff....
 	return storedUserData{Mail: userName,
 		StoredPass: password,
 		StoredSalt: "1234",
 		UserId:     newId,
 		FirstName:  firstName,
-		LastName:   lastName}
+		LastName:   lastName,
+		Role:       role}
 }
 
 /*

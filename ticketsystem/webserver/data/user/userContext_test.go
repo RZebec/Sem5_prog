@@ -285,10 +285,37 @@ func TestLoginSystem_Register_NoDataWasStored_UserIsRegistered(t *testing.T) {
 	writtenData, err := getDataFromFile(testee.loginDataFilePath)
 	assert.Nil(t, err)
 
+	// There should be two accounts. The newly registered and the default admin account.
+	assert.Equal(t, 2, len(writtenData))
+	assert.Equal(t, "testUser1", writtenData[1].Mail)
+	assert.Equal(t, "max", writtenData[1].FirstName)
+	assert.Equal(t, RegisteredUser, writtenData[1].Role)
+}
+
+/*
+	Register a user when no previous data was stored, should be possible.
+*/
+func TestLoginSystem_Register_NoDataWasStored_DefaultAccountIsCreated(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	if err != nil {
+		t.Error(err)
+	}
+	err = testee.Initialize(folderPath)
+	// No error should occur:
+	assert.Nil(t, err)
+
+	writtenData, err := getDataFromFile(testee.loginDataFilePath)
+	assert.Nil(t, err)
+
+	// There should be two accounts. The newly registered and the default admin account.
 	assert.Equal(t, 1, len(writtenData))
-	assert.Equal(t, writtenData[0].Mail, "testUser1")
-	assert.Equal(t, writtenData[0].FirstName, "max")
-	assert.Equal(t, writtenData[0].LastName, "muster")
+	assert.Equal(t, "Admin@Admin.de", writtenData[0].Mail)
+	assert.Equal(t, "AdminUser", writtenData[0].FirstName)
+	assert.Equal(t, "AdminUser", writtenData[0].LastName)
+	assert.Equal(t, Admin, writtenData[0].Role)
 }
 
 /*
@@ -375,7 +402,8 @@ func TestLoginSystem_Register_ConcurrentAccess_AllRegistered(t *testing.T) {
 	writtenData, err := getDataFromFile(testee.loginDataFilePath)
 	assert.Nil(t, err)
 
-	assert.Equal(t, numberOfRegistrations, len(writtenData))
+	// All users should be registered, but there is also the default admin account.
+	assert.Equal(t, numberOfRegistrations+1, len(writtenData))
 	for i := 0; i < numberOfRegistrations; i++ {
 		found := false
 		for _, v := range writtenData {
@@ -555,7 +583,8 @@ const testLoginData = `[
 		"FirstName": "Max0",
 		"LastName": "Maximum0",
 		"StoredPass": "testPassword",
-		"StoredSalt": "1234"
+		"StoredSalt": "1234",
+		"Role": 2
 	},
 	{
 		"Mail": "testUser",
@@ -563,7 +592,8 @@ const testLoginData = `[
 		"FirstName": "Max1",
 		"LastName": "Maximum1",
 		"StoredPass": "testPassword",
-		"StoredSalt": "1234"
+		"StoredSalt": "1234",
+		"Role": 2
 	},
 	{
 		"Mail": "testUser3",
@@ -571,7 +601,8 @@ const testLoginData = `[
 		"FirstName": "Max2",
 		"LastName": "Maximum2",
 		"StoredPass": "testPassword2",
-		"StoredSalt": "1234"
+		"StoredSalt": "1234",
+		"Role": 2
 	},
 	{
 		"Mail": "testUser2",
@@ -579,7 +610,8 @@ const testLoginData = `[
 		"FirstName": "Max3",
 		"LastName": "Maximum3",
 		"StoredPass": "testPassword2",
-		"StoredSalt": "1234"
+		"StoredSalt": "1234",
+		"Role": 2
 	},
 	{
 		"Mail": "testUser4",
@@ -587,7 +619,8 @@ const testLoginData = `[
 		"FirstName": "Max4",
 		"LastName": "Maximum4",
 		"StoredPass": "testPassword2",
-		"StoredSalt": "1234"
+		"StoredSalt": "1234",
+		"Role": 2
 	},
 	{
 		"Mail": "testUser5",
@@ -595,6 +628,7 @@ const testLoginData = `[
 		"FirstName": "Max5",
 		"LastName": "Maximum5",
 		"StoredPass": "testPassword2",
-		"StoredSalt": "1234"
+		"StoredSalt": "1234",
+		"Role": 2
 	}
 ]`
