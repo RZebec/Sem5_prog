@@ -2,22 +2,25 @@ package main
 
 import (
 	"bufio"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/clientContainer"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/inputContainer"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"fmt"
 	"os"
 )
 
-func main()  {
+func main() {
 	logger := logging.ConsoleLogger{SetTimeStamp: true}
-	config := config.Configuration{}
-	config.RegisterFlags()
-	config.BindFlags()
+	inputContainer := inputContainer.Configuration{}
+	inputContainer.RegisterFlags()
+	inputContainer.BindFlags()
 
-	if !config.ValidateConfiguration(logger) {
+	if !inputContainer.ValidateConfiguration(logger) {
 		fmt.Println("Configuration is not valid. Press enter to exit application.")
 		reader := bufio.NewReader(os.Stdin)
 		reader.ReadByte()
 		return
 	}
+
+	clientContainer.HttpRequest(inputContainer.BaseUrl, inputContainer.Port, inputContainer.CertificatePath, "Test")
 }

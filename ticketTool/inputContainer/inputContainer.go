@@ -9,9 +9,9 @@ import (
 )
 
 type Configuration struct {
-	Port                 int
-	BaseUrl              string
-	CertificatePath      string
+	Port            int
+	BaseUrl         string
+	CertificatePath string
 }
 
 func (c *Configuration) RegisterFlags() {
@@ -19,12 +19,14 @@ func (c *Configuration) RegisterFlags() {
 	flag.IntVar(&c.Port, "port", 9000, "the port to use")
 	flag.StringVar(&c.CertificatePath, "certificatePath", "cert.pem", "path to the certificate")
 }
+
 /*
 	Bind the flags to the configuration.
 */
 func (c *Configuration) BindFlags() {
 	flag.Parse()
 }
+
 /*
 	Validate the configuration and use the logger to print out the validation error.
 */
