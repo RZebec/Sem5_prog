@@ -131,6 +131,239 @@ func ExampleTicketManager_AppendMessageToTicket() {
 }
 
 /*
+	Setting the editor when no editor is set should work.
+*/
+func TestTicketManager_SetEditor_NoPreviousEditor_EditorIsSet(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	// Load some prepared tickets:
+	err = writeTestDataToFolder(folderPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	// Ensure, that the ticket has no editor set:
+	_, testTicket := testee.GetTicketById(2)
+	testEditor := user.User{Mail: "test@test", UserId: 2, FirstName: "first", LastName: "last", Role: user.RegisteredUser, State: user.Active}
+	assert.False(t, testTicket.info.HasEditor, "No editor should be set")
+
+	// Set the editor:
+	testee.SetEditor(testEditor, testTicket.info.Id)
+
+	// Assert that the ticket has been updated:
+	_, updatedTicket := testee.GetTicketById(testTicket.info.Id)
+	assert.True(t, updatedTicket.info.HasEditor, "Editor should be set")
+	assert.Equal(t, 2, updatedTicket.info.Editor.UserId, "Editor should be set")
+	assert.Equal(t, testEditor, updatedTicket.info.Editor, "Editor should be set")
+
+	// Assert that the stored file has been updated:
+	storedTicket, err := readTicketFromFile(updatedTicket.filePath)
+	assert.Equal(t, testEditor, storedTicket.info.Editor)
+}
+
+/*
+	Setting the editor when no editor is set should work.
+*/
+func TestTicketManager_SetEditor_PreviousEditorSet_EditorIsUpdated(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	// Load some prepared tickets:
+	err = writeTestDataToFolder(folderPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	// Ensure, that the ticket has a editor set:
+	_, testTicket := testee.GetTicketById(3)
+	testEditor := user.User{Mail: "test@test", UserId: 2, FirstName: "first", LastName: "last", Role: user.RegisteredUser, State: user.Active}
+	assert.True(t, testTicket.info.HasEditor, "Editor should be set")
+
+	// Update the editor:
+	_, err = testee.SetEditor(testEditor, testTicket.info.Id)
+	assert.Nil(t, err)
+
+	// Assert that the ticket has been updated:
+	_, updatedTicket := testee.GetTicketById(testTicket.info.Id)
+	assert.True(t, updatedTicket.info.HasEditor, "Editor should be set")
+	assert.Equal(t, 2, updatedTicket.info.Editor.UserId, "Editor should be set")
+	assert.Equal(t, testEditor, updatedTicket.info.Editor, "Editor should be set")
+
+	// Assert that the stored file has been updated:
+	storedTicket, err := readTicketFromFile(updatedTicket.filePath)
+	assert.Equal(t, testEditor, storedTicket.info.Editor)
+}
+
+/*
+	A ticket can be merged with another ticket. The messages from the newer tickets will be attached to the older ticket.
+	The newer ticket will be deleted.
+*/
+func TestTicketManager_MergeTickets_TicketsAreMerged(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	// Load some prepared tickets:
+	err = writeTestDataToFolder(folderPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	_, firstTicket := testee.GetTicketById(1)
+	_, secondTicket := testee.GetTicketById(2)
+
+	// Tickets need to have the same editor:
+	testEditor := user.User{Mail: "test@test", UserId: 2, FirstName: "first", LastName: "last", Role: user.RegisteredUser, State: user.Active}
+	_, err = testee.SetEditor(testEditor, 1)
+	assert.Nil(t, err)
+	_, err = testee.SetEditor(testEditor, 2)
+	assert.Nil(t, err)
+
+	// Merge the tickets:
+	success, err := testee.MergeTickets(1, 2)
+	assert.True(t, success, "Tickets should be merged")
+	assert.Nil(t, err)
+
+	// Ticket 1 is older, so Ticket 2 should be deleted:
+	exists, _ := testee.GetTicketById(2)
+	assert.False(t, exists, "Ticket 2 should be deleted")
+
+	exists, mergedTicket := testee.GetTicketById(1)
+	assert.True(t, exists, "Ticket 1 should still exist")
+
+	// Assert that the messages have been merged:
+	assert.Equal(t, len(firstTicket.messages)+len(secondTicket.messages), len(mergedTicket.messages),
+		"Merged ticket should contain all messages")
+
+	// All messages from the first ticket should be merged:
+	for _, message := range firstTicket.messages {
+		found := false
+		for _, mergedMessage := range mergedTicket.messages {
+			if message.Content == mergedMessage.Content {
+				found = true
+				break
+			}
+		}
+		assert.True(t, found, "Messages from the first ticket should be merged")
+	}
+	// All messages from the second ticket should be merged:
+	for _, message := range secondTicket.messages {
+		found := false
+		for _, mergedMessage := range mergedTicket.messages {
+			if message.Content == mergedMessage.Content {
+				found = true
+				break
+			}
+		}
+		assert.True(t, found, "Messages from the second ticket should be merged")
+	}
+	secondTicketFileExists, err := helpers.FilePathExists(secondTicket.filePath)
+	assert.False(t, secondTicketFileExists, "The file for the second ticket should be deleted")
+	assert.Nil(t, err)
+
+	cached, _ := testee.GetTicketById(secondTicket.info.Id)
+	assert.False(t, cached, "The second ticket should be removed from the cache")
+}
+
+/*
+	Merging a non existing ticket should not be possible. A error should be returned.
+*/
+func TestTicketManager_MergeTickets_TicketDoesNotExist(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	// Load some prepared tickets:
+	err = writeTestDataToFolder(folderPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	success, err := testee.MergeTickets(9999, 1)
+	assert.False(t, success, "Merging a non existing ticket should not be possible")
+	assert.Equal(t, "ticket not found", err.Error())
+
+	success, err = testee.MergeTickets(1, 9999)
+	assert.False(t, success, "Merging a non existing ticket should not be possible")
+	assert.Equal(t, "ticket not found", err.Error())
+}
+
+/*
+	Merging a ticket without a editor should not be possible. A error should be returned.
+*/
+func TestTicketManager_MergeTickets_NoEditorSet(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	// Load some prepared tickets:
+	err = writeTestDataToFolder(folderPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	success, err := testee.MergeTickets(1, 2)
+	assert.False(t, success, "Merging a ticket without editor should not be possible")
+	assert.Equal(t, "can not merge ticket if there is no editor", err.Error())
+
+	success, err = testee.MergeTickets(2, 1)
+	assert.False(t, success, "Merging a ticket without editor should not be possible")
+	assert.Equal(t, "can not merge ticket if there is no editor", err.Error())
+}
+
+/*
+	Merging a tickets with different editors should not be possible. A error should be returned.
+*/
+func TestTicketManager_MergeTickets_DifferentEditorSet(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	// Load some prepared tickets:
+	err = writeTestDataToFolder(folderPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	success, err := testee.MergeTickets(3, 4)
+	assert.False(t, success, "Merging a tickets with different editors should not be possible")
+	assert.Equal(t, "only tickets of the same editor can be merged", err.Error())
+
+	success, err = testee.MergeTickets(4, 3)
+	assert.False(t, success, "Merging a tickets with different editors should not be possible")
+	assert.Equal(t, "only tickets of the same editor can be merged", err.Error())
+}
+
+/*
+	Merging a tickets with the same id should not be possible. A error should be returned.
+*/
+func TestTicketManager_MergeTickets_MergeTicketWithItself(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	// Load some prepared tickets:
+	err = writeTestDataToFolder(folderPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	success, err := testee.MergeTickets(1, 1)
+	assert.False(t, success, "Merging a ticket with itself should not be possible")
+	assert.Equal(t, "can not merge a ticket with itself", err.Error())
+}
+
+/*
 	Getting the ticket infos when no tickets exists, should return a empty array.
 */
 func TestTicketManager_GetAllTicketInfo_NoTickets_EmptyArrayReturned(t *testing.T) {

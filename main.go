@@ -45,13 +45,13 @@ func main() {
 	ticketContext := ticket.TicketManager{}
 	ticketContext.Initialize(config.TicketDataFolderPath)
 
-	ticketg, err := ticketContext.CreateNewTicket("TestTitle", ticket.Creator{Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
-		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent", OnlyInternal: false})
-	fmt.Println(ticketg)
-	ticketg, err = ticketContext.CreateNewTicket("TestTitle2", ticket.Creator{Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
-		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent", OnlyInternal: false})
+	ticketa, err := ticketContext.CreateNewTicket("TestTitle", ticket.Creator{Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
+		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent1", OnlyInternal: false})
+	fmt.Println(ticketa)
+	ticketb, err := ticketContext.CreateNewTicket("TestTitle2", ticket.Creator{Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
+		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent2", OnlyInternal: false})
 
-	ticketg, err = ticketContext.CreateNewTicketForInternalUser("TestTitle", user.User{UserId: 1, Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
+	ticketg, err := ticketContext.CreateNewTicketForInternalUser("TestTitle", user.User{UserId: 1, Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
 		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent", OnlyInternal: false})
 	fmt.Println(ticketg)
 
@@ -62,6 +62,12 @@ func main() {
 	exists, ticket := ticketContext.GetTicketById(2)
 	fmt.Println(exists)
 	fmt.Println(ticket)
+
+	user := user.User{"test@test", 2, "first", "last", user.RegisteredUser, user.Active}
+	ticketContext.SetEditor(user, ticketa.Info().Id)
+	ticketContext.SetEditor(user, ticketb.Info().Id)
+	suc, err := ticketContext.MergeTickets(ticketa.Info().Id, ticketb.Info().Id)
+	fmt.Println(suc)
 
 	g := ticketContext.GetAllTicketInfo()
 	fmt.Println(len(g))
