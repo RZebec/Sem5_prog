@@ -25,11 +25,17 @@ func tempHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	logger := logging.ConsoleLogger{SetTimeStamp: true}
-	config := config.Configuration{}
-	config.RegisterFlags()
-	config.BindFlags()
+	configuration := config.Configuration{}
+	configuration.RegisterFlags()
+	configuration.BindFlags()
 
-	if !config.ValidateConfiguration(logger) {
+	apiConfig, err := config.CreateAndInitialize(configuration)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(apiConfig)
+
+	if !configuration.ValidateConfiguration(logger) {
 		fmt.Println("Configuration is not valid. Press enter to exit application.")
 		reader := bufio.NewReader(os.Stdin)
 		reader.ReadByte()
@@ -37,18 +43,18 @@ func main() {
 	}
 
 	userContext := user.LoginSystem{}
-	err := userContext.Initialize(config.LoginDataFolderPath)
+	err = userContext.Initialize(configuration.LoginDataFolderPath)
 	if err != nil {
 		panic(err)
 	}
 
 	ticketContext := ticket.TicketManager{}
-	ticketContext.Initialize(config.TicketDataFolderPath)
+	ticketContext.Initialize(configuration.TicketDataFolderPath)
 
 	ticketa, err := ticketContext.CreateNewTicket("TestTitle", ticket.Creator{Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
 		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent1", OnlyInternal: false})
 	fmt.Println(ticketa)
-	ticketb, err := ticketContext.CreateNewTicket("TestTitle2", ticket.Creator{Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
+	ticketa, err = ticketContext.CreateNewTicket("TestTitle2", ticket.Creator{Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
 		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent2", OnlyInternal: false})
 
 	ticketg, err := ticketContext.CreateNewTicketForInternalUser("TestTitle", user.User{UserId: 1, Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
@@ -63,12 +69,6 @@ func main() {
 	fmt.Println(exists)
 	fmt.Println(ticket)
 
-	user := user.User{"test@test", 2, "first", "last", user.RegisteredUser, user.Active}
-	ticketContext.SetEditor(user, ticketa.Info().Id)
-	ticketContext.SetEditor(user, ticketb.Info().Id)
-	suc, err := ticketContext.MergeTickets(ticketa.Info().Id, ticketb.Info().Id)
-	fmt.Println(suc)
-
 	g := ticketContext.GetAllTicketInfo()
 	fmt.Println(len(g))
 
@@ -79,7 +79,7 @@ func main() {
 	http.HandleFunc("/files/", tempHandler)
 	http.HandleFunc("/example", wrapper.ServeHTTP)
 
-	if err := http.ListenAndServeTLS(config.GetServiceUrl(), config.CertificatePath, config.CertificateKeyPath, nil); err != nil {
+	if err := http.ListenAndServeTLS(configuration.GetServiceUrl(), configuration.CertificatePath, configuration.CertificateKeyPath, nil); err != nil {
 		panic(err)
 	}
 
