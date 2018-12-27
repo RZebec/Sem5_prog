@@ -1,14 +1,14 @@
 package clientContainer
 
 import (
-	"crypto/x509"
 	"crypto/tls"
+	"crypto/x509"
 	"io/ioutil"
 	"log"
 	"strconv"
 )
 
-func HttpRequest(baseUrl string, port int, certificatePath string, message string) []byte{
+func HttpsRequest(baseUrl string, port int, certificatePath string, message string) []byte {
 	log.SetFlags(log.Lshortfile)
 
 	cert, err := ioutil.ReadFile(certificatePath)
@@ -26,10 +26,10 @@ func HttpRequest(baseUrl string, port int, certificatePath string, message strin
 	defer conn.Close()
 
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
 	}
 
-	n, err := conn.Write([]byte(message+"\n"))
+	n, err := conn.Write([]byte(message + "\n"))
 	if err != nil {
 		log.Println(n, err)
 	}

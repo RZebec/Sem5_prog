@@ -22,5 +22,6 @@ func main() {
 		return
 	}
 
-	clientContainer.HttpRequest(inputContainer.BaseUrl, inputContainer.Port, inputContainer.CertificatePath, "Test")
+	message := clientContainer.HttpsRequest(inputContainer.BaseUrl, inputContainer.Port, inputContainer.CertificatePath, "Test")
+	fmt.Println(message)
 }
