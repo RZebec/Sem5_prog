@@ -25,6 +25,19 @@ func main() {
 		return
 	}
 
+	// TODO: REMOVE only for Test
+	/*apiClient, err := client.CreateClient(config)
+	if err != nil {
+		log.Fatal(err)
+	}
+	mails := *new([]mail.Mail)
+	mails = append(mails, mail.Mail{Sender: "test@test.de", Subject: "testsubject", Content: "testcontent"} )
+	err = apiClient.SendMails(mails)
+	if err != nil {
+		log.Fatal(err)
+	}*/
+	// TODO: Remove till here
+
 	fmt.Print("write Email or load Email ? (w/l):")
 	reader := bufio.NewReader(os.Stdin)
 	message := make([]byte, 100)

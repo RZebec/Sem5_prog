@@ -5,9 +5,11 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -21,6 +23,18 @@ func foohandler(w http.ResponseWriter, r *http.Request) {
 func tempHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Hello")
 	w.Write([]byte(r.URL.Path))
+}
+
+func incomingApiHandler(w http.ResponseWriter, req *http.Request) {
+	decoder := json.NewDecoder(req.Body)
+	var t []mail.Mail
+	err := decoder.Decode(&t)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(t)
+	}
+	w.WriteHeader(200)
 }
 
 func main() {
@@ -72,6 +86,7 @@ func main() {
 	http.HandleFunc("/", foohandler)
 	http.HandleFunc("/files/", tempHandler)
 	http.HandleFunc("/example", wrapper.ServeHTTP)
+	http.HandleFunc("/api/mail/incoming", incomingApiHandler)
 
 	if err := http.ListenAndServeTLS(config.GetServiceUrl(), config.CertificatePath, config.CertificateKeyPath, nil); err != nil {
 		panic(err)
