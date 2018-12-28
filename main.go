@@ -6,10 +6,10 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/api"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/api/mails"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"fmt"
 	"net/http"
 	"os"
@@ -24,7 +24,6 @@ func tempHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Hello")
 	w.Write([]byte(r.URL.Path))
 }
-
 
 func main() {
 	logger := logging.ConsoleLogger{SetTimeStamp: true}
@@ -75,14 +74,17 @@ func main() {
 	g := ticketContext.GetAllTicketInfo()
 	fmt.Println(len(g))
 
-	exampleHandler := webui.ExampleHtmlHandler{Prefix: "Das ist mein Prefix"}
-	wrapper := core.Handler{Next: exampleHandler}
-
-
-	http.HandleFunc("/", foohandler)
-	http.HandleFunc("/files/", tempHandler)
-	http.HandleFunc("/example", wrapper.ServeHTTP)
 	http.HandleFunc("/api/mail/incoming", getIncomingMailHandlerChain(*apiConfig).ServeHTTP)
+
+	handlerManager := webui.HandlerManager{
+		UserContext:   &userContext,
+		TicketContext: &ticketContext,
+		Config:        configuration,
+		Logger:        logger,
+	}
+
+	templateManager.LoadTemplates(logger)
+	handlerManager.StartServices()
 
 	if err := http.ListenAndServeTLS(configuration.GetServiceUrl(), configuration.CertificatePath, configuration.CertificateKeyPath, nil); err != nil {
 		panic(err)

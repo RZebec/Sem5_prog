@@ -12,13 +12,14 @@ import (
 	A struct to hold configuration values.
 */
 type Configuration struct {
-	LoginDataFolderPath  string
-	TicketDataFolderPath string
-	Port                 int
-	BaseUrl              string
-	CertificatePath      string
-	CertificateKeyPath   string
-	ApiKeyFilePath       string
+	LoginDataFolderPath   string
+	TicketDataFolderPath  string
+	Port                  int
+	BaseUrl               string
+	CertificatePath       string
+	CertificateKeyPath    string
+	ApiKeyFilePath        string
+	AccessTokenCookieName string
 }
 
 /*
@@ -32,6 +33,7 @@ func (c *Configuration) RegisterFlags() {
 	flag.StringVar(&c.CertificateKeyPath, "certificateKeyPath", "key.pem", "path to the certificate key file")
 	flag.StringVar(&c.CertificatePath, "certificatePath", "cert.pem", "path to the certificate")
 	flag.StringVar(&c.ApiKeyFilePath, "apiKeysFilePath", "data/api.keys", "path to the apiKey file")
+	flag.StringVar(&c.AccessTokenCookieName, "accessTokenCookieName", "AccessTokenCookie", "name of the cookie containing the access token")
 }
 
 /*
