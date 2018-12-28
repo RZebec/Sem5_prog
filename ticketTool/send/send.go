@@ -2,13 +2,12 @@ package main
 
 import (
 	"bufio"
-	"de/vorlesung/projekt/IIIDDD/ticketTool/clientContainer"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/configuration"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"fmt"
-	"io/ioutil"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -25,43 +24,26 @@ func main() {
 		return
 	}
 
-	fmt.Print("write Email or load Email ? (w/l):")
-	reader := bufio.NewReader(os.Stdin)
-	message := make([]byte, 100)
+	fmt.Print("write explicit mail or random mails ? (e/r):")
+	email := mail.Mail{}
+	eMails := []mail.Mail{}
 
 	for true {
-		answer, _ := reader.ReadString('\n')
-		answer = strings.TrimRight(answer, "\n")
-		if answer == "w" {
-			writeEmail()
-			break
-		} else if answer == "l" {
-			for true {
-				fmt.Print("Enter email path:")
-				path := readEntry()
-				answer, available := loadEmail(path)
-				if available == true {
-					message = answer
-					break
-				}
-			}
+		answer := readEntry()
+		if answer == "e" {
+			eMails = email.ExplicitMail()
+		} else if answer == "r" {
+			validateNumberOfRandomMails(email, eMails)
 		} else {
-			fmt.Print("wrong entry. Please press w or l: ")
+			fmt.Print("wrong entry. Please press e or r: ")
 		}
 	}
 
 	fmt.Println("Email: ")
-	fmt.Println(string(message))
 	fmt.Println("")
 	fmt.Println("Start HTTPS-Request")
 
-	clientContainer.HttpsRequest(config.BaseUrl, config.Port, config.CertificatePath, string(message))
 }
-
-func writeEmail() {
-
-}
-
 func readEntry() string {
 	reader := bufio.NewReader(os.Stdin)
 	value, _ := reader.ReadString('\n')
@@ -69,27 +51,16 @@ func readEntry() string {
 	return value
 }
 
-func loadEmail(path string) ([]byte, bool) {
-	logger := logging.ConsoleLogger{SetTimeStamp: true}
-	exists, err := helpers.FilePathExists(path)
-	if err != nil {
-		logger.LogError("Load File failure", err)
-		return make([]byte, 0), false
-	}
-	if exists == false {
-		fmt.Println("File doesnt exist")
-		return make([]byte, 0), false
-	} else {
-		return loadFile(path)
-	}
-}
+func validateNumberOfRandomMails(email mail.Mail, eMails []mail.Mail) {
+	for true {
+		fmt.Println("Entry number of Random Mails: ")
+		number, err := strconv.Atoi(readEntry())
 
-func loadFile(path string) ([]byte, bool) {
-	logger := logging.ConsoleLogger{SetTimeStamp: true}
-	dat, err := ioutil.ReadFile(path)
-	if err != nil {
-		logger.LogError("Read File is going wrong", err)
-		return dat, false
+		if err != nil {
+			fmt.Println("Entry is no Number!")
+		} else {
+			eMails = email.RandomMail(number)
+			break
+		}
 	}
-	return dat, true
 }
