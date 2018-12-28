@@ -1,4 +1,4 @@
-package config
+package configuration
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
@@ -45,7 +45,7 @@ func ExampleConfiguration_ValidateConfiguration_PortIsToBig_ReturnsFalse() {
 /*
 	Validation should fail, if the certificate file does not exist.
 */
-func TestConfiguration_ValidateConfiguration_CertificateDoesNotExist_ReturnsFalse(t *testing.T) {
+func ExampleConfiguration_ValidateConfiguration_CertificateDoesNotExist_ReturnsFalse() {
 	logger := logging.ConsoleLogger{}
 	config := Configuration{}
 	config.BindFlags()
@@ -60,10 +60,14 @@ func TestConfiguration_ValidateConfiguration_CertificateDoesNotExist_ReturnsFals
 }
 
 /*
-	Validation should fail, if the certificate key does not exist.
+	Validation should fail, if the certificate file does not exist.
 */
-func ExampleConfiguration_ValidateConfiguration_CertificateKeyDoesNotExist_ReturnsFalse() {
-	// Create a temporary file for the certificate. Otherwise the certificate key file would not be checked.
+func ExampleConfiguration_ValidateConfiguration_ApiKeyFileDoesNotExist_ReturnsFalse() {
+	logger := logging.ConsoleLogger{}
+	config := Configuration{}
+	config.BindFlags()
+
+	// Create a temporary file for the certificate. Otherwise the api key file would not be checked.
 	tmpfile, err := ioutil.TempFile("", "example")
 	if err != nil {
 		log.Fatal(err)
@@ -71,35 +75,13 @@ func ExampleConfiguration_ValidateConfiguration_CertificateKeyDoesNotExist_Retur
 
 	defer os.Remove(tmpfile.Name()) // clean up
 
-	logger := logging.ConsoleLogger{}
-	config := Configuration{}
-	config.BindFlags()
-
 	// The path should not exist.
 	config.CertificatePath = tmpfile.Name()
-	config.CertificateKeyPath = "Temp/sdsodk"
-
+	config.ApiKeysFilePath = "/Temp/test/jspemdusoem.key"
 	valid := config.ValidateConfiguration(logger)
 	fmt.Println(valid)
 	//Output:
-	// <Error>[Configuration]: Certificate key path does not exist
-	// false
-}
-
-/*
-	Validation should fail, if the api key file does not exist.
-*/
-func TestConfiguration_ValidateConfiguration_ApiKeyFileDoesNotExist_ReturnsFalse(t *testing.T) {
-	logger := logging.ConsoleLogger{}
-	config := Configuration{}
-	config.BindFlags()
-
-	// The path should not exist.
-	config.ApiKeyFilePath = "/Temp/test/jspemdusoem.key"
-	valid := config.ValidateConfiguration(logger)
-	fmt.Println(valid)
-	//Output:
-	// <Error>[Configuration]: Api key file path does not exist
+	// <Error>[Configuration]: Api keys file path does not exist
 	// false
 }
 
@@ -115,10 +97,5 @@ func TestConfiguration_RegisterAndBindFlags(t *testing.T) {
 	// Default values should be set:
 	assert.Equal(t, "localhost", config.BaseUrl, "default value for host should be set")
 	assert.Equal(t, 9000, config.Port, "default value for port should be set")
-	assert.Equal(t, "key.pem", config.CertificateKeyPath, "default value for certificate key file should be set")
 	assert.Equal(t, "cert.pem", config.CertificatePath, "default value for certificate should be set")
-	assert.Equal(t, "data/tickets", config.TicketDataFolderPath, "default value for ticket data path should be set")
-	assert.Equal(t, "data/login", config.LoginDataFolderPath, "default value for login data path should be set")
-
-	assert.Equal(t, "localhost:9000", config.GetServiceUrl(), "url and port should be concatenated")
 }
