@@ -94,6 +94,6 @@ func main() {
 func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration) http.Handler {
 	incomingMailHandler := mails.IncomingMailHandler{}
 	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,
-		Next: &incomingMailHandler}
+		Next: &incomingMailHandler, AllowedMethod: "POST"}
 	return &apiAuthenticationHandler
 }

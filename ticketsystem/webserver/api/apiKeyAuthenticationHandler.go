@@ -10,9 +10,15 @@ import (
 type ApiKeyAuthenticationHandler struct {
 	Next           core.HttpHandler
 	ApiKeyResolver func() string
+	AllowedMethod string
 }
 
 func (h *ApiKeyAuthenticationHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	if req.Method != h.AllowedMethod {
+		w.WriteHeader(401)
+		return
+	}
+
 	cookies := req.Cookies()
 	for _, cookie := range cookies{
 		if strings.ToLower(cookie.Name) == strings.ToLower(shared.AuthenticationCookieName) {

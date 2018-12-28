@@ -98,6 +98,7 @@ func TestApiClient_SendMails_ReturnsOk(t *testing.T) {
 
 	// Configure the client:
 	conf := configuration.Configuration{}
+	conf.ApiKeysFilePath = "test_api.keys"
 	conf = AdjustConfigurationToTestServer(t, conf, *server)
 	testee, err := CreateClient(conf)
 	assert.Nil(t, err)
