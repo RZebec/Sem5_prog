@@ -8,6 +8,8 @@ type User struct {
 	UserId    int
 	FirstName string
 	LastName  string
+	Role      UserRole
+	State     UserState
 }
 
 /*
@@ -21,5 +23,5 @@ func (u *User) GetUserNameString() string {
 	Copy the user.
 */
 func (u *User) Copy() User {
-	return User{Mail: u.Mail, UserId: u.UserId, FirstName: u.FirstName, LastName: u.LastName}
+	return User{Mail: u.Mail, UserId: u.UserId, FirstName: u.FirstName, LastName: u.LastName, Role: u.Role, State: u.State}
 }

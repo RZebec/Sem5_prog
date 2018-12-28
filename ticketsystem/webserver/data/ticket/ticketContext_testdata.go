@@ -23,8 +23,8 @@ const firstTestTicket = `{
 {
 "Id": 0,
 "CreatorMail": "test@test.de",
-"CreationTime": "2018-10-27T18:23:04.0831377+02:00",
-"Content": "TestContent",
+"CreationTime": "2018-09-27T18:23:04.0831377+02:00",
+"Content": "TestContent1",
 "OnlyInternal": false
 }
 ]
@@ -54,7 +54,7 @@ const secondTestTicket = `{
             "Id": 0,
             "CreatorMail": "test@test.de",
             "CreationTime": "2018-10-27T18:23:04.0951371+02:00",
-            "Content": "TestContent",
+            "Content": "TestContent2",
             "OnlyInternal": false
         }
     ]
@@ -84,7 +84,7 @@ const thirdTestTicket = `{
             "Id": 0,
             "CreatorMail": "test@test.de",
             "CreationTime": "2018-10-27T18:23:04.107137+02:00",
-            "Content": "TestContent",
+            "Content": "TestContent3",
             "OnlyInternal": false
         }
     ]
@@ -114,7 +114,7 @@ const fourthTestTicket = `{
             "Id": 0,
             "CreatorMail": "peter@test.de",
             "CreationTime": "2018-10-27T18:23:04.1201396+02:00",
-            "Content": "TestContent",
+            "Content": "TestContent4",
             "OnlyInternal": true
         }
     ]
