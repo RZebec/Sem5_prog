@@ -12,12 +12,15 @@ type Configuration struct {
 	Port            int
 	BaseUrl         string
 	CertificatePath string
+	ApiKeysFilePath string
 }
 
 func (c *Configuration) RegisterFlags() {
 	flag.StringVar(&c.BaseUrl, "baseUrl", "localhost", "the base url")
 	flag.IntVar(&c.Port, "port", 9000, "the port to use")
 	flag.StringVar(&c.CertificatePath, "certificatePath", "cert.pem", "path to the certificate")
+	flag.StringVar(&c.ApiKeysFilePath, "apiKeysFilePAth", "api.keys", "path to the api key file")
+
 }
 
 /*
@@ -45,6 +48,17 @@ func (c *Configuration) ValidateConfiguration(log logging.Logger) bool {
 		log.LogError("Configuration", errors.New("Certificate path does not exist"))
 		return false
 	}
+
+	exists, err = helpers.FilePathExists(c.ApiKeysFilePath)
+	if err != nil {
+		log.LogError("Configuration", errors.Wrap(err, "Could not validate api key file path"))
+		return false
+	}
+	if !exists {
+		log.LogError("Configuration", errors.New("Api keys file path does not exist"))
+		return false
+	}
+
 
 	return true
 }

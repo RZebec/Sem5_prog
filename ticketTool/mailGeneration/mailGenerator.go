@@ -1,6 +1,7 @@
-package main
+package mailGeneration
 
 import (
+	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"fmt"
 	"math/rand"
@@ -13,7 +14,11 @@ var senders = []string{"test1@gmx.de", "Oberheld.asdf@web.de", "horstChristianAn
 var recievers = []string{"test2@gmx.de", "SuperOberheld.asdf@web.de", "FranzhorstChristianAnderson@zip.org", "Terrorist@asd.com",
 	"ad.du@ff.de", "kakhaufen@lang.de", "abcbnm.defg@hij.de", "blabla@bla.de", "laborGrube@saft.de", "orange@blau.de", "hohlfruchtigerSaft@haze.de"}
 
-func RandomMail(n int) []mail.Mail {
+type MailGenerator struct {
+
+}
+
+func (m *MailGenerator) RandomMail(n int) []mail.Mail {
 	mails := make([]mail.Mail, n)
 	for i := 0; i < n; i++ {
 		mail := mail.Mail{}
@@ -26,16 +31,16 @@ func RandomMail(n int) []mail.Mail {
 	return mails
 }
 
-func ExplicitMail() []mail.Mail {
+func (m *MailGenerator) ExplicitMail() []mail.Mail {
 	email := mail.Mail{}
 	fmt.Print("Entry subject: ")
-	email.Subject = readEntry()
+	email.Subject = inputOutput.ReadEntry()
 	fmt.Print("Entry text: ")
-	email.Content = readEntry()
+	email.Content = inputOutput.ReadEntry()
 	fmt.Print("Enter your Reciever: ")
-	email.Receiver = readEntry()
+	email.Receiver = inputOutput.ReadEntry()
 	fmt.Print("Enter your SenderMail: ")
-	email.Sender = readEntry()
+	email.Sender = inputOutput.ReadEntry()
 
 	mails := make([]mail.Mail, 1)
 	mails[0] = email

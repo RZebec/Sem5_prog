@@ -161,6 +161,9 @@ func readKeysFromFile(filePath string) (ApiConfiguration, error) {
 		return ApiConfiguration{}, err
 	}
 	parsedData := new(persistedData)
-	json.Unmarshal(fileValue, &parsedData)
+	err = json.Unmarshal(fileValue, &parsedData)
+	if err != nil {
+		return ApiConfiguration{}, err
+	}
 	return ApiConfiguration{incomingMailApiKey: parsedData.IncomingMailApiKey, outgoingMailApiKey: parsedData.OutgoingMailApiKey}, nil
 }

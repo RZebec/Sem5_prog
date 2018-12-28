@@ -4,13 +4,14 @@ import (
 	"bufio"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/client"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/configuration"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/mailGeneration"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"fmt"
 	"log"
 	"os"
 	"strconv"
-	"strings"
 )
 
 func main() {
@@ -18,6 +19,8 @@ func main() {
 	config := configuration.Configuration{}
 	config.RegisterFlags()
 	config.BindFlags()
+
+	mailGenerator := mailGeneration.MailGenerator{}
 
 	if !config.ValidateConfiguration(logger) {
 		fmt.Println("Configuration is not valid. Press enter to exit application.")
@@ -30,14 +33,14 @@ func main() {
 	var eMails []mail.Mail
 
 	for true {
-		answer := readEntry()
+		answer := inputOutput.ReadEntry()
 		if answer == "e" {
-			eMails = ExplicitMail()
+			eMails = mailGenerator.ExplicitMail()
 			httpRequest(config, eMails)
 			break
 		} else if answer == "r" {
 			number := entryNumberOfRandomMails()
-			eMails = RandomMail(number)
+			eMails = mailGenerator.RandomMail(number)
 			httpRequest(config, eMails)
 			break
 		} else {
@@ -55,17 +58,12 @@ func httpRequest(config configuration.Configuration, eMails []mail.Mail) {
 	apiClient.SendMails(eMails)
 }
 
-func readEntry() string {
-	reader := bufio.NewReader(os.Stdin)
-	value, _ := reader.ReadString('\n')
-	value = strings.TrimRight(value, "\n")
-	return value
-}
+
 
 func entryNumberOfRandomMails() int {
 	for true {
 		fmt.Println("Entry number of Random Mails: ")
-		number, err := strconv.Atoi(readEntry())
+		number, err := strconv.Atoi(inputOutput.ReadEntry())
 		if err != nil {
 			fmt.Println("Entry is no Number!")
 		} else {

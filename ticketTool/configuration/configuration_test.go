@@ -4,13 +4,16 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"io/ioutil"
+	"log"
+	"os"
 	"testing"
 )
 
 /*
 	Example for validation of a configuration with a invalid (negative) port value.
 */
-func TestExampleConfiguration_ValidateConfiguration_PortIsNegative_ReturnsFalse(t *testing.T) {
+func ExampleConfiguration_ValidateConfiguration_PortIsNegative_ReturnsFalse() {
 	logger := logging.ConsoleLogger{}
 	config := Configuration{}
 	config.BindFlags()
@@ -26,7 +29,7 @@ func TestExampleConfiguration_ValidateConfiguration_PortIsNegative_ReturnsFalse(
 /*
 	Example for validation of a configuration with a invalid (too big) port value.
 */
-func TestExampleConfiguration_ValidateConfiguration_PortIsToBig_ReturnsFalse(t *testing.T) {
+func ExampleConfiguration_ValidateConfiguration_PortIsToBig_ReturnsFalse() {
 	logger := logging.ConsoleLogger{}
 	config := Configuration{}
 	config.BindFlags()
@@ -42,7 +45,7 @@ func TestExampleConfiguration_ValidateConfiguration_PortIsToBig_ReturnsFalse(t *
 /*
 	Validation should fail, if the certificate file does not exist.
 */
-func TestConfiguration_ValidateConfiguration_CertificateDoesNotExist_ReturnsFalse(t *testing.T) {
+func ExampleConfiguration_ValidateConfiguration_CertificateDoesNotExist_ReturnsFalse() {
 	logger := logging.ConsoleLogger{}
 	config := Configuration{}
 	config.BindFlags()
@@ -53,6 +56,32 @@ func TestConfiguration_ValidateConfiguration_CertificateDoesNotExist_ReturnsFals
 	fmt.Println(valid)
 	//Output:
 	// <Error>[Configuration]: Certificate path does not exist
+	// false
+}
+
+/*
+	Validation should fail, if the certificate file does not exist.
+*/
+func ExampleConfiguration_ValidateConfiguration_ApiKeyFileDoesNotExist_ReturnsFalse() {
+	logger := logging.ConsoleLogger{}
+	config := Configuration{}
+	config.BindFlags()
+
+	// Create a temporary file for the certificate. Otherwise the api key file would not be checked.
+	tmpfile, err := ioutil.TempFile("", "example")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer os.Remove(tmpfile.Name()) // clean up
+
+	// The path should not exist.
+	config.CertificatePath = tmpfile.Name()
+	config.ApiKeysFilePath = "/Temp/test/jspemdusoem.key"
+	valid := config.ValidateConfiguration(logger)
+	fmt.Println(valid)
+	//Output:
+	// <Error>[Configuration]: Api keys file path does not exist
 	// false
 }
 
