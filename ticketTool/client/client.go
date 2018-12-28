@@ -1,9 +1,9 @@
 package client
 
-import "de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data"
+import "de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 
 type Client interface {
-	SendMails(mails []data.Mail) error
-	ReceiveMails() ([]data.Mail, error)
+	SendMails(mails []mail.Mail) error
+	ReceiveMails() ([]mail.Mail, error)
 	AcknowledgeMails(mailIds []int) error
 }
