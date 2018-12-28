@@ -4,6 +4,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core"
 	"net/http"
+	"strings"
 )
 
 type ApiKeyAuthenticationHandler struct {
@@ -12,13 +13,17 @@ type ApiKeyAuthenticationHandler struct {
 }
 
 func (h *ApiKeyAuthenticationHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	for _, cookie := range req.Cookies() {
-		if cookie.Name == shared.AuthenticationCookieName {
+	cookies := req.Cookies()
+	for _, cookie := range cookies{
+		if strings.ToLower(cookie.Name) == strings.ToLower(shared.AuthenticationCookieName) {
 			apiKey := cookie.Value
-			if h.ApiKeyResolver() == apiKey {
+			currentApiKey := h.ApiKeyResolver()
+			if currentApiKey == apiKey {
 				h.Next.ServeHTTP(w, req)
+				return
 			} else {
 				w.WriteHeader(401)
+				return
 			}
 			break
 		}

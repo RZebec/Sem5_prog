@@ -20,11 +20,10 @@ type Client interface {
 	AcknowledgeMails(mailIds []string) error
 }
 
-
 type ApiClient struct {
 	baseUrl string
-	port int
-	client *http.Client
+	port    int
+	client  *http.Client
 }
 
 func (c *ApiClient) buildPostRequest(url string, data []byte) (*http.Request, error) {
@@ -36,13 +35,13 @@ func (c *ApiClient) buildPostRequest(url string, data []byte) (*http.Request, er
 	return req, nil
 }
 
-func (c *ApiClient) SendMails(mails []mail.Mail) error{
+func (c *ApiClient) SendMails(mails []mail.Mail) error {
 	jsonData, err := json.Marshal(mails)
 	if err != nil {
 		return err
 	}
-	url := "https://" +  c.baseUrl +  ":" + strconv.Itoa(c.port) + shared.SendPath
-	req , err := c.buildPostRequest(url, jsonData)
+	url := "https://" + c.baseUrl + ":" + strconv.Itoa(c.port) + shared.SendPath
+	req, err := c.buildPostRequest(url, jsonData)
 	if err != nil {
 		return err
 	}
@@ -57,7 +56,7 @@ func (c *ApiClient) SendMails(mails []mail.Mail) error{
 	return nil
 }
 
-func (c *ApiClient) ReceiveMails() ([]mail.Mail, error){
+func (c *ApiClient) ReceiveMails() ([]mail.Mail, error) {
 	return *new([]mail.Mail), nil
 }
 
@@ -65,20 +64,20 @@ func (c *ApiClient) AcknowledgeMails(mailIds []string) error {
 	return nil
 }
 
-func CreateClient(config configuration.Configuration) (ApiClient, error){
+func CreateClient(config configuration.Configuration) (ApiClient, error) {
 	apiClient := ApiClient{}
 	apiClient.baseUrl = config.BaseUrl
 	apiClient.port = config.Port
 
 	caCert, err := ioutil.ReadFile(config.CertificatePath)
-   if err != nil {
-			  return apiClient, err
-	  }
-   caCertPool := x509.NewCertPool()
-   caCertPool.AppendCertsFromPEM(caCert)
+	if err != nil {
+		return apiClient, err
+	}
+	caCertPool := x509.NewCertPool()
+	caCertPool.AppendCertsFromPEM(caCert)
 
-   apiClient.client = &http.Client{
-	   Transport: &http.Transport{ TLSClientConfig: &tls.Config{ RootCAs: caCertPool }, },}
+	apiClient.client = &http.Client{
+		Transport: &http.Transport{TLSClientConfig: &tls.Config{RootCAs: caCertPool}}}
 
-   return apiClient, nil
+	return apiClient, nil
 }

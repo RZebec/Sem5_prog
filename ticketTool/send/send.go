@@ -27,18 +27,17 @@ func main() {
 	}
 	fmt.Print("write explicit mail or random mails ? (e/r):")
 
-	email := mail.Mail{}
-	eMails := []mail.Mail{}
+	var eMails []mail.Mail
 
 	for true {
 		answer := readEntry()
 		if answer == "e" {
-			eMails = email.ExplicitMail()
+			eMails = ExplicitMail()
 			httpRequest(config, eMails)
 			break
 		} else if answer == "r" {
 			number := entryNumberOfRandomMails()
-			eMails = email.RandomMail(number)
+			eMails = RandomMail(number)
 			httpRequest(config, eMails)
 			break
 		} else {
