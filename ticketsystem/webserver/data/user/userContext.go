@@ -30,6 +30,14 @@ type UserContext interface {
 	Register(userName string, password string, firstName string, lastName string) (success bool, err error)
 	// Logout a user.
 	Logout(authToken string)
+	// Set a account to vacation mode. Only possible for the currently logged-in account.
+	EnableVacationMode(token string) (err error)
+	// Disable the vacation mode. Only possible for the currently logged-in account.
+	DisableVacationMode(token string) (err error)
+	// Unlock a account which is waiting to be unlocked. The current session needs the permission to do this.
+	UnlockAccount(currentUserToken string, userIdToUnlock int) (unlocked bool, err error)
+	// Changing the password of a user should be possible, but only for the user himself.
+	ChangePassword(currentUserToken string, currentUserPassword string, newPassword string) (changed bool, err error)
 }
 
 /*
@@ -42,6 +50,8 @@ type storedUserData struct {
 	LastName   string
 	StoredPass string
 	StoredSalt string
+	Role       UserRole
+	State      UserState
 }
 
 /*
@@ -71,37 +81,18 @@ type LoginSystem struct {
 	Initializes the LoginSystem. Uses the provided folder path to store the data.
 */
 func (s *LoginSystem) Initialize(folderPath string) (err error) {
-	s.setDefaultValues()
-	// Validate the provided path:
-	if folderPath == "" {
-		return errors.New("path to login data storage can not be a empty string")
-	}
-	// We are going to execute file operations => set the lock:
-	s.fileAccessMutex.Lock()
-	defer s.fileAccessMutex.Unlock()
-
-	// Create the path to the folder (if necessary):
-	s.loginDataFilePath = path.Join(folderPath, s.loginDataFileName)
-	pathExists, er := helpers.FilePathExists(folderPath)
+	var er = s.initializeFiles(folderPath)
 	if er != nil {
 		return er
 	}
-	if !pathExists {
-		er = helpers.CreateFolderPath(folderPath)
+	if len(s.cachedUserData) == 0 {
+		er := s.registerNewUser("Admin@Admin.de", "ChangeMe2018!",
+			"AdminUser", "AdminUser", Admin, Active)
 		if er != nil {
 			return er
 		}
 	}
-	// Create the storage file (if necessary):
-	er = helpers.CreateFileIfNotExists(s.loginDataFilePath)
-	if er != nil {
-		return er
-	}
-	// Read the data from the file and fill the cache:
-	er = s.readFileAndUpdateCache(s.loginDataFilePath)
-	if er != nil {
-		return er
-	}
+
 	return
 }
 
@@ -146,12 +137,42 @@ func (s *LoginSystem) Register(userName string, password string, firstName strin
 		return false, errors.New("user with this name already exists")
 	}
 	// Register the new user:
-	er := s.registerNewUser(userName, password, firstName, lastName)
+	er := s.registerNewUser(userName, password, firstName, lastName, RegisteredUser, WaitingToBeUnlocked)
 	if er != nil {
 		return false, errors.New("could not create new user. reason: " + er.Error())
 	}
 	return true, nil
 }
+
+/*
+	Change the password for the user of the given session.
+ */
+func (s *LoginSystem) ChangePassword(currentUserToken string, currentUserPassword string, newPassword string) (changed bool, err error){
+	isValid, userId, userName, err := s.SessionIsValid(currentUserToken)
+	if err != nil {
+		return false, err
+	}
+	if !isValid {
+		return false, errors.New("invalid session token")
+	}
+
+	//s.cachedUserDataMutex.RLock()
+	//defer s.cachedUserDataMutex.RUnlock()
+
+	for _, v := range s.cachedUserData {
+		if strings.ToLower(v.Mail) == strings.ToLower(userName) && v.UserId == userId {
+			valid := s.checkUserCredentials(v, currentUserPassword)
+			if valid {
+				user := User{Mail: v.Mail, UserId: v.UserId, FirstName: v.FirstName, LastName: v.LastName, Role: v.Role,
+					State: v.State}
+				//s.cachedUserDataMutex.RUnlock()
+				return s.changeUserPassword(user, newPassword)
+			}
+		}
+	}
+	return false, errors.New("user password could not be changed")
+}
+
 
 /*
 	Logout a user.
@@ -191,6 +212,9 @@ func (s *LoginSystem) Login(userName string, password string) (success bool, aut
 
 	for _, v := range s.cachedUserData {
 		if strings.ToLower(v.Mail) == strings.ToLower(userName) {
+			if v.State == WaitingToBeUnlocked {
+				return false, "", errors.New("user is still waiting to be unlocked")
+			}
 			valid := s.checkUserCredentials(v, password)
 			if valid {
 				var token, err = s.createSessionForUser(v)
@@ -200,6 +224,177 @@ func (s *LoginSystem) Login(userName string, password string) (success bool, aut
 	}
 
 	return false, "", errors.New("user not found")
+}
+
+/*
+	Setting your own account to vacation mode.
+*/
+func (s *LoginSystem) DisableVacationMode(token string) (err error) {
+	valid, userId, _, err := s.SessionIsValid(token)
+	if err != nil {
+		return err
+	}
+	if !valid {
+		return errors.New("can not set vacation mode for invalid session")
+	}
+
+	s.fileAccessMutex.Lock()
+	defer s.fileAccessMutex.Unlock()
+	data, err := s.readJsonDataFromFile(s.loginDataFilePath)
+	if err != nil {
+		return err
+	}
+	found := false
+	for index, entry := range data {
+		if entry.UserId == userId {
+			if data[index].State != OnVacation {
+				return errors.New("can not set account to active, when it is not on vacation mode")
+			}
+			data[index].State = Active
+			found = true
+			break
+		}
+	}
+	if found {
+		err = s.writeJsonDataToFile(s.loginDataFilePath, data)
+		if err != nil {
+			return err
+		}
+	} else {
+		return errors.New("user not found")
+	}
+
+	s.readFileAndUpdateCache(s.loginDataFilePath)
+	return nil
+}
+
+/*
+	Setting your own account to vacation mode.
+*/
+func (s *LoginSystem) EnableVacationMode(token string) (err error) {
+	valid, userId, _, err := s.SessionIsValid(token)
+	if err != nil {
+		return err
+	}
+	if !valid {
+		return errors.New("can not set vacation mode for invalid session")
+	}
+
+	s.fileAccessMutex.Lock()
+	defer s.fileAccessMutex.Unlock()
+	data, err := s.readJsonDataFromFile(s.loginDataFilePath)
+	if err != nil {
+		return err
+	}
+	found := false
+	for index, entry := range data {
+		if entry.UserId == userId {
+			if data[index].State == WaitingToBeUnlocked {
+				return errors.New("can not set a account to vacation mode, when it has not been unlocked")
+			}
+			data[index].State = OnVacation
+			found = true
+			break
+		}
+	}
+	if found {
+		err = s.writeJsonDataToFile(s.loginDataFilePath, data)
+		if err != nil {
+			return err
+		}
+	} else {
+		return errors.New("user not found")
+	}
+
+	s.readFileAndUpdateCache(s.loginDataFilePath)
+	return nil
+}
+
+/*
+	Unlock a account which is waiting to be unlocked. The current session needs the permission to do this.
+*/
+func (s *LoginSystem) UnlockAccount(currentToken string, userIdToUnlock int) (unlocked bool, err error) {
+	valid, userId, _, err := s.SessionIsValid(currentToken)
+	if err != nil {
+		return false, err
+	}
+	if !valid {
+		return false, errors.New("current session is not valid")
+	}
+
+	isAdmin := s.checkIfUserIsInAdminRole(userId)
+	if !isAdmin {
+		return false, errors.New("current session has no permission to unlock accounts")
+	}
+
+	s.fileAccessMutex.Lock()
+	defer s.fileAccessMutex.Unlock()
+
+	data, err := s.readJsonDataFromFile(s.loginDataFilePath)
+	if err != nil {
+		return false, err
+	}
+	found := false
+	for index, entry := range data {
+		if entry.UserId == userIdToUnlock {
+			if data[index].State != WaitingToBeUnlocked {
+				return false, errors.New("can not unlock a account, which is not in the waiting to be unlocked state")
+			}
+			data[index].State = Active
+			found = true
+			break
+		}
+	}
+	if found {
+		err = s.writeJsonDataToFile(s.loginDataFilePath, data)
+		if err != nil {
+			return false, err
+		}
+	} else {
+		return false, errors.New("user to unlock not found")
+	}
+
+	s.readFileAndUpdateCache(s.loginDataFilePath)
+	return true, nil
+}
+
+/*
+	Initialize the files for the user system.
+ */
+func (s *LoginSystem) initializeFiles(folderPath string) (err error) {
+	s.setDefaultValues()
+	// Validate the provided path:
+	if folderPath == "" {
+		return errors.New("path to login data storage can not be a empty string")
+	}
+	// We are going to execute file operations => set the lock:
+	s.fileAccessMutex.Lock()
+	defer s.fileAccessMutex.Unlock()
+
+	// Create the path to the folder (if necessary):
+	s.loginDataFilePath = path.Join(folderPath, s.loginDataFileName)
+	pathExists, er := helpers.FilePathExists(folderPath)
+	if er != nil {
+		return er
+	}
+	if !pathExists {
+		er = helpers.CreateFolderPath(folderPath)
+		if er != nil {
+			return er
+		}
+	}
+	// Create the storage file (if necessary):
+	er = helpers.CreateFileIfNotExists(s.loginDataFilePath)
+	if er != nil {
+		return er
+	}
+	// Read the data from the file and fill the cache:
+	er = s.readFileAndUpdateCache(s.loginDataFilePath)
+	if er != nil {
+		return er
+	}
+
+	return
 }
 
 /*
@@ -260,14 +455,14 @@ func (s *LoginSystem) checkIfUserExistsOnCache(userName string) bool {
 /*
 	Register a new user.
 */
-func (s *LoginSystem) registerNewUser(userName string, password string, firstName string, lastName string) (err error) {
+func (s *LoginSystem) registerNewUser(userName string, password string, firstName string, lastName string, role UserRole, state UserState) (err error) {
 	s.fileAccessMutex.Lock()
 	defer s.fileAccessMutex.Unlock()
 	existingData, err := s.readJsonDataFromFile(s.loginDataFilePath)
 	if err != nil {
 		return err
 	}
-	generatedLoginData := s.generateLoginData(userName, password, len(existingData)+1, firstName, lastName)
+	generatedLoginData := s.generateLoginData(userName, password, len(existingData)+1, firstName, lastName, role, state)
 	newData := append(existingData, generatedLoginData)
 	err = s.writeJsonDataToFile(s.loginDataFilePath, newData)
 	if err != nil {
@@ -283,14 +478,16 @@ func (s *LoginSystem) registerNewUser(userName string, password string, firstNam
 	Generates the login data.
 */
 func (s *LoginSystem) generateLoginData(userName string, password string, newId int,
-	firstName string, lastName string) (userData storedUserData) {
+	firstName string, lastName string, role UserRole, state UserState) (userData storedUserData) {
 	// TODO: Adjust with password salting and stuff....
 	return storedUserData{Mail: userName,
 		StoredPass: password,
 		StoredSalt: "1234",
 		UserId:     newId,
 		FirstName:  firstName,
-		LastName:   lastName}
+		LastName:   lastName,
+		Role:       role,
+		State:      state}
 }
 
 /*
@@ -309,8 +506,7 @@ func (s *LoginSystem) readJsonDataFromFile(filePath string) (data []storedUserDa
 	if err != nil {
 		return nil, err
 	}
-	s.cachedUserDataMutex.Lock()
-	defer s.cachedUserDataMutex.Unlock()
+
 	parsedData := new([]storedUserData)
 	json.Unmarshal(fileValue, &parsedData)
 	return *parsedData, nil
@@ -330,6 +526,8 @@ func (s *LoginSystem) writeJsonDataToFile(filePath string, data []storedUserData
 */
 func (s *LoginSystem) readFileAndUpdateCache(filePath string) (err error) {
 
+	s.cachedUserDataMutex.Lock()
+	defer s.cachedUserDataMutex.Unlock()
 	parsedData, err := s.readJsonDataFromFile(filePath)
 	if parsedData != nil {
 		s.cachedUserData = parsedData
@@ -337,4 +535,53 @@ func (s *LoginSystem) readFileAndUpdateCache(filePath string) (err error) {
 		s.cachedUserData = *new([]storedUserData)
 	}
 	return
+}
+
+/*
+	Check if the user for the given id has the admin role.
+*/
+func (s *LoginSystem) checkIfUserIsInAdminRole(userId int) (isAdmin bool) {
+	s.cachedUserDataMutex.RLock()
+	defer s.cachedUserDataMutex.RUnlock()
+	for _, entry := range s.cachedUserData {
+		if entry.UserId == userId {
+			if entry.Role == Admin {
+				return true
+			} else {
+				return false
+			}
+		}
+	}
+	return false
+}
+
+func (s *LoginSystem) changeUserPassword(user User, newPassword string) (bool, error) {
+	s.fileAccessMutex.Lock()
+	defer s.fileAccessMutex.Unlock()
+
+	data, err := s.readJsonDataFromFile(s.loginDataFilePath)
+	if err != nil {
+		return false, err
+	}
+	found := false
+	for index, entry := range data {
+		if entry.UserId == user.UserId {
+			generatedLoginData := s.generateLoginData(user.Mail, newPassword, user.UserId, user.FirstName,
+				user.LastName, user.Role, user.State)
+			data[index] = generatedLoginData
+			found = true
+			break
+		}
+	}
+	if found {
+		err = s.writeJsonDataToFile(s.loginDataFilePath, data)
+		if err != nil {
+			return false, err
+		}
+	} else {
+		return false, errors.New("user to unlock not found")
+	}
+
+	s.readFileAndUpdateCache(s.loginDataFilePath)
+	return true, nil
 }
