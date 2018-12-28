@@ -45,7 +45,6 @@ func main() {
 			fmt.Print("wrong entry. Please press e or r: ")
 		}
 	}
-
 }
 
 func httpRequest(config configuration.Configuration, eMails []mail.Mail) {
