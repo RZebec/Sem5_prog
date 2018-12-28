@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/tls"
 	"crypto/x509"
+	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/configuration"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"encoding/json"
@@ -19,8 +20,6 @@ type Client interface {
 	AcknowledgeMails(mailIds []string) error
 }
 
-const sendPath = "/api/mail/incoming"
-const receivePath = "/api/mail/outgoing"
 
 type ApiClient struct {
 	baseUrl string
@@ -42,7 +41,7 @@ func (c *ApiClient) SendMails(mails []mail.Mail) error{
 	if err != nil {
 		return err
 	}
-	url := "https://" +  c.baseUrl +  ":" + strconv.Itoa(c.port) + sendPath
+	url := "https://" +  c.baseUrl +  ":" + strconv.Itoa(c.port) + shared.SendPath
 	req , err := c.buildPostRequest(url, jsonData)
 	if err != nil {
 		return err

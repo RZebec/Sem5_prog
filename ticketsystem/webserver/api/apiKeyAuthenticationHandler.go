@@ -22,7 +22,6 @@ func (h *ApiKeyAuthenticationHandler) ServeHTTP(w http.ResponseWriter, req *http
 			}
 			break
 		}
-
 	}
 	w.WriteHeader(401)
 }
