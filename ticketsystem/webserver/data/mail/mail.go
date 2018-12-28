@@ -7,4 +7,6 @@ type Mail struct {
 	Receiver string
 	Content string
 	SentTime time.Time
+	Subject string
+	Id string
 }
