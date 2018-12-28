@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/clientContainer"
-	"de/vorlesung/projekt/IIIDDD/ticketTool/inputContainer"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/configuration"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"fmt"
 	"os"
@@ -11,17 +11,17 @@ import (
 
 func main() {
 	logger := logging.ConsoleLogger{SetTimeStamp: true}
-	inputContainer := inputContainer.Configuration{}
-	inputContainer.RegisterFlags()
-	inputContainer.BindFlags()
+	config := configuration.Configuration{}
+	config.RegisterFlags()
+	config.BindFlags()
 
-	if !inputContainer.ValidateConfiguration(logger) {
+	if !config.ValidateConfiguration(logger) {
 		fmt.Println("Configuration is not valid. Press enter to exit application.")
 		reader := bufio.NewReader(os.Stdin)
 		reader.ReadByte()
 		return
 	}
 
-	message := clientContainer.HttpsRequest(inputContainer.BaseUrl, inputContainer.Port, inputContainer.CertificatePath, "Test")
+	message := clientContainer.HttpsRequest(config.BaseUrl, config.Port, config.CertificatePath, "Test")
 	fmt.Println(message)
 }

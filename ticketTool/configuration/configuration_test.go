@@ -1,4 +1,4 @@
-package inputContainer
+package configuration
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"

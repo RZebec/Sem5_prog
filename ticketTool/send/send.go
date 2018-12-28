@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/clientContainer"
-	"de/vorlesung/projekt/IIIDDD/ticketTool/inputContainer"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/configuration"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
 	"fmt"
@@ -14,11 +14,11 @@ import (
 
 func main() {
 	logger := logging.ConsoleLogger{SetTimeStamp: true}
-	inputContainer := inputContainer.Configuration{}
-	inputContainer.RegisterFlags()
-	inputContainer.BindFlags()
+	config := configuration.Configuration{}
+	config.RegisterFlags()
+	config.BindFlags()
 
-	if !inputContainer.ValidateConfiguration(logger) {
+	if !config.ValidateConfiguration(logger) {
 		fmt.Println("Configuration is not valid. Press enter to exit application.")
 		reader := bufio.NewReader(os.Stdin)
 		reader.ReadByte()
@@ -55,7 +55,7 @@ func main() {
 	fmt.Println("")
 	fmt.Println("Start HTTPS-Request")
 
-	clientContainer.HttpsRequest(inputContainer.BaseUrl, inputContainer.Port, inputContainer.CertificatePath, string(message))
+	clientContainer.HttpsRequest(config.BaseUrl, config.Port, config.CertificatePath, string(message))
 }
 
 func writeEmail() {
