@@ -29,12 +29,31 @@ func (m *MockedNextHandler) ServeHTTP(w http.ResponseWriter, r *http.Request){
 
 
 
-func TestApiKeyAuthenticationHandler_ServeHTTP_InvalidApiKey(t *testing.T) {
+func TestApiKeyAuthenticationHandler_ServeHTTP_NoApiKey(t *testing.T) {
 	req, err := http.NewRequest("GET", shared.SendPath, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 	rr := httptest.NewRecorder()
+
+	nextHandler  := MockedNextHandler{}
+
+	testee := ApiKeyAuthenticationHandler{ApiKeyResolver: getValidIncomingApiKey, Next: &nextHandler}
+	handler := http.HandlerFunc(testee.ServeHTTP)
+
+	handler.ServeHTTP(rr, req)
+	assert.Equal(t, 401, rr.Code, "Status code 401 should be returned")
+	assert.False(t, nextHandler.hasBeenCalled, "Child handler should not be called")
+
+}
+
+func TestApiKeyAuthenticationHandler_ServeHTTP_WrongApiKey(t *testing.T) {
+	req, err := http.NewRequest("GET", shared.SendPath, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rr := httptest.NewRecorder()
+	// TODO ADD API KEY
 
 	nextHandler  := MockedNextHandler{}
 
