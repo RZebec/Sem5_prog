@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/api"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/api/mails"
@@ -82,7 +83,8 @@ func main() {
 	http.HandleFunc("/", foohandler)
 	http.HandleFunc("/files/", tempHandler)
 	http.HandleFunc("/example", wrapper.ServeHTTP)
-	http.HandleFunc("/api/mail/incoming", getIncomingMailHandlerChain(*apiConfig).ServeHTTP)
+	http.HandleFunc(shared.SendPath, getIncomingMailHandlerChain(*apiConfig).ServeHTTP)
+	http.HandleFunc(shared.ReceivePath, getOutgoingMailHandlerChain(*apiConfig).ServeHTTP)
 
 	if err := http.ListenAndServeTLS(configuration.GetServiceUrl(), configuration.CertificatePath, configuration.CertificateKeyPath, nil); err != nil {
 		panic(err)
@@ -95,5 +97,13 @@ func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration) http.Handler
 	incomingMailHandler := mails.IncomingMailHandler{}
 	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,
 		Next: &incomingMailHandler, AllowedMethod: "POST"}
+	return &apiAuthenticationHandler
+}
+
+
+func getOutgoingMailHandlerChain(apiConfig config.ApiConfiguration) http.Handler {
+	outgoingMailHandler := mails.OutgoingMailHandler{}
+	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetOutgoingMailApiKey,
+		Next: &outgoingMailHandler, AllowedMethod: "GET"}
 	return &apiAuthenticationHandler
 }

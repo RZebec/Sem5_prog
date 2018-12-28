@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/client"
 
 	"de/vorlesung/projekt/IIIDDD/ticketTool/configuration"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
@@ -22,6 +23,11 @@ func main() {
 		return
 	}
 
+	apiClient, err := client.CreateClient(config)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(apiClient.ReceiveMails())
 	//message := clientContainer.HttpsRequest(config.BaseUrl, config.Port, config.CertificatePath, "Test")
 	//fmt.Println(message)
 }
