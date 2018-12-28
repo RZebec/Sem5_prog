@@ -18,6 +18,7 @@ type Configuration struct {
 	BaseUrl              string
 	CertificatePath      string
 	CertificateKeyPath   string
+	ApiKeyFilePath       string
 }
 
 /*
@@ -30,6 +31,7 @@ func (c *Configuration) RegisterFlags() {
 	flag.StringVar(&c.TicketDataFolderPath, "ticketDataFolderPath", "data/tickets", "path to the folder to store the ticket data")
 	flag.StringVar(&c.CertificateKeyPath, "certificateKeyPath", "key.pem", "path to the certificate key file")
 	flag.StringVar(&c.CertificatePath, "certificatePath", "cert.pem", "path to the certificate")
+	flag.StringVar(&c.ApiKeyFilePath, "apiKeysFilePath", "data/api.keys", "path to the apiKey file")
 }
 
 /*
@@ -65,6 +67,16 @@ func (c *Configuration) ValidateConfiguration(log logging.Logger) bool {
 	}
 	if !exists {
 		log.LogError("Configuration", errors.New("Certificate key path does not exist"))
+		return false
+	}
+
+	exists, err = helpers.FilePathExists(c.ApiKeyFilePath)
+	if err != nil {
+		log.LogError("Configuration", errors.Wrap(err, "Could not validate api key file path"))
+		return false
+	}
+	if !exists {
+		log.LogError("Configuration", errors.New("Api key file path does not exist"))
 		return false
 	}
 

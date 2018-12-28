@@ -5,8 +5,10 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"github.com/pkg/errors"
 	"io/ioutil"
+	"os"
 	"path"
 	"regexp"
+	"sort"
 	"sync"
 	"time"
 )
@@ -20,6 +22,8 @@ type TicketContext interface {
 	GetTicketById(id int) (Ticket, error)
 	GetAllTicketInfo() []TicketInfo
 	AppendMessageToTicket(ticketId int, message MessageEntry) (*Ticket, error)
+	MergeTickets(firstTicketId int, secondTicketId int) (success bool, err error)
+	SetEditor(editor user.User, ticketId int)
 }
 
 /*
@@ -37,6 +41,28 @@ func (t *TicketManager) AppendMessageToTicket(ticketId int, message MessageEntry
 		err := ticket.persist()
 		if err != nil {
 			return nil, errors.Wrap(err, "could not append message to ticket")
+		}
+
+		t.cachedTicketsMutex.Lock()
+		defer t.cachedTicketsMutex.Unlock()
+		t.cachedTickets[ticket.info.Id] = *ticket
+
+		return ticket.Copy(), nil
+	} else {
+		return nil, errors.New("ticket does not exist")
+	}
+}
+
+func (t *TicketManager) SetEditor(editor user.User, ticketId int) (*Ticket, error) {
+	exists, ticket := t.GetTicketById(ticketId)
+	if exists {
+		ticket.info.Editor = editor
+		ticket.info.HasEditor = true
+
+		ticket.info.LastModificationTime = time.Now()
+		err := ticket.persist()
+		if err != nil {
+			return nil, errors.Wrap(err, "could not set editor of ticket")
 		}
 
 		t.cachedTicketsMutex.Lock()
@@ -72,6 +98,62 @@ func (t *TicketManager) GetTicketById(id int) (bool, *Ticket) {
 		return true, value.Copy()
 	}
 	return false, nil
+}
+
+func (t *TicketManager) MergeTickets(firstTicketId int, secondTicketId int) (success bool, err error) {
+	if firstTicketId == secondTicketId {
+		return false, errors.New("can not merge a ticket with itself")
+	}
+
+	firstTicket, firstTicketFound := t.cachedTickets[firstTicketId]
+	secondTicket, secondTicketFound := t.cachedTickets[secondTicketId]
+	if !firstTicketFound || !secondTicketFound {
+		return false, errors.New("ticket not found")
+	}
+
+	if !firstTicket.info.HasEditor || !secondTicket.info.HasEditor {
+		return false, errors.New("can not merge ticket if there is no editor")
+	}
+
+	if firstTicket.info.Editor.UserId != secondTicket.info.Editor.UserId {
+		return false, errors.New("only tickets of the same editor can be merged")
+	}
+
+	t.cachedTicketsMutex.Lock()
+	defer t.cachedTicketsMutex.Unlock()
+
+	// Merge the message entries:
+	olderTicket := firstTicket
+	newerTicket := secondTicket
+	if secondTicket.info.Id < firstTicket.info.Id {
+		olderTicket = secondTicket
+		newerTicket = firstTicket
+	}
+
+	olderTicket.messages = append(olderTicket.messages, newerTicket.messages...)
+	// Fix the id of the message
+	for i := range olderTicket.messages {
+		olderTicket.messages[i].Id = i
+	}
+
+	sort.Slice(olderTicket.messages, func(i, j int) bool {
+		return olderTicket.messages[i].CreationTime.Before(olderTicket.messages[j].CreationTime)
+	})
+
+	olderTicket.persist()
+	t.cachedTickets[olderTicket.info.Id] = olderTicket
+
+	// Remove the newer ticket:
+	t.cachedTicketIds = remove(t.cachedTicketIds, newerTicket.info.Id)
+	filePathToDelete := newerTicket.filePath
+	delete(t.cachedTickets, newerTicket.info.Id)
+	err = os.Remove(filePathToDelete)
+
+	if err != nil {
+		return false, err
+	} else {
+		return true, nil
+	}
 }
 
 /*
@@ -196,6 +278,14 @@ func (t *TicketManager) readExistingTickets() error {
 		}
 	}
 	return nil
+}
+
+/*
+	Remove an int from an int array.
+*/
+func remove(s []int, i int) []int {
+	s[len(s)-1], s[i] = s[i], s[len(s)-1]
+	return s[:len(s)-1]
 }
 
 /*
