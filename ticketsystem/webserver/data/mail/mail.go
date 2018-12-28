@@ -42,9 +42,9 @@ func (mail Mail) ExplicitMail() []Mail {
 	mail.Subject = readEntry()
 	fmt.Print("Entry text: ")
 	mail.Content = readEntry()
-	fmt.Print("Enter your Reciever")
+	fmt.Print("Enter your Reciever: ")
 	mail.Receiver = readEntry()
-	fmt.Print("Enter your SenderMail")
+	fmt.Print("Enter your SenderMail: ")
 	mail.Sender = readEntry()
 
 	mails := make([]Mail, 1)

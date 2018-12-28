@@ -73,4 +73,5 @@ func entryNumberOfRandomMails() int {
 			return number
 		}
 	}
+	return 0
 }
