@@ -59,6 +59,5 @@ func (c *Configuration) ValidateConfiguration(log logging.Logger) bool {
 		return false
 	}
 
-
 	return true
 }

@@ -4,11 +4,9 @@
 package user
 
 import (
-	"crypto/rand"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"path"
 	"strings"
 	"sync"
@@ -102,7 +100,7 @@ func (s *LoginSystem) RefreshToken(token string) (newToken string, err error) {
 	if valid {
 		s.currentSessionsMutex.Lock()
 		defer s.currentSessionsMutex.Unlock()
-		newToken, err := generateUUID()
+		newToken, err := helpers.GenerateUUID()
 		if err != nil {
 			return "", err
 		}
@@ -146,8 +144,8 @@ func (s *LoginSystem) Register(userName string, password string, firstName strin
 
 /*
 	Change the password for the user of the given session.
- */
-func (s *LoginSystem) ChangePassword(currentUserToken string, currentUserPassword string, newPassword string) (changed bool, err error){
+*/
+func (s *LoginSystem) ChangePassword(currentUserToken string, currentUserPassword string, newPassword string) (changed bool, err error) {
 	isValid, userId, userName, err := s.SessionIsValid(currentUserToken)
 	if err != nil {
 		return false, err
@@ -172,7 +170,6 @@ func (s *LoginSystem) ChangePassword(currentUserToken string, currentUserPasswor
 	}
 	return false, errors.New("user password could not be changed")
 }
-
 
 /*
 	Logout a user.
@@ -360,7 +357,7 @@ func (s *LoginSystem) UnlockAccount(currentToken string, userIdToUnlock int) (un
 
 /*
 	Initialize the files for the user system.
- */
+*/
 func (s *LoginSystem) initializeFiles(folderPath string) (err error) {
 	s.setDefaultValues()
 	// Validate the provided path:
@@ -403,26 +400,12 @@ func (s *LoginSystem) initializeFiles(folderPath string) (err error) {
 func (s *LoginSystem) createSessionForUser(user storedUserData) (authToken string, err error) {
 	s.currentSessionsMutex.Lock()
 	defer s.currentSessionsMutex.Unlock()
-	token, err := generateUUID()
+	token, err := helpers.GenerateUUID()
 	if err != nil {
 		return "", err
 	}
 	s.currentSessions[token] = inMemorySession{userMail: user.Mail, userId: user.UserId, sessionToken: authToken, sessionTimestamp: time.Now()}
 	return token, nil
-}
-
-/*
-	Generate a UUID.
-	Source: https://stackoverflow.com/questions/15130321/is-there-a-method-to-generate-a-uuid-with-go-language
-*/
-func generateUUID() (string, error) {
-	b := make([]byte, 16)
-	_, er := rand.Read(b)
-	if er != nil {
-		return "", er
-	}
-
-	return fmt.Sprintf("%X-%X-%X-%X-%X", b[0:4], b[4:6], b[6:8], b[8:10], b[10:]), nil
 }
 
 /*

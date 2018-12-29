@@ -60,6 +60,9 @@ func (l ConsoleLogger) LogWarning(prefix string, message string) {
 	Log an error.
 */
 func (l ConsoleLogger) LogError(prefix string, err error) {
+	if err == nil {
+		return
+	}
 	timestamp := ""
 	if l.SetTimeStamp {
 		timestamp = time.Now().Format("2006-01-02 15:04:05") + ":"

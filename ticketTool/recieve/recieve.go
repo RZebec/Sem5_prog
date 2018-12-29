@@ -2,9 +2,12 @@ package main
 
 import (
 	"bufio"
-
+	"de/vorlesung/projekt/IIIDDD/ticketTool/client"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/configuration"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/sharing"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"fmt"
 	"os"
 )
@@ -22,6 +25,58 @@ func main() {
 		return
 	}
 
-	//message := clientContainer.HttpsRequest(config.BaseUrl, config.Port, config.CertificatePath, "Test")
-	//fmt.Println(message)
+	apiClient, createErr := client.CreateClient(config)
+	if createErr != nil {
+		panic(createErr)
+	}
+
+	fmt.Println("Recieve Mails")
+	mails := []mail.Mail{}
+	for true {
+		recieveMails, err := apiClient.ReceiveMails()
+		if err != nil {
+			fmt.Print("Transmission is going wrong. Retry? (n,press any key)")
+			answer := inputOutput.ReadEntry()
+			if answer == "n" {
+				break
+			}
+		} else {
+			fmt.Println("Mails are incoming")
+			mails = recieveMails
+			allOrSpecifySharing(apiClient, &mails)
+			break
+		}
+	}
+
+}
+
+func allOrSpecifySharing(apiClient client.ApiClient, mails *[]mail.Mail) {
+	//acknowledgement.WriteAcknowledgements(sharing.GetAcknowledges(mails))
+
+	for true {
+		fmt.Println("share all Messages or specify Messages? (all/specify):")
+		answer := inputOutput.ReadEntry()
+		if answer == "all" {
+			acknowledge := sharing.ShareAllMails(*mails)
+			ackError := apiClient.AcknowledgeMails(acknowledge)
+			if ackError != nil {
+				fmt.Println("acknowlege is not posted")
+			} else {
+				//acknowledgement.DeleteAcknowledges(acknowledge)
+				break
+			}
+		} else if answer == "specify" {
+			acknowledge, newMails := sharing.ShareSingleMails(*mails)
+			mails = &newMails
+			ackError := apiClient.AcknowledgeMails(acknowledge)
+			if ackError != nil {
+				fmt.Println("acknowlege is not posted")
+			} else {
+				//acknowledgement.DeleteAcknowledges(acknowledge)
+			}
+			if len(*mails) == 0 {
+				break
+			}
+		}
+	}
 }

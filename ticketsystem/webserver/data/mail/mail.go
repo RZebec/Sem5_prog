@@ -1,5 +1,8 @@
 package mail
 
+/*
+	A email.
+*/
 type Mail struct {
 	Id       string
 	Sender   string
@@ -8,5 +11,3 @@ type Mail struct {
 	Content  string
 	SentTime int64
 }
-
-

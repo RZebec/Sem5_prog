@@ -24,6 +24,58 @@ type TicketContext interface {
 	AppendMessageToTicket(ticketId int, message MessageEntry) (*Ticket, error)
 	MergeTickets(firstTicketId int, secondTicketId int) (success bool, err error)
 	SetEditor(editor user.User, ticketId int) (*Ticket, error)
+	SetTicketState(ticketId int, newState TicketState) (*Ticket, error)
+	RemoveEditor(ticketId int) error
+	GetAllOpenTickets() []TicketInfo
+}
+
+/*
+	The ticket manager handles the access to the tickets.
+*/
+type TicketManager struct {
+	cachedTickets      map[int]Ticket
+	cachedTicketIds    []int
+	cachedTicketsMutex sync.RWMutex
+	ticketFolderPath   string
+}
+
+/*
+	Get all tickets with the state open.
+*/
+func (t *TicketManager) GetAllOpenTickets() []TicketInfo {
+	t.cachedTicketsMutex.RLock()
+	defer t.cachedTicketsMutex.RUnlock()
+
+	var ticketInfos []TicketInfo
+	for _, ticket := range t.cachedTickets {
+		if ticket.info.State == Open {
+			ticketInfos = append(ticketInfos, ticket.info.Copy())
+		}
+	}
+	return ticketInfos
+}
+
+/*
+	Set the state of a ticket.
+*/
+func (t *TicketManager) SetTicketState(ticketId int, newState TicketState) (*Ticket, error) {
+	exists, ticket := t.GetTicketById(ticketId)
+	if exists {
+		ticket.info.State = newState
+		ticket.info.LastModificationTime = time.Now()
+		err := ticket.persist()
+		if err != nil {
+			return nil, errors.Wrap(err, "could not change state of the ticket")
+		}
+
+		t.cachedTicketsMutex.Lock()
+		defer t.cachedTicketsMutex.Unlock()
+		t.cachedTickets[ticket.info.Id] = *ticket
+
+		return ticket.Copy(), nil
+	} else {
+		return nil, errors.New("ticket does not exist")
+	}
 }
 
 /*
@@ -53,6 +105,34 @@ func (t *TicketManager) AppendMessageToTicket(ticketId int, message MessageEntry
 	}
 }
 
+/*
+	Remove the editor of a ticket.
+*/
+func (t *TicketManager) RemoveEditor(ticketId int) error {
+	exists, ticket := t.GetTicketById(ticketId)
+	if exists {
+		ticket.info.Editor = user.GetInvalidDefaultUser()
+		ticket.info.HasEditor = false
+
+		ticket.info.LastModificationTime = time.Now()
+		err := ticket.persist()
+		if err != nil {
+			return errors.Wrap(err, "could not remove editor of ticket")
+		}
+
+		t.cachedTicketsMutex.Lock()
+		defer t.cachedTicketsMutex.Unlock()
+		t.cachedTickets[ticket.info.Id] = *ticket
+
+		return nil
+	} else {
+		return errors.New("ticket does not exist")
+	}
+}
+
+/*
+	Set the editor of a ticket.
+*/
 func (t *TicketManager) SetEditor(editor user.User, ticketId int) (*Ticket, error) {
 	exists, ticket := t.GetTicketById(ticketId)
 	if exists {
@@ -140,6 +220,7 @@ func (t *TicketManager) MergeTickets(firstTicketId int, secondTicketId int) (suc
 		return olderTicket.messages[i].CreationTime.Before(olderTicket.messages[j].CreationTime)
 	})
 
+	olderTicket.info.LastModificationTime = time.Now()
 	olderTicket.persist()
 	t.cachedTickets[olderTicket.info.Id] = olderTicket
 
@@ -156,22 +237,14 @@ func (t *TicketManager) MergeTickets(firstTicketId int, secondTicketId int) (suc
 	}
 }
 
-/*
-	The ticket manager handles the access to the tickets.
-*/
-type TicketManager struct {
-	cachedTickets      map[int]Ticket
-	cachedTicketIds    []int
-	cachedTicketsMutex sync.RWMutex
-	ticketFolderPath   string
-}
+
 
 /*
 	Initialize the TicketManager with the given folder path. The folder is used to load and store the ticket data.
 */
 func (t *TicketManager) Initialize(folderPath string) error {
 	if folderPath == "" {
-		return errors.New("path to login data storage can not be a empty string.")
+		return errors.New("path to ticket data storage can not be a empty string.")
 	}
 	t.cachedTickets = make(map[int]Ticket)
 	t.cachedTicketIds = []int{}

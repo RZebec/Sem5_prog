@@ -55,10 +55,16 @@ func httpRequest(config configuration.Configuration, eMails []mail.Mail) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// TODO: Add error handling
 	apiClient.SendMails(eMails)
+	// TODO REMOVE ONLY FOR TEST
+	var acks []mail.Acknowledgment
+	for _, email := range eMails {
+		acks = append(acks, mail.Acknowledgment{Id: email.Id, Subject: email.Subject})
+	}
+	apiClient.AcknowledgeMails(acks)
+	// TODO REMOVE TILL HERE
 }
-
-
 
 func entryNumberOfRandomMails() int {
 	for true {

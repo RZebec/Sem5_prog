@@ -141,3 +141,127 @@ func TestApiClient_preparePostRequest(t *testing.T) {
 	}
 	assert.True(t, apikeySet, "The api key must be set")
 }
+
+/*
+	A get request should be prepared, with the api keys set.
+*/
+func TestApiClient_prepareGetRequest(t *testing.T) {
+	conf := configuration.Configuration{}
+	conf.CertificatePath = "test_cert.pem"
+	conf.ApiKeysFilePath = "test_api.keys"
+	testee, err := CreateClient(conf)
+	assert.Nil(t, err)
+
+	url := "testUrl/test"
+	req, err := testee.buildGetRequest(url)
+	assert.Nil(t, err)
+	assert.Equal(t, "GET", req.Method, "The request method should be set to GET")
+
+	assert.Equal(t, int64(0), req.ContentLength, "The payload should be empty")
+
+	apikeySet := false
+	cookies := req.Cookies()
+	for _, cookie := range cookies {
+		if strings.ToLower(cookie.Name) == strings.ToLower(shared.AuthenticationCookieName) {
+			apiKey := cookie.Value
+			if apiKey == testee.receivingApiKey {
+				apikeySet = true
+				break
+			}
+
+		}
+	}
+	assert.True(t, apikeySet, "The api key must be set")
+}
+
+/*
+	Receiving emails to the api should work.
+*/
+func TestApiClient_ReceiveMails_MailsReturned(t *testing.T) {
+	testMails := getTestEmails()
+
+	// The handler function will return the test emails
+	server := CreateTestServer(t, http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		jsonData, err := json.Marshal(testMails)
+		if err != nil {
+			rw.WriteHeader(500)
+		}
+		rw.Write(jsonData)
+		rw.WriteHeader(200)
+	}))
+	// Close the server when test finishes
+	defer server.Close()
+
+	// Start the server:
+	server.StartTLS()
+
+	// Configure the client:
+	conf := configuration.Configuration{}
+	conf.ApiKeysFilePath = "test_api.keys"
+	conf = AdjustConfigurationToTestServer(t, conf, *server)
+	testee, err := CreateClient(conf)
+	assert.Nil(t, err)
+
+	// Receive the mails.
+	mails, err := testee.ReceiveMails()
+	assert.Nil(t, err)
+	for idx, expectedMail := range testMails {
+		actualMail := mails[idx]
+		assert.Equal(t, expectedMail, actualMail, "All mails should be transmitted and equal to the sent one")
+	}
+}
+
+/*
+	Sending acknowledgments to the api should work.
+*/
+func TestApiClient_AcknowledgeMails_ReurnsOk(t *testing.T) {
+	testAcks := getTestAcknowledgements()
+
+	// The handler function will assert the payload and is passed to the testserver:
+	server := CreateTestServer(t, http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		// Decode the mails:
+		decoder := json.NewDecoder(req.Body)
+		var mails []mail.Acknowledgment
+		err := decoder.Decode(&mails)
+		if err != nil {
+			assert.Nil(t, err, "The received acknowledgements should be readable")
+		} else {
+			expectedAcks := testAcks
+			assert.Equal(t, len(expectedAcks), len(mails))
+			for idx, expectedMail := range expectedAcks {
+				actualMail := mails[idx]
+				assert.Equal(t, expectedMail, actualMail,
+					"The acknowledgements mails should be equal to the sent acknowledgements")
+			}
+		}
+
+		rw.WriteHeader(200)
+	}))
+	// Close the server when test finishes
+	defer server.Close()
+
+	// Start the server:
+	server.StartTLS()
+
+	// Configure the client:
+	conf := configuration.Configuration{}
+	conf.ApiKeysFilePath = "test_api.keys"
+	conf = AdjustConfigurationToTestServer(t, conf, *server)
+	testee, err := CreateClient(conf)
+	assert.Nil(t, err)
+
+	// Send the mails. The handler function will assert the payload:
+	err = testee.AcknowledgeMails(testAcks)
+	assert.Nil(t, err)
+}
+
+/*
+	Get Acknowledgments for tests.
+*/
+func getTestAcknowledgements() []mail.Acknowledgment {
+	var acks []mail.Acknowledgment
+	acks = append(acks, mail.Acknowledgment{Id: "testId1", Subject: "TestSubject1"})
+	acks = append(acks, mail.Acknowledgment{Id: "testId2", Subject: "TestSubject2"})
+	acks = append(acks, mail.Acknowledgment{Id: "testId3", Subject: "TestSubject3"})
+	return acks
+}

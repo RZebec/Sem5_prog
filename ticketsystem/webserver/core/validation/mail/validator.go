@@ -12,7 +12,7 @@ type Validator struct {
 /*
 	Create a new validator.
 */
-func New() *Validator {
+func NewValidator() *Validator {
 	// Regex from: https://stackoverflow.com/questions/23968992/how-to-match-a-regex-with-backreference-in-go
 	reg, _ := regexp.Compile(`^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$`)
 	validator := Validator{}
