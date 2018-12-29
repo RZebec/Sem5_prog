@@ -9,10 +9,10 @@ import (
 )
 
 var senders = []string{"test1@gmx.de", "Oberheld.asdf@web.de", "horstChristianAnderson@zip.org", "css@asd.com", "ad.du@ff.de",
-	"kaka@lang.de", "abc.defg@hij.de", "blabla@bla.de", "labor@saft.de", "orange@blau.de", "hohlfruch@haze.de"}
-
-var recievers = []string{"test2@gmx.de", "SuperOberheld.asdf@web.de", "FranzhorstChristianAnderson@zip.org", "Terrorist@asd.com",
-	"ad.du@ff.de", "kakhaufen@lang.de", "abcbnm.defg@hij.de", "blabla@bla.de", "laborGrube@saft.de", "orange@blau.de", "hohlfruchtigerSaft@haze.de"}
+	"kaka@lang.de", "abc.defg@hij.de", "blabla@bla.de", "labor@saft.de", "orange@blau.de", "hohlfruch@haze.de", "test2@gmx.de",
+	"SuperOberheld.asdf@web.de", "FranzhorstChristianAnderson@zip.org", "Terrorist@asd.com",
+	"ad.du@ff.de", "kakhaufen@lang.de", "abcbnm.defg@hij.de", "blabla@bla.de", "laborGrube@saft.de",
+	"orange@blau.de", "hohlfruchtigerSaft@haze.de"}
 
 type MailGenerator struct {
 }
@@ -22,12 +22,24 @@ func (m *MailGenerator) RandomMail(n int) []mail.Mail {
 	for i := 0; i < n; i++ {
 		mail := mail.Mail{}
 		mail.Subject = randomText(10)
+		fmt.Println("Subject " + strconv.Itoa(i) + ": " + mail.Subject)
 		mail.Content = randomText(50)
-		mail.Sender = senders[i]
-		mail.Receiver = recievers[i]
+		mail.Sender, mail.Receiver = generateTwoMailsfromRandomPool()
 		mails[i] = mail
 	}
 	return mails
+}
+
+func generateTwoMailsfromRandomPool() (string, string) {
+	for true {
+		adressOne := senders[rand.Intn(len(senders))]
+		adressTwo := senders[rand.Intn(len(senders))]
+		if adressOne != adressTwo {
+			return adressOne, adressTwo
+		}
+
+	}
+	return "", ""
 }
 
 func (m *MailGenerator) ExplicitMail() []mail.Mail {
@@ -50,7 +62,7 @@ func randomText(numberOfChar int) string {
 	text := ""
 	for i := 0; i < numberOfChar; i++ {
 		r := rand.Intn(128)
-		text = text + strconv.Itoa(r)
+		text = text + string(r)
 	}
 	return text
 }
