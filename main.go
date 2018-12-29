@@ -8,6 +8,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/api/mails"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui"
@@ -45,6 +46,12 @@ func main() {
 		return
 	}
 
+	mailContext := mail.MailManager{}
+	err = mailContext.Initialize(configuration.MailDataFolderPath, configuration.SendingMailAddress, logger)
+	mailContext.CreateNewOutgoingMail("test1@test1.de", "testSubject1", "TestContent1")
+	mailContext.CreateNewOutgoingMail("test2@test2.de", "testSubject2", "TestContent2")
+	mailContext.CreateNewOutgoingMail("test3@test2.de", "testSubject3", "TestContent2")
+
 	userContext := user.LoginSystem{}
 	err = userContext.Initialize(configuration.LoginDataFolderPath)
 	if err != nil {
@@ -81,33 +88,33 @@ func main() {
 	http.HandleFunc("/", foohandler)
 	http.HandleFunc("/files/", tempHandler)
 	http.HandleFunc("/example", wrapper.ServeHTTP)
-	http.HandleFunc(shared.SendPath, getIncomingMailHandlerChain(*apiConfig, logger).ServeHTTP)
-	http.HandleFunc(shared.ReceivePath, getOutgoingMailHandlerChain(*apiConfig, logger).ServeHTTP)
-	http.HandleFunc(shared.AcknowledgmentPath, getAcknowledgeMailHandlerChain(*apiConfig, logger).ServeHTTP)
+	http.HandleFunc(shared.SendPath, getIncomingMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
+	http.HandleFunc(shared.ReceivePath, getOutgoingMailHandlerChain(*apiConfig,&mailContext, logger).ServeHTTP)
+	http.HandleFunc(shared.AcknowledgmentPath, getAcknowledgeMailHandlerChain(*apiConfig,&mailContext, logger).ServeHTTP)
 
 	if err := http.ListenAndServeTLS(configuration.GetServiceUrl(), configuration.CertificatePath, configuration.CertificateKeyPath, nil); err != nil {
-		panic(err)
+		logger.LogError("Main", err)
 	}
 
 	//staticFileHandlers.StaticFileHandler()
 }
 
-func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration, logger logging.Logger) http.Handler {
-	incomingMailHandler := mails.IncomingMailHandler{Logger: logger}
+func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mail.MailContext, logger logging.Logger) http.Handler {
+	incomingMailHandler := mails.IncomingMailHandler{Logger: logger, MailContext: mailContext}
 	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,
 		Next: &incomingMailHandler, AllowedMethod: "POST", Logger: logger}
 	return &apiAuthenticationHandler
 }
 
-func getAcknowledgeMailHandlerChain(apiConfig config.ApiConfiguration, logger logging.Logger) http.Handler {
-	incomingMailHandler := mails.AcknowledgeMailHandler{Logger: logger}
+func getAcknowledgeMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mail.MailContext, logger logging.Logger) http.Handler {
+	incomingMailHandler := mails.AcknowledgeMailHandler{Logger: logger, MailContext: mailContext}
 	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,
 		Next: &incomingMailHandler, AllowedMethod: "POST", Logger: logger}
 	return &apiAuthenticationHandler
 }
 
-func getOutgoingMailHandlerChain(apiConfig config.ApiConfiguration, logger logging.Logger) http.Handler {
-	outgoingMailHandler := mails.OutgoingMailHandler{Logger: logger}
+func getOutgoingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mail.MailContext, logger logging.Logger) http.Handler {
+	outgoingMailHandler := mails.OutgoingMailHandler{Logger: logger, MailContext: mailContext}
 	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetOutgoingMailApiKey,
 		Next: &outgoingMailHandler, AllowedMethod: "GET", Logger: logger}
 	return &apiAuthenticationHandler

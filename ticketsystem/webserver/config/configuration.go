@@ -3,6 +3,7 @@ package config
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/validation/mail"
 	"flag"
 	"github.com/pkg/errors"
 	"strconv"
@@ -14,11 +15,13 @@ import (
 type Configuration struct {
 	LoginDataFolderPath  string
 	TicketDataFolderPath string
+	MailDataFolderPath   string
 	Port                 int
 	BaseUrl              string
 	CertificatePath      string
 	CertificateKeyPath   string
 	ApiKeyFilePath       string
+	SendingMailAddress   string
 }
 
 /*
@@ -29,9 +32,11 @@ func (c *Configuration) RegisterFlags() {
 	flag.IntVar(&c.Port, "port", 9000, "the port to use")
 	flag.StringVar(&c.LoginDataFolderPath, "loginDataFolderPath", "data/login", "path to the folder to store the login data")
 	flag.StringVar(&c.TicketDataFolderPath, "ticketDataFolderPath", "data/tickets", "path to the folder to store the ticket data")
+	flag.StringVar(&c.MailDataFolderPath, "mailDataFolderPath", "data/mails", "path to the folder to store the mail data")
 	flag.StringVar(&c.CertificateKeyPath, "certificateKeyPath", "key.pem", "path to the certificate key file")
 	flag.StringVar(&c.CertificatePath, "certificatePath", "cert.pem", "path to the certificate")
 	flag.StringVar(&c.ApiKeyFilePath, "apiKeysFilePath", "data/api.keys", "path to the apiKey file")
+	flag.StringVar(&c.SendingMailAddress, "sendingMailAddress", "notification@ticketsyste.de", "Outgoing mail address for notifications")
 }
 
 /*
@@ -77,6 +82,12 @@ func (c *Configuration) ValidateConfiguration(log logging.Logger) bool {
 	}
 	if !exists {
 		log.LogError("Configuration", errors.New("Api key file path does not exist"))
+		return false
+	}
+
+	mailValidator := mail.NewValidator()
+	if !mailValidator.Validate(c.SendingMailAddress) {
+		log.LogError("Configuration", errors.New("Outgoing mail address is not valid"))
 		return false
 	}
 
