@@ -5,7 +5,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketTool/client"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/configuration"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
-	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/saving"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/acknowledgement"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/sharing"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
@@ -44,14 +44,30 @@ func main() {
 		mails = recieveMails
 	}
 
-	saving.SaveAcknowledge(sharing.GetAcknowledges(mails))
+	acknowledgement.SaveAcknowledges(sharing.GetAcknowledges(mails))
 
-	sharing.SharingAllMails(mails)
-
-	ackErr := apiClient.AcknowledgeMails(acknowledge)
-
-	if ackErr != nil {
-		fmt.Println("acknowlege is not posted")
+	for true {
+		fmt.Println("share all Messages or specify Messages? (all/specify)")
+		answer := inputOutput.ReadEntry()
+		if answer == "all" {
+			acknowledge := sharing.SharingAllMails(mails)
+			ackError := apiClient.AcknowledgeMails(acknowledge)
+			if ackError != nil {
+				fmt.Println("acknowlege is not posted")
+			} else {
+				acknowledgement.DeleteAcknowledges(acknowledge)
+				break
+			}
+		} else if answer == "specify" {
+			acknowledge := sharing.SharingSingleMails(mails)
+			ackError := apiClient.AcknowledgeMails(acknowledge)
+			if ackError != nil {
+				fmt.Println("acknowlege is not posted")
+			} else {
+				acknowledgement.DeleteAcknowledges(acknowledge)
+				break
+			}
+		}
 	}
 
 }
