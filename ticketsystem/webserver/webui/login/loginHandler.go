@@ -1,6 +1,7 @@
 package login
 
 import (
+	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
@@ -44,7 +45,7 @@ func (l LoginHandler) ServeHTTPPostLoginData(w http.ResponseWriter, r *http.Requ
 		}
 
 		if success {
-			helpers.SetCookie(w, r, l.Config.AccessTokenCookieName, token)
+			helpers.SetCookie(w, r, shared.AccessTokenCookieName, token)
 			http.Redirect(w, r, "/", 302)
 		} else {
 			http.Redirect(w, r, "/login?IsLoginFailed=true", 302)
@@ -58,7 +59,7 @@ func (l LoginHandler) ServeHTTPPostLoginData(w http.ResponseWriter, r *http.Requ
 func (l LoginHandler) ServeHTTPGetLoginPage(w http.ResponseWriter, r *http.Request) {
 
 	// Checks if the User is already logged in and if so redirects him to the start page
-	isUserLoggedIn, _ := helpers.UserIsLoggedInCheck(r, l.UserContext, l.Config.AccessTokenCookieName, l.Logger)
+	isUserLoggedIn, _ := helpers.UserIsLoggedInCheck(r, l.UserContext, shared.AccessTokenCookieName, l.Logger)
 
 	if isUserLoggedIn {
 		http.Redirect(w, r, "/", http.StatusSeeOther)

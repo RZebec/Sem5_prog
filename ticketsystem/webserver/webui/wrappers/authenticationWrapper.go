@@ -1,6 +1,7 @@
 package wrappers
 
 import (
+	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
@@ -9,16 +10,9 @@ import (
 )
 
 /*
-	Interface for the Http Handler.
-*/
-type HttpHandler interface {
-	ServeHTTP(w http.ResponseWriter, r *http.Request)
-}
-
-/*
 	Structure for the authentication handler wrapper.
 */
-type AuthenticationHandler struct {
+type AuthenticationWrapper struct {
 	Next        HttpHandler
 	Config      config.Configuration
 	UserContext user.UserContext
@@ -28,18 +22,18 @@ type AuthenticationHandler struct {
 /*
 	The Authentication handler wrapper.
 */
-func (h AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h AuthenticationWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	userIsLoggedIn, token := helpers.UserIsLoggedInCheck(r, h.UserContext, h.Config.AccessTokenCookieName, h.Logger)
+	userIsLoggedIn, token := helpers.UserIsLoggedInCheck(r, h.UserContext, shared.AccessTokenCookieName, h.Logger)
 
 	if userIsLoggedIn {
 		newToken, err := h.UserContext.RefreshToken(token)
 
 		if err != nil {
-			panic(err)
+			h.Logger.LogError("Login", err)
 		}
 
-		helpers.SetCookie(w, r, h.Config.AccessTokenCookieName, newToken)
+		helpers.SetCookie(w, r, shared.AccessTokenCookieName, newToken)
 
 		h.Next.ServeHTTP(w, r)
 	} else {

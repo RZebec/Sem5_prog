@@ -68,7 +68,7 @@ func LoadTemplates(logger logging.Logger) (err error) {
 	addTemplate(pages.IndexPage, "IndexPage", baseTemplate, logger)
 	addTemplate(pages.RegisterPage, "RegisterPage", baseTemplate, logger)
 	addTemplate(pages.LoginPage, "LoginPage", baseTemplate, logger)
-	addTemplate(pages.AccessDeniedPage, "AccessDeniedPage", baseTemplate, logger)
+	addTemplate(pages.AdminPage, "AdminPage", baseTemplate, logger)
 	addTemplate(pages.TicketExplorerPage, "TicketExplorerPage", baseTemplate, logger)
 	addTemplate(pages.TicketViewPage, "TicketViewPage", baseTemplate, logger)
 

@@ -22,7 +22,6 @@ type Configuration struct {
 	CertificateKeyPath   string
 	ApiKeyFilePath       string
 	SendingMailAddress   string
-	AccessTokenCookieName string
 }
 
 /*
@@ -38,7 +37,6 @@ func (c *Configuration) RegisterFlags() {
 	flag.StringVar(&c.CertificatePath, "certificatePath", "cert.pem", "path to the certificate")
 	flag.StringVar(&c.ApiKeyFilePath, "apiKeysFilePath", "data/api.keys", "path to the apiKey file")
 	flag.StringVar(&c.SendingMailAddress, "sendingMailAddress", "notification@ticketsyste.de", "Outgoing mail address for notifications")
-	flag.StringVar(&c.AccessTokenCookieName, "accessTokenCookieName", "AccessTokenCookie", "name of the cookie containing the access token")
 }
 
 /*

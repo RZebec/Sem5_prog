@@ -47,6 +47,25 @@ var loginScript = `
     	}
 	};`
 
+var apiKeyScript = `
+
+	function validate() {
+		var incomingApiKey = document.getElementById("incomingMailApiKey").value;
+		var outgoingApiKey = document.getElementById("outgoingMailApiKey").value;
+		
+		apiKeysAreValid = incomingApiKey.length >= 128 && outgoingApiKey.length >= 128;
+		
+		document.getElementById("submitKeys").disabled = !apiKeysAreValid;
+	}
+	
+	window.onload = function(){
+    	var inputs = document.getElementsByTagName('input');
+    	for(var i=0; i<inputs.length; i++){
+    	    inputs[i].onkeyup = validate;
+    	    inputs[i].onblur = validate;
+    	}
+	};`
+
 /*
 	The handler for the script(Javascript) files.
 */
@@ -58,5 +77,7 @@ func HandelScript(w http.ResponseWriter, r *http.Request) {
 	switch s[3] {
 	case "login":
 		w.Write([]byte(loginScript))
+	case "apiKey":
+		w.Write([]byte(apiKeyScript))
 	}
 }
