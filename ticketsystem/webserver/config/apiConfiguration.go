@@ -4,6 +4,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
 	"encoding/json"
 	"errors"
+	"path/filepath"
 	"sync"
 )
 
@@ -91,6 +92,13 @@ func CreateAndInitialize(config Configuration) (*ApiConfiguration, error) {
 		return nil, err
 	}
 	if !exists {
+		dir, _ := filepath.Split(config.ApiKeyFilePath)
+		if len(dir) > 0 {
+			err = helpers.CreateFolderPath(dir)
+			if err != nil {
+				return nil, err
+			}
+		}
 		err = helpers.CreateFileIfNotExists(config.ApiKeyFilePath)
 		if err != nil {
 			return nil, err

@@ -37,7 +37,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(apiConfig)
 
 	if !configuration.ValidateConfiguration(logger) {
 		fmt.Println("Configuration is not valid. Press enter to exit application.")
