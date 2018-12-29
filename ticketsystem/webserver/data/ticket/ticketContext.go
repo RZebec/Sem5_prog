@@ -25,6 +25,7 @@ type TicketContext interface {
 	MergeTickets(firstTicketId int, secondTicketId int) (success bool, err error)
 	SetEditor(editor user.User, ticketId int) (*Ticket, error)
 	SetTicketState(ticketId int, newState TicketState)  (*Ticket, error)
+	RemoveEditor(ticketId int) error
 }
 
 /*
@@ -77,6 +78,34 @@ func (t *TicketManager) AppendMessageToTicket(ticketId int, message MessageEntry
 	}
 }
 
+/*
+	Remove the editor of a ticket.
+ */
+func (t *TicketManager) RemoveEditor(ticketId int) error {
+	exists, ticket := t.GetTicketById(ticketId)
+	if exists {
+		ticket.info.Editor = user.GetInvalidDefaultUser()
+		ticket.info.HasEditor = false
+
+		ticket.info.LastModificationTime = time.Now()
+		err := ticket.persist()
+		if err != nil {
+			return errors.Wrap(err, "could not remove editor of ticket")
+		}
+
+		t.cachedTicketsMutex.Lock()
+		defer t.cachedTicketsMutex.Unlock()
+		t.cachedTickets[ticket.info.Id] = *ticket
+
+		return nil
+	} else {
+		return errors.New("ticket does not exist")
+	}
+}
+
+/*
+	Set the editor of a ticket.
+ */
 func (t *TicketManager) SetEditor(editor user.User, ticketId int) (*Ticket, error) {
 	exists, ticket := t.GetTicketById(ticketId)
 	if exists {
