@@ -44,8 +44,10 @@ func main() {
 		mails = recieveMails
 	}
 
-	acknowledge := sharing.SharingMails(mails)
-	saving.SaveAcknowledge(acknowledge)
+	saving.SaveAcknowledge(sharing.GetAcknowledges(mails))
+
+	sharing.SharingAllMails(mails)
+
 	ackErr := apiClient.AcknowledgeMails(acknowledge)
 
 	if ackErr != nil {
