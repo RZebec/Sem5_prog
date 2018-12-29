@@ -3,9 +3,12 @@ package main
 import (
 	"bufio"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/client"
-
 	"de/vorlesung/projekt/IIIDDD/ticketTool/configuration"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/saving"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/sharing"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"fmt"
 	"os"
 )
@@ -23,11 +26,30 @@ func main() {
 		return
 	}
 
-	apiClient, err := client.CreateClient(config)
-	if err != nil {
-		panic(err)
+	apiClient, createErr := client.CreateClient(config)
+	if createErr != nil {
+		panic(createErr)
 	}
-	fmt.Println(apiClient.ReceiveMails())
-	//message := clientContainer.HttpsRequest(config.BaseUrl, config.Port, config.CertificatePath, "Test")
-	//fmt.Println(message)
+
+	mails := []mail.Mail{}
+	for true {
+		recieveMails, err := apiClient.ReceiveMails()
+		if err != nil {
+			fmt.Print("Transmission is going wrong. Retry? (n,press any key)")
+			answer := inputOutput.ReadEntry()
+			if answer == "n" {
+				break
+			}
+		}
+		mails = recieveMails
+	}
+
+	acknowledge := sharing.SharingMails(mails)
+	saving.SaveAcknowledge(acknowledge)
+	ackErr := apiClient.AcknowledgeMails(acknowledge)
+
+	if ackErr != nil {
+		fmt.Println("acknowlege is not posted")
+	}
+
 }
