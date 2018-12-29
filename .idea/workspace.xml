@@ -32,27 +32,27 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="go" value="28" />
+          <entry key="go" value="34" />
           <entry key="keys" value="1" />
           <entry key="pem" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Go" value="28" />
+          <entry key="Go" value="34" />
           <entry key="PLAIN_TEXT" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="go" value="1605" />
-          <entry key="txt" value="26" />
+          <entry key="go" value="2138" />
+          <entry key="txt" value="47" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Go" value="1605" />
-          <entry key="PLAIN_TEXT" value="26" />
+          <entry key="Go" value="2138" />
+          <entry key="PLAIN_TEXT" value="47" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.go.postfix.template.usages.trigger">
@@ -66,10 +66,19 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ticketTool/recieve/sharing/sharing.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="102">
+              <caret line="32" column="30" selection-start-line="32" selection-start-column="30" selection-end-line="32" selection-end-column="30" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recieve.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="50" column="4" selection-start-line="50" selection-start-column="4" selection-end-line="50" selection-end-column="4" />
+            <state relative-caret-position="539">
+              <caret line="68" column="13" selection-start-line="68" selection-start-column="13" selection-end-line="68" selection-end-column="13" />
               <folding>
                 <element signature="e#14#436#0" expanded="true" />
               </folding>
@@ -78,13 +87,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ticketTool/recieve/sharing/sharing.go">
+        <entry file="file://$PROJECT_DIR$/ticketTool/recieve/acknowledgement/acknowledgement.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="18" column="42" selection-start-line="18" selection-start-column="42" selection-end-line="18" selection-end-column="42" />
-              <folding>
-                <element signature="e#17#98#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="119">
+              <caret line="7" column="35" selection-start-line="7" selection-start-column="35" selection-end-line="7" selection-end-column="35" />
             </state>
           </provider>
         </entry>
@@ -144,8 +150,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/ticketsystem/webserver/webui/exampleHtmlHandler.go" />
-        <option value="$PROJECT_DIR$/ticketsystem/webserver/core/handler.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/core/session/LoginDataAccess.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/core/helpers.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/core/session/user.go" />
@@ -191,10 +195,12 @@
         <option value="$PROJECT_DIR$/ticketTool/recieve/saving/saving.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/config/configuration.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/config/configuration.go" />
-        <option value="$PROJECT_DIR$/ticketTool/recieve/delete/delete.go" />
         <option value="$PROJECT_DIR$/ticketTool/recieve/delete/delete_test.go" />
+        <option value="$PROJECT_DIR$/ticketTool/recieve/delete/delete.go" />
         <option value="$PROJECT_DIR$/ticketTool/recieve/sharing/sharing.go" />
+        <option value="$PROJECT_DIR$/ticketTool/recieve/acknowledge/acknowledge.go" />
         <option value="$PROJECT_DIR$/ticketTool/recieve/recieve.go" />
+        <option value="$PROJECT_DIR$/ticketTool/recieve/acknowledgement/acknowledgement.go" />
       </list>
     </option>
   </component>
@@ -205,10 +211,9 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1936" />
-    <option name="height" value="1056" />
+    <option name="x" value="-7" />
+    <option name="width" value="697" />
+    <option name="height" value="735" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
@@ -291,7 +296,7 @@
               <item name="IIIDDD" type="462c0819:PsiDirectoryNode" />
               <item name="ticketTool" type="462c0819:PsiDirectoryNode" />
               <item name="recieve" type="462c0819:PsiDirectoryNode" />
-              <item name="saving" type="462c0819:PsiDirectoryNode" />
+              <item name="acknowledgement" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="IIIDDD" type="b2602c69:ProjectViewProjectNode" />
@@ -311,7 +316,7 @@
     <property name="GO_FMT" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546095674787" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546098455809" />
     <property name="go.gopath.indexing.explicitly.defined" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$" />
@@ -433,7 +438,7 @@
       <workItem from="1545862337899" duration="5656000" />
       <workItem from="1545903219790" duration="16733000" />
       <workItem from="1545988449408" duration="10418000" />
-      <workItem from="1546082765096" duration="13361000" />
+      <workItem from="1546082765096" duration="15570000" />
     </task>
     <task id="LOCAL-00001" summary="HttpRequest, Input implementiert&#10;als nächstes Tests">
       <created>1545905848538</created>
@@ -470,7 +475,14 @@
       <option name="project" value="LOCAL" />
       <updated>1546094261019</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="saving,delete,sharing">
+      <created>1546096173836</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1546096173836</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -506,7 +518,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="54392000" />
+    <option name="totallyTimeSpent" value="56601000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -595,7 +607,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="acknowledge implementiert" />
-    <option name="LAST_COMMIT_MESSAGE" value="acknowledge implementiert" />
+    <MESSAGE value="saving,delete,sharing" />
+    <option name="LAST_COMMIT_MESSAGE" value="saving,delete,sharing" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -617,7 +630,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/main.go</url>
-          <line>81</line>
+          <line>80</line>
           <option name="timeStamp" value="31" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
@@ -627,17 +640,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/main.go</url>
-          <line>76</line>
+          <line>75</line>
           <option name="timeStamp" value="39" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/main.go</url>
-          <line>79</line>
+          <line>78</line>
           <option name="timeStamp" value="40" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/main.go</url>
-          <line>73</line>
+          <line>72</line>
           <option name="timeStamp" value="41" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
@@ -830,13 +843,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/data/user/UserState.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" selection-start-line="2" selection-end-line="9" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Go/src/os/path.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="203">
@@ -948,7 +954,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/saving/saving_test.go">
+    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/acknowledgement/acknowledgement_test.go">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret column="14" selection-start-column="14" selection-end-column="14" />
@@ -996,44 +1002,48 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/delete/delete_test.go">
+    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/deleteAck/delete_test.go">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret column="14" selection-start-column="14" selection-end-column="14" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/delete/delete.go">
+    <entry file="file://$PROJECT_DIR$/ticketsystem/webserver/data/user/UserState.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="14" selection-start-column="14" selection-end-column="14" />
+        <state relative-caret-position="153">
+          <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/saving/saving.go">
+    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/deleteAck/delete.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="5" selection-start-line="4" selection-start-column="5" selection-end-line="4" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/sharing/sharing.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="18" column="42" selection-start-line="18" selection-start-column="42" selection-end-line="18" selection-end-column="42" />
-          <folding>
-            <element signature="e#17#98#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="34">
+          <caret line="2" selection-start-line="2" selection-end-line="4" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recieve.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="50" column="4" selection-start-line="50" selection-start-column="4" selection-end-line="50" selection-end-column="4" />
+        <state relative-caret-position="539">
+          <caret line="68" column="13" selection-start-line="68" selection-start-column="13" selection-end-line="68" selection-end-column="13" />
           <folding>
             <element signature="e#14#436#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/acknowledgement/acknowledgement.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="35" selection-start-line="7" selection-start-column="35" selection-end-line="7" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/sharing/sharing.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="32" column="30" selection-start-line="32" selection-start-column="30" selection-end-line="32" selection-end-column="30" />
         </state>
       </provider>
     </entry>
