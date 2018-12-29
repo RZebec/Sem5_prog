@@ -75,16 +75,6 @@ func (c *Configuration) ValidateConfiguration(log logging.Logger) bool {
 		return false
 	}
 
-	exists, err = helpers.FilePathExists(c.ApiKeyFilePath)
-	if err != nil {
-		log.LogError("Configuration", errors.Wrap(err, "Could not validate api key file path"))
-		return false
-	}
-	if !exists {
-		log.LogError("Configuration", errors.New("Api key file path does not exist"))
-		return false
-	}
-
 	mailValidator := mail.NewValidator()
 	if !mailValidator.Validate(c.SendingMailAddress) {
 		log.LogError("Configuration", errors.New("Outgoing mail address is not valid"))
