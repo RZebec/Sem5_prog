@@ -18,32 +18,37 @@ import (
 
 /*
 	Interface for the mail context.
- */
+*/
 type MailContext interface {
 	GetUnsentMails() ([]Mail, error)
 	AcknowledgeMails(acknowledgments []Acknowledgment) error
 	CreateNewOutgoingMail(receiver string, subject string, content string) error
 }
-
+/*
+	A mail manager.
+ */
 type MailManager struct {
-	unAcknowledgedMails []string
+	unAcknowledgedMails     []string
 	unAcknowledgeMailsMutex sync.RWMutex
-	unSentMails []Mail
-	unSentMailsMutex sync.RWMutex
-	mailFolderPath string
-	mailFolderAccessMutex sync.RWMutex
-	logger logging.Logger
-	outgoingMailAddress string
+	unSentMails             []Mail
+	unSentMailsMutex        sync.RWMutex
+	mailFolderPath          string
+	mailFolderAccessMutex   sync.RWMutex
+	logger                  logging.Logger
+	outgoingMailAddress     string
 }
 
-func (t *MailManager) AcknowledgeMails(acknowledgments []Acknowledgment) error{
+/*
+	Acknowledging a mail deletes it.
+ */
+func (t *MailManager) AcknowledgeMails(acknowledgments []Acknowledgment) error {
 	t.unAcknowledgeMailsMutex.Lock()
 	defer t.unAcknowledgeMailsMutex.Unlock()
 
-	for _, acknowledgment := range acknowledgments{
+	for _, acknowledgment := range acknowledgments {
 		t.unAcknowledgedMails = remove(t.unAcknowledgedMails, acknowledgment.Id)
-		mailPath := path.Join(t.mailFolderPath, acknowledgment.Id + ".json")
-		exist, err :=helpers.FilePathExists(mailPath)
+		mailPath := path.Join(t.mailFolderPath, acknowledgment.Id+".json")
+		exist, err := helpers.FilePathExists(mailPath)
 		if err != nil {
 			return err
 		}
@@ -61,6 +66,9 @@ func (t *MailManager) AcknowledgeMails(acknowledgments []Acknowledgment) error{
 	return nil
 }
 
+/*
+	Remove a string value from a string array.
+ */
 func remove(array []string, valueRoRemove string) []string {
 	for i, v := range array {
 		if v == valueRoRemove {
@@ -71,14 +79,17 @@ func remove(array []string, valueRoRemove string) []string {
 	return array
 }
 
-func (t *MailManager) GetUnsentMails() ([]Mail, error){
+/*
+	Get the unsent emails.
+ */
+func (t *MailManager) GetUnsentMails() ([]Mail, error) {
 	t.unSentMailsMutex.Lock()
 	defer t.unSentMailsMutex.Unlock()
 	t.unAcknowledgeMailsMutex.Lock()
 	defer t.unAcknowledgeMailsMutex.Unlock()
 
 	mailsToSent := t.unSentMails
-	for _, mailToSent := range t.unSentMails{
+	for _, mailToSent := range t.unSentMails {
 		t.unAcknowledgedMails = append(t.unAcknowledgedMails, mailToSent.Id)
 	}
 	err := t.persistUnAcknowledgedMailState()
@@ -123,7 +134,10 @@ func (t *MailManager) Initialize(folderPath string, outgoingMailAddress string, 
 	return nil
 }
 
-func (t *MailManager) CreateNewOutgoingMail(receiver string, subject string, content string) error{
+/*
+	Create a new outgoing mail
+ */
+func (t *MailManager) CreateNewOutgoingMail(receiver string, subject string, content string) error {
 	validator := mail.NewValidator()
 	if !validator.Validate(receiver) {
 		return errors.New("Receiver address is not valid")
@@ -147,10 +161,13 @@ func (t *MailManager) CreateNewOutgoingMail(receiver string, subject string, con
 	defer t.unSentMailsMutex.Unlock()
 	t.unSentMails = append(t.unSentMails, mailToSent)
 
-	t.logger.LogInfo("MailManager", "Mail created with id: " + mailToSent.Id)
+	t.logger.LogInfo("MailManager", "Mail created with id: "+mailToSent.Id)
 	return nil
 }
 
+/*
+	Read existing mails from the file system.
+ */
 func (t *MailManager) readExistingMailData() error {
 	t.mailFolderAccessMutex.Lock()
 	defer t.mailFolderAccessMutex.Unlock()
@@ -159,7 +176,6 @@ func (t *MailManager) readExistingMailData() error {
 	if err != nil {
 		return errors.Wrap(err, "could not read existing mail data.")
 	}
-
 
 	t.unSentMailsMutex.Lock()
 	t.unSentMailsMutex.Unlock()
@@ -175,14 +191,14 @@ func (t *MailManager) readExistingMailData() error {
 		if !fileInfo.IsDir() {
 			match, _ := regexp.MatchString(".json", fileInfo.Name())
 			if match {
-				if fileInfo.Name() == unAcknowledgeMailFileName{
+				if fileInfo.Name() == unAcknowledgeMailFileName {
 					continue
 				}
 				extension := filepath.Ext(fileInfo.Name())
-				name := fileInfo.Name()[0:len(fileInfo.Name())-len(extension)]
+				name := fileInfo.Name()[0 : len(fileInfo.Name())-len(extension)]
 				ignoreFile := false
-				for _, alreadySentId := range t.unAcknowledgedMails{
-					if name == alreadySentId{
+				for _, alreadySentId := range t.unAcknowledgedMails {
+					if name == alreadySentId {
 						ignoreFile = true
 						break
 					}
@@ -196,7 +212,7 @@ func (t *MailManager) readExistingMailData() error {
 					}
 					t.unSentMails = append(t.unSentMails, *mail)
 				} else {
-					t.logger.LogInfo("MailManager", "Not loading mail file " + fileInfo.Name() + " since it is waiting for acknowledgement")
+					t.logger.LogInfo("MailManager", "Not loading mail file "+fileInfo.Name()+" since it is waiting for acknowledgement")
 				}
 			}
 		}
@@ -204,10 +220,11 @@ func (t *MailManager) readExistingMailData() error {
 	return nil
 }
 
-
-
-func (t *MailManager) readMailFromFile(pathToFile string) (*Mail,error) {
-	t.logger.LogInfo("MailManager", "Loading mail file " + pathToFile)
+/*
+	Read and decode a mail from a file.
+ */
+func (t *MailManager) readMailFromFile(pathToFile string) (*Mail, error) {
+	t.logger.LogInfo("MailManager", "Loading mail file "+pathToFile)
 
 	fileValue, err := helpers.ReadAllDataFromFile(pathToFile)
 	if err != nil {
@@ -222,6 +239,9 @@ func (t *MailManager) readMailFromFile(pathToFile string) (*Mail,error) {
 	return parsedData, nil
 }
 
+/*
+	Read the list of unacknowledged mails.
+ */
 func (t *MailManager) readUnAcknowledgeMailsFile(folderPath string) error {
 	t.unAcknowledgeMailsMutex.Lock()
 	defer t.unAcknowledgeMailsMutex.Unlock()
@@ -229,12 +249,12 @@ func (t *MailManager) readUnAcknowledgeMailsFile(folderPath string) error {
 	filePath := path.Join(folderPath, unAcknowledgeMailFileName)
 	err := helpers.CreateFileIfNotExists(filePath)
 	if err != nil {
-		return  err
+		return err
 	}
 	// Read data from file
 	fileValue, err := helpers.ReadAllDataFromFile(filePath)
 	if err != nil {
-		return  err
+		return err
 	}
 
 	parsedData := new([]string)
@@ -254,14 +274,20 @@ func (t *MailManager) readUnAcknowledgeMailsFile(folderPath string) error {
 	return nil
 }
 
+/*
+	Persist a mail to disk.
+ */
 func (t *MailManager) persistMailToDisk(mailToSent Mail) error {
 	jsonData, err := json.MarshalIndent(mailToSent, "", "    ")
 	if err != nil {
 		return errors.Wrap(err, "could not save mail to file")
 	}
-	return helpers.WriteDataToFile(path.Join(t.mailFolderPath, mailToSent.Id + ".json"), jsonData)
+	return helpers.WriteDataToFile(path.Join(t.mailFolderPath, mailToSent.Id+".json"), jsonData)
 }
 
+/*
+	Persist the unacknowledged state to disk.
+ */
 func (t *MailManager) persistUnAcknowledgedMailState() error {
 	jsonData, err := json.Marshal(t.unAcknowledgedMails)
 	if err != nil {
