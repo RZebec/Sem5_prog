@@ -12,6 +12,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"fmt"
 	"net/http"
 	"os"
@@ -81,15 +82,17 @@ func main() {
 	g := ticketContext.GetAllTicketInfo()
 	fmt.Println(len(g))
 
-	exampleHandler := webui.ExampleHtmlHandler{Prefix: "Das ist mein Prefix"}
-	wrapper := core.Handler{Next: exampleHandler}
+	http.HandleFunc("/api/mail/incoming", getIncomingMailHandlerChain(*apiConfig).ServeHTTP)
 
-	http.HandleFunc("/", foohandler)
-	http.HandleFunc("/files/", tempHandler)
-	http.HandleFunc("/example", wrapper.ServeHTTP)
-	http.HandleFunc(shared.SendPath, getIncomingMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
-	http.HandleFunc(shared.ReceivePath, getOutgoingMailHandlerChain(*apiConfig,&mailContext, logger).ServeHTTP)
-	http.HandleFunc(shared.AcknowledgmentPath, getAcknowledgeMailHandlerChain(*apiConfig,&mailContext, logger).ServeHTTP)
+	handlerManager := webui.HandlerManager{
+		UserContext:   &userContext,
+		TicketContext: &ticketContext,
+		Config:        configuration,
+		Logger:        logger,
+	}
+
+	templateManager.LoadTemplates(logger)
+	handlerManager.StartServices()
 
 	if err := http.ListenAndServeTLS(configuration.GetServiceUrl(), configuration.CertificatePath, configuration.CertificateKeyPath, nil); err != nil {
 		logger.LogError("Main", err)
