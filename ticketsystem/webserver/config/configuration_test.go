@@ -116,23 +116,6 @@ func ExampleConfiguration_ValidateConfiguration_CertificateKeyDoesNotExist_Retur
 }
 
 /*
-	Validation should fail, if the api key file does not exist.
-*/
-func TestConfiguration_ValidateConfiguration_ApiKeyFileDoesNotExist_ReturnsFalse(t *testing.T) {
-	logger := logging.ConsoleLogger{}
-	config := Configuration{}
-	config.BindFlags()
-
-	// The path should not exist.
-	config.ApiKeyFilePath = "/Temp/test/jspemdusoem.key"
-	valid := config.ValidateConfiguration(logger)
-	fmt.Println(valid)
-	//Output:
-	// <Error>[Configuration]: Api key file path does not exist
-	// false
-}
-
-/*
 	Default values should be set.
 */
 func TestConfiguration_RegisterAndBindFlags(t *testing.T) {
