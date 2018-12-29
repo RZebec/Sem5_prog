@@ -8,17 +8,17 @@ import (
 )
 
 /*
-	A handler for incoming mails.
+	A handler for acknowledgment of mails.
  */
-type IncomingMailHandler struct {
+type AcknowledgeMailHandler struct {
 }
 
 /*
-	Handling the incoming mails.
+	Handling the acknowledgement of mails.
  */
-func (h *IncomingMailHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+func (h *AcknowledgeMailHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
-	var t []mail.Mail
+	var t []mail.Acknowledgment
 	err := decoder.Decode(&t)
 	if err != nil {
 		fmt.Println(err)

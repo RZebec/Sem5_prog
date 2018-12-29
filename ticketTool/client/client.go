@@ -15,12 +15,18 @@ import (
 	"strconv"
 )
 
+/*
+	Interface for the api client.
+*/
 type Client interface {
 	SendMails(mails []mail.Mail) error
 	ReceiveMails() ([]mail.Mail, error)
-	AcknowledgeMails(mailIds []string) error
+	AcknowledgeMails(mailsToAcknowledge []mail.Acknowledgment) error
 }
 
+/*
+	The api client.
+*/
 type ApiClient struct {
 	baseUrl         string
 	port            int
@@ -29,11 +35,17 @@ type ApiClient struct {
 	receivingApiKey string
 }
 
+/*
+	Persisted api keys data.
+*/
 type persistedData struct {
 	IncomingMailApiKey string
 	OutgoingMailApiKey string
 }
 
+/*
+	Build and prepare a post request.
+*/
 func (c *ApiClient) buildPostRequest(url string, data []byte) (*http.Request, error) {
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
 	req.Header.Set("Cookie", shared.AuthenticationCookieName+"="+c.sendingApiKey)
@@ -43,6 +55,9 @@ func (c *ApiClient) buildPostRequest(url string, data []byte) (*http.Request, er
 	return req, nil
 }
 
+/*
+	Build and prepare a get request.
+*/
 func (c *ApiClient) buildGetRequest(url string) (*http.Request, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	req.Header.Set("Cookie", shared.AuthenticationCookieName+"="+c.receivingApiKey)
@@ -52,6 +67,9 @@ func (c *ApiClient) buildGetRequest(url string) (*http.Request, error) {
 	return req, nil
 }
 
+/*
+	Send mails to the server.
+*/
 func (c *ApiClient) SendMails(mails []mail.Mail) error {
 	jsonData, err := json.Marshal(mails)
 	if err != nil {
@@ -73,6 +91,9 @@ func (c *ApiClient) SendMails(mails []mail.Mail) error {
 	return nil
 }
 
+/*
+	Receive mails from the server.
+*/
 func (c *ApiClient) ReceiveMails() ([]mail.Mail, error) {
 	url := "https://" + c.baseUrl + ":" + strconv.Itoa(c.port) + shared.ReceivePath
 	req, err := c.buildGetRequest(url)
@@ -98,10 +119,33 @@ func (c *ApiClient) ReceiveMails() ([]mail.Mail, error) {
 	}
 }
 
-func (c *ApiClient) AcknowledgeMails(mailIds []string) error {
+/*
+	Acknowledge mails.
+*/
+func (c *ApiClient) AcknowledgeMails(mailsToAcknowledge []mail.Acknowledgment) error {
+	jsonData, err := json.Marshal(mailsToAcknowledge)
+	if err != nil {
+		return err
+	}
+	url := "https://" + c.baseUrl + ":" + strconv.Itoa(c.port) + shared.AcknowledgmentPath
+	req, err := c.buildPostRequest(url, jsonData)
+	if err != nil {
+		return err
+	}
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return errors.New("Returned status code: " + strconv.Itoa(resp.StatusCode))
+	}
 	return nil
 }
 
+/*
+	Read the api keys from a file.
+*/
 func (c *ApiClient) readApiKeys(filePath string) error {
 	fileExists, err := helpers.FilePathExists(filePath)
 	if err != nil {
@@ -126,6 +170,9 @@ func (c *ApiClient) readApiKeys(filePath string) error {
 	return nil
 }
 
+/*
+	Create a api client.
+*/
 func CreateClient(config configuration.Configuration) (ApiClient, error) {
 	apiClient := ApiClient{}
 	apiClient.baseUrl = config.BaseUrl

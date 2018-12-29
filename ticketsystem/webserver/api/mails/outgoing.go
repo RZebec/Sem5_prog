@@ -7,8 +7,12 @@ import (
 	"time"
 )
 
+/*
+	A handler for outgoing mails.
+ */
 type OutgoingMailHandler struct {
 }
+
 
 func getTestEmails() []mail.Mail {
 	var eMails []mail.Mail
@@ -21,6 +25,9 @@ func getTestEmails() []mail.Mail {
 	return eMails
 }
 
+/*
+	Handling the outgoing mails.
+ */
 func (h *OutgoingMailHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	jsonData, err := json.Marshal(getTestEmails())
 	if err != nil {

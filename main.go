@@ -83,6 +83,7 @@ func main() {
 	http.HandleFunc("/example", wrapper.ServeHTTP)
 	http.HandleFunc(shared.SendPath, getIncomingMailHandlerChain(*apiConfig).ServeHTTP)
 	http.HandleFunc(shared.ReceivePath, getOutgoingMailHandlerChain(*apiConfig).ServeHTTP)
+	http.HandleFunc(shared.AcknowledgmentPath, getAcknowledgeMailHandlerChain(*apiConfig).ServeHTTP)
 
 	if err := http.ListenAndServeTLS(configuration.GetServiceUrl(), configuration.CertificatePath, configuration.CertificateKeyPath, nil); err != nil {
 		panic(err)
@@ -93,6 +94,13 @@ func main() {
 
 func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration) http.Handler {
 	incomingMailHandler := mails.IncomingMailHandler{}
+	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,
+		Next: &incomingMailHandler, AllowedMethod: "POST"}
+	return &apiAuthenticationHandler
+}
+
+func getAcknowledgeMailHandlerChain(apiConfig config.ApiConfiguration) http.Handler {
+	incomingMailHandler := mails.AcknowledgeMailHandler{}
 	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,
 		Next: &incomingMailHandler, AllowedMethod: "POST"}
 	return &apiAuthenticationHandler

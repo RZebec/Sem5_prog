@@ -1,5 +1,7 @@
 package mail
-
+/*
+	A email.
+ */
 type Mail struct {
 	Id       string
 	Sender   string
