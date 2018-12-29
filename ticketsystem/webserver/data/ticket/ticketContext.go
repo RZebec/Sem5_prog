@@ -24,6 +24,30 @@ type TicketContext interface {
 	AppendMessageToTicket(ticketId int, message MessageEntry) (*Ticket, error)
 	MergeTickets(firstTicketId int, secondTicketId int) (success bool, err error)
 	SetEditor(editor user.User, ticketId int) (*Ticket, error)
+	SetTicketState(ticketId int, newState TicketState)  (*Ticket, error)
+}
+
+/*
+	Set the state of a ticket.
+ */
+func (t *TicketManager) SetTicketState(ticketId int, newState TicketState) (*Ticket, error){
+	exists, ticket := t.GetTicketById(ticketId)
+	if exists {
+		ticket.info.State = newState
+		ticket.info.LastModificationTime = time.Now()
+		err := ticket.persist()
+		if err != nil {
+			return nil, errors.Wrap(err, "could not change state of the ticket")
+		}
+
+		t.cachedTicketsMutex.Lock()
+		defer t.cachedTicketsMutex.Unlock()
+		t.cachedTickets[ticket.info.Id] = *ticket
+
+		return ticket.Copy(), nil
+	} else {
+		return nil, errors.New("ticket does not exist")
+	}
 }
 
 /*
@@ -140,6 +164,7 @@ func (t *TicketManager) MergeTickets(firstTicketId int, secondTicketId int) (suc
 		return olderTicket.messages[i].CreationTime.Before(olderTicket.messages[j].CreationTime)
 	})
 
+	olderTicket.info.LastModificationTime = time.Now()
 	olderTicket.persist()
 	t.cachedTickets[olderTicket.info.Id] = olderTicket
 

@@ -141,6 +141,7 @@ func createNewEmptyTicket(folderPath string, id int) (*Ticket, error) {
 	ticket.info.Id = id
 	ticket.info.CreationTime = time.Now()
 	ticket.info.LastModificationTime = ticket.info.CreationTime
+	ticket.info.State = Open
 	ticket.filePath = filePath
 
 	err = ticket.persist()

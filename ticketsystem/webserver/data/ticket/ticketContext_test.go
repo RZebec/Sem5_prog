@@ -655,6 +655,38 @@ func TestTicketManager_AppendMessageToTicket_TicketDoesNotExist_ErrorReturned(t 
 }
 
 /*
+	Setting the state of the ticket should change the state in memory and in the persisted ticket.
+*/
+func TestTicketManager_SetTicketState_StateUpdated(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	// Load some prepared tickets:
+	err = writeTestDataToFolder(folderPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	// Ensure, that the ticket has state open set:
+	_, testTicket := testee.GetTicketById(2)
+	assert.Equal(t, Open, testTicket.info.State, "State should be set to open")
+
+	// Update the state:
+	_, err = testee.SetTicketState(2, Closed)
+	assert.Nil(t, err)
+
+	// Assert that the ticket has been updated:
+	_, updatedTicket := testee.GetTicketById(testTicket.info.Id)
+	assert.Equal(t, Closed, updatedTicket.info.State, "State should now be set to closed")
+
+	// Assert that the stored file has been updated:
+	storedTicket, err := readTicketFromFile(updatedTicket.filePath)
+	assert.Equal(t, Closed, storedTicket.info.State, "The persisted state should be closed")
+}
+
+/*
 	Write the test data to a folder.
 */
 func writeTestDataToFolder(folderPath string) error {
