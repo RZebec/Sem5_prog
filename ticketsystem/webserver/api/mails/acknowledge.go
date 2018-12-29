@@ -25,7 +25,7 @@ func (h *AcknowledgeMailHandler) ServeHTTP(w http.ResponseWriter, req *http.Requ
 	err := decoder.Decode(&data)
 	if err != nil {
 		h.Logger.LogError("AcknowledgeMailHandler", err)
-		w.WriteHeader(500)
+		w.WriteHeader(400)
 	} else {
 		err := h.MailContext.AcknowledgeMails(data)
 		if err != nil {
