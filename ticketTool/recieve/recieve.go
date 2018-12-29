@@ -50,7 +50,7 @@ func main() {
 		fmt.Println("share all Messages or specify Messages? (all/specify)")
 		answer := inputOutput.ReadEntry()
 		if answer == "all" {
-			acknowledge := sharing.SharingAllMails(mails)
+			acknowledge := sharing.ShareAllMails(mails)
 			ackError := apiClient.AcknowledgeMails(acknowledge)
 			if ackError != nil {
 				fmt.Println("acknowlege is not posted")
@@ -59,7 +59,7 @@ func main() {
 				break
 			}
 		} else if answer == "specify" {
-			acknowledge := sharing.SharingSingleMails(mails)
+			acknowledge := sharing.ShareSingleMails(mails)
 			ackError := apiClient.AcknowledgeMails(acknowledge)
 			if ackError != nil {
 				fmt.Println("acknowlege is not posted")
