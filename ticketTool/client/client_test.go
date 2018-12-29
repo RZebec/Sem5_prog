@@ -205,7 +205,7 @@ func TestApiClient_ReceiveMails_MailsReturned(t *testing.T) {
 	// Receive the mails.
 	mails, err := testee.ReceiveMails()
 	assert.Nil(t, err)
-	for idx, expectedMail := range testMails{
+	for idx, expectedMail := range testMails {
 		actualMail := mails[idx]
 		assert.Equal(t, expectedMail, actualMail, "All mails should be transmitted and equal to the sent one")
 	}

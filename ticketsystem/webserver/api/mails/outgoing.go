@@ -8,7 +8,6 @@ import (
 )
 
 type OutgoingMailHandler struct {
-
 }
 
 func getTestEmails() []mail.Mail {

@@ -28,7 +28,7 @@ func (u *User) Copy() User {
 
 /*
 	Get a invalid default user.
- */
+*/
 func GetInvalidDefaultUser() User {
 	return User{Mail: "", UserId: 0, FirstName: "", LastName: "", Role: 0, State: 0}
 }

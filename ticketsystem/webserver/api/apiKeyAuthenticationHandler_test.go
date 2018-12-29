@@ -94,7 +94,6 @@ func TestApiKeyAuthenticationHandler_ServeHTTP_CorrectApiKey_NextHandlerCalled(t
 	assert.Equal(t, "Next handler has been called", rr.Body.String())
 }
 
-
 /*
 	Only Post method should be accepted.
 */

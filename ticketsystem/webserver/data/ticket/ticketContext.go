@@ -24,14 +24,31 @@ type TicketContext interface {
 	AppendMessageToTicket(ticketId int, message MessageEntry) (*Ticket, error)
 	MergeTickets(firstTicketId int, secondTicketId int) (success bool, err error)
 	SetEditor(editor user.User, ticketId int) (*Ticket, error)
-	SetTicketState(ticketId int, newState TicketState)  (*Ticket, error)
+	SetTicketState(ticketId int, newState TicketState) (*Ticket, error)
 	RemoveEditor(ticketId int) error
+	GetAllOpenTickets() []TicketInfo
+}
+
+/*
+	Get all tickets with the state open.
+*/
+func (t *TicketManager) GetAllOpenTickets() []TicketInfo {
+	t.cachedTicketsMutex.RLock()
+	defer t.cachedTicketsMutex.RUnlock()
+
+	var ticketInfos []TicketInfo
+	for _, ticket := range t.cachedTickets {
+		if ticket.info.State == Open {
+			ticketInfos = append(ticketInfos, ticket.info.Copy())
+		}
+	}
+	return ticketInfos
 }
 
 /*
 	Set the state of a ticket.
- */
-func (t *TicketManager) SetTicketState(ticketId int, newState TicketState) (*Ticket, error){
+*/
+func (t *TicketManager) SetTicketState(ticketId int, newState TicketState) (*Ticket, error) {
 	exists, ticket := t.GetTicketById(ticketId)
 	if exists {
 		ticket.info.State = newState
@@ -80,7 +97,7 @@ func (t *TicketManager) AppendMessageToTicket(ticketId int, message MessageEntry
 
 /*
 	Remove the editor of a ticket.
- */
+*/
 func (t *TicketManager) RemoveEditor(ticketId int) error {
 	exists, ticket := t.GetTicketById(ticketId)
 	if exists {
@@ -105,7 +122,7 @@ func (t *TicketManager) RemoveEditor(ticketId int) error {
 
 /*
 	Set the editor of a ticket.
- */
+*/
 func (t *TicketManager) SetEditor(editor user.User, ticketId int) (*Ticket, error) {
 	exists, ticket := t.GetTicketById(ticketId)
 	if exists {

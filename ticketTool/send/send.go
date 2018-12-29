@@ -58,8 +58,6 @@ func httpRequest(config configuration.Configuration, eMails []mail.Mail) {
 	apiClient.SendMails(eMails)
 }
 
-
-
 func entryNumberOfRandomMails() int {
 	for true {
 		fmt.Println("Entry number of Random Mails: ")

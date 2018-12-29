@@ -8,7 +8,6 @@ import (
 )
 
 type IncomingMailHandler struct {
-
 }
 
 func (h *IncomingMailHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {

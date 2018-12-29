@@ -15,7 +15,6 @@ var recievers = []string{"test2@gmx.de", "SuperOberheld.asdf@web.de", "Franzhors
 	"ad.du@ff.de", "kakhaufen@lang.de", "abcbnm.defg@hij.de", "blabla@bla.de", "laborGrube@saft.de", "orange@blau.de", "hohlfruchtigerSaft@haze.de"}
 
 type MailGenerator struct {
-
 }
 
 func (m *MailGenerator) RandomMail(n int) []mail.Mail {

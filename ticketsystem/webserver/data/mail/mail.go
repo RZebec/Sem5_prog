@@ -8,5 +8,3 @@ type Mail struct {
 	Content  string
 	SentTime int64
 }
-
-

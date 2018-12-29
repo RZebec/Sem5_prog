@@ -16,7 +16,7 @@ func TestTicketInfo_Copy(t *testing.T) {
 	creator := Creator{Mail: origUser.Mail, FirstName: origUser.FirstName, LastName: origUser.LastName}
 	origTicketInfo := TicketInfo{Id: 5, Title: "OrigTitle", HasEditor: true,
 		CreationTime: refTimestamp, LastModificationTime: refTimestamp,
-		Editor: origUser, Creator: creator, State: Open }
+		Editor: origUser, Creator: creator, State: Open}
 
 	copiedTicket := origTicketInfo.Copy()
 

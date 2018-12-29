@@ -146,8 +146,8 @@ func (s *LoginSystem) Register(userName string, password string, firstName strin
 
 /*
 	Change the password for the user of the given session.
- */
-func (s *LoginSystem) ChangePassword(currentUserToken string, currentUserPassword string, newPassword string) (changed bool, err error){
+*/
+func (s *LoginSystem) ChangePassword(currentUserToken string, currentUserPassword string, newPassword string) (changed bool, err error) {
 	isValid, userId, userName, err := s.SessionIsValid(currentUserToken)
 	if err != nil {
 		return false, err
@@ -172,7 +172,6 @@ func (s *LoginSystem) ChangePassword(currentUserToken string, currentUserPasswor
 	}
 	return false, errors.New("user password could not be changed")
 }
-
 
 /*
 	Logout a user.
@@ -360,7 +359,7 @@ func (s *LoginSystem) UnlockAccount(currentToken string, userIdToUnlock int) (un
 
 /*
 	Initialize the files for the user system.
- */
+*/
 func (s *LoginSystem) initializeFiles(folderPath string) (err error) {
 	s.setDefaultValues()
 	// Validate the provided path:

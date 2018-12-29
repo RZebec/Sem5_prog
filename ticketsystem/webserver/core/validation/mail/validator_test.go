@@ -8,7 +8,7 @@ import (
 
 /*
 	Example for the mail validator.
- */
+*/
 func ExampleValidator_Validate() {
 	val := New()
 
@@ -20,7 +20,7 @@ func ExampleValidator_Validate() {
 
 /*
 	Test a invalid mail.
- */
+*/
 func TestValidator_Validate_InvalidMail_NotOk(t *testing.T) {
 	val := New()
 

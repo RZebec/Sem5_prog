@@ -26,7 +26,6 @@ func tempHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(r.URL.Path))
 }
 
-
 func main() {
 	logger := logging.ConsoleLogger{SetTimeStamp: true}
 	configuration := config.Configuration{}
@@ -79,7 +78,6 @@ func main() {
 	exampleHandler := webui.ExampleHtmlHandler{Prefix: "Das ist mein Prefix"}
 	wrapper := core.Handler{Next: exampleHandler}
 
-
 	http.HandleFunc("/", foohandler)
 	http.HandleFunc("/files/", tempHandler)
 	http.HandleFunc("/example", wrapper.ServeHTTP)
@@ -99,7 +97,6 @@ func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration) http.Handler
 		Next: &incomingMailHandler, AllowedMethod: "POST"}
 	return &apiAuthenticationHandler
 }
-
 
 func getOutgoingMailHandlerChain(apiConfig config.ApiConfiguration) http.Handler {
 	outgoingMailHandler := mails.OutgoingMailHandler{}

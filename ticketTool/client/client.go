@@ -36,17 +36,16 @@ type persistedData struct {
 
 func (c *ApiClient) buildPostRequest(url string, data []byte) (*http.Request, error) {
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
-	req.Header.Set("Cookie", shared.AuthenticationCookieName+"=" + c.sendingApiKey)
+	req.Header.Set("Cookie", shared.AuthenticationCookieName+"="+c.sendingApiKey)
 	if err != nil {
 		return nil, err
 	}
 	return req, nil
 }
 
-
 func (c *ApiClient) buildGetRequest(url string) (*http.Request, error) {
-	req, err := http.NewRequest("GET", url,nil)
-	req.Header.Set("Cookie", shared.AuthenticationCookieName+"=" + c.receivingApiKey)
+	req, err := http.NewRequest("GET", url, nil)
+	req.Header.Set("Cookie", shared.AuthenticationCookieName+"="+c.receivingApiKey)
 	if err != nil {
 		return nil, err
 	}
@@ -126,7 +125,6 @@ func (c *ApiClient) readApiKeys(filePath string) error {
 	}
 	return nil
 }
-
 
 func CreateClient(config configuration.Configuration) (ApiClient, error) {
 	apiClient := ApiClient{}

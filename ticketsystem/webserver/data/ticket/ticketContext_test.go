@@ -433,6 +433,39 @@ func TestTicketManager_GetAllTicketInfo_NoTickets_EmptyArrayReturned(t *testing.
 }
 
 /*
+	Getting the open ticket infos when ticket exist, should return the infos for the open tickets.
+*/
+func TestTicketManager_GetAllOpenTickets_TicketsExist_TicketInfoReturned(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	err = writeTestDataToFolder(folderPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	tickets := testee.GetAllOpenTickets()
+	assert.Equal(t, 2, len(tickets))
+}
+
+/*
+	Getting the ticket infos for open tickets when no tickets exists, should return a empty array.
+*/
+func TestTicketManager_GetAllOpenTickets_NoTickets_EmptyArrayReturned(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	tickets := testee.GetAllOpenTickets()
+	assert.Equal(t, 0, len(tickets))
+}
+
+/*
 	Getting the ticket infos when ticket exist, should return the infos for the existing tickets.
 */
 func TestTicketManager_GetAllTicketInfo_TicketsExist_TicketInfoReturned(t *testing.T) {
