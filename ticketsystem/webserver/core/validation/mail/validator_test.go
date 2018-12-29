@@ -10,7 +10,7 @@ import (
 	Example for the mail validator.
 */
 func ExampleValidator_Validate() {
-	val := New()
+	val := NewValidator()
 
 	mail := "max@mustermann.de"
 	fmt.Println(val.Validate(mail))
@@ -22,7 +22,7 @@ func ExampleValidator_Validate() {
 	Test a invalid mail.
 */
 func TestValidator_Validate_InvalidMail_NotOk(t *testing.T) {
-	val := New()
+	val := NewValidator()
 
 	mail := "@mustermann.de"
 	assert.False(t, val.Validate(mail), "The mail should be invalid")

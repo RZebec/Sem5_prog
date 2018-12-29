@@ -13,6 +13,7 @@ import (
 */
 type IncomingMailHandler struct {
 	Logger logging.Logger
+	MailContext mail.MailContext
 }
 
 /*
@@ -20,13 +21,13 @@ type IncomingMailHandler struct {
 */
 func (h *IncomingMailHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
-	var t []mail.Mail
-	err := decoder.Decode(&t)
+	var data []mail.Mail
+	err := decoder.Decode(&data)
 	if err != nil {
 		h.Logger.LogError("IncomingMailHandler", err)
 		w.WriteHeader(500)
 	} else {
-		h.Logger.LogInfo("IncomingMailHandler", "Number of received mails: "+strconv.Itoa(len(t)))
+		h.Logger.LogInfo("IncomingMailHandler", "Number of received mails: "+strconv.Itoa(len(data)))
 	}
 	w.WriteHeader(200)
 }

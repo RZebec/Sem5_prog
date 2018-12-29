@@ -30,6 +30,16 @@ type TicketContext interface {
 }
 
 /*
+	The ticket manager handles the access to the tickets.
+*/
+type TicketManager struct {
+	cachedTickets      map[int]Ticket
+	cachedTicketIds    []int
+	cachedTicketsMutex sync.RWMutex
+	ticketFolderPath   string
+}
+
+/*
 	Get all tickets with the state open.
 */
 func (t *TicketManager) GetAllOpenTickets() []TicketInfo {
@@ -227,22 +237,14 @@ func (t *TicketManager) MergeTickets(firstTicketId int, secondTicketId int) (suc
 	}
 }
 
-/*
-	The ticket manager handles the access to the tickets.
-*/
-type TicketManager struct {
-	cachedTickets      map[int]Ticket
-	cachedTicketIds    []int
-	cachedTicketsMutex sync.RWMutex
-	ticketFolderPath   string
-}
+
 
 /*
 	Initialize the TicketManager with the given folder path. The folder is used to load and store the ticket data.
 */
 func (t *TicketManager) Initialize(folderPath string) error {
 	if folderPath == "" {
-		return errors.New("path to login data storage can not be a empty string.")
+		return errors.New("path to ticket data storage can not be a empty string.")
 	}
 	t.cachedTickets = make(map[int]Ticket)
 	t.cachedTicketIds = []int{}

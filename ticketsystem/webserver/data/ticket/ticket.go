@@ -98,7 +98,10 @@ func initializeFromFile(filePath string) (*Ticket, error) {
 	defer ticket.accessMutex.Unlock()
 
 	parsedData := new(storedTicket)
-	json.Unmarshal(fileValue, &parsedData)
+	err = json.Unmarshal(fileValue, &parsedData)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not decode data from file")
+	}
 	ticket.filePath = filePath
 	ticket.loadDataFromPersistenceData(*parsedData)
 	return ticket, nil

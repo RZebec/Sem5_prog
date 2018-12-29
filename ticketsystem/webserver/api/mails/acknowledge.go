@@ -13,6 +13,7 @@ import (
 */
 type AcknowledgeMailHandler struct {
 	Logger logging.Logger
+	MailContext mail.MailContext
 }
 
 /*
@@ -20,13 +21,19 @@ type AcknowledgeMailHandler struct {
 */
 func (h *AcknowledgeMailHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
-	var t []mail.Acknowledgment
-	err := decoder.Decode(&t)
+	var data []mail.Acknowledgment
+	err := decoder.Decode(&data)
 	if err != nil {
 		h.Logger.LogError("AcknowledgeMailHandler", err)
 		w.WriteHeader(500)
 	} else {
-		h.Logger.LogInfo("AcknowledgeMailHandler", "Number of acknowledged mails: "+strconv.Itoa(len(t)))
+		err := h.MailContext.AcknowledgeMails(data)
+		if err != nil {
+			h.Logger.LogError("AcknowledgeMailHandler", err)
+			w.WriteHeader(500)
+			return
+		}
+		h.Logger.LogInfo("AcknowledgeMailHandler", "Number of acknowledged mails: "+strconv.Itoa(len(data)))
 	}
 	w.WriteHeader(200)
 }

@@ -60,6 +60,35 @@ func TestConfiguration_ValidateConfiguration_CertificateDoesNotExist_ReturnsFals
 }
 
 /*
+	Validation should fail, if the outgoing mail address is not valid.
+*/
+func TestConfiguration_ValidateConfiguration_OutgoingMailAddressInvalid_ReturnsFalse(t *testing.T) {
+	// Create a temporary file for the files. Otherwise the mail address would not be checked.
+	tmpfile, err := ioutil.TempFile("", "example")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer os.Remove(tmpfile.Name()) // clean up
+	logger := logging.ConsoleLogger{}
+	config := Configuration{}
+	config.BindFlags()
+
+	config.CertificatePath = tmpfile.Name()
+	config.CertificateKeyPath = tmpfile.Name()
+	config.ApiKeyFilePath = tmpfile.Name()
+	config.SendingMailAddress = "123@lk"
+
+	valid := config.ValidateConfiguration(logger)
+
+
+	fmt.Println(valid)
+	//Output:
+	// <Error>[Configuration]: Outgoing mail address is not valid
+	// false
+}
+
+/*
 	Validation should fail, if the certificate key does not exist.
 */
 func ExampleConfiguration_ValidateConfiguration_CertificateKeyDoesNotExist_ReturnsFalse() {

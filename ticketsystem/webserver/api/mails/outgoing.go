@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 /*
@@ -14,24 +13,21 @@ import (
 */
 type OutgoingMailHandler struct {
 	Logger logging.Logger
+	MailContext mail.MailContext
 }
 
-func getTestEmails() []mail.Mail {
-	var eMails []mail.Mail
-	eMails = append(eMails, mail.Mail{Id: "testId1", Sender: "test1@test.de", Receiver: "testReceiver1@test.de",
-		Subject: "TestSubject1", Content: "testContent1", SentTime: time.Now().Unix()})
-	eMails = append(eMails, mail.Mail{Id: "testId2", Sender: "test2@test.de", Receiver: "testReceiver2@test.de",
-		Subject: "TestSubject2", Content: "testContent2", SentTime: time.Now().Unix()})
-	eMails = append(eMails, mail.Mail{Id: "testId3", Sender: "test3@test.de", Receiver: "testReceiver3@test.de",
-		Subject: "TestSubject3", Content: "testContent3", SentTime: time.Now().Unix()})
-	return eMails
-}
 
 /*
 	Handling the outgoing mails.
 */
 func (h *OutgoingMailHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	jsonData, err := json.Marshal(getTestEmails())
+	mails, err := h.MailContext.GetUnsentMails()
+	if err != nil {
+		w.WriteHeader(500)
+		h.Logger.LogError("OutgoingMailHandler", err)
+		return
+	}
+	jsonData, err := json.Marshal(mails)
 	if err != nil {
 		w.WriteHeader(500)
 		h.Logger.LogError("OutgoingMailHandler", err)
@@ -39,5 +35,5 @@ func (h *OutgoingMailHandler) ServeHTTP(w http.ResponseWriter, req *http.Request
 	}
 	w.WriteHeader(200)
 	w.Write(jsonData)
-	h.Logger.LogInfo("OutgoingMailHandler", "Number of outgoing mails: "+strconv.Itoa(len(getTestEmails())))
+	h.Logger.LogInfo("OutgoingMailHandler", "Number of outgoing mails: "+strconv.Itoa(len(mails)))
 }
