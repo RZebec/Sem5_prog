@@ -2,6 +2,7 @@ package api
 
 import (
 	"de/vorlesung/projekt/IIIDDD/shared"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -18,6 +19,13 @@ func getValidIncomingApiKey() string {
 type MockedNextHandler struct {
 	hasBeenCalled bool
 	request       *http.Request
+}
+
+/*
+	A logger for tests.
+*/
+func getTestLogger() logging.Logger {
+	return logging.ConsoleLogger{SetTimeStamp: false}
 }
 
 /*
@@ -42,7 +50,8 @@ func TestApiKeyAuthenticationHandler_ServeHTTP_NoApiKey(t *testing.T) {
 
 	nextHandler := MockedNextHandler{}
 
-	testee := ApiKeyAuthenticationHandler{ApiKeyResolver: getValidIncomingApiKey, Next: &nextHandler, AllowedMethod: "POST"}
+	testee := ApiKeyAuthenticationHandler{ApiKeyResolver: getValidIncomingApiKey, Next: &nextHandler,
+		AllowedMethod: "POST", Logger: getTestLogger()}
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
 	handler.ServeHTTP(rr, req)
@@ -64,7 +73,8 @@ func TestApiKeyAuthenticationHandler_ServeHTTP_WrongApiKey(t *testing.T) {
 
 	nextHandler := MockedNextHandler{}
 
-	testee := ApiKeyAuthenticationHandler{ApiKeyResolver: getValidIncomingApiKey, Next: &nextHandler, AllowedMethod: "POST"}
+	testee := ApiKeyAuthenticationHandler{ApiKeyResolver: getValidIncomingApiKey, Next: &nextHandler,
+		AllowedMethod: "POST", Logger: getTestLogger()}
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
 	handler.ServeHTTP(rr, req)
@@ -85,7 +95,8 @@ func TestApiKeyAuthenticationHandler_ServeHTTP_CorrectApiKey_NextHandlerCalled(t
 
 	nextHandler := MockedNextHandler{}
 
-	testee := ApiKeyAuthenticationHandler{ApiKeyResolver: getValidIncomingApiKey, Next: &nextHandler, AllowedMethod: "POST"}
+	testee := ApiKeyAuthenticationHandler{ApiKeyResolver: getValidIncomingApiKey, Next: &nextHandler,
+		AllowedMethod: "POST", Logger: getTestLogger()}
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
 	handler.ServeHTTP(rr, req)
@@ -107,7 +118,8 @@ func TestApiKeyAuthenticationHandler_ServeHTTP_GetRequest(t *testing.T) {
 
 	nextHandler := MockedNextHandler{}
 
-	testee := ApiKeyAuthenticationHandler{ApiKeyResolver: getValidIncomingApiKey, Next: &nextHandler, AllowedMethod: "POST"}
+	testee := ApiKeyAuthenticationHandler{ApiKeyResolver: getValidIncomingApiKey, Next: &nextHandler,
+		AllowedMethod: "POST", Logger: getTestLogger()}
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
 	handler.ServeHTTP(rr, req)

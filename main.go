@@ -81,9 +81,9 @@ func main() {
 	http.HandleFunc("/", foohandler)
 	http.HandleFunc("/files/", tempHandler)
 	http.HandleFunc("/example", wrapper.ServeHTTP)
-	http.HandleFunc(shared.SendPath, getIncomingMailHandlerChain(*apiConfig).ServeHTTP)
-	http.HandleFunc(shared.ReceivePath, getOutgoingMailHandlerChain(*apiConfig).ServeHTTP)
-	http.HandleFunc(shared.AcknowledgmentPath, getAcknowledgeMailHandlerChain(*apiConfig).ServeHTTP)
+	http.HandleFunc(shared.SendPath, getIncomingMailHandlerChain(*apiConfig, logger).ServeHTTP)
+	http.HandleFunc(shared.ReceivePath, getOutgoingMailHandlerChain(*apiConfig, logger).ServeHTTP)
+	http.HandleFunc(shared.AcknowledgmentPath, getAcknowledgeMailHandlerChain(*apiConfig, logger).ServeHTTP)
 
 	if err := http.ListenAndServeTLS(configuration.GetServiceUrl(), configuration.CertificatePath, configuration.CertificateKeyPath, nil); err != nil {
 		panic(err)
@@ -92,23 +92,23 @@ func main() {
 	//staticFileHandlers.StaticFileHandler()
 }
 
-func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration) http.Handler {
-	incomingMailHandler := mails.IncomingMailHandler{}
+func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration, logger logging.Logger) http.Handler {
+	incomingMailHandler := mails.IncomingMailHandler{Logger: logger}
 	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,
-		Next: &incomingMailHandler, AllowedMethod: "POST"}
+		Next: &incomingMailHandler, AllowedMethod: "POST", Logger: logger}
 	return &apiAuthenticationHandler
 }
 
-func getAcknowledgeMailHandlerChain(apiConfig config.ApiConfiguration) http.Handler {
-	incomingMailHandler := mails.AcknowledgeMailHandler{}
+func getAcknowledgeMailHandlerChain(apiConfig config.ApiConfiguration, logger logging.Logger) http.Handler {
+	incomingMailHandler := mails.AcknowledgeMailHandler{Logger: logger}
 	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,
-		Next: &incomingMailHandler, AllowedMethod: "POST"}
+		Next: &incomingMailHandler, AllowedMethod: "POST", Logger: logger}
 	return &apiAuthenticationHandler
 }
 
-func getOutgoingMailHandlerChain(apiConfig config.ApiConfiguration) http.Handler {
-	outgoingMailHandler := mails.OutgoingMailHandler{}
+func getOutgoingMailHandlerChain(apiConfig config.ApiConfiguration, logger logging.Logger) http.Handler {
+	outgoingMailHandler := mails.OutgoingMailHandler{Logger: logger}
 	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetOutgoingMailApiKey,
-		Next: &outgoingMailHandler, AllowedMethod: "GET"}
+		Next: &outgoingMailHandler, AllowedMethod: "GET", Logger: logger}
 	return &apiAuthenticationHandler
 }

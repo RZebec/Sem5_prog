@@ -1,18 +1,20 @@
 package mails
 
 import (
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"time"
 )
 
 /*
 	A handler for outgoing mails.
- */
+*/
 type OutgoingMailHandler struct {
+	Logger logging.Logger
 }
-
 
 func getTestEmails() []mail.Mail {
 	var eMails []mail.Mail
@@ -27,12 +29,15 @@ func getTestEmails() []mail.Mail {
 
 /*
 	Handling the outgoing mails.
- */
+*/
 func (h *OutgoingMailHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	jsonData, err := json.Marshal(getTestEmails())
 	if err != nil {
 		w.WriteHeader(500)
+		h.Logger.LogError("OutgoingMailHandler", err)
+		return
 	}
-	w.Write(jsonData)
 	w.WriteHeader(200)
+	w.Write(jsonData)
+	h.Logger.LogInfo("OutgoingMailHandler", "Number of outgoing mails: "+strconv.Itoa(len(getTestEmails())))
 }
