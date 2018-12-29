@@ -19,11 +19,11 @@ import (
 type TicketContext interface {
 	CreateNewTicketForInternalUser(title string, editor user.User, initialMessage MessageEntry) (*Ticket, error)
 	CreateNewTicket(title string, creator Creator, initialMessage MessageEntry) (*Ticket, error)
-	GetTicketById(id int) (Ticket, error)
+	GetTicketById(id int) (bool, *Ticket)
 	GetAllTicketInfo() []TicketInfo
 	AppendMessageToTicket(ticketId int, message MessageEntry) (*Ticket, error)
 	MergeTickets(firstTicketId int, secondTicketId int) (success bool, err error)
-	SetEditor(editor user.User, ticketId int)
+	SetEditor(editor user.User, ticketId int) (*Ticket, error)
 }
 
 /*
