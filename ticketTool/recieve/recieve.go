@@ -47,11 +47,11 @@ func main() {
 	saving.SaveAcknowledge(sharing.GetAcknowledges(mails))
 
 	sharing.SharingAllMails(mails)
-
+	/*
 	ackErr := apiClient.AcknowledgeMails(acknowledge)
 
 	if ackErr != nil {
 		fmt.Println("acknowlege is not posted")
 	}
-
+*/
 }
