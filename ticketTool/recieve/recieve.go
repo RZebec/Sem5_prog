@@ -43,21 +43,21 @@ func main() {
 		} else {
 			fmt.Println("Mails are incoming")
 			mails = recieveMails
-			allOrSpecifySharing(apiClient, mails)
+			allOrSpecifySharing(apiClient, &mails)
 			break
 		}
 	}
 
 }
 
-func allOrSpecifySharing(apiClient client.ApiClient, mails []mail.Mail) {
+func allOrSpecifySharing(apiClient client.ApiClient, mails *[]mail.Mail) {
 	//acknowledgement.WriteAcknowledgements(sharing.GetAcknowledges(mails))
 
 	for true {
 		fmt.Println("share all Messages or specify Messages? (all/specify):")
 		answer := inputOutput.ReadEntry()
 		if answer == "all" {
-			acknowledge := sharing.ShareAllMails(mails)
+			acknowledge := sharing.ShareAllMails(*mails)
 			ackError := apiClient.AcknowledgeMails(acknowledge)
 			if ackError != nil {
 				fmt.Println("acknowlege is not posted")
@@ -66,12 +66,16 @@ func allOrSpecifySharing(apiClient client.ApiClient, mails []mail.Mail) {
 				break
 			}
 		} else if answer == "specify" {
-			acknowledge := sharing.ShareSingleMails(&mails)
+			acknowledge, newMails := sharing.ShareSingleMails(*mails)
+			mails = &newMails
 			ackError := apiClient.AcknowledgeMails(acknowledge)
 			if ackError != nil {
 				fmt.Println("acknowlege is not posted")
 			} else {
 				//acknowledgement.DeleteAcknowledges(acknowledge)
+			}
+			if len(*mails) == 0 {
+				break
 			}
 		}
 	}

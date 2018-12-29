@@ -20,27 +20,26 @@ func ShareAllMails(mails []mail.Mail) []mail.Acknowledgment {
 	return acknowledge
 }
 
-func ShareSingleMails(mails *[]mail.Mail) []mail.Acknowledgment {
-	showAllMails(*mails)
+func ShareSingleMails(mails []mail.Mail) ([]mail.Acknowledgment, []mail.Mail) {
+	showAllMails(mails)
 	acknowledge := make([]mail.Acknowledgment, 1)
 	fmt.Println("Specify Mail by Subject: ")
 	answer := inputOutput.ReadEntry()
-	for i := 0; i < len(*mails); i++ {
-		if answer == (*mails)[i].Subject {
-			fmt.Println("From: " + (*mails)[i].Sender)
-			fmt.Println("Send to: " + (*mails)[i].Receiver)
-			fmt.Println("Subject: " + (*mails)[i].Subject)
-			fmt.Println("Content: " + (*mails)[i].Content)
+	for i := 0; i < len(mails); i++ {
+		if answer == mails[i].Subject {
+			fmt.Println("From: " + mails[i].Sender)
+			fmt.Println("Send to: " + mails[i].Receiver)
+			fmt.Println("Subject: " + mails[i].Subject)
+			fmt.Println("Content: " + mails[i].Content)
 			fmt.Println("is sended")
-			acknowledge[0].Id = (*mails)[i].Id
-			acknowledge[0].Subject = (*mails)[i].Subject
-			newMails := DeleteFromArray(*mails, (*mails)[i])
-			mails = &newMails
-			return acknowledge
+			acknowledge[0].Id = mails[i].Id
+			acknowledge[0].Subject = mails[i].Subject
+			newMails := DeleteFromArray(mails, mails[i])
+			return acknowledge, newMails
 		}
 	}
 	fmt.Println("Subject not found")
-	return acknowledge
+	return acknowledge, make([]mail.Mail, 0)
 }
 
 func showAllMails(mails []mail.Mail) {
@@ -53,9 +52,11 @@ func showAllMails(mails []mail.Mail) {
 
 func DeleteFromArray(mails []mail.Mail, element mail.Mail) []mail.Mail {
 	newMails := make([]mail.Mail, len(mails)-1)
+	j := 0
 	for i := 0; i < len(mails); i++ {
 		if mails[i].Id != element.Id {
-			newMails[i] = mails[i]
+			newMails[j] = mails[i]
+			j++
 		}
 	}
 	return newMails
