@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-func SharingAllMails(mails []mail.Mail) []mail.Acknowledgment {
+func ShareAllMails(mails []mail.Mail) []mail.Acknowledgment {
 	acknowledge := make([]mail.Acknowledgment, len(mails))
 	for i := 0; i < len(mails); i++ {
 		fmt.Println("From: " + mails[i].Sender)
@@ -19,7 +19,7 @@ func SharingAllMails(mails []mail.Mail) []mail.Acknowledgment {
 	return acknowledge
 }
 
-func SharingSingleMails(mails []mail.Mail) []mail.Acknowledgment {
+func ShareSingleMails(mails []mail.Mail) []mail.Acknowledgment {
 	acknowledge := make([]mail.Acknowledgment, 1)
 	fmt.Println("Specify Mail by Subject: ")
 	answer := inputOutput.ReadEntry()
