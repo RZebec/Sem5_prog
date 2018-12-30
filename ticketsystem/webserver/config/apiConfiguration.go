@@ -4,7 +4,6 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
 	"encoding/json"
 	"errors"
-	"path/filepath"
 	"sync"
 )
 
@@ -87,22 +86,11 @@ func (c *ApiConfiguration) ChangeOutgoingMailApiKey(newKey string) error {
 	Create and initialize the configuration.
 */
 func CreateAndInitialize(config Configuration) (*ApiConfiguration, error) {
-	exists, err := helpers.FilePathExists(config.ApiKeyFilePath)
-	if err != nil {
+	existed, err := helpers.CreateFileWithPathIfNotExists(config.ApiKeyFilePath)
+		if err != nil {
 		return nil, err
 	}
-	if !exists {
-		dir, _ := filepath.Split(config.ApiKeyFilePath)
-		if len(dir) > 0 {
-			err = helpers.CreateFolderPath(dir)
-			if err != nil {
-				return nil, err
-			}
-		}
-		err = helpers.CreateFileIfNotExists(config.ApiKeyFilePath)
-		if err != nil {
-			return nil, err
-		}
+	if !existed {
 		// Create default api keys:
 		config := ApiConfiguration{
 			incomingMailApiKey: "MW0j6HXw0QrksRz0lcKUisoJqkAjAhcgs1MFjFWIfTUWoccWmYhBippVGzD5I8dVyx6GXdpkTbOONeAuGw1HreDWbswBMGpnx9Lrk7rglPfaWqLzguAMJdnX7PFhOhbj",
@@ -127,7 +115,7 @@ func CreateAndInitialize(config Configuration) (*ApiConfiguration, error) {
 }
 
 /*
-	Validate the configuartion.
+	Validate the configuration.
 */
 func (c *ApiConfiguration) Validate() (bool, string) {
 	if c.incomingMailApiKey == "" || len(c.incomingMailApiKey) < 128 {
