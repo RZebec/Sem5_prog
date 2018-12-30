@@ -7,6 +7,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/admin"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/files"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/index"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/login"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/logout"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/register"
@@ -25,6 +26,9 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 
 	filesHandler := files.FilesHandler{}
 	http.HandleFunc("/files/", filesHandler.ServeHTTP)
+
+	indexPageHandler := index.IndexPageHandler{UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
+	http.HandleFunc("/", indexPageHandler.ServeHTTP)
 
 	registerHandler := register.RegisterHandler{UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/register", registerHandler.ServeHTTPGetRegisterPage)

@@ -1,6 +1,7 @@
 package wrappers
 
 import (
+	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
@@ -22,9 +23,22 @@ type AdminWrapper struct {
 */
 func (h AdminWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	// cookie, err := r.Cookie(shared.AccessTokenCookieName)
-	// TODO: needs checking if the user is the admin
-	userIsAdmin := true
+	cookie, err := r.Cookie(shared.AccessTokenCookieName)
+
+	if err != nil {
+		h.Logger.LogError("Admin", err)
+		return
+	}
+
+	isSessionValid, _, _, role, err := h.UserContext.SessionIsValid(cookie.Value)
+
+	if err != nil {
+		h.Logger.LogError("Admin", err)
+		return
+	}
+
+	// Here
+	userIsAdmin := isSessionValid
 
 	if userIsAdmin {
 		h.Next.ServeHTTP(w, r)

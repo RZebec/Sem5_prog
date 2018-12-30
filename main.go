@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/api"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/api/mails"

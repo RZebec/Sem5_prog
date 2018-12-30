@@ -30,7 +30,7 @@ var AdminPage = `
 						<label>Incoming Mail Api Key:</label>
 						<input type="text" name="incomingMailApiKey" id="incomingMailApiKey" />
 						<label>Outgoing Mail Api Key:</label>
-						<input type="password" name="outgoingMailApiKey" id="outgoingMailApiKey" />
+						<input type="text" name="outgoingMailApiKey" id="outgoingMailApiKey" />
 						<button type="submit" id="submitKeys" class="submit-button" disabled>Set Api Keys</button>
 					</form>
 				</div>
