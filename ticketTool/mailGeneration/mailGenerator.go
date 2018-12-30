@@ -48,8 +48,7 @@ func (m *MailGenerator) ExplicitMail() []mail.Mail {
 	email.Subject = inputOutput.ReadEntry()
 	fmt.Print("Entry text: ")
 	email.Content = inputOutput.ReadEntry()
-	fmt.Print("Enter your Reciever: ")
-	email.Receiver = inputOutput.ReadEntry()
+	email.Receiver = "notification@ticketsystem.de"
 	fmt.Print("Enter your SenderMail: ")
 	email.Sender = inputOutput.ReadEntry()
 

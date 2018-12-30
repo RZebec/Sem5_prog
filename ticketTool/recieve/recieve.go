@@ -6,11 +6,12 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketTool/configuration"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/acknowledgementStorage"
-	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/sharing"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/confirm"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 func main() {
@@ -41,7 +42,6 @@ func main() {
 	fmt.Println(storage)
 
 	fmt.Println("Recieve Mails")
-	mails := []mail.Mail{}
 	for true {
 		recieveMails, err := apiClient.ReceiveMails()
 		if err != nil {
@@ -51,42 +51,55 @@ func main() {
 				break
 			}
 		} else {
-			fmt.Println("Mails are incoming")
-			mails = recieveMails
-			allOrSpecifySharing(apiClient, &mails)
-			break
+			fmt.Println(strconv.Itoa(len(recieveMails)) + " Mails are coming from Server")
+			acknowledges := confirm.GetAllAcknowledges(recieveMails)
+			storage.AppendAcknowledgements(acknowledges)
+			fmt.Println("Save Acknowledges...")
+			allAcknowledges, err := storage.ReadAcknowledgements()
+			if err != nil {
+				fmt.Println("couldn't read storaged Acknowledges")
+			} else if len(allAcknowledges) == 0 {
+				fmt.Println("No Emails available")
+				break
+			}
+			fmt.Println("Available Mails: " + strconv.Itoa(len(allAcknowledges)))
+			if len(allAcknowledges) != 0 {
+				allOrSpecifyConfirm(apiClient, &allAcknowledges, storage)
+				break
+			}
 		}
 	}
-
 }
 
-func allOrSpecifySharing(apiClient client.ApiClient, mails *[]mail.Mail) {
-	//acknowledgement.WriteAcknowledgements(sharing.GetAcknowledges(mails))
+func allOrSpecifyConfirm(apiClient client.ApiClient, allAcknowledges *[]mail.Acknowledgment, storage acknowledgementStorage.AckStorage) {
 
 	for true {
-		fmt.Println("share all Messages or specify Messages? (all/specify):")
+		fmt.Println("send all Acknowledges or specify Acknowledges to Server. Or stop reciever (all/specify/stop):")
 		answer := inputOutput.ReadEntry()
 		if answer == "all" {
-			acknowledge := sharing.ShareAllMails(*mails)
-			ackError := apiClient.AcknowledgeMails(acknowledge)
+			ackError := apiClient.AcknowledgeMails(*allAcknowledges)
 			if ackError != nil {
 				fmt.Println("acknowlege is not posted")
 			} else {
-				//acknowledgement.DeleteAcknowledges(acknowledge)
+				fmt.Println("E-Mails are Acknowledged: ")
+				storage.DeleteAcknowledges(*allAcknowledges)
 				break
 			}
 		} else if answer == "specify" {
-			acknowledge, newMails := sharing.ShareSingleMails(*mails)
-			mails = &newMails
-			ackError := apiClient.AcknowledgeMails(acknowledge)
+			newAcknowledges, selectedAck := confirm.GetSingleAcknowledges(*allAcknowledges)
+			allAcknowledges = &newAcknowledges
+			ackError := apiClient.AcknowledgeMails(selectedAck)
 			if ackError != nil {
 				fmt.Println("acknowlege is not posted")
 			} else {
-				//acknowledgement.DeleteAcknowledges(acknowledge)
+				storage.DeleteAcknowledges(selectedAck)
+				fmt.Println("E-Mail is Acknowledged: ")
 			}
-			if len(*mails) == 0 {
+			if len(*allAcknowledges) == 0 {
 				break
 			}
+		} else if answer == "stop" {
+			break
 		}
 	}
 }
