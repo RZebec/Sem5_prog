@@ -38,8 +38,6 @@ func main() {
 	if createErr != nil {
 		panic(createErr)
 	}
-	// TODO Remove the following line: Only to enable compilation till it is used
-	fmt.Println(storage)
 
 	fmt.Println("Recieve Mails")
 	for true {
@@ -86,7 +84,10 @@ func allOrSpecifyConfirm(apiClient client.ApiClient, allAcknowledges *[]mail.Ack
 				break
 			}
 		} else if answer == "specify" {
-			newAcknowledges, selectedAck := confirm.GetSingleAcknowledges(*allAcknowledges)
+			confirm.ShowAllEmailAcks(*allAcknowledges)
+			fmt.Println("Specify Acknowledge by Subject: ")
+			answer := inputOutput.ReadEntry()
+			newAcknowledges, selectedAck := confirm.GetSingleAcknowledges(*allAcknowledges, answer)
 			allAcknowledges = &newAcknowledges
 			ackError := apiClient.AcknowledgeMails(selectedAck)
 			if ackError != nil {

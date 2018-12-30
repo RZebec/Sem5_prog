@@ -1,7 +1,6 @@
 package confirm
 
 import (
-	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"fmt"
 )
@@ -12,15 +11,12 @@ func GetAllAcknowledges(mails []mail.Mail) []mail.Acknowledgment {
 		acknowledge[i].Id = mails[i].Id
 		acknowledge[i].Subject = mails[i].Subject
 	}
-	showAllEmailAcks(acknowledge)
+	ShowAllEmailAcks(acknowledge)
 	return acknowledge
 }
 
-func GetSingleAcknowledges(allAcknowledges []mail.Acknowledgment) ([]mail.Acknowledgment, []mail.Acknowledgment) {
+func GetSingleAcknowledges(allAcknowledges []mail.Acknowledgment, answer string) ([]mail.Acknowledgment, []mail.Acknowledgment) {
 	acknowledge := make([]mail.Acknowledgment, 1)
-	showAllEmailAcks(allAcknowledges)
-	fmt.Println("Specify Acknowledge by Subject: ")
-	answer := inputOutput.ReadEntry()
 	for i := 0; i < len(allAcknowledges); i++ {
 		if answer == allAcknowledges[i].Subject {
 			acknowledge[0].Id = allAcknowledges[i].Id
@@ -30,11 +26,11 @@ func GetSingleAcknowledges(allAcknowledges []mail.Acknowledgment) ([]mail.Acknow
 		}
 	}
 	fmt.Println("Subject not found")
-	return allAcknowledges, acknowledge
+	return allAcknowledges, make([]mail.Acknowledgment, 0)
 
 }
 
-func showAllEmailAcks(allAcknowledges []mail.Acknowledgment) {
+func ShowAllEmailAcks(allAcknowledges []mail.Acknowledgment) {
 	fmt.Println("All Emails: ")
 	for i := 0; i < len(allAcknowledges); i++ {
 		fmt.Println("ID: " + allAcknowledges[i].Id + " | Subject: " + allAcknowledges[i].Subject)

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math/rand"
 	"strconv"
+	"time"
 )
 
 var senders = []string{"test1@gmx.de", "Oberheld.asdf@web.de", "horstChristianAnderson@zip.org", "css@asd.com", "ad.du@ff.de",
@@ -25,6 +26,7 @@ func (m *MailGenerator) RandomMail(n int) []mail.Mail {
 		fmt.Println("Subject " + strconv.Itoa(i) + ": " + mail.Subject)
 		mail.Content = randomText(50)
 		mail.Sender, mail.Receiver = generateTwoMailsfromRandomPool()
+		mail.SentTime = time.Now().Unix()
 		mails[i] = mail
 	}
 	return mails
@@ -51,6 +53,7 @@ func (m *MailGenerator) ExplicitMail() []mail.Mail {
 	email.Receiver = "notification@ticketsystem.de"
 	fmt.Print("Enter your SenderMail: ")
 	email.Sender = inputOutput.ReadEntry()
+	email.SentTime = time.Now().Unix()
 
 	mails := make([]mail.Mail, 1)
 	mails[0] = email
