@@ -6,7 +6,6 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 )
 
@@ -19,7 +18,6 @@ var bufpool *helpers.BufferPool
 // Create a buffer pool
 func init() {
 	bufpool = helpers.NewBufferPool(64)
-	log.Println("buffer allocation successful")
 }
 
 /*

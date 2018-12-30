@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 )
 
 /*
@@ -44,6 +45,30 @@ func CreateFileIfNotExists(path string) error {
 		}
 	}
 	return nil
+}
+
+/*
+	Create a file and the path if necessary.
+ */
+func CreateFileWithPathIfNotExists(path string) (bool, error){
+	exists, err := FilePathExists(path)
+	if err != nil {
+		return false, err
+	}
+	if !exists {
+		dir, _ := filepath.Split(path)
+		if len(dir) > 0 {
+			err = CreateFolderPath(dir)
+			if err != nil {
+				return false, err
+			}
+		}
+		err = CreateFileIfNotExists(path)
+		if err != nil {
+			return false, err
+		}
+	}
+	return exists, nil
 }
 
 /*

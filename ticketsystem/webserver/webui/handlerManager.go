@@ -21,7 +21,7 @@ type HandlerManager struct {
 	Logger        logging.Logger
 }
 
-func (handlerManager *HandlerManager) StartServices() {
+func (handlerManager *HandlerManager) RegisterHandlers() {
 
 	filesHandler := files.FilesHandler{}
 	http.HandleFunc("/files/", filesHandler.ServeHTTP)

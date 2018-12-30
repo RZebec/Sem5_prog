@@ -7,7 +7,7 @@ var LoginPage = `
 	{{ define "Title" }} Login {{ end }}
 
 	{{ define "StylesAndScripts" }}
-		<link rel="stylesheet" href="/files/style/login"> 
+		<link rel="stylesheet" href="/files/style/center_main"> 
 		<script src="/files/script/login"></script>
 	{{ end }}
 	
@@ -21,6 +21,7 @@ var LoginPage = `
 
 			<a class="active" href="/login">Login</a>
 			<a href="/register">Register</a>
+			<a href="/admin">Admin</a>
 		</div>
 		<div class="content">
 			<div class="container">

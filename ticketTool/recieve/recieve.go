@@ -5,6 +5,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketTool/client"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/configuration"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/acknowledgementStorage"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/sharing"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
@@ -25,10 +26,19 @@ func main() {
 		return
 	}
 
+	// Create api client:
 	apiClient, createErr := client.CreateClient(config)
 	if createErr != nil {
 		panic(createErr)
 	}
+
+	// Create acknowledge storage:
+	storage, createErr := acknowledgementStorage.InitializeAckManager(config.UnAcknowledgedMailPath)
+	if createErr != nil {
+		panic(createErr)
+	}
+	// TODO Remove the following line: Only to enable compilation till it is used
+	fmt.Println(storage)
 
 	fmt.Println("Recieve Mails")
 	mails := []mail.Mail{}

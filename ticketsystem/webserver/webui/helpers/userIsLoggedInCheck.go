@@ -21,7 +21,7 @@ func UserIsLoggedInCheck(r *http.Request, userContext user.UserContext, accessTo
 	}
 
 	token = cookie.Value
-	userIsLoggedIn, _, _, err = userContext.SessionIsValid(token)
+	userIsLoggedIn, _, _, _, err = userContext.SessionIsValid(token)
 
 	return userIsLoggedIn, token
 }

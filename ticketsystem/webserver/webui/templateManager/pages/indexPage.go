@@ -22,6 +22,7 @@ var IndexPage = `
 			{{else}}
 				<a href="/login">Login</a>
 				<a href="/register">Register</a>
+				<a href="/admin">Admin</a>
 			{{end}}
 		</div>
 		<div class="content">

@@ -27,6 +27,22 @@ func ExampleConfiguration_ValidateConfiguration_PortIsNegative_ReturnsFalse() {
 }
 
 /*
+	Example for validation of a configuration with a invalid unacknowledged mail path.
+*/
+func ExampleConfiguration_ValidateConfiguration_UnacknowledMailPathIsInvalid_ReturnsFalse() {
+	logger := logging.ConsoleLogger{}
+	config := Configuration{}
+	config.BindFlags()
+
+	config.UnAcknowledgedMailPath = ""
+	valid := config.ValidateConfiguration(logger)
+	fmt.Print(valid)
+	//Output:
+	// <Error>[Configuration]: Unacknowledged mails file path must be set.
+	// false
+}
+
+/*
 	Example for validation of a configuration with a invalid (too big) port value.
 */
 func ExampleConfiguration_ValidateConfiguration_PortIsToBig_ReturnsFalse() {
@@ -49,6 +65,7 @@ func ExampleConfiguration_ValidateConfiguration_CertificateDoesNotExist_ReturnsF
 	logger := logging.ConsoleLogger{}
 	config := Configuration{}
 	config.BindFlags()
+	config.UnAcknowledgedMailPath = "test.json"
 
 	// The path should not exist.
 	config.CertificatePath = "/Temp/test/jspemdusoem.key"
@@ -66,6 +83,7 @@ func ExampleConfiguration_ValidateConfiguration_ApiKeyFileDoesNotExist_ReturnsFa
 	logger := logging.ConsoleLogger{}
 	config := Configuration{}
 	config.BindFlags()
+	config.UnAcknowledgedMailPath = "test.json"
 
 	// Create a temporary file for the certificate. Otherwise the api key file would not be checked.
 	tmpfile, err := ioutil.TempFile("", "example")

@@ -72,7 +72,7 @@ var mainStyle = `
 /*
 	The CSS file for the login page.
 */
-var loginStyle = `
+var centerMain = `
     
     h2 {
         text-align: center;
@@ -117,7 +117,7 @@ var loginStyle = `
 		color: red;
 	}`
 
-var ticketStyle = `
+var tableStyle = `
     
     h2 {
         text-align: center;
@@ -173,9 +173,9 @@ func HandelStyle(w http.ResponseWriter, r *http.Request) {
 	switch s[3] {
 	case "main":
 		w.Write([]byte(mainStyle))
-	case "login":
-		w.Write([]byte(loginStyle))
-	case "tickets":
-		w.Write([]byte(ticketStyle))
+	case "center_main":
+		w.Write([]byte(centerMain))
+	case "table":
+		w.Write([]byte(tableStyle))
 	}
 }

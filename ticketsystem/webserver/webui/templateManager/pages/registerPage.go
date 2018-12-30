@@ -7,8 +7,9 @@ var RegisterPage = `
 	{{ define "Title" }} Register {{ end }}
 
 	{{ define "StylesAndScripts" }}
-		<link rel="stylesheet" href="/files/style/login"> 
+		<link rel="stylesheet" href="/files/style/center_main"> 
 		<script src="/files/script/login"></script>
+		<a href="/admin">Admin</a>
 	{{ end }}
 	
 	{{ define "Content" }}

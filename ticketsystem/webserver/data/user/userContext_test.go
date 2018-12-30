@@ -81,16 +81,18 @@ func ExampleLoginSystem_SessionIsValid() {
 
 	token := "1234567899+op"
 	loginSystem.currentSessions[token] = inMemorySession{userId: 1, userMail: "max.mustermann@mail.com",
-		sessionToken: token, sessionTimestamp: time.Now()}
+		userRole: 1, sessionToken: token, sessionTimestamp: time.Now()}
 
-	valid, userId, userName, _ := loginSystem.SessionIsValid(token)
+	valid, userId, userName, userRole, _ := loginSystem.SessionIsValid(token)
 	fmt.Println(valid)
 	fmt.Println(userId)
 	fmt.Println(userName)
+	fmt.Println(userRole)
 	// Output:
 	// true
 	// 1
 	// max.mustermann@mail.com
+	// 1
 
 }
 
@@ -367,16 +369,16 @@ func TestLoginSystem_Logout_SessionExists_UserLoggedOut(t *testing.T) {
 	testee.currentSessions = make(map[string]inMemorySession)
 
 	token := "1234567899+op"
-	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser", userRole: RegisteredUser,
 		sessionToken: "1234567899+op", sessionTimestamp: time.Now()}
 
-	valid, _, _, err := testee.SessionIsValid(token)
+	valid, _, _, _,  err := testee.SessionIsValid(token)
 	assert.True(t, valid, "User should have a session for this test")
 	assert.Nil(t, err)
 
 	testee.Logout(token)
 
-	valid, _, _, err = testee.SessionIsValid(token)
+	valid, _, _, _, err = testee.SessionIsValid(token)
 	assert.False(t, valid, "User should be logged out")
 }
 
@@ -482,7 +484,7 @@ func TestLoginSystem_SessionIsValid_IsValid(t *testing.T) {
 	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
 		sessionToken: token, sessionTimestamp: time.Now()}
 
-	valid, _, _, err := testee.SessionIsValid(token)
+	valid, _, _, _, err := testee.SessionIsValid(token)
 	assert.True(t, valid, "User should have a session for this test")
 	assert.Nil(t, err)
 }
@@ -498,7 +500,7 @@ func TestLoginSystem_SessionIsValid_IsInValid(t *testing.T) {
 	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
 		sessionToken: "1234567899+op", sessionTimestamp: time.Now()}
 
-	valid, _, _, err := testee.SessionIsValid("5698456")
+	valid, _, _, _, err := testee.SessionIsValid("5698456")
 	assert.False(t, valid, "Session should be invalid")
 	assert.Nil(t, err)
 }
@@ -516,7 +518,7 @@ func TestLoginSystem_SessionIsValid_SessionTimedOut(t *testing.T) {
 	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
 		sessionToken: "1234567899+op", sessionTimestamp: timestamp}
 
-	valid, _, _, err := testee.SessionIsValid(token)
+	valid, _, _, _, err := testee.SessionIsValid(token)
 	assert.False(t, valid, "Session should be invalid")
 	assert.Nil(t, err)
 }

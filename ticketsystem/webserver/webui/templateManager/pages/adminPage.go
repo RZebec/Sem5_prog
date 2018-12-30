@@ -5,6 +5,8 @@ var AdminPage = `
 
 	{{ define "StylesAndScripts" }}
 		<script src="/files/script/apiKey"></script>
+		<link rel="stylesheet" href="/files/style/table">
+		<link rel="stylesheet" href="/files/style/center_main">
 	{{ end }}
 	
 	{{ define "Content" }}
@@ -31,6 +33,9 @@ var AdminPage = `
 						<input type="password" name="outgoingMailApiKey" id="outgoingMailApiKey" />
 						<button type="submit" id="submitKeys" class="submit-button" disabled>Set Api Keys</button>
 					</form>
+				</div>
+			</div>
+				<div class="container">
 					<h2>Locked Users</h2>
 					<table>
 						<tr>
@@ -71,8 +76,6 @@ var AdminPage = `
                         </tr>
 						{{end}}
 					</table>
-					
 				</div>
-			</div>
 		</div>
 	{{ end }}`
