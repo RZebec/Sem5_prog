@@ -12,7 +12,9 @@ type AutomaticRepliesFilter interface {
 }
 
 
-
+/*
+	A mail filter struct.
+ */
 type repliesFilter struct {
 
 }
@@ -26,7 +28,7 @@ func (r *repliesFilter) IsAutomaticResponse (mail mail.Mail) bool{
 			return true
 		}
 		if strings.Contains(strings.ToLower(header), "precedence") {
-			splitted := strings.Split(header, "")
+			splitted := strings.Split(header, ":")
 			if len(splitted)  == 2 {
 				if strings.ToLower(splitted[1]) == "auto_reply" || strings.ToLower(splitted[1]) == "bulk" ||  strings.ToLower(splitted[1]) == "junk" {
 					return true
@@ -34,7 +36,7 @@ func (r *repliesFilter) IsAutomaticResponse (mail mail.Mail) bool{
 			}
 		}
 		if strings.Contains(strings.ToLower(header), "auto-submitted") {
-			splitted := strings.Split(header, "")
+			splitted := strings.Split(header, ":")
 			if len(splitted)  == 2 {
 				if strings.ToLower(splitted[1]) == "auto-replied" {
 					return true
