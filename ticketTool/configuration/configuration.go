@@ -9,17 +9,19 @@ import (
 )
 
 type Configuration struct {
-	Port            int
-	BaseUrl         string
-	CertificatePath string
-	ApiKeysFilePath string
+	Port                   int
+	BaseUrl                string
+	CertificatePath        string
+	ApiKeysFilePath        string
+	UnAcknowledgedMailPath string
 }
 
 func (c *Configuration) RegisterFlags() {
 	flag.StringVar(&c.BaseUrl, "baseUrl", "localhost", "the base url")
 	flag.IntVar(&c.Port, "port", 9000, "the port to use")
 	flag.StringVar(&c.CertificatePath, "certificatePath", "cert.pem", "path to the certificate")
-	flag.StringVar(&c.ApiKeysFilePath, "apiKeysFilePAth", "api.keys", "path to the api key file")
+	flag.StringVar(&c.ApiKeysFilePath, "apiKeysFilePath", "api.keys", "path to the api key file")
+	flag.StringVar(&c.UnAcknowledgedMailPath, "unAcknowledgedMailPath", "unacknowledgedmails.json", "path to the unacknowledged mails (only for receiver tool)")
 
 }
 
@@ -36,6 +38,11 @@ func (c *Configuration) BindFlags() {
 func (c *Configuration) ValidateConfiguration(log logging.Logger) bool {
 	if c.Port < 0 || c.Port > 65535 {
 		log.LogError("Configuration", errors.New("Invalid port. Provided value: "+strconv.Itoa(c.Port)))
+		return false
+	}
+
+	if c.UnAcknowledgedMailPath == "" {
+		log.LogError("Configuration", errors.New("Unacknowledged mails file path must be set."))
 		return false
 	}
 
