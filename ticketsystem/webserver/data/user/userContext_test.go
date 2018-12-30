@@ -1039,6 +1039,87 @@ func TestLoginSystem_DisableVacationMode_WrongState(t *testing.T) {
 }
 
 /*
+	Getting a existing user should be possible.
+ */
+func TestLoginSystem_GetUserById(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+	// Write example data to the file
+	sampleDataPath := path.Join(folderPath, "loginData.json")
+	writeTestDataToFile(t, sampleDataPath)
+
+	err = testee.Initialize(folderPath)
+
+	exists, user := testee.GetUserById(1)
+	assert.True(t, exists, "User should exist")
+	assert.Equal(t, "testUser5", user.Mail, "Correct user should be returned")
+}
+
+/*
+	Getting a non existing user should return false.
+ */
+func TestLoginSystem_GetUserById_UserIdDoesNotExist(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+	// Write example data to the file
+	sampleDataPath := path.Join(folderPath, "loginData.json")
+	writeTestDataToFile(t, sampleDataPath)
+
+	err = testee.Initialize(folderPath)
+
+	exists, user := testee.GetUserById(9999)
+	assert.False(t, exists, "User should not exist")
+	assert.Equal(t, "", user.Mail, "Correct user should be returned")
+}
+
+
+/*
+	Getting a existing user should be possible.
+ */
+func TestLoginSystem_GetUserForEmail(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+	// Write example data to the file
+	sampleDataPath := path.Join(folderPath, "loginData.json")
+	writeTestDataToFile(t, sampleDataPath)
+
+	err = testee.Initialize(folderPath)
+
+	exists, userId := testee.GetUserForEmail("testUser5")
+	assert.True(t, exists, "User should exist")
+	assert.Equal(t, 1, userId, "Correct user id should be returned")
+}
+
+/*
+	Getting a non existing user should return false.
+ */
+func TestLoginSystem_GetUserForEmail_UserIdDoesNotExist(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+	// Write example data to the file
+	sampleDataPath := path.Join(folderPath, "loginData.json")
+	writeTestDataToFile(t, sampleDataPath)
+
+	err = testee.Initialize(folderPath)
+
+	exists, userId := testee.GetUserForEmail("test1254799@ere.de")
+	assert.False(t, exists, "User should not exist")
+	assert.Equal(t, -1, userId, "Correct user id should be returned")
+}
+
+/*
 	Preparing a temporary directory for tests, which need access to the file system.
 */
 func prepareTempDirectory() (string, string, error) {

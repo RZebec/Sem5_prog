@@ -81,7 +81,7 @@ func main() {
 	g := ticketContext.GetAllTicketInfo()
 	fmt.Println(len(g))
 
-	http.HandleFunc(shared.SendPath, getIncomingMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
+	http.HandleFunc(shared.SendPath, getIncomingMailHandlerChain(*apiConfig, &mailContext, &ticketContext, logger).ServeHTTP)
 	http.HandleFunc(shared.AcknowledgmentPath, getAcknowledgeMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
 	http.HandleFunc(shared.ReceivePath, getOutgoingMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
 
@@ -102,8 +102,8 @@ func main() {
 	//staticFileHandlers.StaticFileHandler()
 }
 
-func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mail.MailContext, logger logging.Logger) http.Handler {
-	incomingMailHandler := mails.IncomingMailHandler{Logger: logger, MailContext: mailContext}
+func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mail.MailContext, ticketContext ticket.TicketContext, logger logging.Logger) http.Handler {
+	incomingMailHandler := mails.IncomingMailHandler{Logger: logger, MailContext: mailContext, TicketContext: ticketContext}
 	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,
 		Next: &incomingMailHandler, AllowedMethod: "POST", Logger: logger}
 	return &apiAuthenticationHandler

@@ -39,6 +39,10 @@ type UserContext interface {
 	ChangePassword(currentUserToken string, currentUserPassword string, newPassword string) (changed bool, err error)
 	// Get all locked users:
 	GetAllLockedUsers() []User
+	// Check if the given mail is for a registered user.
+	GetUserForEmail(mailAddress string) (isRegisteredUser bool, userId int)
+	// Get user by its id.
+	GetUserById(userId int) (exists bool, user User)
 }
 
 /*
@@ -96,6 +100,40 @@ func (s *LoginSystem) Initialize(folderPath string) (err error) {
 	}
 
 	return
+}
+
+/*
+	Get a user by id.
+ */
+func (s *LoginSystem) GetUserById(userId int) (exists bool, user User) {
+	s.cachedUserDataMutex.RLock()
+	defer s.cachedUserDataMutex.RUnlock()
+
+	for _, userData := range s.cachedUserData{
+		if userData.UserId == userId {
+			copiedUser := User {Mail: userData.Mail, UserId: userData.UserId, FirstName: userData.FirstName,
+				LastName: userData.LastName, Role: userData.Role, State: userData.State}
+			copiedUser = copiedUser.Copy()
+			return true, copiedUser
+		}
+	}
+	return false, User{}
+}
+
+
+/*
+	Get a user from its mail.
+ */
+func (s *LoginSystem) GetUserForEmail(mailAddress string) (isRegisteredUser bool, userId int){
+	s.cachedUserDataMutex.RLock()
+	defer s.cachedUserDataMutex.RUnlock()
+
+	for _, userData := range s.cachedUserData{
+		if strings.ToLower(userData.Mail) == strings.ToLower(mailAddress) {
+			return true, userData.UserId
+		}
+	}
+	return false, -1
 }
 
 // Refresh the token. The new token should be used for all following request.
