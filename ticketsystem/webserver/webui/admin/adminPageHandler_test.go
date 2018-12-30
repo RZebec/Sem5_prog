@@ -6,6 +6,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"github.com/stretchr/testify/assert"
+	"html/template"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -26,7 +27,9 @@ func TestAdminPageHandler_ServeHTTP(t *testing.T) {
 
 	testLogger := getTestLogger()
 
-	templateManager.LoadTemplates(testLogger)
+	testTemplateManager := templateManager.TemplateManager{Templates: map[string]*template.Template{}}
+
+	testTemplateManager.LoadTemplates(testLogger)
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 

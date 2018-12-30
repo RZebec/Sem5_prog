@@ -13,7 +13,7 @@ import (
 type AdminPageHandler struct {
 	UserContext user.UserContext
 	Logger      logging.Logger
-	TemplateManager	templateManager.ITemplateManager
+	TemplateManager	templateManager.TemplateContext
 }
 
 /*

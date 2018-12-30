@@ -13,7 +13,7 @@ import (
 	Inspiration from source: https://hackernoon.com/golang-template-2-template-composition-and-how-to-organize-template-files-4cb40bcdf8f6
 */
 
-type ITemplateManager interface {
+type TemplateContext interface {
 	// Loads all available templates from their corresponding strings in the template map.
 	LoadTemplates(logger logging.Logger) (err error)
 	// Renders the needed template with the given name and the needed page data.

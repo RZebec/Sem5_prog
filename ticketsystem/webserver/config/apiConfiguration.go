@@ -10,7 +10,7 @@ import (
 /*
 	The Api Configuration provides the configuration for the incoming and outgoing mail api key.
 */
-type IApiConfiguration interface {
+type ApiContext interface {
 	// Get the incoming mail api key.
 	GetIncomingMailApiKey() string
 	// Get the outgoing mail api key.

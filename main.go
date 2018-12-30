@@ -96,7 +96,7 @@ func main() {
 		Config:        configuration,
 		Logger:        logger,
 		ApiConfiguration: apiConfig,
-		TemplateManager: templateManager,
+		TemplateManager: &templateManager,
 	}
 
 	templateManager.LoadTemplates(logger)

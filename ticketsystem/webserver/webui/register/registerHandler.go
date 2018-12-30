@@ -19,7 +19,7 @@ type RegisterHandler struct {
 	UserContext user.UserContext
 	Config      config.Configuration
 	Logger      logging.Logger
-	TemplateManager	templateManager.ITemplateManager
+	TemplateManager	templateManager.TemplateContext
 }
 
 /*

@@ -21,8 +21,8 @@ type HandlerManager struct {
 	TicketContext ticket.TicketContext
 	Config        config.Configuration
 	Logger        logging.Logger
-	ApiConfiguration	config.IApiConfiguration
-	TemplateManager		templateManager.ITemplateManager
+	ApiConfiguration	config.ApiContext
+	TemplateManager		templateManager.TemplateContext
 }
 
 func (handlerManager *HandlerManager) RegisterHandlers() {
@@ -30,14 +30,14 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	filesHandler := files.FilesHandler{}
 	http.HandleFunc("/files/", filesHandler.ServeHTTP)
 
-	indexPageHandler := index.IndexPageHandler{Logger: handlerManager.Logger}
+	indexPageHandler := index.IndexPageHandler{Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
 	http.HandleFunc("/", indexPageHandler.ServeHTTP)
 
-	registerHandler := register.RegisterHandler{UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
+	registerHandler := register.RegisterHandler{UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
 	http.HandleFunc("/register", registerHandler.ServeHTTPGetRegisterPage)
 	http.HandleFunc("/user_register", registerHandler.ServeHTTPPostRegisteringData)
 
-	loginHandler := login.LoginHandler{UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
+	loginHandler := login.LoginHandler{UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
 	http.HandleFunc("/login", loginHandler.ServeHTTPGetLoginPage)
 	http.HandleFunc("/user_login", loginHandler.ServeHTTPPostLoginData)
 
@@ -45,7 +45,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	logoutWrapper := wrappers.AuthenticationWrapper{Next: logoutHandler, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/user_logout", logoutWrapper.ServeHTTP)
 
-	adminPageHandler := admin.AdminPageHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
+	adminPageHandler := admin.AdminPageHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
 	adminPageWrapper := wrappers.AdminWrapper{Next: adminPageHandler, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	adminPageAuthenticationWrapper := wrappers.AuthenticationWrapper{Next: adminPageWrapper, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/admin", adminPageAuthenticationWrapper.ServeHTTP)

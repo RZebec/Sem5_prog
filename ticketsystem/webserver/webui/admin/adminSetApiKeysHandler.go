@@ -12,7 +12,7 @@ import (
 	Structure for the Login handler.
 */
 type AdminSetApiKeysHandler struct {
-	ApiConfiguration	config.IApiConfiguration
+	ApiConfiguration	config.ApiContext
 	Logger      		logging.Logger
 }
 
