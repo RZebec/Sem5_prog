@@ -17,7 +17,7 @@ func UserIsLoggedInCheck(r *http.Request, userContext user.UserContext, accessTo
 
 	if err != nil {
 		logger.LogError("Login", err)
-		return
+		return false, ""
 	}
 
 	token = cookie.Value
