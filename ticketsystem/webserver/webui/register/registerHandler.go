@@ -5,8 +5,8 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"net/http"
 	"strconv"
 	"strings"
@@ -61,7 +61,7 @@ func (l RegisterHandler) ServeHTTPPostRegisteringData(w http.ResponseWriter, r *
 func (l RegisterHandler) ServeHTTPGetRegisterPage(w http.ResponseWriter, r *http.Request) {
 
 	// Checks if the User is already logged in and if so redirects him to the start page
-	isUserLoggedIn, _ := helpers.UserIsLoggedInCheck(r, l.UserContext, shared.AccessTokenCookieName, l.Logger)
+	isUserLoggedIn, _, _ := wrappers.UserIsLoggedInCheck(r, l.UserContext, shared.AccessTokenCookieName, l.Logger)
 
 	if isUserLoggedIn {
 		http.Redirect(w, r, "/", http.StatusSeeOther)

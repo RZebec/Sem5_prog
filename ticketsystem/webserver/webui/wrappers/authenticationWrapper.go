@@ -24,9 +24,7 @@ type AuthenticationWrapper struct {
 */
 func (h AuthenticationWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	userIsLoggedIn, token := helpers.UserIsLoggedInCheck(r, h.UserContext, shared.AccessTokenCookieName, h.Logger)
-
-
+	userIsLoggedIn, isAdmin, token := UserIsLoggedInCheck(r, h.UserContext, shared.AccessTokenCookieName, h.Logger)
 
 	if userIsLoggedIn {
 		newToken, err := h.UserContext.RefreshToken(token)
@@ -37,7 +35,8 @@ func (h AuthenticationWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 		helpers.SetCookie(w, r, shared.AccessTokenCookieName, newToken)
 
-		h.Next.ServeHTTP(w, r)
+		ctx := newContextWithAuthenticationInfo(r.Context(), userIsLoggedIn, isAdmin)
+		h.Next.ServeHTTP(w, r.WithContext(ctx))
 	} else {
 		http.Redirect(w, r, "/", http.StatusForbidden)
 	}
