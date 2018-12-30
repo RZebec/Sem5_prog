@@ -27,7 +27,7 @@ type MockedOutgoingMailContext struct {
 func getTestMails() []mail.Mail {
 	var testMails []mail.Mail
 	testMails = append(testMails, mail.Mail{Id: "testId1", Sender: "test@test.de", Receiver: "testReceiver1@test.de",
-		Subject: "testSubject1", Content: "testContent1"})
+		Subject: "Ticket<1> testSubject1", Content: "testContent1"})
 	testMails = append(testMails, mail.Mail{Id: "testId2", Sender: "test@test.de", Receiver: "testReceiver2@test.de",
 		Subject: "testSubject2", Content: "testContent2"})
 	testMails = append(testMails, mail.Mail{Id: "testId3", Sender: "test@test.de", Receiver: "testReceiver3@test.de",
