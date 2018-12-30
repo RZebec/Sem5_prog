@@ -33,7 +33,7 @@ func (h AuthenticationWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request)
 			h.Logger.LogError("Login", err)
 		}
 
-		helpers.SetCookie(w, r, shared.AccessTokenCookieName, newToken)
+		helpers.SetCookie(w, shared.AccessTokenCookieName, newToken)
 
 		ctx := newContextWithAuthenticationInfo(r.Context(), userIsLoggedIn, isAdmin)
 		h.Next.ServeHTTP(w, r.WithContext(ctx))

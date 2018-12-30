@@ -29,10 +29,10 @@ type adminPageData struct {
 */
 func (a AdminPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	// TODO: Get all locked users
+	users := a.UserContext.GetAllLockedUsers()
 
 	data := adminPageData{
-		Users: []user.User{{Mail: "Test1", UserId: 1, FirstName: "Tester", LastName: "The First"}},
+		Users: users,
 	}
 
 	templateRenderError := templateManager.RenderTemplate(w, "AdminPage", data)
