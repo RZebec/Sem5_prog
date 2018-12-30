@@ -372,7 +372,7 @@ func TestLoginSystem_Logout_SessionExists_UserLoggedOut(t *testing.T) {
 	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser", userRole: RegisteredUser,
 		sessionToken: "1234567899+op", sessionTimestamp: time.Now()}
 
-	valid, _, _, _,  err := testee.SessionIsValid(token)
+	valid, _, _, _, err := testee.SessionIsValid(token)
 	assert.True(t, valid, "User should have a session for this test")
 	assert.Nil(t, err)
 
@@ -547,7 +547,7 @@ func TestLoginSystem_Register_ConcurrentAccess_AllRegistered(t *testing.T) {
 
 		go func(number int) {
 			defer waitGroup.Done()
-			testee.Register("testUser"+strconv.Itoa(number) + "@test.de", "testpassword"+strconv.Itoa(number),
+			testee.Register("testUser"+strconv.Itoa(number)+"@test.de", "testpassword"+strconv.Itoa(number),
 				"firstName"+strconv.Itoa(number), "lastName"+strconv.Itoa(number))
 		}(i)
 	}
@@ -562,7 +562,7 @@ func TestLoginSystem_Register_ConcurrentAccess_AllRegistered(t *testing.T) {
 	for i := 0; i < numberOfRegistrations; i++ {
 		found := false
 		for _, v := range writtenData {
-			if strings.ToLower(v.Mail) == strings.ToLower("testUser"+strconv.Itoa(i) + "@test.de") {
+			if strings.ToLower(v.Mail) == strings.ToLower("testUser"+strconv.Itoa(i)+"@test.de") {
 				found = true
 				break
 			}
@@ -735,7 +735,7 @@ func TestLoginSystem_UnlockAccount_AccountUnlocked(t *testing.T) {
 
 /*
 	Get all locked users should return all locked users.
- */
+*/
 func TestLoginSystem_GetAllLockedUsers(t *testing.T) {
 	testee := LoginSystem{}
 
@@ -752,7 +752,6 @@ func TestLoginSystem_GetAllLockedUsers(t *testing.T) {
 	success, err = testee.Register("user30@web.de", "1234", "Pia", "Müller")
 	assert.Nil(t, err)
 	assert.True(t, success)
-
 
 	lockedUsers := testee.GetAllLockedUsers()
 	assert.Equal(t, 2, len(lockedUsers), "There should be two locked users")

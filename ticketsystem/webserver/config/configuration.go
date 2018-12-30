@@ -13,15 +13,15 @@ import (
 	A struct to hold configuration values.
 */
 type Configuration struct {
-	LoginDataFolderPath  string
-	TicketDataFolderPath string
-	MailDataFolderPath   string
-	Port                 int
-	BaseUrl              string
-	CertificatePath      string
-	CertificateKeyPath   string
-	ApiKeyFilePath       string
-	SendingMailAddress   string
+	LoginDataFolderPath   string
+	TicketDataFolderPath  string
+	MailDataFolderPath    string
+	Port                  int
+	BaseUrl               string
+	CertificatePath       string
+	CertificateKeyPath    string
+	ApiKeyFilePath        string
+	SendingMailAddress    string
 	AccessTokenCookieName string
 }
 

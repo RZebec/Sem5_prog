@@ -12,10 +12,9 @@ import (
 	A handler for outgoing mails.
 */
 type OutgoingMailHandler struct {
-	Logger logging.Logger
+	Logger      logging.Logger
 	MailContext mail.MailContext
 }
-
 
 /*
 	Handling the outgoing mails.
