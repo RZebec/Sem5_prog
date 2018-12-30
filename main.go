@@ -13,6 +13,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"fmt"
+	"html/template"
 	"net/http"
 	"os"
 )
@@ -85,11 +86,17 @@ func main() {
 	http.HandleFunc(shared.AcknowledgmentPath, getAcknowledgeMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
 	http.HandleFunc(shared.ReceivePath, getOutgoingMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
 
+	templateManager := templateManager.TemplateManager{Templates: map[string]*template.Template{}}
+
+	templateManager.LoadTemplates(logger)
+
 	handlerManager := webui.HandlerManager{
 		UserContext:   &userContext,
 		TicketContext: &ticketContext,
 		Config:        configuration,
 		Logger:        logger,
+		ApiConfiguration: apiConfig,
+		TemplateManager: templateManager,
 	}
 
 	templateManager.LoadTemplates(logger)

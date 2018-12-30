@@ -2,7 +2,6 @@ package admin
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"net/http"
@@ -13,8 +12,8 @@ import (
 */
 type AdminPageHandler struct {
 	UserContext user.UserContext
-	Config      config.Configuration
 	Logger      logging.Logger
+	TemplateManager	templateManager.ITemplateManager
 }
 
 /*
@@ -35,7 +34,7 @@ func (a AdminPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Users: users,
 	}
 
-	templateRenderError := templateManager.RenderTemplate(w, "AdminPage", data)
+	templateRenderError := a.TemplateManager.RenderTemplate(w, "AdminPage", data)
 
 	if templateRenderError != nil {
 		a.Logger.LogError("Admin", templateRenderError)

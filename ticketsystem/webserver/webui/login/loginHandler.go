@@ -21,6 +21,7 @@ type LoginHandler struct {
 	UserContext user.UserContext
 	Config      config.Configuration
 	Logger      logging.Logger
+	TemplateManager	templateManager.ITemplateManager
 }
 
 /*
@@ -81,7 +82,7 @@ func (l LoginHandler) ServeHTTPGetLoginPage(w http.ResponseWriter, r *http.Reque
 		IsLoginFailed: isLoginFailed,
 	}
 
-	templateRenderError := templateManager.RenderTemplate(w, "LoginPage", data)
+	templateRenderError := l.TemplateManager.RenderTemplate(w, "LoginPage", data)
 
 	if templateRenderError != nil {
 		l.Logger.LogError("Login", templateRenderError)

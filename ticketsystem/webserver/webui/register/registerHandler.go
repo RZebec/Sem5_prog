@@ -19,6 +19,7 @@ type RegisterHandler struct {
 	UserContext user.UserContext
 	Config      config.Configuration
 	Logger      logging.Logger
+	TemplateManager	templateManager.ITemplateManager
 }
 
 /*
@@ -78,7 +79,7 @@ func (l RegisterHandler) ServeHTTPGetRegisterPage(w http.ResponseWriter, r *http
 		IsRegisteringFailed: isRegisteringFailed,
 	}
 
-	err = templateManager.RenderTemplate(w, "RegisterPage", data)
+	err = l.TemplateManager.RenderTemplate(w, "RegisterPage", data)
 
 	if err != nil {
 		l.Logger.LogError("Register", err)

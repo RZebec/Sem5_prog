@@ -38,6 +38,6 @@ func (h AuthenticationWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		ctx := newContextWithAuthenticationInfo(r.Context(), userIsLoggedIn, isAdmin)
 		h.Next.ServeHTTP(w, r.WithContext(ctx))
 	} else {
-		http.Redirect(w, r, "/", http.StatusForbidden)
+		http.Redirect(w, r, "/", 302)
 	}
 }

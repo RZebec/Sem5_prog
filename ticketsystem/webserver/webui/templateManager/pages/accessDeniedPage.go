@@ -1,21 +1,14 @@
-package templateManager
+package pages
 
 /*
-	Expected result for the access denied page test.
+	Html template for the Access Denied Page.
 */
-var accessDeniedResultPage = `<!DOCTYPE html>
-	<html>
+var AccessDeniedPage = `
+	{{ define "Title" }} Access Denied {{ end }}
 
-	<head>
-		<title>
-			 Access Denied 
-		</title>
-		<link rel="stylesheet" href="/files/style/main">
-		 
-	</head>
+	{{ define "StylesAndScripts" }} {{ end }}
 	
-	<body>
-		
+	{{ define "Content" }}
 		<div class="topnav">
 			<a href="/">Home</a>
 
@@ -31,7 +24,4 @@ var accessDeniedResultPage = `<!DOCTYPE html>
 				<h1>Access is denied: User is not logged in</h1>
 			</div>
 		</div>
-	
-	</body>
-	
-	</html>`
+	{{ end }}`

@@ -13,6 +13,13 @@ import (
 	Inspiration from source: https://hackernoon.com/golang-template-2-template-composition-and-how-to-organize-template-files-4cb40bcdf8f6
 */
 
+type ITemplateManager interface {
+	// Loads all available templates from their corresponding strings in the template map.
+	LoadTemplates(logger logging.Logger) (err error)
+	// Renders the needed template with the given name and the needed page data.
+	RenderTemplate(w http.ResponseWriter, name string, data interface{}) error
+}
+
 var bufpool *helpers.BufferPool
 
 // Create a buffer pool
@@ -20,10 +27,9 @@ func init() {
 	bufpool = helpers.NewBufferPool(64)
 }
 
-/*
-	Map for the parsed templates.
-*/
-var templates map[string]*template.Template
+type TemplateManager struct {
+	Templates map[string]*template.Template
+}
 
 /*
 	Struct for the template error.
@@ -49,10 +55,10 @@ func NewError(text string) error {
 /*
 	Loads all available templates from their corresponding strings in the template map.
 */
-func LoadTemplates(logger logging.Logger) (err error) {
+func (t *TemplateManager) LoadTemplates(logger logging.Logger) (err error) {
 
-	if templates == nil {
-		templates = make(map[string]*template.Template)
+	if t.Templates == nil {
+		t.Templates = make(map[string]*template.Template)
 	}
 
 	baseTemplate := template.New("Base")
@@ -63,12 +69,13 @@ func LoadTemplates(logger logging.Logger) (err error) {
 		return err
 	}
 
-	addTemplate(pages.IndexPage, "IndexPage", baseTemplate, logger)
-	addTemplate(pages.RegisterPage, "RegisterPage", baseTemplate, logger)
-	addTemplate(pages.LoginPage, "LoginPage", baseTemplate, logger)
-	addTemplate(pages.AdminPage, "AdminPage", baseTemplate, logger)
-	addTemplate(pages.TicketExplorerPage, "TicketExplorerPage", baseTemplate, logger)
-	addTemplate(pages.TicketViewPage, "TicketViewPage", baseTemplate, logger)
+	t.addTemplate(pages.IndexPage, "IndexPage", baseTemplate, logger)
+	t.addTemplate(pages.RegisterPage, "RegisterPage", baseTemplate, logger)
+	t.addTemplate(pages.LoginPage, "LoginPage", baseTemplate, logger)
+	t.addTemplate(pages.AdminPage, "AdminPage", baseTemplate, logger)
+	t.addTemplate(pages.AccessDeniedPage, "AccessDeniedPage", baseTemplate, logger)
+	t.addTemplate(pages.TicketExplorerPage, "TicketExplorerPage", baseTemplate, logger)
+	t.addTemplate(pages.TicketViewPage, "TicketViewPage", baseTemplate, logger)
 
 	return nil
 }
@@ -77,18 +84,18 @@ func LoadTemplates(logger logging.Logger) (err error) {
 	Helper function.
 	Adds a template to the template map with the corresponding name and template string.
 */
-func addTemplate(templateString string, templateName string, baseTemplate *template.Template, logger logging.Logger) {
+func (t *TemplateManager) addTemplate(templateString string, templateName string, baseTemplate *template.Template, logger logging.Logger) {
 	var err error
 
-	templates[templateName], err = baseTemplate.Clone()
+	t.Templates[templateName], err = baseTemplate.Clone()
 
 	if err != nil {
 		logger.LogError("Template", err)
 	}
 
-	templates[templateName].New(templateName)
+	t.Templates[templateName].New(templateName)
 
-	templates[templateName], err = templates[templateName].Parse(templateString)
+	t.Templates[templateName], err = t.Templates[templateName].Parse(templateString)
 
 	if err != nil {
 		logger.LogError("Template", err)
@@ -98,8 +105,8 @@ func addTemplate(templateString string, templateName string, baseTemplate *templ
 /*
 	Renders the needed template with the given name and the needed page data.
 */
-func RenderTemplate(w http.ResponseWriter, name string, data interface{}) error {
-	tmpl, ok := templates[name]
+func (t *TemplateManager) RenderTemplate(w http.ResponseWriter, name string, data interface{}) error {
+	tmpl, ok := t.Templates[name]
 
 	if !ok {
 		http.Error(w, fmt.Sprintf("The template %s does not exist.", name),
