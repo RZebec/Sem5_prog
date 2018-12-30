@@ -26,11 +26,11 @@ var AdminPage = `
 			<div class="container">
 				<div class="main">
 					<h2>Mail Api Keys</h2>
-					<form id="form_id" method="post" name="myform" action="/set_api_keys">
+					<form id="form_id" method="POST" name="myform" action="/set_api_keys">
 						<label>Incoming Mail Api Key:</label>
-						<input type="text" name="incomingMailApiKey" id="incomingMailApiKey" />
+						<input type="text" name="incomingMailApiKey" id="incomingMailApiKey" value="{{.IncomingMailApiKey}}"/>
 						<label>Outgoing Mail Api Key:</label>
-						<input type="text" name="outgoingMailApiKey" id="outgoingMailApiKey" />
+						<input type="text" name="outgoingMailApiKey" id="outgoingMailApiKey" value="{{.OutgoingMailApiKey}}"/>
 						<button type="submit" id="submitKeys" class="submit-button" disabled>Set Api Keys</button>
 					</form>
 				</div>

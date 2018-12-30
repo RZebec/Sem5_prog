@@ -32,6 +32,7 @@ func (a AdminSetApiKeysHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		if len(incomingMailApiKey) >= 128 && len(outgoingMailApiKey) >= 128 {
 			a.ApiConfiguration.ChangeIncomingMailApiKey(incomingMailApiKey)
 			a.ApiConfiguration.ChangeOutgoingMailApiKey(outgoingMailApiKey)
+			http.Redirect(w, r, "/", 302)
 		}
 	}
 }

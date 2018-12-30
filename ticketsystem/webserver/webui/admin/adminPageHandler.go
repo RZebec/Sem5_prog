@@ -2,6 +2,7 @@ package admin
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"net/http"
@@ -14,6 +15,7 @@ type AdminPageHandler struct {
 	UserContext user.UserContext
 	Logger      logging.Logger
 	TemplateManager	templateManager.TemplateContext
+	ApiContext	config.ApiContext
 }
 
 /*
@@ -21,6 +23,8 @@ type AdminPageHandler struct {
 */
 type adminPageData struct {
 	Users 		[]user.User
+	IncomingMailApiKey	string
+	OutgoingMailApiKey	string
 }
 
 /*
@@ -30,8 +34,13 @@ func (a AdminPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	users := a.UserContext.GetAllLockedUsers()
 
+	incomingMailApiKey := a.ApiContext.GetIncomingMailApiKey()
+	outgoingMailApiKey := a.ApiContext.GetOutgoingMailApiKey()
+
 	data := adminPageData{
 		Users: users,
+		IncomingMailApiKey: incomingMailApiKey,
+		OutgoingMailApiKey: outgoingMailApiKey,
 	}
 
 	templateRenderError := a.TemplateManager.RenderTemplate(w, "AdminPage", data)
