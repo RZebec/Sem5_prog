@@ -28,12 +28,16 @@ func (l LogoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	} else {
 		cookie, err := r.Cookie(shared.AccessTokenCookieName)
 
-		if err == nil {
-			token := cookie.Value
-			l.UserContext.Logout(token)
-			helpers.RemoveCookie(w, r, shared.AccessTokenCookieName)
-			http.Redirect(w, r, "/", 302)
+		if err != nil {
+			l.Logger.LogError("Logout", err)
+			return
 		}
-		// Todo: error handling
+
+		token := cookie.Value
+		l.UserContext.Logout(token)
+		helpers.SetCookie(w, shared.AccessTokenCookieName, "")
+		http.Redirect(w, r, "/", 302)
+
+		return
 	}
 }

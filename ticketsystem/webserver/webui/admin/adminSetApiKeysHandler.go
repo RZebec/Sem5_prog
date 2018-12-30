@@ -27,6 +27,10 @@ func (a AdminSetApiKeysHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		// incomingMailApiKey := r.FormValue("incomingMailApiKey")
 		// outgoingMailApiKey := r.FormValue("outgoingMailApiKey")
 
+		// incomingMailApiKey = html.EscapeString(incomingMailApiKey)
+		// outgoingMailApiKey = html.EscapeString(outgoingMailApiKey)
+
+
 		// TODO: Do something with the keys
 	}
 }

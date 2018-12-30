@@ -55,6 +55,6 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	adminUnlockUserHandler := admin.AdminUnlockUserHandler{UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	adminUnlockUserWrapper := wrappers.AdminWrapper{Next: adminUnlockUserHandler, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	adminUnlockUserAuthenticationWrapper := wrappers.AuthenticationWrapper{Next: adminUnlockUserWrapper, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
-	http.HandleFunc("/unlock_user/", adminUnlockUserAuthenticationWrapper.ServeHTTP)
+	http.HandleFunc("/unlock_user", adminUnlockUserAuthenticationWrapper.ServeHTTP)
 
 }
