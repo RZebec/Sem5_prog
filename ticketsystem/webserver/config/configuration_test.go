@@ -81,7 +81,6 @@ func TestConfiguration_ValidateConfiguration_OutgoingMailAddressInvalid_ReturnsF
 
 	valid := config.ValidateConfiguration(logger)
 
-
 	fmt.Println(valid)
 	//Output:
 	// <Error>[Configuration]: Outgoing mail address is not valid

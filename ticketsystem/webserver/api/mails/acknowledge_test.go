@@ -13,7 +13,6 @@ import (
 	"testing"
 )
 
-
 /*
 	A mocked mail context.
 */

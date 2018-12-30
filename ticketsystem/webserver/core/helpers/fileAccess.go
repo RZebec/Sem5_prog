@@ -49,8 +49,8 @@ func CreateFileIfNotExists(path string) error {
 
 /*
 	Create a file and the path if necessary.
- */
-func CreateFileWithPathIfNotExists(path string) (bool, error){
+*/
+func CreateFileWithPathIfNotExists(path string) (bool, error) {
 	exists, err := FilePathExists(path)
 	if err != nil {
 		return false, err

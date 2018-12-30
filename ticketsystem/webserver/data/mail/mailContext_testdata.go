@@ -10,7 +10,6 @@ const firstTestMail = `{
     "SentTime": 1546098015
 }`
 
-
 const secondTestmailFileName = "BFD0DBCD-5D01-4969-6201-E4F1172E568B.json"
 const secondTestMail = `{
     "Id": "BFD0DBCD-5D01-4969-6201-E4F1172E568B",

@@ -37,8 +37,7 @@ func (h AdminWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Here
-	userIsAdmin := isSessionValid
+	userIsAdmin := isSessionValid && role == user.Admin
 
 	if userIsAdmin {
 		h.Next.ServeHTTP(w, r)

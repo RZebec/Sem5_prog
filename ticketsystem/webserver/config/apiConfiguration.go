@@ -87,7 +87,7 @@ func (c *ApiConfiguration) ChangeOutgoingMailApiKey(newKey string) error {
 */
 func CreateAndInitialize(config Configuration) (*ApiConfiguration, error) {
 	existed, err := helpers.CreateFileWithPathIfNotExists(config.ApiKeyFilePath)
-		if err != nil {
+	if err != nil {
 		return nil, err
 	}
 	if !existed {

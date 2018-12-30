@@ -12,7 +12,7 @@ import (
 	A handler for acknowledgment of mails.
 */
 type AcknowledgeMailHandler struct {
-	Logger logging.Logger
+	Logger      logging.Logger
 	MailContext mail.MailContext
 }
 

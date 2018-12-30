@@ -14,7 +14,7 @@ import (
 
 /*
 	The manage should be able to be initialized, even without a existing file.
- */
+*/
 func TestInitializeAckManager_NoDataExists(t *testing.T) {
 	// Create a temporary directory for the storage.
 	dir, err := ioutil.TempDir("", "tests")
@@ -33,7 +33,7 @@ func TestInitializeAckManager_NoDataExists(t *testing.T) {
 
 /*
 	The data should be loaded, when there is data.
- */
+*/
 func TestInitializeAckManager_DataExists_DataLoaded(t *testing.T) {
 	// Create a temporary directory for the storage.
 	dir, err := ioutil.TempDir("", "tests")
@@ -52,7 +52,7 @@ func TestInitializeAckManager_DataExists_DataLoaded(t *testing.T) {
 
 /*
 	Deleting a acknowledgement should be possible,
- */
+*/
 func TestAckManager_DeleteAcknowledges(t *testing.T) {
 	// Create a temporary directory for the storage.
 	dir, err := ioutil.TempDir("", "tests")
@@ -83,7 +83,7 @@ func TestAckManager_DeleteAcknowledges(t *testing.T) {
 
 /*
 	Appending Acknowledgements should be possible.
- */
+*/
 func TestAckManager_AppendAcknowledgements(t *testing.T) {
 	// Create a temporary directory for the storage..
 	dir, err := ioutil.TempDir("", "tests")
@@ -113,7 +113,7 @@ func TestAckManager_AppendAcknowledgements(t *testing.T) {
 	assert.NotNil(t, persistedData)
 	assert.Equal(t, 3, len(persistedData), "All three acks should be persisted")
 
-	for idx, inMemoryAck := range testee.acknowledgments{
+	for idx, inMemoryAck := range testee.acknowledgments {
 		persistedAck := persistedData[idx]
 		assert.Equal(t, inMemoryAck, persistedAck, "The persisted data should be equal to the in memory data")
 	}
@@ -122,7 +122,7 @@ func TestAckManager_AppendAcknowledgements(t *testing.T) {
 
 /*
 	Reading acknowledgements from file should be possible.
- */
+*/
 func TestAckManager_ReadAcknowledgements(t *testing.T) {
 	// Create a temporary directory for the storage.
 	dir, err := ioutil.TempDir("", "tests")
@@ -144,8 +144,8 @@ func TestAckManager_ReadAcknowledgements(t *testing.T) {
 
 /*
 	Write test data to file.
- */
-func writeTestDataToFile(t *testing.T, filePath string){
+*/
+func writeTestDataToFile(t *testing.T, filePath string) {
 	data := `[
     {
         "Id": "testId01",
@@ -166,8 +166,8 @@ func writeTestDataToFile(t *testing.T, filePath string){
 
 /*
 	Read persisted data from file.
- */
-func readPersistedDataFromFile(t *testing.T, filePath string) []mail.Acknowledgment{
+*/
+func readPersistedDataFromFile(t *testing.T, filePath string) []mail.Acknowledgment {
 	fileValue, err := helpers.ReadAllDataFromFile(filePath)
 	assert.Nil(t, err)
 

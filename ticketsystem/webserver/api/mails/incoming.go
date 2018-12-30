@@ -12,7 +12,7 @@ import (
 	A handler for incoming mails.
 */
 type IncomingMailHandler struct {
-	Logger logging.Logger
+	Logger      logging.Logger
 	MailContext mail.MailContext
 }
 

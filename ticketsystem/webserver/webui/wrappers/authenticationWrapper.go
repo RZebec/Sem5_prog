@@ -26,6 +26,8 @@ func (h AuthenticationWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	userIsLoggedIn, token := helpers.UserIsLoggedInCheck(r, h.UserContext, shared.AccessTokenCookieName, h.Logger)
 
+
+
 	if userIsLoggedIn {
 		newToken, err := h.UserContext.RefreshToken(token)
 
