@@ -7,7 +7,6 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/api"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/api/mails"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
@@ -82,7 +81,9 @@ func main() {
 	g := ticketContext.GetAllTicketInfo()
 	fmt.Println(len(g))
 
-	http.HandleFunc("/api/mail/incoming", getIncomingMailHandlerChain(*apiConfig).ServeHTTP)
+	http.HandleFunc(shared.SendPath, getIncomingMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
+	http.HandleFunc(shared.AcknowledgmentPath, getAcknowledgeMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
+	http.HandleFunc(shared.ReceivePath, getOutgoingMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
 
 	handlerManager := webui.HandlerManager{
 		UserContext:   &userContext,
@@ -92,7 +93,7 @@ func main() {
 	}
 
 	templateManager.LoadTemplates(logger)
-	handlerManager.StartServices()
+	handlerManager.RegisterHandlers()
 
 	if err := http.ListenAndServeTLS(configuration.GetServiceUrl(), configuration.CertificatePath, configuration.CertificateKeyPath, nil); err != nil {
 		logger.LogError("Main", err)
