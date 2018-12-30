@@ -237,8 +237,6 @@ func (t *TicketManager) MergeTickets(firstTicketId int, secondTicketId int) (suc
 	}
 }
 
-
-
 /*
 	Initialize the TicketManager with the given folder path. The folder is used to load and store the ticket data.
 */
