@@ -19,7 +19,7 @@ import (
 */
 type UserContext interface {
 	// Check if the current session is valid. Also returns the user of the session.
-	SessionIsValid(token string) (isValid bool, userId int, userName string, err error)
+	SessionIsValid(token string) (isValid bool, userId int, userName string, role UserRole, err error)
 	// Refresh the token. The new token should be used for all following request.
 	RefreshToken(token string) (newToken string, err error)
 	// Login a user.
@@ -58,6 +58,7 @@ type storedUserData struct {
 type inMemorySession struct {
 	userId           int
 	userMail         string
+	userRole 		 UserRole
 	sessionToken     string
 	sessionTimestamp time.Time
 }
@@ -96,7 +97,7 @@ func (s *LoginSystem) Initialize(folderPath string) (err error) {
 
 // Refresh the token. The new token should be used for all following request.
 func (s *LoginSystem) RefreshToken(token string) (newToken string, err error) {
-	valid, userId, userName, err := s.SessionIsValid(token)
+	valid, userId, userName, userRole, err := s.SessionIsValid(token)
 	if valid {
 		s.currentSessionsMutex.Lock()
 		defer s.currentSessionsMutex.Unlock()
@@ -104,7 +105,8 @@ func (s *LoginSystem) RefreshToken(token string) (newToken string, err error) {
 		if err != nil {
 			return "", err
 		}
-		s.currentSessions[newToken] = inMemorySession{userMail: userName, userId: userId, sessionToken: newToken, sessionTimestamp: time.Now()}
+		s.currentSessions[newToken] = inMemorySession{userMail: userName, userId: userId, userRole: userRole,
+			sessionToken: newToken, sessionTimestamp: time.Now()}
 		delete(s.currentSessions, token)
 		return newToken, nil
 	} else {
@@ -146,7 +148,7 @@ func (s *LoginSystem) Register(userName string, password string, firstName strin
 	Change the password for the user of the given session.
 */
 func (s *LoginSystem) ChangePassword(currentUserToken string, currentUserPassword string, newPassword string) (changed bool, err error) {
-	isValid, userId, userName, err := s.SessionIsValid(currentUserToken)
+	isValid, userId, userName, _, err := s.SessionIsValid(currentUserToken)
 	if err != nil {
 		return false, err
 	}
@@ -154,8 +156,6 @@ func (s *LoginSystem) ChangePassword(currentUserToken string, currentUserPasswor
 		return false, errors.New("invalid session token")
 	}
 
-	//s.cachedUserDataMutex.RLock()
-	//defer s.cachedUserDataMutex.RUnlock()
 
 	for _, v := range s.cachedUserData {
 		if strings.ToLower(v.Mail) == strings.ToLower(userName) && v.UserId == userId {
@@ -181,7 +181,7 @@ func (s *LoginSystem) Logout(authToken string) {
 }
 
 // Check if the current session is valid. Also returns the user of the session.
-func (s *LoginSystem) SessionIsValid(token string) (isValid bool, userId int, userName string, err error) {
+func (s *LoginSystem) SessionIsValid(token string) (isValid bool, userId int, userName string, userRole UserRole, err error) {
 	s.currentSessionsMutex.RLock()
 
 	user, ok := s.currentSessions[token]
@@ -191,13 +191,13 @@ func (s *LoginSystem) SessionIsValid(token string) (isValid bool, userId int, us
 			s.currentSessionsMutex.Lock()
 			delete(s.currentSessions, token)
 			s.currentSessionsMutex.Unlock()
-			return false, -1, "", nil
+			return false, -1, "", -1, nil
 		}
-		return ok, user.userId, user.userMail, nil
+		return ok, user.userId, user.userMail, user.userRole, nil
 	} else {
 		s.currentSessionsMutex.RUnlock()
 	}
-	return false, -1, "", nil
+	return false, -1, "", -1,nil
 }
 
 /*
@@ -227,7 +227,7 @@ func (s *LoginSystem) Login(userName string, password string) (success bool, aut
 	Setting your own account to vacation mode.
 */
 func (s *LoginSystem) DisableVacationMode(token string) (err error) {
-	valid, userId, _, err := s.SessionIsValid(token)
+	valid, userId, _, _, err := s.SessionIsValid(token)
 	if err != nil {
 		return err
 	}
@@ -269,7 +269,7 @@ func (s *LoginSystem) DisableVacationMode(token string) (err error) {
 	Setting your own account to vacation mode.
 */
 func (s *LoginSystem) EnableVacationMode(token string) (err error) {
-	valid, userId, _, err := s.SessionIsValid(token)
+	valid, userId, _, _, err := s.SessionIsValid(token)
 	if err != nil {
 		return err
 	}
@@ -311,7 +311,7 @@ func (s *LoginSystem) EnableVacationMode(token string) (err error) {
 	Unlock a account which is waiting to be unlocked. The current session needs the permission to do this.
 */
 func (s *LoginSystem) UnlockAccount(currentToken string, userIdToUnlock int) (unlocked bool, err error) {
-	valid, userId, _, err := s.SessionIsValid(currentToken)
+	valid, userId, _, _, err := s.SessionIsValid(currentToken)
 	if err != nil {
 		return false, err
 	}
@@ -404,7 +404,10 @@ func (s *LoginSystem) createSessionForUser(user storedUserData) (authToken strin
 	if err != nil {
 		return "", err
 	}
-	s.currentSessions[token] = inMemorySession{userMail: user.Mail, userId: user.UserId, sessionToken: authToken, sessionTimestamp: time.Now()}
+	s.currentSessions[token] = inMemorySession{userMail: user.Mail, userId: user.UserId,
+		userRole: user.Role,
+		sessionToken: authToken,
+		sessionTimestamp: time.Now()}
 	return token, nil
 }
 
