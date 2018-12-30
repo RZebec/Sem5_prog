@@ -8,6 +8,22 @@ import (
 )
 
 /*
+	The Api Configuration provides the configuration for the incoming and outgoing mail api key.
+*/
+type IApiConfiguration interface {
+	// Get the incoming mail api key.
+	GetIncomingMailApiKey() string
+	// Get the outgoing mail api key.
+	GetOutgoingMailApiKey() string
+	// Change the incoming mail api key.
+	ChangeIncomingMailApiKey(newKey string) error
+	// Change the outgoing mail api key.
+	ChangeOutgoingMailApiKey(newKey string) error
+	// Validate the configuration.
+	Validate() (bool, string)
+}
+
+/*
 	The configuration for the api.
 */
 type ApiConfiguration struct {
