@@ -5,6 +5,7 @@ package user
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/validation/mail"
 	"encoding/json"
 	"errors"
 	"path"
@@ -36,6 +37,8 @@ type UserContext interface {
 	UnlockAccount(currentUserToken string, userIdToUnlock int) (unlocked bool, err error)
 	// Changing the password of a user should be possible, but only for the user himself.
 	ChangePassword(currentUserToken string, currentUserPassword string, newPassword string) (changed bool, err error)
+	// Get all locked users:
+	GetAllLockedUsers() []User
 }
 
 /*
@@ -58,7 +61,7 @@ type storedUserData struct {
 type inMemorySession struct {
 	userId           int
 	userMail         string
-	userRole 		 UserRole
+	userRole         UserRole
 	sessionToken     string
 	sessionTimestamp time.Time
 }
@@ -118,8 +121,8 @@ func (s *LoginSystem) RefreshToken(token string) (newToken string, err error) {
 	Register a new user.
 */
 func (s *LoginSystem) Register(userName string, password string, firstName string, lastName string) (success bool, err error) {
-	if userName == "" {
-		// TODO: Validator for username
+	mailValidator := mail.NewValidator()
+	if !mailValidator.Validate(userName) {
 		return false, errors.New("userName not valid")
 	}
 	if password == "" {
@@ -155,7 +158,6 @@ func (s *LoginSystem) ChangePassword(currentUserToken string, currentUserPasswor
 	if !isValid {
 		return false, errors.New("invalid session token")
 	}
-
 
 	for _, v := range s.cachedUserData {
 		if strings.ToLower(v.Mail) == strings.ToLower(userName) && v.UserId == userId {
@@ -197,7 +199,7 @@ func (s *LoginSystem) SessionIsValid(token string) (isValid bool, userId int, us
 	} else {
 		s.currentSessionsMutex.RUnlock()
 	}
-	return false, -1, "", -1,nil
+	return false, -1, "", -1, nil
 }
 
 /*
@@ -308,6 +310,26 @@ func (s *LoginSystem) EnableVacationMode(token string) (err error) {
 }
 
 /*
+	Get all users which are locked.
+*/
+func (s *LoginSystem) GetAllLockedUsers() []User {
+	s.cachedUserDataMutex.RLock()
+	defer s.cachedUserDataMutex.RUnlock()
+
+	var lockedUsers []User
+	for _, storedUser := range s.cachedUserData {
+		if storedUser.State == WaitingToBeUnlocked {
+			user := User{Mail: storedUser.Mail, UserId: storedUser.UserId,
+				FirstName: storedUser.FirstName, LastName: storedUser.LastName,
+				Role: storedUser.Role, State: storedUser.State}
+			lockedUsers = append(lockedUsers, user.Copy())
+		}
+	}
+
+	return lockedUsers
+}
+
+/*
 	Unlock a account which is waiting to be unlocked. The current session needs the permission to do this.
 */
 func (s *LoginSystem) UnlockAccount(currentToken string, userIdToUnlock int) (unlocked bool, err error) {
@@ -405,8 +427,8 @@ func (s *LoginSystem) createSessionForUser(user storedUserData) (authToken strin
 		return "", err
 	}
 	s.currentSessions[token] = inMemorySession{userMail: user.Mail, userId: user.UserId,
-		userRole: user.Role,
-		sessionToken: authToken,
+		userRole:         user.Role,
+		sessionToken:     authToken,
 		sessionTimestamp: time.Now()}
 	return token, nil
 }
