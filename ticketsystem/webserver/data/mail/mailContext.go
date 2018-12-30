@@ -279,6 +279,9 @@ func (t *MailManager) readUnAcknowledgeMailsFile(folderPath string) error {
 	Persist a mail to disk.
 */
 func (t *MailManager) persistMailToDisk(mailToSent Mail) error {
+	if len(mailToSent.Headers) == 0 {
+		mailToSent.Headers = make([]string,0)
+	}
 	jsonData, err := json.MarshalIndent(mailToSent, "", "    ")
 	if err != nil {
 		return errors.Wrap(err, "could not save mail to file")

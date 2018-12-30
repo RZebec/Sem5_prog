@@ -10,4 +10,5 @@ type Mail struct {
 	Subject  string
 	Content  string
 	SentTime int64
+	Headers []string
 }
