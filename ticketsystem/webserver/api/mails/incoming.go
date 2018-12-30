@@ -22,6 +22,7 @@ type IncomingMailHandler struct {
 	MailContext   mail.MailContext
 	TicketContext ticket.TicketContext
 	UserContext   user.UserContext
+	MailRepliesFilter AutomaticRepliesFilter
 }
 
 /*
@@ -87,6 +88,11 @@ func (h *IncomingMailHandler) handleNewTicketMail(incomingMail mail.Mail) error 
 func (h *IncomingMailHandler) handleIncomingMails(data []mail.Mail) error {
 	mailIdExtractor := newMailIdExtractor()
 	for _, incomingMail := range data {
+		if h.MailRepliesFilter.IsAutomaticResponse(incomingMail) {
+			h.Logger.LogWarning("IncomingMailHandler", "Ignoring mail with id " + incomingMail.Id + " because" +
+				"it is a automatic reply")
+			continue
+		}
 		isExistingTicket, ticketId := mailIdExtractor.getTicketId(incomingMail.Subject)
 		if isExistingTicket {
 			ticketReallyExists, existingTicket := h.TicketContext.GetTicketById(ticketId)

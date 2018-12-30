@@ -15,14 +15,14 @@ type AutomaticRepliesFilter interface {
 /*
 	A mail filter struct.
  */
-type repliesFilter struct {
+type RepliesFilter struct {
 
 }
 
 /*
 	Check if a mail is a automatic response.
  */
-func (r *repliesFilter) IsAutomaticResponse (mail mail.Mail) bool{
+func (r *RepliesFilter) IsAutomaticResponse (mail mail.Mail) bool{
 	for _, header := range mail.Headers{
 		if strings.Contains(strings.ToLower(header), "x-autorespond") {
 			return true

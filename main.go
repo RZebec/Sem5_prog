@@ -111,7 +111,8 @@ func main() {
 
 func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mail.MailContext, ticketContext ticket.TicketContext,
 		userContext user.UserContext, logger logging.Logger) http.Handler {
-	incomingMailHandler := mails.IncomingMailHandler{Logger: logger, MailContext: mailContext, TicketContext: ticketContext, UserContext: userContext}
+	incomingMailHandler := mails.IncomingMailHandler{Logger: logger, MailContext: mailContext, TicketContext: ticketContext,
+		UserContext: userContext, MailRepliesFilter: &mails.RepliesFilter{}}
 	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,
 		Next: &incomingMailHandler, AllowedMethod: "POST", Logger: logger}
 	return &apiAuthenticationHandler

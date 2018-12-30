@@ -18,6 +18,16 @@ import (
 	"time"
 )
 
+
+type MockedMailFilter struct {
+	mock.Mock
+}
+
+func (m *MockedMailFilter)IsAutomaticResponse(mail mail.Mail) bool {
+	args := m.Called(mail)
+	return args.Bool(0)
+}
+
 /*
 	Get a test handler with mocked data.
 */
@@ -25,7 +35,10 @@ func getTestHandlerWithMockedData() IncomingMailHandler {
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
-	return IncomingMailHandler{Logger: getTestLogger(), MailContext: mockedMailContext, TicketContext: mockedTicketContext, UserContext: mockedUserContext}
+	mockedMailFilter:= new(MockedMailFilter)
+	mockedMailFilter.On("IsAutomaticResponse", mock.Anything).Return(false)
+	return IncomingMailHandler{Logger: getTestLogger(), MailContext: mockedMailContext, TicketContext: mockedTicketContext,
+		UserContext: mockedUserContext, MailRepliesFilter: mockedMailFilter}
 }
 
 /*
@@ -255,6 +268,31 @@ func TestIncomingMailHandler_ServeHTTP_500Returned(t *testing.T) {
 
 	handler.ServeHTTP(rr, req)
 	assert.Equal(t, 500, rr.Code, "Status code 500 should be returned")
+}
+
+/*
+	The filter should be respected. The other mocks should not be called.
+*/
+func TestIncomingMailHandler_ServeHTTP_MailFiltered(t *testing.T) {
+	testee := getTestHandlerWithMockedData()
+	mockedFilter := new(MockedMailFilter)
+	mockedFilter.On("IsAutomaticResponse", mock.Anything).Return(true)
+	testee.MailRepliesFilter = mockedFilter
+
+
+	jsonData, _ := json.Marshal(getTestMails())
+
+	req, err := http.NewRequest("POST", shared.SendPath, bytes.NewBuffer(jsonData))
+	if err != nil {
+		t.Fatal(err)
+	}
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(testee.ServeHTTP)
+
+	handler.ServeHTTP(rr, req)
+	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
+
+	mockedFilter.AssertExpectations(t)
 }
 
 /*
