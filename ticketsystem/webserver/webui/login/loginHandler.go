@@ -8,6 +8,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
+	"html"
 	"net/http"
 	"strconv"
 	"strings"
@@ -39,6 +40,9 @@ func (l LoginHandler) ServeHTTPPostLoginData(w http.ResponseWriter, r *http.Requ
 		userName := r.FormValue("userName")
 		password := r.FormValue("password")
 
+		userName = html.EscapeString(userName)
+		password = html.EscapeString(password)
+
 		success, token, err := l.UserContext.Login(userName, password)
 
 		if err != nil {
@@ -46,7 +50,7 @@ func (l LoginHandler) ServeHTTPPostLoginData(w http.ResponseWriter, r *http.Requ
 		}
 
 		if success {
-			helpers.SetCookie(w, r, shared.AccessTokenCookieName, token)
+			helpers.SetCookie(w, shared.AccessTokenCookieName, token)
 			http.Redirect(w, r, "/", 302)
 		} else {
 			http.Redirect(w, r, "/login?IsLoginFailed=true", 302)

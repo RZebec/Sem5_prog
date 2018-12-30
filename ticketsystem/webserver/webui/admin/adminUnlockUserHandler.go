@@ -26,9 +26,9 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 	if strings.ToLower(r.Method) != "post" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {
-		URLPath := strings.Split(r.URL.Path, "/")
+		formId := r.FormValue("userId")
 
-		userId, idConversionError := strconv.Atoi(URLPath[2])
+		userId, idConversionError := strconv.Atoi(formId)
 
 		if idConversionError != nil {
 			a.Logger.LogError("Admin", idConversionError)
@@ -39,7 +39,7 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		accessTokenCookie, err := r.Cookie(shared.AccessTokenCookieName)
 
 		if err != nil {
-			a.Logger.LogError("Login", err)
+			a.Logger.LogError("Admin", err)
 			return
 		}
 
@@ -52,8 +52,7 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		}
 
 		if unlocked {
-			http.Redirect(w, r, "/admin", http.StatusCreated)
-			return
+			http.Redirect(w, r, "/admin", 302)
 		}
 	}
 }

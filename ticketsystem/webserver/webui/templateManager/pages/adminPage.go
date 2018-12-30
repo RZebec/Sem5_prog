@@ -69,9 +69,10 @@ var AdminPage = `
 								{{.LastName}}
                             </td>
 							<td>
-								<button class="view-button" onclick="location.href='unlockUser/{{.UserId}}';">
-									Unlock
-								</button>
+								<form id="formUser" method="post" name="formUser" action="/unlock_user">
+									<input type = "hidden" name = "userId" value = "{{.UserId}}" />
+									<button type="submit" class="view-button">Unlock</button>
+								</form>
 							</td>
                         </tr>
 						{{end}}
