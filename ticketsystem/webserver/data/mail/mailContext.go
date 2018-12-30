@@ -290,6 +290,9 @@ func (t *MailManager) persistMailToDisk(mailToSent Mail) error {
 	Persist the unacknowledged state to disk.
 */
 func (t *MailManager) persistUnAcknowledgedMailState() error {
+	if len(t.unAcknowledgedMails) == 0 {
+		t.unAcknowledgedMails = make([]string,0)
+	}
 	jsonData, err := json.Marshal(t.unAcknowledgedMails)
 	if err != nil {
 		return errors.Wrap(err, "could not encode data file for unAcknowledged mails.")

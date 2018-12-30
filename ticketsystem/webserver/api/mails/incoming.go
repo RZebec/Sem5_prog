@@ -10,6 +10,7 @@ import (
 	"html"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -45,6 +46,9 @@ func (h *IncomingMailHandler) ServeHTTP(w http.ResponseWriter, req *http.Request
 	w.WriteHeader(200)
 }
 
+/*
+	Handle the mail for a existing ticket.
+ */
 func (h *IncomingMailHandler) handleExistingTicketMail(ticketId int, incomingMail mail.Mail) error {
 	messageEntry := ticket.MessageEntry{}
 	messageEntry.Content = html.EscapeString(incomingMail.Content)
@@ -53,12 +57,16 @@ func (h *IncomingMailHandler) handleExistingTicketMail(ticketId int, incomingMai
 	messageEntry.OnlyInternal = false
 	messageEntry.CreatorMail = html.EscapeString(incomingMail.Sender)
 	_, err := h.TicketContext.AppendMessageToTicket(ticketId, messageEntry)
+
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
+/*
+	Handle the mail for a new ticket.
+ */
 func (h *IncomingMailHandler) handleNewTicketMail( incomingMail mail.Mail) error {
 
 	isRegistered, userId := h.UserContext.GetUserForEmail(incomingMail.Sender)
@@ -68,17 +76,31 @@ func (h *IncomingMailHandler) handleNewTicketMail( incomingMail mail.Mail) error
 	return h.handleNewTicketForUnknownSender(incomingMail)
 }
 
+/*
+	Handle the incoming mails.
+ */
 func (h *IncomingMailHandler) handleIncomingMails(data []mail.Mail) error {
 	mailIdExtractor := newMailIdExtractor()
 	for _, incomingMail := range data{
 		isExistingTicket, ticketId := mailIdExtractor.getTicketId(incomingMail.Subject)
 		if isExistingTicket {
-			ticketReallyExists, _ := h.TicketContext.GetTicketById(ticketId)
+			ticketReallyExists, existingTicket := h.TicketContext.GetTicketById(ticketId)
 			if ticketReallyExists {
 				err := h.handleExistingTicketMail(ticketId, incomingMail)
 				if err != nil {
 					return err
 				}
+				ticketCreatorMail := existingTicket.Info().Creator.Mail
+				if strings.ToLower(incomingMail.Sender) != strings.ToLower(ticketCreatorMail){
+					subject := "New Entry for your ticket: " + html.EscapeString(incomingMail.Subject)
+					content :=  html.EscapeString(mail.BuildNotificationMailContent(existingTicket.Info().Creator.Mail,
+						ticketCreatorMail, incomingMail.Content))
+					err = h.MailContext.CreateNewOutgoingMail(existingTicket.Info().Creator.Mail, subject,content )
+					if err != nil {
+						return err
+					}
+				}
+
 				continue
 			} else {
 				err := h.handleNewTicketMail(incomingMail)
@@ -96,6 +118,9 @@ func (h *IncomingMailHandler) handleIncomingMails(data []mail.Mail) error {
 	return nil
 }
 
+/*
+	Handle a new ticket for a internal user.
+ */
 func (h *IncomingMailHandler) handleNewTicketForInternalUser(userId int, incomingMail mail.Mail) error {
 	exists, internalUser := h.UserContext.GetUserById(userId)
 	if !exists {
@@ -114,6 +139,9 @@ func (h *IncomingMailHandler) handleNewTicketForInternalUser(userId int, incomin
 	return nil
 }
 
+/*
+	Handle a new ticket for an unknown sender.
+ */
 func (h *IncomingMailHandler) handleNewTicketForUnknownSender(incomingMail mail.Mail) error {
 
 	title := html.EscapeString(incomingMail.Subject)
