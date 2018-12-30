@@ -26,8 +26,6 @@ func (h AuthenticationWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	userIsLoggedIn, token := helpers.UserIsLoggedInCheck(r, h.UserContext, shared.AccessTokenCookieName, h.Logger)
 
-
-
 	if userIsLoggedIn {
 		newToken, err := h.UserContext.RefreshToken(token)
 
@@ -35,7 +33,7 @@ func (h AuthenticationWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request)
 			h.Logger.LogError("Login", err)
 		}
 
-		helpers.SetCookie(w, r, shared.AccessTokenCookieName, newToken)
+		helpers.SetCookie(w, shared.AccessTokenCookieName, newToken)
 
 		h.Next.ServeHTTP(w, r)
 	} else {
