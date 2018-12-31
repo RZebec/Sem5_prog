@@ -29,7 +29,7 @@ func (m *MockedApiConfiguration) GetOutgoingMailApiKey() string {
 	Mocked function.
 */
 func (m *MockedApiConfiguration) ChangeIncomingMailApiKey(newKey string) error {
-	args := m.Called()
+	args := m.Called(newKey)
 	return args.Error(0)
 }
 
@@ -37,7 +37,7 @@ func (m *MockedApiConfiguration) ChangeIncomingMailApiKey(newKey string) error {
 	Mocked function.
 */
 func (m *MockedApiConfiguration) ChangeOutgoingMailApiKey(newKey string) error {
-	args := m.Called()
+	args := m.Called(newKey)
 	return args.Error(0)
 }
 

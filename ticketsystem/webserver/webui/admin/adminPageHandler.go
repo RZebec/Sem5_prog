@@ -31,21 +31,25 @@ type adminPageData struct {
 	The Admin Page handler.
 */
 func (a AdminPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	} else {
+		users := a.UserContext.GetAllLockedUsers()
 
-	users := a.UserContext.GetAllLockedUsers()
+		incomingMailApiKey := a.ApiContext.GetIncomingMailApiKey()
+		outgoingMailApiKey := a.ApiContext.GetOutgoingMailApiKey()
 
-	incomingMailApiKey := a.ApiContext.GetIncomingMailApiKey()
-	outgoingMailApiKey := a.ApiContext.GetOutgoingMailApiKey()
+		data := adminPageData{
+			Users:              users,
+			IncomingMailApiKey: incomingMailApiKey,
+			OutgoingMailApiKey: outgoingMailApiKey,
+		}
 
-	data := adminPageData{
-		Users: users,
-		IncomingMailApiKey: incomingMailApiKey,
-		OutgoingMailApiKey: outgoingMailApiKey,
-	}
+		templateRenderError := a.TemplateManager.RenderTemplate(w, "AdminPage", data)
 
-	templateRenderError := a.TemplateManager.RenderTemplate(w, "AdminPage", data)
-
-	if templateRenderError != nil {
-		a.Logger.LogError("Admin", templateRenderError)
+		if templateRenderError != nil {
+			a.Logger.LogError("Admin", templateRenderError)
+			http.Redirect(w, r, "/", http.StatusInternalServerError)
+		}
 	}
 }
