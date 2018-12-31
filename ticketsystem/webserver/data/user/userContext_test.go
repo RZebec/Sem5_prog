@@ -165,12 +165,12 @@ func TestLoginSystem_ChangePassword_PasswordChanged(t *testing.T) {
 	// No error should occur:
 	assert.Nil(t, err)
 
-	userName := "testUser4"
-	userPassword := "testPassword2"
+	userName := "testUser4@test.de"
+	userPassword := "asdSsdsdf!1osp"
 	newPassword := "Test1234!"
 	// The user should be logged in
 	success, token, err := testee.Login(userName, userPassword)
-	assert.True(t, success, "User should not be logged in")
+	assert.True(t, success, "User should not logged in")
 	assert.NotEmpty(t, token, "The token should not be empty")
 
 	changed, err := testee.ChangePassword(token, userPassword, newPassword)
@@ -218,12 +218,12 @@ func TestLoginSystem_ChangePassword_InvalidPassword_PasswordNotChanged(t *testin
 	// No error should occur:
 	assert.Nil(t, err)
 
-	userName := "testUser4"
+	userName := "testUser4@test.de"
 	oldPassword := "testPassword2"
 	newPassword := "Test1234!"
 	// The user should be logged in
 	success, token, err := testee.Login(userName, oldPassword)
-	assert.True(t, success, "User should not be logged in")
+	assert.True(t, success, "User should be logged in")
 	assert.NotEmpty(t, token, "The token should not be empty")
 
 	// Use a wrong password
@@ -369,7 +369,7 @@ func TestLoginSystem_Logout_SessionExists_UserLoggedOut(t *testing.T) {
 	testee.currentSessions = make(map[string]inMemorySession)
 
 	token := "1234567899+op"
-	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser", userRole: RegisteredUser,
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser@test.de", userRole: RegisteredUser,
 		sessionToken: "1234567899+op", sessionTimestamp: time.Now()}
 
 	valid, _, _, _, err := testee.SessionIsValid(token)
@@ -390,7 +390,7 @@ func TestLoginSystem_RefreshToken_ValidToken_TokenIsRefreshed(t *testing.T) {
 	testee.currentSessions = make(map[string]inMemorySession)
 
 	token := "1234567899+op"
-	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser@test.de",
 		sessionToken: token, sessionTimestamp: time.Now()}
 
 	newToken, _ := testee.RefreshToken(token)
@@ -408,7 +408,7 @@ func TestLoginSystem_RefreshToken_UnknownToken_ErrorReturned(t *testing.T) {
 	testee.currentSessions = make(map[string]inMemorySession)
 
 	token := "1234567899+op"
-	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser@test.de",
 		sessionToken: token, sessionTimestamp: time.Now()}
 
 	newToken, err := testee.RefreshToken("1234")
@@ -481,7 +481,7 @@ func TestLoginSystem_SessionIsValid_IsValid(t *testing.T) {
 	testee.currentSessions = make(map[string]inMemorySession)
 
 	token := "1234567899+op"
-	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser@test.de",
 		sessionToken: token, sessionTimestamp: time.Now()}
 
 	valid, _, _, _, err := testee.SessionIsValid(token)
@@ -497,7 +497,7 @@ func TestLoginSystem_SessionIsValid_IsInValid(t *testing.T) {
 	testee.currentSessions = make(map[string]inMemorySession)
 
 	token := "1234567899+op"
-	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser@test.de",
 		sessionToken: "1234567899+op", sessionTimestamp: time.Now()}
 
 	valid, _, _, _, err := testee.SessionIsValid("5698456")
@@ -515,7 +515,7 @@ func TestLoginSystem_SessionIsValid_SessionTimedOut(t *testing.T) {
 	token := "1234567899+op"
 	// Set last update of session to 12 minutes ago.
 	timestamp := time.Now().Add(time.Duration(-12) * time.Minute)
-	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser@test.de",
 		sessionToken: "1234567899+op", sessionTimestamp: timestamp}
 
 	valid, _, _, _, err := testee.SessionIsValid(token)
@@ -807,7 +807,7 @@ func TestLoginSystem_UnlockAccount_NoAdminRole(t *testing.T) {
 	assert.Nil(t, err)
 
 	// Log in with a user which is no admin:
-	success, token, err := testee.Login("testUser", "testPassword")
+	success, token, err := testee.Login("testUser@test.de", "testPassword")
 	assert.True(t, success, "User should be logged in")
 
 	// Unlocking should not be possible:
@@ -911,12 +911,12 @@ func TestLoginSystem_EnableVacationMode_Enabled(t *testing.T) {
 	err = testee.Initialize(folderPath)
 
 	// Login and assert that the state is set to active:
-	success, token, err := testee.Login("testUser5", "testPassword")
+	success, token, err := testee.Login("testUser5@test.de", "testPassword")
 	assert.True(t, success, "User should be logged in")
 
 	found := false
 	for _, entry := range testee.cachedUserData {
-		if entry.Mail == "testUser5" {
+		if entry.Mail == "testUser5@test.de" {
 			assert.Equal(t, Active, entry.State)
 			found = true
 			break
@@ -932,7 +932,7 @@ func TestLoginSystem_EnableVacationMode_Enabled(t *testing.T) {
 	// Assert that the vacation mode has been set.
 	found = false
 	for _, entry := range testee.cachedUserData {
-		if entry.Mail == "testUser5" {
+		if entry.Mail == "testUser5@test.de" {
 			assert.Equal(t, OnVacation, entry.State)
 			found = true
 			break
@@ -958,12 +958,12 @@ func TestLoginSystem_DisableVacationMode_Disabled(t *testing.T) {
 	err = testee.Initialize(folderPath)
 
 	// Login and set the vacation mode:
-	success, token, err := testee.Login("testUser5", "testPassword")
+	success, token, err := testee.Login("testUser5@test.de", "testPassword")
 	assert.True(t, success, "User should be logged in")
 
 	found := false
 	for _, entry := range testee.cachedUserData {
-		if entry.Mail == "testUser5" {
+		if entry.Mail == "testUser5@test.de" {
 			assert.Equal(t, Active, entry.State)
 			found = true
 			break
@@ -978,7 +978,7 @@ func TestLoginSystem_DisableVacationMode_Disabled(t *testing.T) {
 	// Assert that the validation mode is set:
 	found = false
 	for _, entry := range testee.cachedUserData {
-		if entry.Mail == "testUser5" {
+		if entry.Mail == "testUser5@test.de" {
 			assert.Equal(t, OnVacation, entry.State)
 			found = true
 			break
@@ -993,7 +993,7 @@ func TestLoginSystem_DisableVacationMode_Disabled(t *testing.T) {
 
 	found = false
 	for _, entry := range testee.cachedUserData {
-		if entry.Mail == "testUser5" {
+		if entry.Mail == "testUser5@test.de" {
 			assert.Equal(t, Active, entry.State)
 			found = true
 			break
@@ -1019,12 +1019,12 @@ func TestLoginSystem_DisableVacationMode_WrongState(t *testing.T) {
 	err = testee.Initialize(folderPath)
 
 	// Login and validate that the user is not in vacation mode:
-	success, token, err := testee.Login("testUser5", "testPassword")
+	success, token, err := testee.Login("testUser5@test.de", "testPassword")
 	assert.True(t, success, "User should be logged in")
 
 	found := false
 	for _, entry := range testee.cachedUserData {
-		if entry.Mail == "testUser5" {
+		if entry.Mail == "testUser5@test.de" {
 			assert.Equal(t, Active, entry.State)
 			found = true
 			break
@@ -1055,7 +1055,7 @@ func TestLoginSystem_GetUserById(t *testing.T) {
 
 	exists, user := testee.GetUserById(1)
 	assert.True(t, exists, "User should exist")
-	assert.Equal(t, "testUser5", user.Mail, "Correct user should be returned")
+	assert.Equal(t, "testUser5@test.de", user.Mail, "Correct user should be returned")
 }
 
 /*
@@ -1094,7 +1094,7 @@ func TestLoginSystem_GetUserForEmail(t *testing.T) {
 
 	err = testee.Initialize(folderPath)
 
-	exists, userId := testee.GetUserForEmail("testUser5")
+	exists, userId := testee.GetUserForEmail("testUser5@test.de")
 	assert.True(t, exists, "User should exist")
 	assert.Equal(t, 1, userId, "Correct user id should be returned")
 }
@@ -1172,22 +1172,22 @@ func getDataFromFile(filePath string) (data []storedUserData, err error) {
 */
 const testLoginData = `[
 	{
-		"Mail": "testUser",
+		"Mail": "testUser@test.de",
 		"UserId": 0,
 		"FirstName": "Max0",
 		"LastName": "Maximum0",
-		"StoredPass": "testPassword",
-		"StoredSalt": "1234",
+		"StoredPass": "u000f��\u000fI�#\u0016���W\u0014.\"�G�(��r�tm\u0006\\���\u0015���3\u0003�\u0008��m��\u0007\u000e��ۿl�\r)��h2\u0012��Ax��",
+		"StoredSalt": "�����Q���\u003e�E��#���6ԝb���\u0004�NF@��",
 		"Role": 2,
         "State": 1
 	},
 	{
-		"Mail": "testUser5",
+		"Mail": "testUser5@test.de",
 		"UserId": 1,
 		"FirstName": "Max1",
 		"LastName": "Maximum1",
-		"StoredPass": "testPassword",
-		"StoredSalt": "1234",
+		"StoredPass": "\ufffd\ufffd\ufffd5\ufffd\ufffd\ufffd\ufffd\ufffdih\ufffdb\ufffd\ufffd\u001a\ufffd\ufffdXy\ufffd\ufffdA4W\ufffd\ufffd\ufffd^\ufffd7.\ufffd\u0007A\ufffd\ufffd\ufffd\ufffd\u0013\ufffd\ufffd\ufffdBI9Nwf{\ufffd\ufffd\ufffd\ufffd\ufffd2\ufffd\u000em\u0026\u0001HT^",
+		"StoredSalt": "����\\����҃#d\tx�*c�Ý�9��ɪ����f",
 		"Role": 2,
         "State": 1
 	},
@@ -1196,8 +1196,8 @@ const testLoginData = `[
 		"UserId": 2,
 		"FirstName": "Max2",
 		"LastName": "Maximum2",
-		"StoredPass": "testPassword2",
-		"StoredSalt": "1234",
+		"StoredPass": "\ufffd\ufffda\ufffdh\ufffd\ufffdKtz\ufffd\u000e\ufffdW\u0008\ufffdQqʒ\ufffd.\ufffd\ufffd\u001b\ufffd\ufffdۆ\ufffd\ufffdtX4R\ufffd?10,\t\ufffd۶\ufffdr\ufffdW\u000b\u0000\ufffd\ufffdw\ufffd]\ufffd\ufffd\ufffd\ufffd\ufffdr",
+		"StoredSalt": "\u000f\u0006Y\ufffd\ufffd\ufffd\ufffdŻ\ufffd\\\u0000)\ufffd\ufffd7~\ufffd\ufffd\ufffd\u000cc\ufffd\ufffd\ufffd\ufffdKq\ufffd\u0010\ufffd\u001b",
 		"Role": 2,
         "State": 1
 	},
@@ -1206,18 +1206,18 @@ const testLoginData = `[
 		"UserId": 3,
 		"FirstName": "Max3",
 		"LastName": "Maximum3",
-		"StoredPass": "testPassword2",
-		"StoredSalt": "1234",
+		"StoredPass": "�H�fW\u0018\u0013\u0007���c\u0017�\r�8�\u001ek��1\u003e�e��6��)\u0019�\u000f\t�WM�hx!��hVT\u0015�|�\u0006��%!8X���O\u0007",
+		"StoredSalt": "W\u000b��\u0006�t/\n�is�w9k�d����*6�I�y��\u000cu",
 		"Role": 2,
         "State": 1
 	},
 	{
-		"Mail": "testUser4",
+		"Mail": "testUser4@test.de",
 		"UserId": 4,
 		"FirstName": "Max4",
 		"LastName": "Maximum4",
-		"StoredPass": "testPassword2",
-		"StoredSalt": "1234",
+		"StoredPass": "\ufffdv\u001e\ufffd\ufffdp\ufffd\u000f\u0004e\ufffdL\u0006wԅJ\t\u0017\ufffd^s\ufffdv\u0018\ufffd\ufffdz\ufffd̖ld\u0012\u0018c\ufffd\ufffd\ufffd\ufffda6\ufffd2\u0012\ufffd\ufffd;\u0010\ufffd\ufffd\u00179\ufffd\ufffd\ufffd\u0007eQt\u000e\ufffd\ufffd!",
+		"StoredSalt": "nF\u0001ň\u0015\ufffd\u0015T;\u0014_\ufffd\ufffd\ufffdƮ\ufffd\ufffd\ufffda\ufffd\ufffdx1u\ufffd~\ufffd\u000c\ufffd\ufffd",
 		"Role": 2,
         "State": 1
 	},
@@ -1226,8 +1226,8 @@ const testLoginData = `[
 		"UserId": 5,
 		"FirstName": "Max5",
 		"LastName": "Maximum5",
-		"StoredPass": "testPassword2",
-		"StoredSalt": "1234",
+		"StoredPass": "\ufffd\ufffd\ufffde\ufffd-\ufffd\n\ufffd-\u0007\ufffd\ufffd\ufffd\ufffdho\ufffdd\ufffd2\ufffd\u0018\ufffd\ufffd\ufffd\ufffd\u001e\ufffd\u001f\ufffd\ufffdԿ\u003eG\r\ufffd\ufffd\ufffd\u000b\ufffd\ufffd\n9\ufffd\u0016%\ufffdK\ufffdB\ufffd\ufffd\ufffda\ufffdo\ufffdmN(\u0019\ufffd",
+		"StoredSalt": "6�\u001b�!��${'�)���l���J҅7�\u0015�+D�y�S",
 		"Role": 1,
         "State": 1
 	}

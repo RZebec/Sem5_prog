@@ -4,11 +4,14 @@
 package user
 
 import (
+	"crypto/rand"
+	"crypto/sha512"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/validation/mail"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/validation/passwordRequirements"
 	"encoding/json"
 	"errors"
+	"io"
 	"path"
 	"strings"
 	"sync"
@@ -105,14 +108,14 @@ func (s *LoginSystem) Initialize(folderPath string) (err error) {
 
 /*
 	Get a user by id.
- */
+*/
 func (s *LoginSystem) GetUserById(userId int) (exists bool, user User) {
 	s.cachedUserDataMutex.RLock()
 	defer s.cachedUserDataMutex.RUnlock()
 
-	for _, userData := range s.cachedUserData{
+	for _, userData := range s.cachedUserData {
 		if userData.UserId == userId {
-			copiedUser := User {Mail: userData.Mail, UserId: userData.UserId, FirstName: userData.FirstName,
+			copiedUser := User{Mail: userData.Mail, UserId: userData.UserId, FirstName: userData.FirstName,
 				LastName: userData.LastName, Role: userData.Role, State: userData.State}
 			copiedUser = copiedUser.Copy()
 			return true, copiedUser
@@ -121,15 +124,14 @@ func (s *LoginSystem) GetUserById(userId int) (exists bool, user User) {
 	return false, User{}
 }
 
-
 /*
 	Get a user from its mail.
- */
-func (s *LoginSystem) GetUserForEmail(mailAddress string) (isRegisteredUser bool, userId int){
+*/
+func (s *LoginSystem) GetUserForEmail(mailAddress string) (isRegisteredUser bool, userId int) {
 	s.cachedUserDataMutex.RLock()
 	defer s.cachedUserDataMutex.RUnlock()
 
-	for _, userData := range s.cachedUserData{
+	for _, userData := range s.cachedUserData {
 		if strings.ToLower(userData.Mail) == strings.ToLower(mailAddress) {
 			return true, userData.UserId
 		}
@@ -204,7 +206,6 @@ func (s *LoginSystem) ChangePassword(currentUserToken string, currentUserPasswor
 			if valid {
 				user := User{Mail: v.Mail, UserId: v.UserId, FirstName: v.FirstName, LastName: v.LastName, Role: v.Role,
 					State: v.State}
-				//s.cachedUserDataMutex.RUnlock()
 				return s.changeUserPassword(user, newPassword)
 			}
 		}
@@ -476,8 +477,11 @@ func (s *LoginSystem) createSessionForUser(user storedUserData) (authToken strin
 	Check if the provided password for a user is correct.
 */
 func (s *LoginSystem) checkUserCredentials(user storedUserData, providedPassword string) (success bool) {
-	// TODO: Adjust with password salting and stuff....
-	return user.StoredPass == providedPassword
+	pass, err := s.generateHashedLoginDataWithExistingSalt(providedPassword, user.StoredSalt)
+	if err != nil {
+		return false
+	}
+	return user.StoredPass == pass
 }
 
 /*
@@ -509,7 +513,10 @@ func (s *LoginSystem) registerNewUser(userName string, password string, firstNam
 	if err != nil {
 		return err
 	}
-	generatedLoginData := s.generateLoginData(userName, password, len(existingData)+1, firstName, lastName, role, state)
+	generatedLoginData, err := s.generateLoginData(userName, password, len(existingData)+1, firstName, lastName, role, state)
+	if err != nil {
+		return err
+	}
 	newData := append(existingData, generatedLoginData)
 	err = s.writeJsonDataToFile(s.loginDataFilePath, newData)
 	if err != nil {
@@ -525,16 +532,81 @@ func (s *LoginSystem) registerNewUser(userName string, password string, firstNam
 	Generates the login data.
 */
 func (s *LoginSystem) generateLoginData(userName string, password string, newId int,
-	firstName string, lastName string, role UserRole, state UserState) (userData storedUserData) {
-	// TODO: Adjust with password salting and stuff....
+	firstName string, lastName string, role UserRole, state UserState) (userData storedUserData, err error) {
+
+	pass, salt, err := s.generateHashedLoginData(password)
+	if err != nil {
+		return storedUserData{}, err
+	}
 	return storedUserData{Mail: userName,
-		StoredPass: password,
-		StoredSalt: "1234",
+		StoredPass: pass,
+		StoredSalt: salt,
 		UserId:     newId,
 		FirstName:  firstName,
 		LastName:   lastName,
 		Role:       role,
-		State:      state}
+		State:      state}, nil
+}
+
+func (s *LoginSystem) generateSalt() ([]byte, error) {
+	buffer := make([]byte, saltSize)
+	_, err := io.ReadFull(rand.Reader, buffer)
+	if err != nil {
+		return []byte{}, err
+	}
+	return buffer, nil
+}
+
+func (s *LoginSystem) generateHashedCombination(passwordBytes []byte, saltBytes []byte) (passwordString string, saltString string, err error){
+	combined, err := s.combineByteArrays(saltBytes, passwordBytes)
+	if err != nil {
+		return "", "", err
+	}
+	combinedHasher := sha512.New()
+	_, err = combinedHasher.Write(combined)
+	if err != nil {
+		return "", "", err
+	}
+	combinedHash := combinedHasher.Sum(nil)
+
+
+	return string(combinedHash), string(saltBytes), nil
+}
+
+func (s *LoginSystem) generateHashedLoginDataWithExistingSalt(rawPassword string, saltString string) (encryptedPassword string, err error) {
+	saltBytes := []byte(saltString)
+	passwordBytes := []byte(rawPassword)
+	passwordString, _, err := s.generateHashedCombination(passwordBytes, saltBytes)
+	return passwordString,  nil
+}
+
+func (s *LoginSystem) generateHashedLoginData(rawPassword string) (encryptedPassword string, salt string, err error) {
+	saltBytes, err := s.generateSalt()
+	if err != nil {
+		return "", "", err
+	}
+	passwordBytes := []byte(rawPassword)
+	return s.generateHashedCombination(passwordBytes, saltBytes)
+}
+
+func (s *LoginSystem) combineByteArrays(saltBytes []byte, passwordBytes []byte) ([]byte, error) {
+	if len(saltBytes) < saltSize {
+		return []byte{}, errors.New("salt to small")
+	}
+	var combined []byte
+	// Take the first half of the salt
+	for i := 0; i < 16; i++ {
+		combined = append(combined, saltBytes[i])
+	}
+	// Take the password:
+	for i := 0; i < len(passwordBytes); i++ {
+		combined = append(combined, passwordBytes[i])
+	}
+	// Take the second half of the salt:
+	for i := 16; i <= 31; i++ {
+		combined = append(combined, saltBytes[i])
+	}
+	return combined, nil
 }
 
 /*
@@ -613,8 +685,11 @@ func (s *LoginSystem) changeUserPassword(user User, newPassword string) (bool, e
 	found := false
 	for index, entry := range data {
 		if entry.UserId == user.UserId {
-			generatedLoginData := s.generateLoginData(user.Mail, newPassword, user.UserId, user.FirstName,
+			generatedLoginData, err := s.generateLoginData(user.Mail, newPassword, user.UserId, user.FirstName,
 				user.LastName, user.Role, user.State)
+			if err != nil {
+				return false, err
+			}
 			data[index] = generatedLoginData
 			found = true
 			break
@@ -632,3 +707,7 @@ func (s *LoginSystem) changeUserPassword(user User, newPassword string) (bool, e
 	s.readFileAndUpdateCache(s.loginDataFilePath)
 	return true, nil
 }
+
+
+
+const saltSize = 32

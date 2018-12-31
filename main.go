@@ -58,6 +58,13 @@ func main() {
 		panic(err)
 	}
 
+	//_,err = userContext.Register("testUser@test.de", "testPasswort756!", "Max0", "Maximum0" )
+	//_,err = userContext.Register("testUser5@test.de", "Tzqweq23Aws!", "Max1", "Maximum1" )
+	//_,err = userContext.Register("testUser2@test.de", "Lopi§s23!sd23", "Max2", "Maximum2" )
+	//_,err = userContext.Register("testUser3@test.de", "as23sSad!ß9!", "Max3", "Maximum3" )
+	_,err = userContext.Register("testUser4@test.de", "asdSsdsdf!1osp", "Max4", "Maximum4" )
+	//_,err = userContext.Register("testAdmin@test.de", "Hjssdfi=2!ß9!", "Max5", "Maximum5" )
+
 	ticketContext := ticket.TicketManager{}
 	ticketContext.Initialize(configuration.TicketDataFolderPath)
 
