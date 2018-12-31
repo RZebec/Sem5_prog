@@ -4,8 +4,9 @@
 package user
 
 import (
+	"bytes"
 	"crypto/rand"
-	"crypto/sha512"
+	"crypto/sha256"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/validation/mail"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/validation/passwordRequirements"
@@ -57,8 +58,8 @@ type storedUserData struct {
 	UserId     int
 	FirstName  string
 	LastName   string
-	StoredPass string
-	StoredSalt string
+	StoredPass []byte
+	StoredSalt []byte
 	Role       UserRole
 	State      UserState
 }
@@ -474,17 +475,6 @@ func (s *LoginSystem) createSessionForUser(user storedUserData) (authToken strin
 }
 
 /*
-	Check if the provided password for a user is correct.
-*/
-func (s *LoginSystem) checkUserCredentials(user storedUserData, providedPassword string) (success bool) {
-	pass, err := s.generateHashedLoginDataWithExistingSalt(providedPassword, user.StoredSalt)
-	if err != nil {
-		return false
-	}
-	return user.StoredPass == pass
-}
-
-/*
 	Check if the user already exists (using the cache). Returns true, if the user exists, false if not.
 */
 func (s *LoginSystem) checkIfUserExistsOnCache(userName string) bool {
@@ -529,17 +519,46 @@ func (s *LoginSystem) registerNewUser(userName string, password string, firstNam
 }
 
 /*
+	Check if the provided password for a user is correct.
+*/
+func (s *LoginSystem) checkUserCredentials(user storedUserData, providedPassword string) (success bool) {
+	// Build the combination of the provided password with the stored hash and compare it with the stored password hash:
+	comb := string(user.StoredSalt) + string(providedPassword)
+	passwordHash := sha256.New()
+	_, err := io.WriteString(passwordHash, comb)
+	if err != nil {
+		return false
+	}
+	correctComb := bytes.Equal(user.StoredPass, passwordHash.Sum(nil))
+
+	return correctComb
+}
+
+/*
 	Generates the login data.
 */
 func (s *LoginSystem) generateLoginData(userName string, password string, newId int,
 	firstName string, lastName string, role UserRole, state UserState) (userData storedUserData, err error) {
 
-	pass, salt, err := s.generateHashedLoginData(password)
+	// Hashing and salt generation is from: https://www.socketloop.com/tutorials/golang-securing-password-with-salt
+	// In a real life scenario we would use something like https://godoc.org/golang.org/x/crypto/bcrypt
+	// But we should only use standard packages, so we use this solution.
+
+	// Generate a salt for combination with password.
+	salt, err := generateSalt([]byte(password))
 	if err != nil {
 		return storedUserData{}, err
 	}
+	// Generate a hash for the password, but combine it with the salt.
+	passwordHash := sha256.New()
+	combination := string(salt) + string(password)
+	_, err = io.WriteString(passwordHash, combination)
+	if err != nil {
+		return storedUserData{}, err
+	}
+	// Store the hashed password together with the salt.
 	return storedUserData{Mail: userName,
-		StoredPass: pass,
+		StoredPass: passwordHash.Sum(nil),
 		StoredSalt: salt,
 		UserId:     newId,
 		FirstName:  firstName,
@@ -548,65 +567,21 @@ func (s *LoginSystem) generateLoginData(userName string, password string, newId 
 		State:      state}, nil
 }
 
-func (s *LoginSystem) generateSalt() ([]byte, error) {
-	buffer := make([]byte, saltSize)
-	_, err := io.ReadFull(rand.Reader, buffer)
+/*
+	Generate a salt out of a password.
+*/
+func generateSalt(secret []byte) ([]byte, error) {
+	buf := make([]byte, saltSize, saltSize+sha256.Size)
+	_, err := io.ReadFull(rand.Reader, buf)
+
 	if err != nil {
 		return []byte{}, err
 	}
-	return buffer, nil
-}
 
-func (s *LoginSystem) generateHashedCombination(passwordBytes []byte, saltBytes []byte) (passwordString string, saltString string, err error){
-	combined, err := s.combineByteArrays(saltBytes, passwordBytes)
-	if err != nil {
-		return "", "", err
-	}
-	combinedHasher := sha512.New()
-	_, err = combinedHasher.Write(combined)
-	if err != nil {
-		return "", "", err
-	}
-	combinedHash := combinedHasher.Sum(nil)
-
-
-	return string(combinedHash), string(saltBytes), nil
-}
-
-func (s *LoginSystem) generateHashedLoginDataWithExistingSalt(rawPassword string, saltString string) (encryptedPassword string, err error) {
-	saltBytes := []byte(saltString)
-	passwordBytes := []byte(rawPassword)
-	passwordString, _, err := s.generateHashedCombination(passwordBytes, saltBytes)
-	return passwordString,  nil
-}
-
-func (s *LoginSystem) generateHashedLoginData(rawPassword string) (encryptedPassword string, salt string, err error) {
-	saltBytes, err := s.generateSalt()
-	if err != nil {
-		return "", "", err
-	}
-	passwordBytes := []byte(rawPassword)
-	return s.generateHashedCombination(passwordBytes, saltBytes)
-}
-
-func (s *LoginSystem) combineByteArrays(saltBytes []byte, passwordBytes []byte) ([]byte, error) {
-	if len(saltBytes) < saltSize {
-		return []byte{}, errors.New("salt to small")
-	}
-	var combined []byte
-	// Take the first half of the salt
-	for i := 0; i < 16; i++ {
-		combined = append(combined, saltBytes[i])
-	}
-	// Take the password:
-	for i := 0; i < len(passwordBytes); i++ {
-		combined = append(combined, passwordBytes[i])
-	}
-	// Take the second half of the salt:
-	for i := 16; i <= 31; i++ {
-		combined = append(combined, saltBytes[i])
-	}
-	return combined, nil
+	hash := sha256.New()
+	hash.Write(buf)
+	hash.Write(secret)
+	return hash.Sum(buf), nil
 }
 
 /*
@@ -707,7 +682,5 @@ func (s *LoginSystem) changeUserPassword(user User, newPassword string) (bool, e
 	s.readFileAndUpdateCache(s.loginDataFilePath)
 	return true, nil
 }
-
-
 
 const saltSize = 32

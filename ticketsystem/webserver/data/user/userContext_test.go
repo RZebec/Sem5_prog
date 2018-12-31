@@ -176,29 +176,6 @@ func TestLoginSystem_ChangePassword_PasswordChanged(t *testing.T) {
 	changed, err := testee.ChangePassword(token, userPassword, newPassword)
 	assert.True(t, changed, "The password should be changed")
 	assert.Nil(t, err)
-
-	found := false
-	for _, entry := range testee.cachedUserData {
-		if entry.Mail == userName {
-			assert.Equal(t, newPassword, entry.StoredPass)
-			found = true
-			break
-		}
-	}
-	assert.True(t, found, "User should be found.")
-
-	// Assert that the stored password has been changed:
-	writtenData, err := getDataFromFile(testee.loginDataFilePath)
-	assert.Nil(t, err)
-	found = false
-	for _, entry := range writtenData {
-		if entry.Mail == userName {
-			assert.Equal(t, newPassword, entry.StoredPass)
-			found = true
-			break
-		}
-	}
-	assert.True(t, found, "Written user should be found.")
 }
 
 /*
@@ -219,8 +196,8 @@ func TestLoginSystem_ChangePassword_InvalidPassword_PasswordNotChanged(t *testin
 	assert.Nil(t, err)
 
 	userName := "testUser4@test.de"
-	oldPassword := "testPassword2"
-	newPassword := "Test1234!"
+	oldPassword := "asdSsdsdf!1osp"
+	newPassword := "Testwew1234!"
 	// The user should be logged in
 	success, token, err := testee.Login(userName, oldPassword)
 	assert.True(t, success, "User should be logged in")
@@ -230,29 +207,6 @@ func TestLoginSystem_ChangePassword_InvalidPassword_PasswordNotChanged(t *testin
 	changed, err := testee.ChangePassword(token, oldPassword+"545", newPassword)
 	assert.False(t, changed, "The password should not be changed")
 	assert.Equal(t, "user password could not be changed", err.Error())
-
-	found := false
-	for _, entry := range testee.cachedUserData {
-		if entry.Mail == userName {
-			assert.Equal(t, oldPassword, entry.StoredPass)
-			found = true
-			break
-		}
-	}
-	assert.True(t, found, "User should be found.")
-
-	// Assert that the written data has not been changed:
-	writtenData, err := getDataFromFile(testee.loginDataFilePath)
-	assert.Nil(t, err)
-	found = false
-	for _, entry := range writtenData {
-		if entry.Mail == userName {
-			assert.Equal(t, oldPassword, entry.StoredPass)
-			found = true
-			break
-		}
-	}
-	assert.True(t, found, "Written user should be found.")
 }
 
 /*
@@ -807,7 +761,7 @@ func TestLoginSystem_UnlockAccount_NoAdminRole(t *testing.T) {
 	assert.Nil(t, err)
 
 	// Log in with a user which is no admin:
-	success, token, err := testee.Login("testUser@test.de", "testPassword")
+	success, token, err := testee.Login("testUser@test.de", "testPasswort756!")
 	assert.True(t, success, "User should be logged in")
 
 	// Unlocking should not be possible:
@@ -848,7 +802,7 @@ func TestLoginSystem_UnlockAccount_AccountInWrongState(t *testing.T) {
 	found := false
 	createdUserId := -1
 	for _, entry := range testee.cachedUserData {
-		if entry.Mail == "testUser3" {
+		if entry.Mail == "testUser3@test.de" {
 			assert.Equal(t, Active, entry.State)
 			found = true
 			createdUserId = entry.UserId
@@ -859,7 +813,7 @@ func TestLoginSystem_UnlockAccount_AccountInWrongState(t *testing.T) {
 	assert.Nil(t, err)
 
 	// Login with the admin to execute the operation:
-	success, token, err := testee.Login("testAdmin", "testPassword2")
+	success, token, err := testee.Login("testAdmin@test.de", "Hjssdfi=2!ß9!")
 	assert.True(t, success, "Admin should be logged in")
 
 	// Assert that the account can not be unlocked again:
@@ -885,7 +839,7 @@ func TestLoginSystem_UnlockAccount_UnknownAccount(t *testing.T) {
 	err = testee.Initialize(folderPath)
 
 	// Login with the admin to execute the operation:
-	success, token, err := testee.Login("testAdmin", "testPassword2")
+	success, token, err := testee.Login("testAdmin@test.de", "Hjssdfi=2!ß9!")
 	assert.True(t, success, "Admin should be logged in")
 
 	// Assert that a error message is returned.
@@ -911,7 +865,7 @@ func TestLoginSystem_EnableVacationMode_Enabled(t *testing.T) {
 	err = testee.Initialize(folderPath)
 
 	// Login and assert that the state is set to active:
-	success, token, err := testee.Login("testUser5@test.de", "testPassword")
+	success, token, err := testee.Login("testUser5@test.de", "Tzqweq23Aws!")
 	assert.True(t, success, "User should be logged in")
 
 	found := false
@@ -958,7 +912,7 @@ func TestLoginSystem_DisableVacationMode_Disabled(t *testing.T) {
 	err = testee.Initialize(folderPath)
 
 	// Login and set the vacation mode:
-	success, token, err := testee.Login("testUser5@test.de", "testPassword")
+	success, token, err := testee.Login("testUser5@test.de", "Tzqweq23Aws!")
 	assert.True(t, success, "User should be logged in")
 
 	found := false
@@ -1019,7 +973,7 @@ func TestLoginSystem_DisableVacationMode_WrongState(t *testing.T) {
 	err = testee.Initialize(folderPath)
 
 	// Login and validate that the user is not in vacation mode:
-	success, token, err := testee.Login("testUser5@test.de", "testPassword")
+	success, token, err := testee.Login("testUser5@test.de", "Tzqweq23Aws!")
 	assert.True(t, success, "User should be logged in")
 
 	found := false
@@ -1176,8 +1130,8 @@ const testLoginData = `[
 		"UserId": 0,
 		"FirstName": "Max0",
 		"LastName": "Maximum0",
-		"StoredPass": "u000f��\u000fI�#\u0016���W\u0014.\"�G�(��r�tm\u0006\\���\u0015���3\u0003�\u0008��m��\u0007\u000e��ۿl�\r)��h2\u0012��Ax��",
-		"StoredSalt": "�����Q���\u003e�E��#���6ԝb���\u0004�NF@��",
+		"StoredPass": "s1pC4yWLun2G257AYFBxkT7PKxPLJLbUfFL7ab/16PE=",
+		"StoredSalt": "x+luHHfWstjXCpH2dDP2wgLL0YEqrC5BKHP9MkbgpxImX/ERxdjZBeF13vlPhynAl+XSFOi5R7J7ha06XwO69w==",
 		"Role": 2,
         "State": 1
 	},
@@ -1186,28 +1140,28 @@ const testLoginData = `[
 		"UserId": 1,
 		"FirstName": "Max1",
 		"LastName": "Maximum1",
-		"StoredPass": "\ufffd\ufffd\ufffd5\ufffd\ufffd\ufffd\ufffd\ufffdih\ufffdb\ufffd\ufffd\u001a\ufffd\ufffdXy\ufffd\ufffdA4W\ufffd\ufffd\ufffd^\ufffd7.\ufffd\u0007A\ufffd\ufffd\ufffd\ufffd\u0013\ufffd\ufffd\ufffdBI9Nwf{\ufffd\ufffd\ufffd\ufffd\ufffd2\ufffd\u000em\u0026\u0001HT^",
-		"StoredSalt": "����\\����҃#d\tx�*c�Ý�9��ɪ����f",
+		"StoredPass": "q79F3zY8AS28rD6qqNN5M/aA5paREfAq7RiUpQ9u08A=",
+		"StoredSalt": "cE1R/w4Vm8jO7592V2mmoIkCSGTcJBf/SfoQ227NN+CimVxAOlnnFGgkhqopFPhwaYXLgqMjGnIWt6vjukEnJw==",
 		"Role": 2,
         "State": 1
 	},
 	{
-		"Mail": "testUser2",
+		"Mail": "testUser2@test.de",
 		"UserId": 2,
 		"FirstName": "Max2",
 		"LastName": "Maximum2",
-		"StoredPass": "\ufffd\ufffda\ufffdh\ufffd\ufffdKtz\ufffd\u000e\ufffdW\u0008\ufffdQqʒ\ufffd.\ufffd\ufffd\u001b\ufffd\ufffdۆ\ufffd\ufffdtX4R\ufffd?10,\t\ufffd۶\ufffdr\ufffdW\u000b\u0000\ufffd\ufffdw\ufffd]\ufffd\ufffd\ufffd\ufffd\ufffdr",
-		"StoredSalt": "\u000f\u0006Y\ufffd\ufffd\ufffd\ufffdŻ\ufffd\\\u0000)\ufffd\ufffd7~\ufffd\ufffd\ufffd\u000cc\ufffd\ufffd\ufffd\ufffdKq\ufffd\u0010\ufffd\u001b",
+		"StoredPass": "rFU45Y/qjptPWRe9pAaf9UOBC4ucIbMeS3b40viJ9vo=",
+		"StoredSalt": "C7DjtTaiqY5TnlTZiuMOnEtnsPEI56ORPQ7B2nrfj9TJ0TD8I475dUVN/pekH5zvOYU2DmonnteNIfJBPU37JQ==",
 		"Role": 2,
         "State": 1
 	},
 	{
-		"Mail": "testUser3",
+		"Mail": "testUser3@test.de",
 		"UserId": 3,
 		"FirstName": "Max3",
 		"LastName": "Maximum3",
-		"StoredPass": "�H�fW\u0018\u0013\u0007���c\u0017�\r�8�\u001ek��1\u003e�e��6��)\u0019�\u000f\t�WM�hx!��hVT\u0015�|�\u0006��%!8X���O\u0007",
-		"StoredSalt": "W\u000b��\u0006�t/\n�is�w9k�d����*6�I�y��\u000cu",
+		"StoredPass": "8DTPX3eMRuxJMj/pMbR6ouY1Q7mvluqF4UDmZw6WHuE=",
+		"StoredSalt": "vCpNoJnNgZIaJ8j3DKIOgJetgtD/jp3E85NOPbp4iZ85uvDzIWENjea5G/YIUe5eJcvKrMRg0JmPRThBm+ioRg==",
 		"Role": 2,
         "State": 1
 	},
@@ -1216,18 +1170,18 @@ const testLoginData = `[
 		"UserId": 4,
 		"FirstName": "Max4",
 		"LastName": "Maximum4",
-		"StoredPass": "\ufffdv\u001e\ufffd\ufffdp\ufffd\u000f\u0004e\ufffdL\u0006wԅJ\t\u0017\ufffd^s\ufffdv\u0018\ufffd\ufffdz\ufffd̖ld\u0012\u0018c\ufffd\ufffd\ufffd\ufffda6\ufffd2\u0012\ufffd\ufffd;\u0010\ufffd\ufffd\u00179\ufffd\ufffd\ufffd\u0007eQt\u000e\ufffd\ufffd!",
-		"StoredSalt": "nF\u0001ň\u0015\ufffd\u0015T;\u0014_\ufffd\ufffd\ufffdƮ\ufffd\ufffd\ufffda\ufffd\ufffdx1u\ufffd~\ufffd\u000c\ufffd\ufffd",
+		"StoredPass": "Nf1+g1Zs/CVPB41PXCQkFYX2gNvUqOMWzdGqMlaiYAQ=",
+		"StoredSalt": "AXV3b7/zXSrv37zqMGzKdtQTUVF4B/oG8EbYqBWc1WWyNhSzx7ad5QWMru99pLgDYehlO59AMPKrZZvN88tWUA==",
 		"Role": 2,
         "State": 1
 	},
 	{
-		"Mail": "testAdmin",
+		"Mail": "testAdmin@test.de",
 		"UserId": 5,
 		"FirstName": "Max5",
 		"LastName": "Maximum5",
-		"StoredPass": "\ufffd\ufffd\ufffde\ufffd-\ufffd\n\ufffd-\u0007\ufffd\ufffd\ufffd\ufffdho\ufffdd\ufffd2\ufffd\u0018\ufffd\ufffd\ufffd\ufffd\u001e\ufffd\u001f\ufffd\ufffdԿ\u003eG\r\ufffd\ufffd\ufffd\u000b\ufffd\ufffd\n9\ufffd\u0016%\ufffdK\ufffdB\ufffd\ufffd\ufffda\ufffdo\ufffdmN(\u0019\ufffd",
-		"StoredSalt": "6�\u001b�!��${'�)���l���J҅7�\u0015�+D�y�S",
+		"StoredPass": "x6yBFfZvduWl8gk5H2tOq6SK9grdUT+/uL6BpklhsQs=",
+		"StoredSalt": "WyGWZ+EYRfbS/18WLMESAS/5E0bQiNrC2LHW7Yu8jtO83uUxWoJ4dPUDZlD5Lo7jcLpph84H085x/sn3TXCf+A==",
 		"Role": 1,
         "State": 1
 	}
