@@ -18,21 +18,21 @@ var senders = []string{"test1@gmx.de", "Oberheld.asdf@web.de", "horstChristianAn
 type MailGenerator struct {
 }
 
-func (m *MailGenerator) RandomMail(n int) []mail.Mail {
+func (m *MailGenerator) RandomMail(n int, subjectLength int, contentLength int) []mail.Mail {
 	mails := make([]mail.Mail, n)
 	for i := 0; i < n; i++ {
 		mail := mail.Mail{}
-		mail.Subject = randomText(10)
+		mail.Subject = randomText(subjectLength)
 		fmt.Println("Subject " + strconv.Itoa(i) + ": " + mail.Subject)
-		mail.Content = randomText(50)
-		mail.Sender, mail.Receiver = generateTwoMailsfromRandomPool()
+		mail.Content = randomText(contentLength)
+		mail.Sender, mail.Receiver = generateTwoMailAdresses_FromRandomPool()
 		mail.SentTime = time.Now().Unix()
 		mails[i] = mail
 	}
 	return mails
 }
 
-func generateTwoMailsfromRandomPool() (string, string) {
+func generateTwoMailAdresses_FromRandomPool() (string, string) {
 	for true {
 		adressOne := senders[rand.Intn(len(senders))]
 		adressTwo := senders[rand.Intn(len(senders))]

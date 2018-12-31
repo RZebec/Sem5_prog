@@ -39,8 +39,11 @@ func main() {
 			httpRequest(config, eMails)
 			break
 		} else if answer == "r" {
-			number := entryNumberOfRandomMails()
-			eMails = mailGenerator.RandomMail(number)
+			number := 0
+			for true {
+				number = entryNumberOfRandomMails()
+			}
+			eMails = mailGenerator.RandomMail(number, 10, 50)
 			httpRequest(config, eMails)
 			break
 		} else {
@@ -67,14 +70,12 @@ func httpRequest(config configuration.Configuration, eMails []mail.Mail) {
 }
 
 func entryNumberOfRandomMails() int {
-	for true {
-		fmt.Println("Entry number of Random Mails: ")
-		number, err := strconv.Atoi(inputOutput.ReadEntry())
-		if err != nil {
-			fmt.Println("Entry is no Number!")
-		} else {
-			return number
-		}
+	fmt.Println("Entry number of Random Mails: ")
+	number, err := strconv.Atoi(inputOutput.ReadEntry())
+	if err != nil {
+		fmt.Println("Entry is no Number!")
+	} else {
+		return number
 	}
 	return 0
 }

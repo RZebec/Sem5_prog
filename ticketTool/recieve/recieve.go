@@ -41,31 +41,7 @@ func main() {
 
 	fmt.Println("Recieve Mails")
 	for true {
-		recieveMails, err := apiClient.ReceiveMails()
-		if err != nil {
-			fmt.Print("Transmission is going wrong. Retry? (n,press any key)")
-			answer := inputOutput.ReadEntry()
-			if answer == "n" {
-				break
-			}
-		} else {
-			fmt.Println(strconv.Itoa(len(recieveMails)) + " Mails are coming from Server")
-			acknowledges := confirm.GetAllAcknowledges(recieveMails)
-			storage.AppendAcknowledgements(acknowledges)
-			fmt.Println("Save Acknowledges...")
-			allAcknowledges, err := storage.ReadAcknowledgements()
-			if err != nil {
-				fmt.Println("couldn't read storaged Acknowledges")
-			} else if len(allAcknowledges) == 0 {
-				fmt.Println("No Emails available")
-				break
-			}
-			fmt.Println("Available Mails: " + strconv.Itoa(len(allAcknowledges)))
-			if len(allAcknowledges) != 0 {
-				allOrSpecifyConfirm(apiClient, &allAcknowledges, storage)
-				break
-			}
-		}
+		reciever(apiClient, storage)
 	}
 }
 
@@ -103,4 +79,34 @@ func allOrSpecifyConfirm(apiClient client.ApiClient, allAcknowledges *[]mail.Ack
 			break
 		}
 	}
+}
+
+func reciever(apiClient client.ApiClient, storage acknowledgementStorage.AckStorage) error {
+	recieveMails, err := apiClient.ReceiveMails()
+	if err != nil {
+		fmt.Print("Transmission is going wrong. Retry? (n,press any key)")
+		answer := inputOutput.ReadEntry()
+		if answer == "n" {
+			return err
+		}
+	} else {
+		fmt.Println(strconv.Itoa(len(recieveMails)) + " Mails are coming from Server")
+		acknowledges := confirm.GetAllAcknowledges(recieveMails)
+		storage.AppendAcknowledgements(acknowledges)
+		fmt.Println("Save Acknowledges...")
+		allAcknowledges, err := storage.ReadAcknowledgements()
+		if err != nil {
+			fmt.Println("couldn't read storaged Acknowledges")
+			return err
+		} else if len(allAcknowledges) == 0 {
+			fmt.Println("No Emails available")
+			return nil
+		}
+		fmt.Println("Available Mails: " + strconv.Itoa(len(allAcknowledges)))
+		if len(allAcknowledges) != 0 {
+			allOrSpecifyConfirm(apiClient, &allAcknowledges, storage)
+			return nil
+		}
+	}
+	return nil
 }
