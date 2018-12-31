@@ -6,12 +6,11 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketTool/configuration"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/mailGeneration"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/send/sender"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 )
 
 func main() {
@@ -20,7 +19,7 @@ func main() {
 	config.RegisterFlags()
 	config.BindFlags()
 
-	mailGenerator := mailGeneration.MailGenerator{}
+
 
 	if !config.ValidateConfiguration(logger) {
 		fmt.Println("Configuration is not valid. Press enter to exit application.")
@@ -28,54 +27,21 @@ func main() {
 		reader.ReadByte()
 		return
 	}
-	fmt.Print("write explicit mail or random mails ? (e/r):")
 
-	var eMails []mail.Mail
+	io := inputOutput.DefaultInputOutput{}
+	mailGenerator := mailGeneration.CreateMailGenerator(&io)
 
-	for true {
-		answer := inputOutput.ReadEntry()
-		if answer == "e" {
-			eMails = mailGenerator.ExplicitMail()
-			httpRequest(config, eMails)
-			break
-		} else if answer == "r" {
-			number := 0
-			for true {
-				number = entryNumberOfRandomMails()
-			}
-			eMails = mailGenerator.RandomMail(number, 10, 50)
-			httpRequest(config, eMails)
-			break
-		} else {
-			fmt.Print("wrong entry. Please press e or r: ")
-		}
-	}
-}
-
-func httpRequest(config configuration.Configuration, eMails []mail.Mail) {
-	fmt.Println("Start HTTPS-Request")
 	apiClient, err := client.CreateClient(config)
-	if err != nil {
+	if err != nil  {
 		log.Fatal(err)
 	}
-	// TODO: Add error handling
-	apiClient.SendMails(eMails)
-	// TODO REMOVE ONLY FOR TEST
-	var acks []mail.Acknowledgment
-	for _, email := range eMails {
-		acks = append(acks, mail.Acknowledgment{Id: email.Id, Subject: email.Subject})
-	}
-	apiClient.AcknowledgeMails(acks)
-	// TODO REMOVE TILL HERE
+
+	send := sender.CreateSender(config, &io, &apiClient, &mailGenerator)
+	send.Run()
+
+
+
+
 }
 
-func entryNumberOfRandomMails() int {
-	fmt.Println("Entry number of Random Mails: ")
-	number, err := strconv.Atoi(inputOutput.ReadEntry())
-	if err != nil {
-		fmt.Println("Entry is no Number!")
-	} else {
-		return number
-	}
-	return 0
-}
+
