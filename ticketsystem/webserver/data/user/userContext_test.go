@@ -268,7 +268,7 @@ func TestLoginSystem_Login_CorrectLoginData_LoggedIn(t *testing.T) {
 	assert.Nil(t, err)
 
 	userName := "testUser@test.de"
-	password := "secret"
+	password := "Secret2?"
 	firstName := "max"
 	lastName := "muster"
 	success, err := testee.Register(userName, password, firstName, lastName)
@@ -312,7 +312,7 @@ func TestLoginSystem_Login_CorrectLoginData_LockedAccount_NotLoggedIn(t *testing
 	assert.Nil(t, err)
 
 	userName := "testUser@test.de"
-	password := "secret"
+	password := "seCret25?!"
 	firstName := "max"
 	lastName := "muster"
 	success, err := testee.Register(userName, password, firstName, lastName)
@@ -342,7 +342,7 @@ func TestLoginSystem_Login_IncorrectLoginData_NotLoggedIn(t *testing.T) {
 	assert.Nil(t, err)
 
 	userName := "testUser@test.de"
-	password := "secret"
+	password := "secrößTet!2"
 	firstName := "max"
 	lastName := "muster"
 	success, err := testee.Register(userName, password, firstName, lastName)
@@ -431,7 +431,7 @@ func TestLoginSystem_Register_NoDataWasStored_UserIsRegistered(t *testing.T) {
 	// No error should occur:
 	assert.Nil(t, err)
 
-	success, err := testee.Register("testUser1@web.de", "testpassword1", "max", "muster")
+	success, err := testee.Register("testUser1@web.de", "T24=23!sds", "max", "muster")
 	assert.True(t, success, "user should be registered")
 	assert.Nil(t, err)
 
@@ -547,7 +547,7 @@ func TestLoginSystem_Register_ConcurrentAccess_AllRegistered(t *testing.T) {
 
 		go func(number int) {
 			defer waitGroup.Done()
-			testee.Register("testUser"+strconv.Itoa(number)+"@test.de", "testpassword"+strconv.Itoa(number),
+			testee.Register("testUser"+strconv.Itoa(number)+"@test.de", "!Test23password"+strconv.Itoa(number),
 				"firstName"+strconv.Itoa(number), "lastName"+strconv.Itoa(number))
 		}(i)
 	}
@@ -607,8 +607,8 @@ func TestLoginSystem_Register_InvalidPassword_NotSuccessful(t *testing.T) {
 
 	success, err := testee.Register("testuser@web.de", "", "max", "muster")
 	assert.False(t, success, "register operation should not be successful")
-	assert.Error(t, err, "password should be invalid")
-	assert.Equal(t, "password not valid", err.Error())
+	assert.Error(t, err, "password requirements not met")
+	assert.Equal(t, "password requirements not met", err.Error())
 }
 
 /*
@@ -625,7 +625,7 @@ func TestLoginSystem_Register_InvalidFirstName_NotSuccessful(t *testing.T) {
 	err = testee.Initialize(folderPath)
 	assert.Nil(t, err)
 
-	success, err := testee.Register("testuser@web.de", "1234", "", "muster")
+	success, err := testee.Register("testuser@web.de", "12T?sdsdaw34", "", "muster")
 	assert.False(t, success, "register operation should not be successful")
 	assert.Error(t, err, "firstName should be invalid")
 	assert.Equal(t, "firstName not valid", err.Error())
@@ -645,7 +645,7 @@ func TestLoginSystem_Register_InvalidLastName_NotSuccessful(t *testing.T) {
 	err = testee.Initialize(folderPath)
 	assert.Nil(t, err)
 
-	success, err := testee.Register("testuser@web.de", "1234", "max", "")
+	success, err := testee.Register("testuser@web.de", "1T1454?!sd234", "max", "")
 	assert.False(t, success, "register operation should not be successful")
 	assert.Error(t, err, "lastName should be invalid")
 	assert.Equal(t, "lastName not valid", err.Error())
@@ -666,7 +666,7 @@ func TestLoginSystem_Register_UserNameAlreadyTaken(t *testing.T) {
 	assert.Nil(t, err)
 
 	userName := "testuser@web.de"
-	password := "1234"
+	password := "1T?1asd234"
 	firstName := "Peter"
 	lastName := "Meier"
 
@@ -693,7 +693,7 @@ func TestLoginSystem_UnlockAccount_AccountUnlocked(t *testing.T) {
 
 	// Register a user. The user should then be in the state of "WaitingToBeUnlocked".
 	userName := "testUser@gmx.de"
-	password := "secret"
+	password := "secT?1asdret"
 	firstName := "max"
 	lastName := "muster"
 	success, err := testee.Register(userName, password, firstName, lastName)
@@ -746,10 +746,10 @@ func TestLoginSystem_GetAllLockedUsers(t *testing.T) {
 	err = testee.Initialize(folderPath)
 
 	// Register two accounts to create locked accounts:
-	success, err := testee.Register("user20@web.de", "1234", "Max", "Meier")
+	success, err := testee.Register("user20@web.de", "1T23?!sdsd4", "Max", "Meier")
 	assert.Nil(t, err)
 	assert.True(t, success)
-	success, err = testee.Register("user30@web.de", "1234", "Pia", "Müller")
+	success, err = testee.Register("user30@web.de", "M989$s1234", "Pia", "Müller")
 	assert.Nil(t, err)
 	assert.True(t, success)
 
@@ -787,7 +787,7 @@ func TestLoginSystem_UnlockAccount_NoAdminRole(t *testing.T) {
 
 	// Register a user. The user should then be in the state of "WaitingToBeUnlocked".
 	userName := "NewlyCreatedTestUser@test.de"
-	password := "secret"
+	password := "Pasd081!asd"
 	firstName := "max"
 	lastName := "muster"
 	success, err := testee.Register(userName, password, firstName, lastName)

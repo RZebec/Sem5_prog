@@ -6,6 +6,7 @@ package user
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/validation/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/validation/passwordRequirements"
 	"encoding/json"
 	"errors"
 	"path"
@@ -160,12 +161,12 @@ func (s *LoginSystem) RefreshToken(token string) (newToken string, err error) {
 */
 func (s *LoginSystem) Register(userName string, password string, firstName string, lastName string) (success bool, err error) {
 	mailValidator := mail.NewValidator()
+	passwordValidator := passwordRequirements.NewValidator()
 	if !mailValidator.Validate(userName) {
 		return false, errors.New("userName not valid")
 	}
-	if password == "" {
-		// TODO: Validator for password
-		return false, errors.New("password not valid")
+	if !passwordValidator.Validate(password) {
+		return false, errors.New("password requirements not met")
 	}
 	if firstName == "" {
 		return false, errors.New("firstName not valid")
