@@ -1130,8 +1130,8 @@ const testLoginData = `[
 		"UserId": 0,
 		"FirstName": "Max0",
 		"LastName": "Maximum0",
-		"StoredPass": "s1pC4yWLun2G257AYFBxkT7PKxPLJLbUfFL7ab/16PE=",
-		"StoredSalt": "x+luHHfWstjXCpH2dDP2wgLL0YEqrC5BKHP9MkbgpxImX/ERxdjZBeF13vlPhynAl+XSFOi5R7J7ha06XwO69w==",
+		"StoredPass": "0WPNL5ywpGNBUjiko/55etIliY7NpkSwPf2kk90bcGfwcCHa+KZx7WQNy/C/Z0c2+J/AjBhue1iHt3M4EqXwow==",
+		"StoredSalt": "XiiaAjINcE8u/PlMpKffAcuRHD1YgnsbEsrvaO3eo1t6dsSp8eYn7NoH43q6Y96t4a32ZKvjhgp2y9n3amAnAPTmC4DOLISiVOnqDf+/0r0YPl8bauT+cCMsc/bJxvE2",
 		"Role": 2,
         "State": 1
 	},
@@ -1140,8 +1140,8 @@ const testLoginData = `[
 		"UserId": 1,
 		"FirstName": "Max1",
 		"LastName": "Maximum1",
-		"StoredPass": "q79F3zY8AS28rD6qqNN5M/aA5paREfAq7RiUpQ9u08A=",
-		"StoredSalt": "cE1R/w4Vm8jO7592V2mmoIkCSGTcJBf/SfoQ227NN+CimVxAOlnnFGgkhqopFPhwaYXLgqMjGnIWt6vjukEnJw==",
+		"StoredPass": "NRGv3RuHkLPl0CsVedWwZZe60DY0eMA3UnoOgw879hTBKpl6w6Lz8TgfJQEHSrqjE/J3vHo6Sm50+OhkxrMn3A==",
+		"StoredSalt": "ERVP+8Dga01sMRZdqHbkwXza1eBRnSJDGejGMIROd6+z/G8idZpE5z3lxis9f5ZnYYC+4EA8W7+PNa2h23saeQQ2BDkLYZ/3315OJ/NCJk8vGcisrWaO6on19isQGqAp",
 		"Role": 2,
         "State": 1
 	},
@@ -1150,8 +1150,8 @@ const testLoginData = `[
 		"UserId": 2,
 		"FirstName": "Max2",
 		"LastName": "Maximum2",
-		"StoredPass": "rFU45Y/qjptPWRe9pAaf9UOBC4ucIbMeS3b40viJ9vo=",
-		"StoredSalt": "C7DjtTaiqY5TnlTZiuMOnEtnsPEI56ORPQ7B2nrfj9TJ0TD8I475dUVN/pekH5zvOYU2DmonnteNIfJBPU37JQ==",
+		"StoredPass": "nfSyvQW+W7jS3LcvSOfe9mTlfetFGHNlSh0YDDLPCCQRfVJfyXzWfb6j91FRxbEiIsnVsxWEYp8uSQsrTx83SA==",
+		"StoredSalt": "RkG5JQ9leBNzLPhY2B48Ta9mqODLJp1wXkmabcNqjfSra1ITvP+RcFV7SPIwyE8cwIRx2Tbpbnmy9P2kFWOYPiV9nQ3yf6NdiqpnM1FGrysTlqM9Xc9DW6shN23b9GMN",
 		"Role": 2,
         "State": 1
 	},
@@ -1160,8 +1160,8 @@ const testLoginData = `[
 		"UserId": 3,
 		"FirstName": "Max3",
 		"LastName": "Maximum3",
-		"StoredPass": "8DTPX3eMRuxJMj/pMbR6ouY1Q7mvluqF4UDmZw6WHuE=",
-		"StoredSalt": "vCpNoJnNgZIaJ8j3DKIOgJetgtD/jp3E85NOPbp4iZ85uvDzIWENjea5G/YIUe5eJcvKrMRg0JmPRThBm+ioRg==",
+		"StoredPass": "NhRxU2BuNYjBbVdPZI/iz0WPtzSZoRgfK06Ekj38fk+UETaMB8Y7GJ0PqlrdFOC8aql25JPV18obGn4d+4H7ag==",
+		"StoredSalt": "9mEoaUEQ15isv3GDqHVOZXcwFlNAKNpyN8iT7IrY55fz+7WOlLIQiIwUnEQTGL7pNYdCaIGyBGpFt8wUw6m2FWG+HCM6XmG+CFANG2Gd67Oa0knymEdyz6Mb5l0hVJqw",
 		"Role": 2,
         "State": 1
 	},
@@ -1170,8 +1170,8 @@ const testLoginData = `[
 		"UserId": 4,
 		"FirstName": "Max4",
 		"LastName": "Maximum4",
-		"StoredPass": "Nf1+g1Zs/CVPB41PXCQkFYX2gNvUqOMWzdGqMlaiYAQ=",
-		"StoredSalt": "AXV3b7/zXSrv37zqMGzKdtQTUVF4B/oG8EbYqBWc1WWyNhSzx7ad5QWMru99pLgDYehlO59AMPKrZZvN88tWUA==",
+		"StoredPass": "zAgjXlxXpT0MSINlKF/ZsJpT8jkLUtdMc2UG5YU8x9OMxSOk0AfvK0l9AsKX8ErU+KC69AZIML5D76d1B1Oogg==",
+		"StoredSalt": "2hMoNTCjIgVaiuE2iko0GijAqk+bGdpthHWNVnNj1PeaCNNl/h6CZ1RuaYQR/M6oWpgqPPWYUP5A3sdnmR9Bc1YGV+1kocOc+NFnKjTwLMnvf+4I2p9031CQwvwChrNY",
 		"Role": 2,
         "State": 1
 	},
@@ -1180,8 +1180,8 @@ const testLoginData = `[
 		"UserId": 5,
 		"FirstName": "Max5",
 		"LastName": "Maximum5",
-		"StoredPass": "x6yBFfZvduWl8gk5H2tOq6SK9grdUT+/uL6BpklhsQs=",
-		"StoredSalt": "WyGWZ+EYRfbS/18WLMESAS/5E0bQiNrC2LHW7Yu8jtO83uUxWoJ4dPUDZlD5Lo7jcLpph84H085x/sn3TXCf+A==",
+		"StoredPass": "G+MMAOz7KBZWJCTBW1AJxGWAuiSENOSNx2UVTImdAmdbu2vzEBCuF8qyMppXWv71RxuofdG4RYxULCa+zISBRw==",
+		"StoredSalt": "PFeIEH4fO8JLUYwoweahb+LJ0kxgTq4MC3A8nrHx4zCMGFipFqVdf/Uv2yf9ssM+eAeSSOHmV42ngsvhROXCPRHO5kltc0C0M/A5mpAStEqX4IcvvE/1SvblUxnCNbuv",
 		"Role": 1,
         "State": 1
 	}

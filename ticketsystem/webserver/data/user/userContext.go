@@ -6,7 +6,7 @@ package user
 import (
 	"bytes"
 	"crypto/rand"
-	"crypto/sha256"
+	"crypto/sha512"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/validation/mail"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/validation/passwordRequirements"
@@ -524,7 +524,7 @@ func (s *LoginSystem) registerNewUser(userName string, password string, firstNam
 func (s *LoginSystem) checkUserCredentials(user storedUserData, providedPassword string) (success bool) {
 	// Build the combination of the provided password with the stored hash and compare it with the stored password hash:
 	comb := string(user.StoredSalt) + string(providedPassword)
-	passwordHash := sha256.New()
+	passwordHash := sha512.New()
 	_, err := io.WriteString(passwordHash, comb)
 	if err != nil {
 		return false
@@ -550,7 +550,7 @@ func (s *LoginSystem) generateLoginData(userName string, password string, newId 
 		return storedUserData{}, err
 	}
 	// Generate a hash for the password, but combine it with the salt.
-	passwordHash := sha256.New()
+	passwordHash := sha512.New()
 	combination := string(salt) + string(password)
 	_, err = io.WriteString(passwordHash, combination)
 	if err != nil {
@@ -571,14 +571,14 @@ func (s *LoginSystem) generateLoginData(userName string, password string, newId 
 	Generate a salt out of a password.
 */
 func generateSalt(secret []byte) ([]byte, error) {
-	buf := make([]byte, saltSize, saltSize+sha256.Size)
+	buf := make([]byte, saltSize, saltSize+sha512.Size)
 	_, err := io.ReadFull(rand.Reader, buf)
 
 	if err != nil {
 		return []byte{}, err
 	}
 
-	hash := sha256.New()
+	hash := sha512.New()
 	hash.Write(buf)
 	hash.Write(secret)
 	return hash.Sum(buf), nil
