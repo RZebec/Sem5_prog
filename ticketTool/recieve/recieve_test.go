@@ -16,6 +16,8 @@ func TestReciever(t *testing.T) {
 	config := configuration.Configuration{}
 	config.RegisterFlags()
 	config.BindFlags()
+	config.CertificatePath = "test_cert.pem"
+	config.ApiKeysFilePath = "test_api.keys"
 
 	if !config.ValidateConfiguration(logger) {
 		fmt.Println("Configuration is not valid. Press enter to exit application.")
