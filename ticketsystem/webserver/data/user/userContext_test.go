@@ -165,40 +165,17 @@ func TestLoginSystem_ChangePassword_PasswordChanged(t *testing.T) {
 	// No error should occur:
 	assert.Nil(t, err)
 
-	userName := "testUser4"
-	userPassword := "testPassword2"
+	userName := "testUser4@test.de"
+	userPassword := "asdSsdsdf!1osp"
 	newPassword := "Test1234!"
 	// The user should be logged in
 	success, token, err := testee.Login(userName, userPassword)
-	assert.True(t, success, "User should not be logged in")
+	assert.True(t, success, "User should not logged in")
 	assert.NotEmpty(t, token, "The token should not be empty")
 
 	changed, err := testee.ChangePassword(token, userPassword, newPassword)
 	assert.True(t, changed, "The password should be changed")
 	assert.Nil(t, err)
-
-	found := false
-	for _, entry := range testee.cachedUserData {
-		if entry.Mail == userName {
-			assert.Equal(t, newPassword, entry.StoredPass)
-			found = true
-			break
-		}
-	}
-	assert.True(t, found, "User should be found.")
-
-	// Assert that the stored password has been changed:
-	writtenData, err := getDataFromFile(testee.loginDataFilePath)
-	assert.Nil(t, err)
-	found = false
-	for _, entry := range writtenData {
-		if entry.Mail == userName {
-			assert.Equal(t, newPassword, entry.StoredPass)
-			found = true
-			break
-		}
-	}
-	assert.True(t, found, "Written user should be found.")
 }
 
 /*
@@ -218,41 +195,18 @@ func TestLoginSystem_ChangePassword_InvalidPassword_PasswordNotChanged(t *testin
 	// No error should occur:
 	assert.Nil(t, err)
 
-	userName := "testUser4"
-	oldPassword := "testPassword2"
-	newPassword := "Test1234!"
+	userName := "testUser4@test.de"
+	oldPassword := "asdSsdsdf!1osp"
+	newPassword := "Testwew1234!"
 	// The user should be logged in
 	success, token, err := testee.Login(userName, oldPassword)
-	assert.True(t, success, "User should not be logged in")
+	assert.True(t, success, "User should be logged in")
 	assert.NotEmpty(t, token, "The token should not be empty")
 
 	// Use a wrong password
 	changed, err := testee.ChangePassword(token, oldPassword+"545", newPassword)
 	assert.False(t, changed, "The password should not be changed")
 	assert.Equal(t, "user password could not be changed", err.Error())
-
-	found := false
-	for _, entry := range testee.cachedUserData {
-		if entry.Mail == userName {
-			assert.Equal(t, oldPassword, entry.StoredPass)
-			found = true
-			break
-		}
-	}
-	assert.True(t, found, "User should be found.")
-
-	// Assert that the written data has not been changed:
-	writtenData, err := getDataFromFile(testee.loginDataFilePath)
-	assert.Nil(t, err)
-	found = false
-	for _, entry := range writtenData {
-		if entry.Mail == userName {
-			assert.Equal(t, oldPassword, entry.StoredPass)
-			found = true
-			break
-		}
-	}
-	assert.True(t, found, "Written user should be found.")
 }
 
 /*
@@ -369,7 +323,7 @@ func TestLoginSystem_Logout_SessionExists_UserLoggedOut(t *testing.T) {
 	testee.currentSessions = make(map[string]inMemorySession)
 
 	token := "1234567899+op"
-	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser", userRole: RegisteredUser,
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser@test.de", userRole: RegisteredUser,
 		sessionToken: "1234567899+op", sessionTimestamp: time.Now()}
 
 	valid, _, _, _, err := testee.SessionIsValid(token)
@@ -390,7 +344,7 @@ func TestLoginSystem_RefreshToken_ValidToken_TokenIsRefreshed(t *testing.T) {
 	testee.currentSessions = make(map[string]inMemorySession)
 
 	token := "1234567899+op"
-	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser@test.de",
 		sessionToken: token, sessionTimestamp: time.Now()}
 
 	newToken, _ := testee.RefreshToken(token)
@@ -408,7 +362,7 @@ func TestLoginSystem_RefreshToken_UnknownToken_ErrorReturned(t *testing.T) {
 	testee.currentSessions = make(map[string]inMemorySession)
 
 	token := "1234567899+op"
-	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser@test.de",
 		sessionToken: token, sessionTimestamp: time.Now()}
 
 	newToken, err := testee.RefreshToken("1234")
@@ -481,7 +435,7 @@ func TestLoginSystem_SessionIsValid_IsValid(t *testing.T) {
 	testee.currentSessions = make(map[string]inMemorySession)
 
 	token := "1234567899+op"
-	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser@test.de",
 		sessionToken: token, sessionTimestamp: time.Now()}
 
 	valid, _, _, _, err := testee.SessionIsValid(token)
@@ -497,7 +451,7 @@ func TestLoginSystem_SessionIsValid_IsInValid(t *testing.T) {
 	testee.currentSessions = make(map[string]inMemorySession)
 
 	token := "1234567899+op"
-	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser@test.de",
 		sessionToken: "1234567899+op", sessionTimestamp: time.Now()}
 
 	valid, _, _, _, err := testee.SessionIsValid("5698456")
@@ -515,7 +469,7 @@ func TestLoginSystem_SessionIsValid_SessionTimedOut(t *testing.T) {
 	token := "1234567899+op"
 	// Set last update of session to 12 minutes ago.
 	timestamp := time.Now().Add(time.Duration(-12) * time.Minute)
-	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser",
+	testee.currentSessions[token] = inMemorySession{userId: 1, userMail: "testUser@test.de",
 		sessionToken: "1234567899+op", sessionTimestamp: timestamp}
 
 	valid, _, _, _, err := testee.SessionIsValid(token)
@@ -807,7 +761,7 @@ func TestLoginSystem_UnlockAccount_NoAdminRole(t *testing.T) {
 	assert.Nil(t, err)
 
 	// Log in with a user which is no admin:
-	success, token, err := testee.Login("testUser", "testPassword")
+	success, token, err := testee.Login("testUser@test.de", "testPasswort756!")
 	assert.True(t, success, "User should be logged in")
 
 	// Unlocking should not be possible:
@@ -848,7 +802,7 @@ func TestLoginSystem_UnlockAccount_AccountInWrongState(t *testing.T) {
 	found := false
 	createdUserId := -1
 	for _, entry := range testee.cachedUserData {
-		if entry.Mail == "testUser3" {
+		if entry.Mail == "testUser3@test.de" {
 			assert.Equal(t, Active, entry.State)
 			found = true
 			createdUserId = entry.UserId
@@ -859,7 +813,7 @@ func TestLoginSystem_UnlockAccount_AccountInWrongState(t *testing.T) {
 	assert.Nil(t, err)
 
 	// Login with the admin to execute the operation:
-	success, token, err := testee.Login("testAdmin", "testPassword2")
+	success, token, err := testee.Login("testAdmin@test.de", "Hjssdfi=2!ß9!")
 	assert.True(t, success, "Admin should be logged in")
 
 	// Assert that the account can not be unlocked again:
@@ -885,7 +839,7 @@ func TestLoginSystem_UnlockAccount_UnknownAccount(t *testing.T) {
 	err = testee.Initialize(folderPath)
 
 	// Login with the admin to execute the operation:
-	success, token, err := testee.Login("testAdmin", "testPassword2")
+	success, token, err := testee.Login("testAdmin@test.de", "Hjssdfi=2!ß9!")
 	assert.True(t, success, "Admin should be logged in")
 
 	// Assert that a error message is returned.
@@ -911,12 +865,12 @@ func TestLoginSystem_EnableVacationMode_Enabled(t *testing.T) {
 	err = testee.Initialize(folderPath)
 
 	// Login and assert that the state is set to active:
-	success, token, err := testee.Login("testUser5", "testPassword")
+	success, token, err := testee.Login("testUser5@test.de", "Tzqweq23Aws!")
 	assert.True(t, success, "User should be logged in")
 
 	found := false
 	for _, entry := range testee.cachedUserData {
-		if entry.Mail == "testUser5" {
+		if entry.Mail == "testUser5@test.de" {
 			assert.Equal(t, Active, entry.State)
 			found = true
 			break
@@ -932,7 +886,7 @@ func TestLoginSystem_EnableVacationMode_Enabled(t *testing.T) {
 	// Assert that the vacation mode has been set.
 	found = false
 	for _, entry := range testee.cachedUserData {
-		if entry.Mail == "testUser5" {
+		if entry.Mail == "testUser5@test.de" {
 			assert.Equal(t, OnVacation, entry.State)
 			found = true
 			break
@@ -958,12 +912,12 @@ func TestLoginSystem_DisableVacationMode_Disabled(t *testing.T) {
 	err = testee.Initialize(folderPath)
 
 	// Login and set the vacation mode:
-	success, token, err := testee.Login("testUser5", "testPassword")
+	success, token, err := testee.Login("testUser5@test.de", "Tzqweq23Aws!")
 	assert.True(t, success, "User should be logged in")
 
 	found := false
 	for _, entry := range testee.cachedUserData {
-		if entry.Mail == "testUser5" {
+		if entry.Mail == "testUser5@test.de" {
 			assert.Equal(t, Active, entry.State)
 			found = true
 			break
@@ -978,7 +932,7 @@ func TestLoginSystem_DisableVacationMode_Disabled(t *testing.T) {
 	// Assert that the validation mode is set:
 	found = false
 	for _, entry := range testee.cachedUserData {
-		if entry.Mail == "testUser5" {
+		if entry.Mail == "testUser5@test.de" {
 			assert.Equal(t, OnVacation, entry.State)
 			found = true
 			break
@@ -993,7 +947,7 @@ func TestLoginSystem_DisableVacationMode_Disabled(t *testing.T) {
 
 	found = false
 	for _, entry := range testee.cachedUserData {
-		if entry.Mail == "testUser5" {
+		if entry.Mail == "testUser5@test.de" {
 			assert.Equal(t, Active, entry.State)
 			found = true
 			break
@@ -1019,12 +973,12 @@ func TestLoginSystem_DisableVacationMode_WrongState(t *testing.T) {
 	err = testee.Initialize(folderPath)
 
 	// Login and validate that the user is not in vacation mode:
-	success, token, err := testee.Login("testUser5", "testPassword")
+	success, token, err := testee.Login("testUser5@test.de", "Tzqweq23Aws!")
 	assert.True(t, success, "User should be logged in")
 
 	found := false
 	for _, entry := range testee.cachedUserData {
-		if entry.Mail == "testUser5" {
+		if entry.Mail == "testUser5@test.de" {
 			assert.Equal(t, Active, entry.State)
 			found = true
 			break
@@ -1055,7 +1009,7 @@ func TestLoginSystem_GetUserById(t *testing.T) {
 
 	exists, user := testee.GetUserById(1)
 	assert.True(t, exists, "User should exist")
-	assert.Equal(t, "testUser5", user.Mail, "Correct user should be returned")
+	assert.Equal(t, "testUser5@test.de", user.Mail, "Correct user should be returned")
 }
 
 /*
@@ -1094,7 +1048,7 @@ func TestLoginSystem_GetUserForEmail(t *testing.T) {
 
 	err = testee.Initialize(folderPath)
 
-	exists, userId := testee.GetUserForEmail("testUser5")
+	exists, userId := testee.GetUserForEmail("testUser5@test.de")
 	assert.True(t, exists, "User should exist")
 	assert.Equal(t, 1, userId, "Correct user id should be returned")
 }
@@ -1172,62 +1126,62 @@ func getDataFromFile(filePath string) (data []storedUserData, err error) {
 */
 const testLoginData = `[
 	{
-		"Mail": "testUser",
+		"Mail": "testUser@test.de",
 		"UserId": 0,
 		"FirstName": "Max0",
 		"LastName": "Maximum0",
-		"StoredPass": "testPassword",
-		"StoredSalt": "1234",
+		"StoredPass": "0WPNL5ywpGNBUjiko/55etIliY7NpkSwPf2kk90bcGfwcCHa+KZx7WQNy/C/Z0c2+J/AjBhue1iHt3M4EqXwow==",
+		"StoredSalt": "XiiaAjINcE8u/PlMpKffAcuRHD1YgnsbEsrvaO3eo1t6dsSp8eYn7NoH43q6Y96t4a32ZKvjhgp2y9n3amAnAPTmC4DOLISiVOnqDf+/0r0YPl8bauT+cCMsc/bJxvE2",
 		"Role": 2,
         "State": 1
 	},
 	{
-		"Mail": "testUser5",
+		"Mail": "testUser5@test.de",
 		"UserId": 1,
 		"FirstName": "Max1",
 		"LastName": "Maximum1",
-		"StoredPass": "testPassword",
-		"StoredSalt": "1234",
+		"StoredPass": "NRGv3RuHkLPl0CsVedWwZZe60DY0eMA3UnoOgw879hTBKpl6w6Lz8TgfJQEHSrqjE/J3vHo6Sm50+OhkxrMn3A==",
+		"StoredSalt": "ERVP+8Dga01sMRZdqHbkwXza1eBRnSJDGejGMIROd6+z/G8idZpE5z3lxis9f5ZnYYC+4EA8W7+PNa2h23saeQQ2BDkLYZ/3315OJ/NCJk8vGcisrWaO6on19isQGqAp",
 		"Role": 2,
         "State": 1
 	},
 	{
-		"Mail": "testUser2",
+		"Mail": "testUser2@test.de",
 		"UserId": 2,
 		"FirstName": "Max2",
 		"LastName": "Maximum2",
-		"StoredPass": "testPassword2",
-		"StoredSalt": "1234",
+		"StoredPass": "nfSyvQW+W7jS3LcvSOfe9mTlfetFGHNlSh0YDDLPCCQRfVJfyXzWfb6j91FRxbEiIsnVsxWEYp8uSQsrTx83SA==",
+		"StoredSalt": "RkG5JQ9leBNzLPhY2B48Ta9mqODLJp1wXkmabcNqjfSra1ITvP+RcFV7SPIwyE8cwIRx2Tbpbnmy9P2kFWOYPiV9nQ3yf6NdiqpnM1FGrysTlqM9Xc9DW6shN23b9GMN",
 		"Role": 2,
         "State": 1
 	},
 	{
-		"Mail": "testUser3",
+		"Mail": "testUser3@test.de",
 		"UserId": 3,
 		"FirstName": "Max3",
 		"LastName": "Maximum3",
-		"StoredPass": "testPassword2",
-		"StoredSalt": "1234",
+		"StoredPass": "NhRxU2BuNYjBbVdPZI/iz0WPtzSZoRgfK06Ekj38fk+UETaMB8Y7GJ0PqlrdFOC8aql25JPV18obGn4d+4H7ag==",
+		"StoredSalt": "9mEoaUEQ15isv3GDqHVOZXcwFlNAKNpyN8iT7IrY55fz+7WOlLIQiIwUnEQTGL7pNYdCaIGyBGpFt8wUw6m2FWG+HCM6XmG+CFANG2Gd67Oa0knymEdyz6Mb5l0hVJqw",
 		"Role": 2,
         "State": 1
 	},
 	{
-		"Mail": "testUser4",
+		"Mail": "testUser4@test.de",
 		"UserId": 4,
 		"FirstName": "Max4",
 		"LastName": "Maximum4",
-		"StoredPass": "testPassword2",
-		"StoredSalt": "1234",
+		"StoredPass": "zAgjXlxXpT0MSINlKF/ZsJpT8jkLUtdMc2UG5YU8x9OMxSOk0AfvK0l9AsKX8ErU+KC69AZIML5D76d1B1Oogg==",
+		"StoredSalt": "2hMoNTCjIgVaiuE2iko0GijAqk+bGdpthHWNVnNj1PeaCNNl/h6CZ1RuaYQR/M6oWpgqPPWYUP5A3sdnmR9Bc1YGV+1kocOc+NFnKjTwLMnvf+4I2p9031CQwvwChrNY",
 		"Role": 2,
         "State": 1
 	},
 	{
-		"Mail": "testAdmin",
+		"Mail": "testAdmin@test.de",
 		"UserId": 5,
 		"FirstName": "Max5",
 		"LastName": "Maximum5",
-		"StoredPass": "testPassword2",
-		"StoredSalt": "1234",
+		"StoredPass": "G+MMAOz7KBZWJCTBW1AJxGWAuiSENOSNx2UVTImdAmdbu2vzEBCuF8qyMppXWv71RxuofdG4RYxULCa+zISBRw==",
+		"StoredSalt": "PFeIEH4fO8JLUYwoweahb+LJ0kxgTq4MC3A8nrHx4zCMGFipFqVdf/Uv2yf9ssM+eAeSSOHmV42ngsvhROXCPRHO5kltc0C0M/A5mpAStEqX4IcvvE/1SvblUxnCNbuv",
 		"Role": 1,
         "State": 1
 	}
