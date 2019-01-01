@@ -24,5 +24,4 @@ func Test_EntryNumberOfRandomMails(t *testing.T) {
 		print: "Entry is no Number!"
 		otherwise, you get your number back
 	*/
-	entryNumberOfRandomMails()
 }

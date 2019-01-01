@@ -6,12 +6,10 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketTool/configuration"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/acknowledgementStorage"
-	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/confirm"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"fmt"
 	"os"
-	"strconv"
 )
 
 func main() {
@@ -39,74 +37,15 @@ func main() {
 		panic(createErr)
 	}
 
+	io := inputOutput.DefaultInputOutput{}
+
+	recieve := recviever.CreateReciever(config, &io, apiClient, storage)
+
 	fmt.Println("Recieve Mails")
 	for true {
-		reciever(apiClient, storage)
-	}
-}
-
-func allOrSpecifyConfirm(apiClient client.ApiClient, allAcknowledges *[]mail.Acknowledgment, storage acknowledgementStorage.AckStorage) {
-
-	for true {
-		fmt.Println("send all Acknowledges or specify Acknowledges to Server. Or stop reciever (all/specify/stop):")
-		answer := inputOutput.ReadEntry()
-		if answer == "all" {
-			ackError := apiClient.AcknowledgeMails(*allAcknowledges)
-			if ackError != nil {
-				fmt.Println("acknowlege is not posted")
-			} else {
-				fmt.Println("E-Mails are Acknowledged: ")
-				storage.DeleteAcknowledges(*allAcknowledges)
-				break
-			}
-		} else if answer == "specify" {
-			confirm.ShowAllEmailAcks(*allAcknowledges)
-			fmt.Println("Specify Acknowledge by Subject: ")
-			answer := inputOutput.ReadEntry()
-			newAcknowledges, selectedAck := confirm.GetSingleAcknowledges(*allAcknowledges, answer)
-			allAcknowledges = &newAcknowledges
-			ackError := apiClient.AcknowledgeMails(selectedAck)
-			if ackError != nil {
-				fmt.Println("acknowlege is not posted")
-			} else {
-				storage.DeleteAcknowledges(selectedAck)
-				fmt.Println("E-Mail is Acknowledged: ")
-			}
-			if len(*allAcknowledges) == 0 {
-				break
-			}
-		} else if answer == "stop" {
+		result := recieve.Run()
+		if result == nil {
 			break
 		}
 	}
-}
-
-func reciever(apiClient client.ApiClient, storage acknowledgementStorage.AckStorage) error {
-	recieveMails, err := apiClient.ReceiveMails()
-	if err != nil {
-		fmt.Print("Transmission is going wrong. Retry? (n,press any key)")
-		answer := inputOutput.ReadEntry()
-		if answer == "n" {
-			return err
-		}
-	} else {
-		fmt.Println(strconv.Itoa(len(recieveMails)) + " Mails are coming from Server")
-		acknowledges := confirm.GetAllAcknowledges(recieveMails)
-		storage.AppendAcknowledgements(acknowledges)
-		fmt.Println("Save Acknowledges...")
-		allAcknowledges, err := storage.ReadAcknowledgements()
-		if err != nil {
-			fmt.Println("couldn't read storaged Acknowledges")
-			return err
-		} else if len(allAcknowledges) == 0 {
-			fmt.Println("No Emails available")
-			return nil
-		}
-		fmt.Println("Available Mails: " + strconv.Itoa(len(allAcknowledges)))
-		if len(allAcknowledges) != 0 {
-			allOrSpecifyConfirm(apiClient, &allAcknowledges, storage)
-			return nil
-		}
-	}
-	return nil
 }
