@@ -6,6 +6,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketTool/configuration"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/acknowledgementStorage"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/confirm"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"fmt"
@@ -38,8 +39,9 @@ func main() {
 	}
 
 	io := inputOutput.DefaultInputOutput{}
+	confirmator := confirm.Confirmator{}
 
-	recieve := recviever.CreateReciever(config, &io, apiClient, storage)
+	recieve := recviever.CreateReciever(config, &io, &apiClient, storage, &confirmator)
 
 	fmt.Println("Recieve Mails")
 	for true {

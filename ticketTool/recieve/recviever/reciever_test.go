@@ -57,7 +57,7 @@ func Test_AcknowledgeAll(t *testing.T) {
 	mockedIO.On("Print", "E-Mails are Acknowledged: ")
 	mockedStorage.On("DeleteAcknowledges", testAcknowledges).Return(nil)
 
-	testee := CreateReciever(config, mockedIO, mockedApiClient, mockedStorage)
+	testee := CreateReciever(config, mockedIO, mockedApiClient, mockedStorage, mockedConfirm)
 	testee.Run()
 
 	mockedIO.AssertExpectations(t)
@@ -67,6 +67,7 @@ func Test_AcknowledgeAll(t *testing.T) {
 }
 
 func Test_AcknowledgeSpecify(t *testing.T) {
+	config := configuration.Configuration{}
 	mockedIO := new(inputOutput.MockedInputOutput)
 	mockedApiClient := new(client.MockedClient)
 	mockedConfirm := new(confirm.MockedConfirm)
@@ -88,9 +89,18 @@ func Test_AcknowledgeSpecify(t *testing.T) {
 	mockedApiClient.On("AcknowledgeMails", getTestSelectedAcknowledge()).Return(nil)
 	mockedStorage.On("DeleteAcknowledges", getTestSelectedAcknowledge()).Return(nil)
 	mockedIO.On("Print", "E-Mail is Acknowledged: ")
+
+	testee := CreateReciever(config, mockedIO, mockedApiClient, mockedStorage, mockedConfirm)
+	testee.Run()
+
+	mockedIO.AssertExpectations(t)
+	mockedApiClient.AssertExpectations(t)
+	mockedStorage.AssertExpectations(t)
+	mockedConfirm.AssertExpectations(t)
 }
 
 func Test_AcknowledgeStop(t *testing.T) {
+	config := configuration.Configuration{}
 	mockedIO := new(inputOutput.MockedInputOutput)
 	mockedApiClient := new(client.MockedClient)
 	mockedConfirm := new(confirm.MockedConfirm)
@@ -105,5 +115,13 @@ func Test_AcknowledgeStop(t *testing.T) {
 	mockedIO.On("Print", "Available Mails: "+strconv.Itoa(len(getTestAcknowledges())))
 	mockedIO.On("Print", "send all Acknowledges or specify Acknowledges to Server. Or stop reciever (all/specify/stop):")
 	mockedIO.On("ReadEntry").Return("stop")
+
+	testee := CreateReciever(config, mockedIO, mockedApiClient, mockedStorage, mockedConfirm)
+	testee.Run()
+
+	mockedIO.AssertExpectations(t)
+	mockedApiClient.AssertExpectations(t)
+	mockedStorage.AssertExpectations(t)
+	mockedConfirm.AssertExpectations(t)
 
 }

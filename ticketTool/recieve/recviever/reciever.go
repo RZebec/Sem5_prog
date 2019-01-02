@@ -16,10 +16,12 @@ type Reciever struct {
 	apiClient     client.Client
 	storage       acknowledgementStorage.AckStorage
 	recieveConfig configuration.Configuration
+	confirmator   confirm.Confirmation
 }
 
-func CreateReciever(config configuration.Configuration, io inputOutput.InputOutput, apiClient client.Client, storage acknowledgementStorage.AckStorage) Reciever {
-	reciever := Reciever{io: io, apiClient: apiClient, storage: storage, recieveConfig: config}
+func CreateReciever(config configuration.Configuration, io inputOutput.InputOutput, apiClient client.Client,
+	storage acknowledgementStorage.AckStorage, confirmation confirm.Confirmation) Reciever {
+	reciever := Reciever{io: io, apiClient: apiClient, storage: storage, recieveConfig: config, confirmator: confirmation}
 	return reciever
 }
 
@@ -33,7 +35,7 @@ func (r *Reciever) Run() error {
 		}
 	} else {
 		r.io.Print(strconv.Itoa(len(recieveMails)) + " Mails are coming from Server")
-		acknowledges := confirm.GetAllAcknowledges(recieveMails)
+		acknowledges := r.confirmator.GetAllAcknowledges(recieveMails)
 		r.storage.AppendAcknowledgements(acknowledges) //unhandled Error
 		r.io.Print("Save Acknowledges...")
 		allAcknowledges, err := r.storage.ReadAcknowledgements()
@@ -67,10 +69,10 @@ func (r *Reciever) allOrSpecifyConfirm(allAcknowledges *[]mail.Acknowledgment) {
 				break
 			}
 		} else if answer == "specify" {
-			confirm.ShowAllEmailAcks(*allAcknowledges)
+			r.confirmator.ShowAllEmailAcks(*allAcknowledges)
 			r.io.Print("Specify Acknowledge by Subject: ")
 			answer := r.io.ReadEntry()
-			newAcknowledges, selectedAck := confirm.GetSingleAcknowledges(*allAcknowledges, answer)
+			newAcknowledges, selectedAck := r.confirmator.GetSingleAcknowledges(*allAcknowledges, answer)
 			allAcknowledges = &newAcknowledges
 			ackError := r.apiClient.AcknowledgeMails(selectedAck)
 			if ackError != nil {
