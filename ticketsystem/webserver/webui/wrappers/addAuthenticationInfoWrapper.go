@@ -3,7 +3,6 @@ package wrappers
 import (
 	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
 	"net/http"
@@ -12,9 +11,8 @@ import (
 /*
 	Structure for the authentication handler wrapper.
 */
-type AuthenticationWrapper struct {
+type AddAuthenticationInfoWrapper struct {
 	Next        HttpHandler
-	Config      config.Configuration
 	UserContext user.UserContext
 	Logger      logging.Logger
 }
@@ -22,7 +20,7 @@ type AuthenticationWrapper struct {
 /*
 	The Authentication handler wrapper.
 */
-func (h AuthenticationWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h AddAuthenticationInfoWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	userIsLoggedIn, isAdmin, token := UserIsLoggedInCheck(r, h.UserContext, shared.AccessTokenCookieName, h.Logger)
 
@@ -30,14 +28,11 @@ func (h AuthenticationWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		newToken, err := h.UserContext.RefreshToken(token)
 
 		if err != nil {
-			h.Logger.LogError("Login", err)
+			h.Logger.LogError("AddAuthenticationInfoWrapper", err)
 		}
 
 		helpers.SetCookie(w, shared.AccessTokenCookieName, newToken)
-
-		ctx := newContextWithAuthenticationInfo(r.Context(), userIsLoggedIn, isAdmin)
-		h.Next.ServeHTTP(w, r.WithContext(ctx))
-	} else {
-		http.Redirect(w, r, "/", 302)
 	}
+	ctx := newContextWithAuthenticationInfo(r.Context(), userIsLoggedIn, isAdmin)
+	h.Next.ServeHTTP(w, r.WithContext(ctx))
 }

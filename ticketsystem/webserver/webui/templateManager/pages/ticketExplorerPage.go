@@ -12,20 +12,6 @@ var TicketExplorerPage = `
 	{{ end }}
 	
 	{{ define "Content" }}
-		<div class="topnav">
-			<a href="/">Home</a>
-	
-			<span>OP-Ticket-System</span>
-
-			<a href="/tickets" class="active">Tickets</a>
-
-			{{if .IsUserLoggedIn}}
-				<a href="/user_logout">Logout</a>
-			{{else}}
-				<a href="/login">Login</a>
-				<a href="/register">Register</a>
-			{{end}}
-		</div>
 		<div class="content">
 			<div class="container">
 				<div class="main">

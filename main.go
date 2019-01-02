@@ -88,7 +88,10 @@ func main() {
 
 	templateManager := templateManager.TemplateManager{Templates: map[string]*template.Template{}}
 
-	templateManager.LoadTemplates(logger)
+	err = templateManager.LoadTemplates(logger)
+	if err != nil {
+		panic(err)
+	}
 
 	handlerManager := webui.HandlerManager{
 		UserContext:   &userContext,

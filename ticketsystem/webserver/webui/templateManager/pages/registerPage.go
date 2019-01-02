@@ -13,16 +13,6 @@ var RegisterPage = `
 	{{ end }}
 	
 	{{ define "Content" }}
-		<div class="topnav">
-			<a href="/">Home</a>
-
-			<a href="/tickets">Tickets</a>
-	
-			<span>OP-Ticket-System</span>
-
-			<a href="/login">Login</a>
-			<a class="active" href="/register">Register</a>
-		</div>
 		<div class="content">
 			<div class="container">
 				<div class="main">

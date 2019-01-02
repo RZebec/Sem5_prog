@@ -15,12 +15,22 @@ func newContextWithAuthenticationInfo(ctx context.Context, isAuthenticated bool,
 	return context.WithValue(ctx, isAuthenticatedKey, isAuthenticated)
 }
 
-func isAdmin(ctx context.Context) bool {
-	return ctx.Value(isAdminKey).(bool)
+func IsAdmin(ctx context.Context) bool {
+	value, ok := ctx.Value(isAdminKey).(bool)
+	if ok {
+		return value
+	} else {
+		return false
+	}
 }
 
-func isAuthenticated(ctx context.Context) bool {
-	return ctx.Value(isAuthenticatedKey).(bool)
+func IsAuthenticated(ctx context.Context) bool {
+	value, ok := ctx.Value(isAuthenticatedKey).(bool)
+	if ok {
+		return value
+	} else {
+		return false
+	}
 }
 
 /*

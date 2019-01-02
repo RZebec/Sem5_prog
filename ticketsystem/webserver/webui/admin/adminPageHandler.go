@@ -5,6 +5,8 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"net/http"
 )
 
@@ -25,6 +27,7 @@ type adminPageData struct {
 	Users 		[]user.User
 	IncomingMailApiKey	string
 	OutgoingMailApiKey	string
+	pages.BasePageData
 }
 
 /*
@@ -44,6 +47,9 @@ func (a AdminPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			IncomingMailApiKey: incomingMailApiKey,
 			OutgoingMailApiKey: outgoingMailApiKey,
 		}
+		data.UserIsAdmin = wrappers.IsAdmin(r.Context())
+		data.UserIsAuthenticated =  wrappers.IsAuthenticated(r.Context())
+		data.Active = "admin"
 
 		templateRenderError := a.TemplateManager.RenderTemplate(w, "AdminPage", data)
 

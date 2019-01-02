@@ -7,6 +7,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"html"
 	"net/http"
@@ -28,6 +29,7 @@ type LoginHandler struct {
 	Structure for the Login Page Data.
 */
 type loginPageData struct {
+	pages.BasePageData
 	IsLoginFailed bool
 }
 
@@ -64,8 +66,10 @@ func (l LoginHandler) ServeHTTPPostLoginData(w http.ResponseWriter, r *http.Requ
 */
 func (l LoginHandler) ServeHTTPGetLoginPage(w http.ResponseWriter, r *http.Request) {
 
+	// TODO: Should only GET be allowed? Is it enforced?
 	// Checks if the User is already logged in and if so redirects him to the start page
-	isUserLoggedIn, _, _ := wrappers.UserIsLoggedInCheck(r, l.UserContext, shared.AccessTokenCookieName, l.Logger)
+	isUserLoggedIn := wrappers.IsAuthenticated(r.Context())
+	userIsAdmin := wrappers.IsAdmin(r.Context())
 
 	if isUserLoggedIn {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -79,8 +83,11 @@ func (l LoginHandler) ServeHTTPGetLoginPage(w http.ResponseWriter, r *http.Reque
 	}
 
 	data := loginPageData{
-		IsLoginFailed: isLoginFailed,
+			IsLoginFailed: isLoginFailed,
 	}
+	data.UserIsAuthenticated = wrappers.IsAuthenticated(r.Context())
+	data.UserIsAdmin = userIsAdmin
+	data.Active = "login"
 
 	templateRenderError := l.TemplateManager.RenderTemplate(w, "LoginPage", data)
 

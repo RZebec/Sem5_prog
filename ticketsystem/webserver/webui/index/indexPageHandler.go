@@ -3,6 +3,8 @@ package index
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"net/http"
 )
 
@@ -18,14 +20,19 @@ type IndexPageHandler struct {
 	Structure for the Index Page Data.
 */
 type indexPageData struct {
-	IsUserLoggedIn bool
+	pages.BasePageData
 }
 
 /*
 	The Index Page handler.
 */
 func (i IndexPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	err := i.TemplateManager.RenderTemplate(w, "IndexPage", nil)
+	// TODO Is only Get allowed?
+	pageData := new(indexPageData)
+	pageData.UserIsAuthenticated = wrappers.IsAuthenticated(r.Context())
+	pageData.UserIsAdmin = wrappers.IsAdmin(r.Context())
+	pageData.Active = "index"
+	err := i.TemplateManager.RenderTemplate(w, "IndexPage", pageData)
 
 	if err != nil {
 		i.Logger.LogError("Index", err)

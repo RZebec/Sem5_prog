@@ -10,18 +10,6 @@ var AdminPage = `
 	{{ end }}
 	
 	{{ define "Content" }}
-		<div class="topnav">
-			<a href="/">Home</a>
-
-			<a href="/tickets">Tickets</a>
-	
-			<span>OP-Ticket-System</span>
-
-			<a href="/login">Login</a>
-			<a href="/register">Register</a>
-
-			<a href="/admin">Admin</a>
-		</div>
 		<div class="content">
 			<div class="container">
 				<div class="main">

@@ -68,7 +68,7 @@ func (t *TemplateManager) LoadTemplates(logger logging.Logger) (err error) {
 	if err != nil {
 		return err
 	}
-
+	// TODO: addTemplate errors werden ignoriert
 	t.addTemplate(pages.IndexPage, "IndexPage", baseTemplate, logger)
 	t.addTemplate(pages.RegisterPage, "RegisterPage", baseTemplate, logger)
 	t.addTemplate(pages.LoginPage, "LoginPage", baseTemplate, logger)

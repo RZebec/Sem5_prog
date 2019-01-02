@@ -21,7 +21,7 @@ type AdminWrapper struct {
 	The Admin handler wrapper.
 */
 func (h AdminWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	userIsAdmin := isAdmin(r.Context())
+	userIsAdmin := IsAdmin(r.Context())
 
 	if userIsAdmin {
 		h.Next.ServeHTTP(w, r)
