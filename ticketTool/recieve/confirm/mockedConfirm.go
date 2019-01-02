@@ -18,3 +18,7 @@ func (m *MockedConfirm) GetSingleAcknowledges(allAcknowledges []mail.Acknowledgm
 	args := m.Called(allAcknowledges, answer)
 	return args.Get(0).([]mail.Acknowledgment), args.Get(1).([]mail.Acknowledgment)
 }
+
+func (m *MockedConfirm) ShowAllEmailAcks(allAcknowledges []mail.Acknowledgment) {
+	m.Called(allAcknowledges)
+}

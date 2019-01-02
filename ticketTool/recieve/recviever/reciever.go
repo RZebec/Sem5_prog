@@ -13,12 +13,12 @@ import (
 
 type Reciever struct {
 	io            inputOutput.InputOutput
-	apiClient     client.ApiClient
+	apiClient     client.Client
 	storage       acknowledgementStorage.AckStorage
 	recieveConfig configuration.Configuration
 }
 
-func CreateReciever(config configuration.Configuration, io inputOutput.InputOutput, apiClient client.ApiClient, storage acknowledgementStorage.AckStorage) Reciever {
+func CreateReciever(config configuration.Configuration, io inputOutput.InputOutput, apiClient client.Client, storage acknowledgementStorage.AckStorage) Reciever {
 	reciever := Reciever{io: io, apiClient: apiClient, storage: storage, recieveConfig: config}
 	return reciever
 }
@@ -34,7 +34,7 @@ func (r *Reciever) Run() error {
 	} else {
 		r.io.Print(strconv.Itoa(len(recieveMails)) + " Mails are coming from Server")
 		acknowledges := confirm.GetAllAcknowledges(recieveMails)
-		r.storage.AppendAcknowledgements(acknowledges)
+		r.storage.AppendAcknowledgements(acknowledges) //unhandled Error
 		r.io.Print("Save Acknowledges...")
 		allAcknowledges, err := r.storage.ReadAcknowledgements()
 		if err != nil {
@@ -55,20 +55,20 @@ func (r *Reciever) Run() error {
 
 func (r *Reciever) allOrSpecifyConfirm(allAcknowledges *[]mail.Acknowledgment) {
 	for true {
-		fmt.Println("send all Acknowledges or specify Acknowledges to Server. Or stop reciever (all/specify/stop):")
+		r.io.Print("send all Acknowledges or specify Acknowledges to Server. Or stop reciever (all/specify/stop):")
 		answer := r.io.ReadEntry()
 		if answer == "all" {
 			ackError := r.apiClient.AcknowledgeMails(*allAcknowledges)
 			if ackError != nil {
-				fmt.Println("acknowlege is not posted")
+				r.io.Print("acknowlege is not posted")
 			} else {
-				fmt.Println("E-Mails are Acknowledged: ")
-				r.storage.DeleteAcknowledges(*allAcknowledges)
+				r.io.Print("E-Mails are Acknowledged: ")
+				r.storage.DeleteAcknowledges(*allAcknowledges) //unhandeled Error
 				break
 			}
 		} else if answer == "specify" {
 			confirm.ShowAllEmailAcks(*allAcknowledges)
-			fmt.Println("Specify Acknowledge by Subject: ")
+			r.io.Print("Specify Acknowledge by Subject: ")
 			answer := r.io.ReadEntry()
 			newAcknowledges, selectedAck := confirm.GetSingleAcknowledges(*allAcknowledges, answer)
 			allAcknowledges = &newAcknowledges
@@ -76,8 +76,8 @@ func (r *Reciever) allOrSpecifyConfirm(allAcknowledges *[]mail.Acknowledgment) {
 			if ackError != nil {
 				fmt.Println("acknowlege is not posted")
 			} else {
-				r.storage.DeleteAcknowledges(selectedAck)
-				fmt.Println("E-Mail is Acknowledged: ")
+				r.storage.DeleteAcknowledges(selectedAck) //unhandled error
+				r.io.Print("E-Mail is Acknowledged: ")
 			}
 			if len(*allAcknowledges) == 0 {
 				break
