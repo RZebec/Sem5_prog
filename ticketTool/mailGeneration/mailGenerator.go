@@ -3,7 +3,6 @@ package mailGeneration
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
-	"fmt"
 	"math/rand"
 	"strconv"
 	"time"
@@ -24,7 +23,7 @@ type MailGenerator struct {
 	io inputOutput.InputOutput
 }
 
-func CreateMailGenerator(io inputOutput.InputOutput ) MailGenerator{
+func CreateMailGenerator(io inputOutput.InputOutput) MailGenerator {
 	return MailGenerator{io: io}
 }
 
@@ -33,7 +32,7 @@ func (m *MailGenerator) RandomMail(n int, subjectLength int, contentLength int) 
 	for i := 0; i < n; i++ {
 		mail := mail.Mail{}
 		mail.Subject = randomText(subjectLength)
-		fmt.Println("Subject " + strconv.Itoa(i) + ": " + mail.Subject)
+		m.io.Print("Subject " + strconv.Itoa(i) + ": " + mail.Subject)
 		mail.Content = randomText(contentLength)
 		mail.Sender, mail.Receiver = generateTwoMailAdresses_FromRandomPool()
 		mail.SentTime = time.Now().Unix()
@@ -56,12 +55,12 @@ func generateTwoMailAdresses_FromRandomPool() (string, string) {
 
 func (m *MailGenerator) ExplicitMail() []mail.Mail {
 	email := mail.Mail{}
-	fmt.Print("Entry subject: ")
+	m.io.Print("Entry subject: ")
 	email.Subject = m.io.ReadEntry()
-	fmt.Print("Entry text: ")
+	m.io.Print("Entry text: ")
 	email.Content = m.io.ReadEntry()
 	email.Receiver = "notification@ticketsystem.de"
-	fmt.Print("Enter your SenderMail: ")
+	m.io.Print("Enter your SenderMail: ")
 	email.Sender = m.io.ReadEntry()
 	email.SentTime = time.Now().Unix()
 

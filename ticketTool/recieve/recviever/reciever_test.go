@@ -7,6 +7,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/acknowledgementStorage"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/confirm"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"errors"
 	"strconv"
 	"testing"
 )
@@ -135,4 +136,27 @@ func Test_AcknowledgeStop(t *testing.T) {
 	mockedStorage.AssertExpectations(t)
 	mockedConfirm.AssertExpectations(t)
 
+}
+
+func TestRecieveMailsError(t *testing.T) {
+
+	testMails := getTestMails()
+
+	config := configuration.Configuration{}
+	mockedIO := new(inputOutput.MockedInputOutput)
+	mockedApiClient := new(client.MockedClient)
+	mockedConfirm := new(confirm.MockedConfirm)
+	mockedStorage := new(acknowledgementStorage.MockedAcknowledementStorage)
+
+	mockedApiClient.On("ReceiveMails").Return(testMails, errors.New(""))
+	mockedIO.On("Print", "Transmission is going wrong. Retry? (n,press any key)")
+	mockedIO.On("ReadEntry").Return("n")
+
+	testee := CreateReciever(config, mockedIO, mockedApiClient, mockedStorage, mockedConfirm)
+	testee.Run()
+
+	mockedIO.AssertExpectations(t)
+	mockedApiClient.AssertExpectations(t)
+	mockedStorage.AssertExpectations(t)
+	mockedConfirm.AssertExpectations(t)
 }

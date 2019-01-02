@@ -36,7 +36,11 @@ func (r *Reciever) Run() error {
 	} else {
 		r.io.Print(strconv.Itoa(len(recieveMails)) + " Mails are coming from Server")
 		acknowledges := r.confirmator.GetAllAcknowledges(recieveMails)
-		r.storage.AppendAcknowledgements(acknowledges) //unhandled Error
+		err := r.storage.AppendAcknowledgements(acknowledges)
+		if err != nil {
+			r.io.Print("mails cant't saved: " + err.Error())
+			return err
+		}
 		r.io.Print("Save Acknowledges...")
 		allAcknowledges, err := r.storage.ReadAcknowledgements()
 		if err != nil {
@@ -65,7 +69,11 @@ func (r *Reciever) allOrSpecifyConfirm(allAcknowledges *[]mail.Acknowledgment) {
 				r.io.Print("acknowlege is not posted")
 			} else {
 				r.io.Print("E-Mails are Acknowledged: ")
-				r.storage.DeleteAcknowledges(*allAcknowledges) //unhandeled Error
+				err := r.storage.DeleteAcknowledges(*allAcknowledges)
+				if err != nil {
+					r.io.Print("Acknowledges couldn't deleted: " + err.Error())
+					break
+				}
 				break
 			}
 		} else if answer == "specify" {
@@ -78,7 +86,10 @@ func (r *Reciever) allOrSpecifyConfirm(allAcknowledges *[]mail.Acknowledgment) {
 			if ackError != nil {
 				fmt.Println("acknowlege is not posted")
 			} else {
-				r.storage.DeleteAcknowledges(selectedAck) //unhandled error
+				err := r.storage.DeleteAcknowledges(selectedAck)
+				if err != nil {
+					r.io.Print("Selected Acknowledge couldn't deleted: " + err.Error())
+				}
 				r.io.Print("E-Mail is Acknowledged: ")
 			}
 			if len(*allAcknowledges) == 0 {
