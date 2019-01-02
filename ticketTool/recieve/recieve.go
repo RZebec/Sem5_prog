@@ -46,6 +46,8 @@ func main() {
 		result := recieve.Run()
 		if result == nil {
 			break
+		} else {
+			fmt.Println(result)
 		}
 	}
 }

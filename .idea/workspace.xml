@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d72a36f5-044f-48d5-9693-34cee9f0b8ce" name="Default Changelist" comment="getestet">
+    <list default="true" id="d72a36f5-044f-48d5-9693-34cee9f0b8ce" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ticketTool/recieve/recieve.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketTool/recieve/recieve.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ticketTool/send/send_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketTool/send/send_test.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,7 +26,7 @@
     <session id="2654603">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="4" />
+          <entry key="project.closed" value="5" />
           <entry key="project.open.time.11" value="1" />
           <entry key="project.open.time.17" value="1" />
           <entry key="project.open.time.19" value="1" />
@@ -39,7 +38,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="go" value="155" />
+          <entry key="go" value="156" />
           <entry key="json" value="15" />
           <entry key="keys" value="1" />
           <entry key="pem" value="2" />
@@ -47,21 +46,21 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Go" value="155" />
+          <entry key="Go" value="156" />
           <entry key="JSON" value="15" />
           <entry key="PLAIN_TEXT" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="go" value="7688" />
-          <entry key="txt" value="234" />
+          <entry key="go" value="7704" />
+          <entry key="txt" value="259" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Go" value="7688" />
-          <entry key="PLAIN_TEXT" value="234" />
+          <entry key="Go" value="7704" />
+          <entry key="PLAIN_TEXT" value="259" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.go.postfix.template.usages.trigger">
@@ -83,11 +82,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="187">
               <caret line="35" column="13" selection-start-line="35" selection-start-column="13" selection-end-line="35" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recieve.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="447">
+              <caret line="49" column="31" lean-forward="true" selection-start-line="49" selection-start-column="31" selection-end-line="49" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -211,11 +219,11 @@
         <option value="$PROJECT_DIR$/ticketTool/mailGeneration/mailGeneration_test.go" />
         <option value="$PROJECT_DIR$/ticketTool/recieve/recieve_test.go" />
         <option value="$PROJECT_DIR$/ticketTool/send/sender/sender.go" />
-        <option value="$PROJECT_DIR$/ticketTool/recieve/recieve.go" />
         <option value="$PROJECT_DIR$/ticketTool/send/send_test.go" />
         <option value="$PROJECT_DIR$/ticketTool/recieve/confirm/mockedConfirm.go" />
         <option value="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever_test.go" />
         <option value="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go" />
+        <option value="$PROJECT_DIR$/ticketTool/recieve/recieve.go" />
       </list>
     </option>
   </component>
@@ -327,7 +335,7 @@
     <property name="GO_FMT" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546358419680" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546365859536" />
     <property name="go.gopath.indexing.explicitly.defined" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$" />
@@ -453,7 +461,7 @@
       <workItem from="1546106078273" duration="39000" />
       <workItem from="1546166146907" duration="19733000" />
       <workItem from="1546249499352" duration="10159000" />
-      <workItem from="1546351538062" duration="9564000" />
+      <workItem from="1546351538062" duration="9672000" />
     </task>
     <task id="LOCAL-00001" summary="HttpRequest, Input implementiert&#10;als nächstes Tests">
       <created>1545905848538</created>
@@ -567,7 +575,14 @@
       <option name="project" value="LOCAL" />
       <updated>1546257900204</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="recieve mock eingefügt">
+      <created>1546365882964</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1546365882964</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -603,7 +618,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="103461000" />
+    <option name="totallyTimeSpent" value="103569000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -616,7 +631,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19742814" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -698,7 +712,8 @@
     <MESSAGE value="recieve implementiert&#10;als nächstes Tests schreiben" />
     <MESSAGE value="confirm ist getestet" />
     <MESSAGE value="getestet" />
-    <option name="LAST_COMMIT_MESSAGE" value="getestet" />
+    <MESSAGE value="recieve mock eingefügt" />
+    <option name="LAST_COMMIT_MESSAGE" value="recieve mock eingefügt" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1063,13 +1078,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recieve.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="47" column="17" selection-start-line="47" selection-start-column="17" selection-end-line="47" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ticketTool/send/sender/sender.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-323">
@@ -1095,6 +1103,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
           <caret line="35" column="13" selection-start-line="35" selection-start-column="13" selection-end-line="35" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recieve.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="447">
+          <caret line="49" column="31" lean-forward="true" selection-start-line="49" selection-start-column="31" selection-end-line="49" selection-end-column="31" />
         </state>
       </provider>
     </entry>
