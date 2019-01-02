@@ -3,9 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="d72a36f5-044f-48d5-9693-34cee9f0b8ce" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ticketTool/recieve/confirm/mockedConfirm.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketTool/recieve/confirm/mockedConfirm.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ticketTool/recieve/recieve_test.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever_test.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -43,7 +40,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="go" value="171" />
+          <entry key="go" value="176" />
           <entry key="json" value="15" />
           <entry key="keys" value="1" />
           <entry key="pem" value="2" />
@@ -51,21 +48,21 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Go" value="171" />
+          <entry key="Go" value="176" />
           <entry key="JSON" value="15" />
           <entry key="PLAIN_TEXT" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="go" value="8793" />
-          <entry key="txt" value="259" />
+          <entry key="go" value="8801" />
+          <entry key="txt" value="272" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Go" value="8793" />
-          <entry key="PLAIN_TEXT" value="259" />
+          <entry key="Go" value="8801" />
+          <entry key="PLAIN_TEXT" value="272" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.go.postfix.template.usages.trigger">
@@ -79,11 +76,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recviever/reciever_test.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="188">
-              <caret line="49" column="40" selection-start-line="49" selection-start-column="22" selection-end-line="49" selection-end-column="40" />
+            <state relative-caret-position="-4">
+              <caret line="71" column="43" selection-start-line="71" selection-start-column="43" selection-end-line="71" selection-end-column="43" />
               <folding>
                 <element signature="e#19#441#0" expanded="true" />
               </folding>
@@ -91,10 +88,52 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ticketTool/recieve/confirm/confirm.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="493">
+              <caret line="32" column="60" selection-start-line="32" selection-end-line="32" selection-end-column="60" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ticketTool/recieve/acknowledgementStorage/mockedAcknowledgementStorage.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="517">
+              <caret line="33" column="23" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
+              <folding>
+                <element signature="e#32#142#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ticketTool/recieve/acknowledgementStorage/acknowledgementStorage_test.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="27" column="56" lean-forward="true" selection-start-line="27" selection-start-column="56" selection-end-line="27" selection-end-column="56" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ticketTool/recieve/confirm/mockedConfirm.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="187">
+              <caret line="11" column="42" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="42" />
+              <folding>
+                <element signature="e#17#127#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="94">
+            <state relative-caret-position="-229">
               <caret line="49" selection-start-line="49" selection-end-line="49" />
             </state>
           </provider>
@@ -111,7 +150,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Login</find>
       <find>existin</find>
       <find>The token should not be empty</find>
       <find>found</find>
@@ -141,6 +179,7 @@
       <find>writeDataToFile</find>
       <find>apiClient</find>
       <find>sendConfig</find>
+      <find>getTestMails</find>
     </findStrings>
   </component>
   <component name="GOROOT" path="C:\Go" />
@@ -277,6 +316,13 @@
               <item name="IIIDDD" type="462c0819:PsiDirectoryNode" />
               <item name="ticketTool" type="462c0819:PsiDirectoryNode" />
               <item name="recieve" type="462c0819:PsiDirectoryNode" />
+              <item name="acknowledgementStorage" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="IIIDDD" type="b2602c69:ProjectViewProjectNode" />
+              <item name="IIIDDD" type="462c0819:PsiDirectoryNode" />
+              <item name="ticketTool" type="462c0819:PsiDirectoryNode" />
+              <item name="recieve" type="462c0819:PsiDirectoryNode" />
               <item name="confirm" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -310,7 +356,7 @@
     <property name="GO_FMT" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546425987556" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546428301156" />
     <property name="go.gopath.indexing.explicitly.defined" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$" />
@@ -448,7 +494,7 @@
       <workItem from="1546166146907" duration="19733000" />
       <workItem from="1546249499352" duration="10159000" />
       <workItem from="1546351538062" duration="9672000" />
-      <workItem from="1546421522416" duration="5913000" />
+      <workItem from="1546421522416" duration="6769000" />
     </task>
     <task id="LOCAL-00001" summary="HttpRequest, Input implementiert&#10;als nächstes Tests">
       <created>1545905848538</created>
@@ -583,7 +629,14 @@
       <option name="project" value="LOCAL" />
       <updated>1546421716953</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="test reciever">
+      <created>1546427460354</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1546427460354</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -619,7 +672,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="109482000" />
+    <option name="totallyTimeSpent" value="110338000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -632,7 +685,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24130106" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -645,7 +697,7 @@
       <window_info anchor="bottom" id="Docker" order="0" show_stripe_button="false" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info active="true" anchor="bottom" id="Find" order="2" sideWeight="0.49307036" visible="true" weight="0.32936078" />
-      <window_info anchor="bottom" id="Run" order="3" sideWeight="0.4871407" visible="true" weight="0.3764321" />
+      <window_info anchor="bottom" id="Run" order="3" sideWeight="0.4871407" visible="true" weight="0.05237316" />
       <window_info anchor="bottom" id="Debug" order="4" sideWeight="0.49093816" weight="0.45335516" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
@@ -716,7 +768,8 @@
     <MESSAGE value="confirm ist getestet" />
     <MESSAGE value="getestet" />
     <MESSAGE value="recieve mock eingefügt" />
-    <option name="LAST_COMMIT_MESSAGE" value="recieve mock eingefügt" />
+    <MESSAGE value="test reciever" />
+    <option name="LAST_COMMIT_MESSAGE" value="test reciever" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1016,13 +1069,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/acknowledgementStorage/acknowledgementStorage_test.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2023">
-          <caret line="27" column="56" lean-forward="true" selection-start-line="27" selection-start-column="56" selection-end-line="27" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ticketTool/mailGeneration/mockedMailGenerator.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
@@ -1030,35 +1076,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/acknowledgementStorage/mockedAcknowledgementStorage.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="526">
-          <caret line="33" column="23" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
-          <folding>
-            <element signature="e#32#142#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/acknowledgementStorage/acknowledgementStorage.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1144">
-          <caret line="121" column="46" selection-start-line="121" selection-end-line="121" selection-end-column="46" />
-          <folding>
-            <element signature="e#2197#2239#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ticketTool/inputOutput/mockedInputOutput.go">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/confirm/confirm.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="32" column="60" selection-start-line="32" selection-end-line="32" selection-end-column="60" />
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recieve_test.go">
       <provider selected="true" editor-type-id="text-editor">
@@ -1098,19 +1117,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recviever/reciever_test.go">
+    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="188">
-          <caret line="49" column="40" selection-start-line="49" selection-start-column="22" selection-end-line="49" selection-end-column="40" />
-          <folding>
-            <element signature="e#19#441#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="-229">
+          <caret line="49" selection-start-line="49" selection-end-line="49" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ticketTool/recieve/confirm/mockedConfirm.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
+        <state relative-caret-position="187">
           <caret line="11" column="42" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="42" />
           <folding>
             <element signature="e#17#127#0" expanded="true" />
@@ -1118,10 +1134,47 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go">
+    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/confirm/confirm.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="94">
-          <caret line="49" selection-start-line="49" selection-end-line="49" />
+        <state relative-caret-position="493">
+          <caret line="32" column="60" selection-start-line="32" selection-end-line="32" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/acknowledgementStorage/acknowledgementStorage_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="27" column="56" lean-forward="true" selection-start-line="27" selection-start-column="56" selection-end-line="27" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/acknowledgementStorage/acknowledgementStorage.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="517">
+          <caret line="121" column="46" selection-start-line="121" selection-end-line="121" selection-end-column="46" />
+          <folding>
+            <element signature="e#2197#2239#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/acknowledgementStorage/mockedAcknowledgementStorage.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="517">
+          <caret line="33" column="23" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
+          <folding>
+            <element signature="e#32#142#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recviever/reciever_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4">
+          <caret line="71" column="43" selection-start-line="71" selection-start-column="43" selection-end-line="71" selection-end-column="43" />
+          <folding>
+            <element signature="e#19#441#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
