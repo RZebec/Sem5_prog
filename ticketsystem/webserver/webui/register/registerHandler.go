@@ -50,13 +50,13 @@ func (l RegisterHandler) ServeHTTPPostRegisteringData(w http.ResponseWriter, r *
 
 		if err != nil {
 			l.Logger.LogError("Register", err)
-			http.Redirect(w, r, "/register?IsRegisteringFailed=true", http.StatusInternalServerError)
+			http.Redirect(w, r, "/register?IsRegisteringFailed=true", http.StatusSeeOther)
 		}
 
 		if success {
-			http.Redirect(w, r, "/login", http.StatusOK)
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
 		} else {
-			http.Redirect(w, r, "/register?IsRegisteringFailed=true", http.StatusOK)
+			http.Redirect(w, r, "/register?IsRegisteringFailed=true", http.StatusSeeOther)
 		}
 	}
 }

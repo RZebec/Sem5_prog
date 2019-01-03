@@ -12,7 +12,7 @@ var IndexPage = `
 	{{ define "Content" }}		
 		<div class="content">
 			<div class="container">
-				<h1>This is the Index Page</h1>
+				<h1>Welcome to the OP Ticket System</h1>
 			</div>
 		</div>
 	</body>

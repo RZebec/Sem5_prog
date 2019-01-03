@@ -8,7 +8,7 @@ var RegisterPage = `
 
 	{{ define "StylesAndScripts" }}
 		<link rel="stylesheet" href="/files/style/center_main">
-		<script src="/files/script/login"></script>
+		<script src="/files/script/register"></script>
 	{{ end }}
 	
 	{{ define "Content" }}
@@ -33,7 +33,10 @@ var RegisterPage = `
 					</span>
 					</br>
         			{{end}}
+					<span id="firstNameNotice" class="error-message"></span>
+					<span id="lastNameNotice" class="error-message"></span>
 					<span id="emailNotice" class="error-message"></span>
+					<span id="passwordNotice" class="error-message"></span>
 				</div>
 			</div>
 		</div>

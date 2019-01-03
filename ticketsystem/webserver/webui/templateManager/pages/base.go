@@ -30,13 +30,13 @@ var Base = `
 
 			<a {{if eq .Active "open_tickets" }}class="active"{{end}} href="/open_tickets">Open Tickets</a>
 	
-			<span>OP-Ticket-System</span>
+			<span>OP Ticket System</span>
 
 			{{if .UserIsAuthenticated}}
 				{{if .UserIsAdmin}}
 					<a {{if eq .Active "admin" }}class="active"{{end}} href="/admin">Admin</a>
 				{{end}}
-				<a {{if eq .Active "user_tickets" }}class="active"{{end}} href="/my_tickets">My Tickets</a>
+				<a {{if eq .Active "user_tickets" }}class="active"{{end}} href="/user_tickets">My Tickets</a>
 				<a href="/user_logout">Logout</a>				
 			{{else}}
 				<a {{if eq .Active "login" }}class="active"{{end}} href="/login">Login</a>
