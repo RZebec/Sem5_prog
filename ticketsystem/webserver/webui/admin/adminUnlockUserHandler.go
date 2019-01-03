@@ -3,11 +3,9 @@ package admin
 import (
 	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"net/http"
 	"strconv"
-	"strings"
 )
 
 /*
@@ -15,7 +13,6 @@ import (
 */
 type AdminUnlockUserHandler struct {
 	UserContext user.UserContext
-	Config      config.Configuration
 	Logger      logging.Logger
 }
 
@@ -23,7 +20,7 @@ type AdminUnlockUserHandler struct {
 	The Unlock user handler.
 */
 func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if strings.ToLower(r.Method) != "post" {
+	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {
 		formId := r.FormValue("userId")
@@ -40,6 +37,7 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 
 		if err != nil {
 			a.Logger.LogError("Admin", err)
+			http.Redirect(w, r, "/", http.StatusBadRequest)
 			return
 		}
 
@@ -47,12 +45,12 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 
 		if err != nil {
 			a.Logger.LogError("Admin", err)
-			http.Redirect(w, r, "/", http.StatusBadRequest)
+			http.Redirect(w, r, "/", http.StatusInternalServerError)
 			return
 		}
 
 		if unlocked {
-			http.Redirect(w, r, "/admin", 302)
+			http.Redirect(w, r, "/admin", http.StatusOK)
 		}
 	}
 }

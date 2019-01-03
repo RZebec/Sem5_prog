@@ -14,7 +14,7 @@ import (
 /*
 	Only POST request should be possible.
 */
-func TestAdminSetApiKeysHandlerWrongRequestMethod_ServeHTTP(t *testing.T) {
+func TestAdminSetApiKeysHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 	req, err := http.NewRequest("GET", "/set_api_keys", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -38,7 +38,7 @@ func TestAdminSetApiKeysHandlerWrongRequestMethod_ServeHTTP(t *testing.T) {
 /*
 	A request with incorrect data should return a 400.
 */
-func TestAdminSetApiKeysHandlerIncorrectData_ServeHTTP(t *testing.T) {
+func TestAdminSetApiKeysHandler_ServeHTTP_IncorrectData(t *testing.T) {
 	req, err := http.NewRequest("POST", "/set_api_keys", nil)
 	req.Form = url.Values{}
 	req.Form.Add("incomingMailApiKey", "1234")
@@ -69,10 +69,6 @@ func TestAdminSetApiKeysHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	testIncomingMailApiKey := "b0k2xW60gf3U6C5SvvnYSzTs18bf76VSkH7WSIMAwjXXF2arz7EhwTq5cSnaHN0nni4bzcoY3UW6eONFSYdHBuRSkHh1IvxPIyyrVLcZZzTAYD7SQTiWdBEVSQBu517km1"
 	testOutgoingMailApiKey := "L3C2HLzf4EHae2WLezlpLL2nZVSR3LCq2H35oQQnny7MhSvHhUBYCpV3t0jTF71X6RCJ605Nv1CyQ8gTwmSQDeF11MXyjjgindFCFSC3uttoSPCR81mmj4smAtVgECThbp"
 
-	data := url.Values{}
-	data.Add("incomingMailApiKey", testIncomingMailApiKey)
-	data.Add("outgoingMailApiKey", testOutgoingMailApiKey)
-
 	req, err := http.NewRequest("POST", "/set_api_keys", nil)
 	req.Form = url.Values{}
 	req.Form.Add("incomingMailApiKey", testIncomingMailApiKey)
@@ -94,7 +90,7 @@ func TestAdminSetApiKeysHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
 	handler.ServeHTTP(rr, req)
-	assert.Equal(t, 200, rr.Code, "Status code 200ä should be returned")
+	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
 
 	mockedApiContext.AssertExpectations(t)
 }
@@ -105,10 +101,6 @@ func TestAdminSetApiKeysHandler_ServeHTTP_ValidRequest(t *testing.T) {
 func TestAdminSetApiKeysHandler_ServeHTTP_ChangeOutgoing_ContextReturnError_500Returned(t *testing.T) {
 	testIncomingMailApiKey := "b0k2xW60gf3U6C5SvvnYSzTs18bf76VSkH7WSIMAwjXXF2arz7EhwTq5cSnaHN0nni4bzcoY3UW6eONFSYdHBuRSkHh1IvxPIyyrVLcZZzTAYD7SQTiWdBEVSQBu517km1"
 	testOutgoingMailApiKey := "L3C2HLzf4EHae2WLezlpLL2nZVSR3LCq2H35oQQnny7MhSvHhUBYCpV3t0jTF71X6RCJ605Nv1CyQ8gTwmSQDeF11MXyjjgindFCFSC3uttoSPCR81mmj4smAtVgECThbp"
-
-	data := url.Values{}
-	data.Add("incomingMailApiKey", testIncomingMailApiKey)
-	data.Add("outgoingMailApiKey", testOutgoingMailApiKey)
 
 	req, err := http.NewRequest("POST", "/set_api_keys", nil)
 	req.Form = url.Values{}
@@ -142,10 +134,6 @@ func TestAdminSetApiKeysHandler_ServeHTTP_ChangeOutgoing_ContextReturnError_500R
 func TestAdminSetApiKeysHandler_ServeHTTP_ChangeIncoming_ContextReturnError_500Returned(t *testing.T) {
 	testIncomingMailApiKey := "b0k2xW60gf3U6C5SvvnYSzTs18bf76VSkH7WSIMAwjXXF2arz7EhwTq5cSnaHN0nni4bzcoY3UW6eONFSYdHBuRSkHh1IvxPIyyrVLcZZzTAYD7SQTiWdBEVSQBu517km1"
 	testOutgoingMailApiKey := "L3C2HLzf4EHae2WLezlpLL2nZVSR3LCq2H35oQQnny7MhSvHhUBYCpV3t0jTF71X6RCJ605Nv1CyQ8gTwmSQDeF11MXyjjgindFCFSC3uttoSPCR81mmj4smAtVgECThbp"
-
-	data := url.Values{}
-	data.Add("incomingMailApiKey", testIncomingMailApiKey)
-	data.Add("outgoingMailApiKey", testOutgoingMailApiKey)
 
 	req, err := http.NewRequest("POST", "/set_api_keys", nil)
 	req.Form = url.Values{}

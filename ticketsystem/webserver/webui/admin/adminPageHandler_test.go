@@ -50,9 +50,13 @@ func TestAdminPageHandler_ServeHTTP(t *testing.T) {
 
 	handler.ServeHTTP(rr, req)
 	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
+
+	mockedApiContext.AssertExpectations(t)
+	mockedTemplateManager.AssertExpectations(t)
+	mockedUserContext.AssertExpectations(t)
 }
 
-func TestAdminPageHandlerOnError_ServeHTTP(t *testing.T) {
+func TestAdminPageHandler_ServeHTTP_RenderTemplateError_500Returned(t *testing.T) {
 	req, err := http.NewRequest("GET", "/admin", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -87,7 +91,7 @@ func TestAdminPageHandlerOnError_ServeHTTP(t *testing.T) {
 	assert.Equal(t, http.StatusInternalServerError, rr.Code, "Status code 500 should be returned")
 }
 
-func TestAdminPageHandlerWrongRequest_ServeHTTP(t *testing.T) {
+func TestAdminPageHandler_ServeHTTP_WrongRequest(t *testing.T) {
 	req, err := http.NewRequest("POST", "/admin", nil)
 	if err != nil {
 		t.Fatal(err)
