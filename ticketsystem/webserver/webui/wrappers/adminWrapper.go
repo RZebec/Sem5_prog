@@ -27,7 +27,7 @@ func (h AdminWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		h.Next.ServeHTTP(w, r)
 		return
 	} else {
-		http.Redirect(w, r, "/", http.StatusAccepted)
+		http.Redirect(w, r, "/", http.StatusForbidden)
 		return
 	}
 }

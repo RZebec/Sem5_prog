@@ -3,6 +3,7 @@ package mails
 import (
 	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"encoding/json"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
@@ -65,7 +66,7 @@ func (m *MockedOutgoingMailContext) CreateNewOutgoingMail(receiver string, subje
 func TestOutgoingMailHandler_ServeHTTP_MailsReceived(t *testing.T) {
 	mockedMailContext := new(MockedOutgoingMailContext)
 	mockedMailContext.throwError = false
-	testee := OutgoingMailHandler{Logger: getTestLogger(), MailContext: mockedMailContext}
+	testee := OutgoingMailHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	req, err := http.NewRequest("GET", shared.ReceivePath, nil)
 	if err != nil {
@@ -94,7 +95,7 @@ func TestOutgoingMailHandler_ServeHTTP_MailsReceived(t *testing.T) {
 func TestOutgoingMailHandler_ServeHTTP_Error_500Returned(t *testing.T) {
 	mockedMailContext := new(MockedOutgoingMailContext)
 	mockedMailContext.throwError = true
-	testee := OutgoingMailHandler{Logger: getTestLogger(), MailContext: mockedMailContext}
+	testee := OutgoingMailHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	req, err := http.NewRequest("GET", shared.ReceivePath, nil)
 	if err != nil {

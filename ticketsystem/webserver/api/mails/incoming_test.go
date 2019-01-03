@@ -7,6 +7,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"encoding/json"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
@@ -37,7 +38,7 @@ func getTestHandlerWithMockedData() IncomingMailHandler {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedMailFilter:= new(MockedMailFilter)
 	mockedMailFilter.On("IsAutomaticResponse", mock.Anything).Return(false)
-	return IncomingMailHandler{Logger: getTestLogger(), MailContext: mockedMailContext, TicketContext: mockedTicketContext,
+	return IncomingMailHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext, TicketContext: mockedTicketContext,
 		UserContext: mockedUserContext, MailRepliesFilter: mockedMailFilter}
 }
 

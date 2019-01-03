@@ -73,7 +73,6 @@ func (t *TemplateManager) LoadTemplates(logger logging.Logger) (err error) {
 	t.addTemplate(pages.RegisterPage, "RegisterPage", baseTemplate, logger)
 	t.addTemplate(pages.LoginPage, "LoginPage", baseTemplate, logger)
 	t.addTemplate(pages.AdminPage, "AdminPage", baseTemplate, logger)
-	t.addTemplate(pages.AccessDeniedPage, "AccessDeniedPage", baseTemplate, logger)
 	t.addTemplate(pages.TicketExplorerPage, "TicketExplorerPage", baseTemplate, logger)
 	t.addTemplate(pages.TicketViewPage, "TicketViewPage", baseTemplate, logger)
 

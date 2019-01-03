@@ -17,38 +17,6 @@ func getTestLogger() logging.Logger {
 }
 
 /*
-	Tests if the Page is correctly rendered.
-*/
-func TestAccessDeniedPageRendering(t *testing.T) {
-	rr := httptest.NewRecorder()
-
-	mockConsoleLogger := getTestLogger()
-
-	testee := TemplateManager{map[string]*template.Template{}}
-
-	testee.LoadTemplates(mockConsoleLogger)
-	err := testee.RenderTemplate(rr, "AccessDeniedPage", nil)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// Check the status code is what we expect.
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
-	}
-
-	// Check the response body is what we expect.
-	expected := strings.TrimSpace(accessDeniedResultPage)
-	result := strings.TrimSpace(rr.Body.String())
-	if result != expected {
-		t.Errorf("handler returned unexpected body: got %v want %v",
-			result, expected)
-	}
-}
-
-/*
 	Tests if the page returns an error if an page wasn´t able to be rendered.
 */
 func TestErrorHandling(t *testing.T) {
