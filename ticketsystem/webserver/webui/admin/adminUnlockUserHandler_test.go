@@ -17,7 +17,7 @@ import (
 	Only POST request should be possible.
 */
 func TestAdminUnlockUserHandlerWrongRequestMethod_ServeHTTP(t *testing.T) {
-	req, err := http.NewRequest("GET", "/set_api_keys", nil)
+	req, err := http.NewRequest("GET", "/unlock_user", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -41,7 +41,7 @@ func TestAdminUnlockUserHandlerWrongRequestMethod_ServeHTTP(t *testing.T) {
 	A request with incorrect data should return a 400.
 */
 func TestAdminUnlockUserHandle_ServeHTTP_IncorrectData(t *testing.T) {
-	req, err := http.NewRequest("POST", "/set_api_keys", nil)
+	req, err := http.NewRequest("POST", "/unlock_user", nil)
 	req.Form = url.Values{}
 	req.Form.Add("userId", "asdhajs")
 
@@ -68,7 +68,7 @@ func TestAdminUnlockUserHandle_ServeHTTP_IncorrectData(t *testing.T) {
 	A request with incorrect cookie should return a 400
 */
 func TestAdminUnlockUserHandle_ServeHTTP_NoPresentCookie(t *testing.T) {
-	req, err := http.NewRequest("POST", "/set_api_keys", nil)
+	req, err := http.NewRequest("POST", "/unlock_user", nil)
 	req.Form = url.Values{}
 	req.Form.Add("userId", "1234")
 	if err != nil {
@@ -95,7 +95,7 @@ func TestAdminUnlockUserHandle_ServeHTTP_NoPresentCookie(t *testing.T) {
 	A valid request should be possible.
 */
 func TestAdminUnlockUserHandle_ServeHTTP_ValidRequest(t *testing.T) {
-	req, err := http.NewRequest("POST", "/set_api_keys", nil)
+	req, err := http.NewRequest("POST", "/unlock_user", nil)
 	req.Form = url.Values{}
 	req.Form.Add("userId", "1234")
 	if err != nil {
@@ -126,7 +126,7 @@ func TestAdminUnlockUserHandle_ServeHTTP_ValidRequest(t *testing.T) {
 	A error from changing the outgoing api key should result in a 500.
 */
 func TestAdminUnlockUserHandle_ServeHTTP_UnlockAccount_ContextReturnError_500Returned(t *testing.T) {
-	req, err := http.NewRequest("POST", "/set_api_keys", nil)
+	req, err := http.NewRequest("POST", "/unlock_user", nil)
 	req.Form = url.Values{}
 	req.Form.Add("userId", "1234")
 	if err != nil {
