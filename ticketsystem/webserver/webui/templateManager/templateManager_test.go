@@ -1,20 +1,12 @@
 package templateManager
 
 import (
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"html/template"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 )
-
-/*
-	A logger for tests.
-*/
-func getTestLogger() logging.Logger {
-	return logging.ConsoleLogger{SetTimeStamp: false}
-}
 
 /*
 	Tests if the page returns an error if an page wasn´t able to be rendered.
