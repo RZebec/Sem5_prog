@@ -23,7 +23,7 @@ func TestAdminWrapper_ServeHTTP_IsAdmin(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	ctx := newContextWithAuthenticationInfo(req.Context(), true, true)
+	ctx := NewContextWithAuthenticationInfo(req.Context(), true, true)
 
 	// Execute the test:
 	rr := httptest.NewRecorder()
@@ -51,7 +51,7 @@ func TestAdminWrapper_ServeHTTP_IsNoAdmin(t *testing.T) {
 		t.Fatal(err)
 	}
 	// Should be no admin:
-	ctx := newContextWithAuthenticationInfo(req.Context(), true, false)
+	ctx := NewContextWithAuthenticationInfo(req.Context(), true, false)
 
 	// Execute the test:
 	rr := httptest.NewRecorder()

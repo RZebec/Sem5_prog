@@ -3,6 +3,7 @@ package testhelpers
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"net/http"
+	"strings"
 )
 
 /*
@@ -12,6 +13,17 @@ func GetTestLogger() logging.Logger {
 	return logging.ConsoleLogger{SetTimeStamp: false}
 }
 
+/*
+	Get a cookie value.
+ */
+func GetCookieValue (cookies []*http.Cookie, cookieName string) (exists bool, value string) {
+	for _, cookie := range cookies {
+		if strings.ToLower(cookie.Name) == strings.ToLower(cookieName){
+			return true, cookie.Value
+		}
+	}
+	return false, ""
+}
 
 /*
 	A http handler which stores the request.

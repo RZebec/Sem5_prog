@@ -3,7 +3,6 @@ package login
 import (
 	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
@@ -20,7 +19,6 @@ import (
 */
 type LoginHandler struct {
 	UserContext user.UserContext
-	Config      config.Configuration
 	Logger      logging.Logger
 	TemplateManager	templateManager.TemplateContext
 }
@@ -65,8 +63,9 @@ func (l LoginHandler) ServeHTTPPostLoginData(w http.ResponseWriter, r *http.Requ
 	The Login Page handler.
 */
 func (l LoginHandler) ServeHTTPGetLoginPage(w http.ResponseWriter, r *http.Request) {
-
-	// TODO: Should only GET be allowed? Is it enforced?
+	if strings.ToLower(r.Method) != "get" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
 	// Checks if the User is already logged in and if so redirects him to the start page
 	isUserLoggedIn := wrappers.IsAuthenticated(r.Context())
 	userIsAdmin := wrappers.IsAdmin(r.Context())

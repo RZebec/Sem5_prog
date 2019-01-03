@@ -32,6 +32,6 @@ func (h AddAuthenticationInfoWrapper) ServeHTTP(w http.ResponseWriter, r *http.R
 
 		helpers.SetCookie(w, shared.AccessTokenCookieName, newToken)
 	}
-	ctx := newContextWithAuthenticationInfo(r.Context(), userIsLoggedIn, isAdmin)
+	ctx := NewContextWithAuthenticationInfo(r.Context(), userIsLoggedIn, isAdmin)
 	h.Next.ServeHTTP(w, r.WithContext(ctx))
 }

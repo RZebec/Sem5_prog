@@ -13,7 +13,7 @@ const isAuthenticatedKey = "IsAuthenticated"
 /*
 	Inject the context with authentication info.
  */
-func newContextWithAuthenticationInfo(ctx context.Context, isAuthenticated bool, isAdmin bool) context.Context {
+func NewContextWithAuthenticationInfo(ctx context.Context, isAuthenticated bool, isAdmin bool) context.Context {
 	ctx = context.WithValue(ctx, isAdminKey, isAdmin)
 	return context.WithValue(ctx, isAuthenticatedKey, isAuthenticated)
 }
