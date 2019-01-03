@@ -3,6 +3,7 @@ package register
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -16,7 +17,7 @@ import (
 	A valid request should be possible.
 */
 func TestRegisterHandler_ServeHTTPPostRegisteringData_ValidRequest_RedirectedToLoginPage(t *testing.T) {
-	req, err := http.NewRequest("POST", "/set_api_keys", nil)
+	req, err := http.NewRequest("POST", "/user_register", nil)
 	req.Form = url.Values{}
 	req.Form.Add("first_name", "Max")
 	req.Form.Add("last_name", "Muller")
@@ -49,7 +50,7 @@ func TestRegisterHandler_ServeHTTPPostRegisteringData_ValidRequest_RedirectedToL
 	Only POST request should be possible.
 */
 func TestRegisterHandler_ServeHTTPPostRegisteringData_WrongRequestMethod(t *testing.T) {
-	req, err := http.NewRequest("GET", "/set_api_keys", nil)
+	req, err := http.NewRequest("GET", "/user_register", nil)
 	req.Form = url.Values{}
 	req.Form.Add("first_name", "Max")
 	req.Form.Add("last_name", "Muller")
@@ -80,7 +81,7 @@ func TestRegisterHandler_ServeHTTPPostRegisteringData_WrongRequestMethod(t *test
 	An unsuccessful registering procedure should return the same page
 */
 func TestRegisterHandler_ServeHTTPPostRegisteringData_UnsuccessfulRegistering_RedirectedToSamePageWithMessage(t *testing.T) {
-	req, err := http.NewRequest("POST", "/set_api_keys", nil)
+	req, err := http.NewRequest("POST", "/user_register", nil)
 	req.Form = url.Values{}
 	req.Form.Add("first_name", "Max")
 	req.Form.Add("last_name", "Muller")
@@ -116,7 +117,7 @@ func TestRegisterHandler_ServeHTTPPostRegisteringData_UnsuccessfulRegistering_Re
 	An unsuccessful registering procedure should return the same page
 */
 func TestRegisterHandler_ServeHTTPPostRegisteringData_ContextReturnError_RedirectedToSamePageWithMessage(t *testing.T) {
-	req, err := http.NewRequest("POST", "/set_api_keys", nil)
+	req, err := http.NewRequest("POST", "/user_register", nil)
 	req.Form = url.Values{}
 	req.Form.Add("first_name", "Max")
 	req.Form.Add("last_name", "Muller")
@@ -146,5 +147,111 @@ func TestRegisterHandler_ServeHTTPPostRegisteringData_ContextReturnError_Redirec
 	assert.Equal(t, "/register?IsRegisteringFailed=true", rr.Header().Get("location"), "User should be redirected to url \"/register?IsRegisteringFailed=true\"")
 
 	mockedUserContext.AssertExpectations(t)
+}
+
+/*
+	A valid request should be possible.
+*/
+func TestRegisterHandler_ServeHTTPGetRegisterPage_ValidRequest(t *testing.T) {
+	req, err := http.NewRequest("GET", "/register", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testLogger := testhelpers.GetTestLogger()
+
+	mockedTemplateManager := new(templateManager.MockedTemplateManager)
+
+	mockedTemplateManager.On("RenderTemplate", mock.Anything, mock.Anything, mock.Anything).Return(nil)
+
+	rr := httptest.NewRecorder()
+
+	testee := RegisterHandler{Logger: testLogger, TemplateManager: mockedTemplateManager}
+
+	handler := http.HandlerFunc(testee.ServeHTTPGetRegisterPage)
+
+	handler.ServeHTTP(rr, req)
+	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
+
+	mockedTemplateManager.AssertExpectations(t)
+}
+
+/*
+	Only GET request should be possible.
+*/
+func TestRegisterHandler_ServeHTTPGetRegisterPage_WrongRequestMethod(t *testing.T) {
+	req, err := http.NewRequest("POST", "/register", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testLogger := testhelpers.GetTestLogger()
+
+	mockedTemplateManager := new(templateManager.MockedTemplateManager)
+
+	rr := httptest.NewRecorder()
+
+	testee := RegisterHandler{Logger: testLogger, TemplateManager: mockedTemplateManager}
+
+	handler := http.HandlerFunc(testee.ServeHTTPGetRegisterPage)
+
+	handler.ServeHTTP(rr, req)
+	assert.Equal(t, 405, rr.Code, "Status code 405 should be returned")
+
+	mockedTemplateManager.AssertExpectations(t)
+}
+
+/*
+	A error from rendering the template should result in a 500.
+*/
+func TestRegisterHandler_ServeHTTPGetRegisterPage_ContextError(t *testing.T) {
+	req, err := http.NewRequest("GET", "/register", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testLogger := testhelpers.GetTestLogger()
+
+	mockedTemplateManager := new(templateManager.MockedTemplateManager)
+
+	mockedTemplateManager.On("RenderTemplate", mock.Anything, mock.Anything, mock.Anything).Return(errors.New("TestError"))
+
+	rr := httptest.NewRecorder()
+
+	testee := RegisterHandler{Logger: testLogger, TemplateManager: mockedTemplateManager}
+
+	handler := http.HandlerFunc(testee.ServeHTTPGetRegisterPage)
+
+	handler.ServeHTTP(rr, req)
+	assert.Equal(t, 500, rr.Code, "Status code 500 should be returned")
+
+	mockedTemplateManager.AssertExpectations(t)
+}
+
+/*
+	Page should be returned with valid query parameter set.
+*/
+func TestRegisterHandler_ServeHTTPGetRegisterPage_RegisteringFailed(t *testing.T) {
+	req, err := http.NewRequest("GET", "/register?IsRegisteringFailed=true", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testLogger := testhelpers.GetTestLogger()
+
+	mockedTemplateManager := new(templateManager.MockedTemplateManager)
+
+	mockedTemplateManager.On("RenderTemplate", mock.Anything, mock.Anything, mock.Anything).Return(nil)
+
+	rr := httptest.NewRecorder()
+
+	testee := RegisterHandler{Logger: testLogger, TemplateManager: mockedTemplateManager}
+
+	handler := http.HandlerFunc(testee.ServeHTTPGetRegisterPage)
+
+	handler.ServeHTTP(rr, req)
+	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
+
+	mockedTemplateManager.AssertExpectations(t)
 }
 

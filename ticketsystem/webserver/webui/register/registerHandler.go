@@ -2,7 +2,6 @@ package register
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
@@ -17,7 +16,6 @@ import (
 */
 type RegisterHandler struct {
 	UserContext     user.UserContext
-	Config          config.Configuration
 	Logger          logging.Logger
 	TemplateManager templateManager.TemplateContext
 }
@@ -98,6 +96,7 @@ func (l RegisterHandler) ServeHTTPGetRegisterPage(w http.ResponseWriter, r *http
 
 		if err != nil {
 			l.Logger.LogError("Register", err)
+			http.Redirect(w, r, "/", http.StatusInternalServerError)
 		}
 	}
 }
