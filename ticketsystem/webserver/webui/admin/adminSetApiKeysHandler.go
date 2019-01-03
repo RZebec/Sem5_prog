@@ -29,8 +29,18 @@ func (a AdminSetApiKeysHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		outgoingMailApiKey = html.EscapeString(outgoingMailApiKey)
 
 		if len(incomingMailApiKey) >= 128 && len(outgoingMailApiKey) >= 128 {
-			a.ApiConfiguration.ChangeIncomingMailApiKey(incomingMailApiKey)
-			a.ApiConfiguration.ChangeOutgoingMailApiKey(outgoingMailApiKey)
+			err := a.ApiConfiguration.ChangeIncomingMailApiKey(incomingMailApiKey)
+			if err != nil {
+				http.Redirect(w, r, "/admin", http.StatusInternalServerError)
+				a.Logger.LogError("AdminSetApiKeysHandler", err)
+				return
+			}
+			err = a.ApiConfiguration.ChangeOutgoingMailApiKey(outgoingMailApiKey)
+			if err != nil {
+				http.Redirect(w, r, "/admin", http.StatusInternalServerError)
+				a.Logger.LogError("AdminSetApiKeysHandler", err)
+				return
+			}
 			http.Redirect(w, r, "/admin", 200)
 		} else {
 			http.Redirect(w, r, "/admin", http.StatusBadRequest)
