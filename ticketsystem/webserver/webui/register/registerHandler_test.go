@@ -4,6 +4,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -39,7 +40,9 @@ func TestRegisterHandler_ServeHTTPPostRegisteringData_ValidRequest_RedirectedToL
 
 	handler := http.HandlerFunc(testee.ServeHTTPPostRegisteringData)
 
-	handler.ServeHTTP(rr, req)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false,1)
+	handler.ServeHTTP(rr, req.WithContext(ctx))
+
 	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
 	assert.Equal(t, "/login", rr.Header().Get("location"), "User should be redirected to url \"/login\"")
 
@@ -71,7 +74,9 @@ func TestRegisterHandler_ServeHTTPPostRegisteringData_WrongRequestMethod(t *test
 
 	handler := http.HandlerFunc(testee.ServeHTTPPostRegisteringData)
 
-	handler.ServeHTTP(rr, req)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false,1)
+	handler.ServeHTTP(rr, req.WithContext(ctx))
+
 	assert.Equal(t, http.StatusMethodNotAllowed, rr.Code, "Status code 405 should be returned")
 
 	mockedUserContext.AssertExpectations(t)
@@ -103,7 +108,8 @@ func TestRegisterHandler_ServeHTTPPostRegisteringData_UnsuccessfulRegistering_Re
 
 	handler := http.HandlerFunc(testee.ServeHTTPPostRegisteringData)
 
-	handler.ServeHTTP(rr, req)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false,1)
+	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	rr.Result()
 
@@ -139,7 +145,8 @@ func TestRegisterHandler_ServeHTTPPostRegisteringData_ContextReturnError_Redirec
 
 	handler := http.HandlerFunc(testee.ServeHTTPPostRegisteringData)
 
-	handler.ServeHTTP(rr, req)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false,1)
+	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	rr.Result()
 
@@ -170,7 +177,9 @@ func TestRegisterHandler_ServeHTTPGetRegisterPage_ValidRequest(t *testing.T) {
 
 	handler := http.HandlerFunc(testee.ServeHTTPGetRegisterPage)
 
-	handler.ServeHTTP(rr, req)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false,1)
+	handler.ServeHTTP(rr, req.WithContext(ctx))
+
 	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
 
 	mockedTemplateManager.AssertExpectations(t)
@@ -195,7 +204,9 @@ func TestRegisterHandler_ServeHTTPGetRegisterPage_WrongRequestMethod(t *testing.
 
 	handler := http.HandlerFunc(testee.ServeHTTPGetRegisterPage)
 
-	handler.ServeHTTP(rr, req)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, 1)
+	handler.ServeHTTP(rr, req.WithContext(ctx))
+
 	assert.Equal(t, 405, rr.Code, "Status code 405 should be returned")
 
 	mockedTemplateManager.AssertExpectations(t)
@@ -222,7 +233,9 @@ func TestRegisterHandler_ServeHTTPGetRegisterPage_ContextError(t *testing.T) {
 
 	handler := http.HandlerFunc(testee.ServeHTTPGetRegisterPage)
 
-	handler.ServeHTTP(rr, req)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, 1)
+	handler.ServeHTTP(rr, req.WithContext(ctx))
+
 	assert.Equal(t, 500, rr.Code, "Status code 500 should be returned")
 
 	mockedTemplateManager.AssertExpectations(t)
@@ -249,9 +262,44 @@ func TestRegisterHandler_ServeHTTPGetRegisterPage_RegisteringFailed(t *testing.T
 
 	handler := http.HandlerFunc(testee.ServeHTTPGetRegisterPage)
 
-	handler.ServeHTTP(rr, req)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, 1)
+	handler.ServeHTTP(rr, req.WithContext(ctx))
+
 	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
 
 	mockedTemplateManager.AssertExpectations(t)
 }
+
+/*
+	The User should be redirected to the index page if he is already logged in.
+	The User should log out before registering a new user.
+*/
+func TestRegisterHandler_ServeHTTPGetRegisterPage_UserAlreadyLoggedIn_Redirect(t *testing.T) {
+	req, err := http.NewRequest("GET", "/register", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testLogger := testhelpers.GetTestLogger()
+
+	mockedTemplateManager := new(templateManager.MockedTemplateManager)
+
+	mockedTemplateManager.On("RenderTemplate", mock.Anything, mock.Anything, mock.Anything).Return(nil)
+
+	rr := httptest.NewRecorder()
+
+	testee := RegisterHandler{Logger: testLogger, TemplateManager: mockedTemplateManager}
+
+	handler := http.HandlerFunc(testee.ServeHTTPGetRegisterPage)
+
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+	handler.ServeHTTP(rr, req.WithContext(ctx))
+
+	assert.Equal(t, http.StatusSeeOther, rr.Code, "Status code 303 should be returned")
+	assert.Equal(t, "/", rr.Header().Get("location"), "User should be redirected to url \"/\"")
+
+
+	mockedTemplateManager.AssertExpectations(t)
+}
+
 
