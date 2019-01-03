@@ -42,7 +42,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	http.HandleFunc("/register", registerHandler.ServeHTTPGetRegisterPage)
 	http.HandleFunc("/user_register", registerHandler.ServeHTTPPostRegisteringData)
 
-	loginHandler := login.LoginHandler{UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
+	loginHandler := login.LoginHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
 	http.HandleFunc("/login", loginHandler.ServeHTTPGetLoginPage)
 	http.HandleFunc("/user_login", loginHandler.ServeHTTPPostLoginData)
 
