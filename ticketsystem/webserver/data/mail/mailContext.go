@@ -280,7 +280,7 @@ func (t *MailManager) readUnAcknowledgeMailsFile(folderPath string) error {
 */
 func (t *MailManager) persistMailToDisk(mailToSent Mail) error {
 	if len(mailToSent.Headers) == 0 {
-		mailToSent.Headers = make([]string,0)
+		mailToSent.Headers = make([]string, 0)
 	}
 	jsonData, err := json.MarshalIndent(mailToSent, "", "    ")
 	if err != nil {
@@ -294,7 +294,7 @@ func (t *MailManager) persistMailToDisk(mailToSent Mail) error {
 */
 func (t *MailManager) persistUnAcknowledgedMailState() error {
 	if len(t.unAcknowledgedMails) == 0 {
-		t.unAcknowledgedMails = make([]string,0)
+		t.unAcknowledgedMails = make([]string, 0)
 	}
 	jsonData, err := json.Marshal(t.unAcknowledgedMails)
 	if err != nil {

@@ -18,10 +18,10 @@ import (
 	A handler for incoming mails.
 */
 type IncomingMailHandler struct {
-	Logger        logging.Logger
-	MailContext   mail.MailContext
-	TicketContext ticket.TicketContext
-	UserContext   user.UserContext
+	Logger            logging.Logger
+	MailContext       mail.MailContext
+	TicketContext     ticket.TicketContext
+	UserContext       user.UserContext
 	MailRepliesFilter AutomaticRepliesFilter
 }
 
@@ -89,7 +89,7 @@ func (h *IncomingMailHandler) handleIncomingMails(data []mail.Mail) error {
 	mailIdExtractor := newMailIdExtractor()
 	for _, incomingMail := range data {
 		if h.MailRepliesFilter.IsAutomaticResponse(incomingMail) {
-			h.Logger.LogWarning("IncomingMailHandler", "Ignoring mail with id " + incomingMail.Id + " because" +
+			h.Logger.LogWarning("IncomingMailHandler", "Ignoring mail with id "+incomingMail.Id+" because"+
 				"it is a automatic reply")
 			continue
 		}

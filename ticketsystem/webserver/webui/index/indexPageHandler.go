@@ -12,8 +12,8 @@ import (
 	Structure for the Index Page Handler.
 */
 type IndexPageHandler struct {
-	Logger		logging.Logger
-	TemplateManager	templateManager.TemplateContext
+	Logger          logging.Logger
+	TemplateManager templateManager.TemplateContext
 }
 
 /*

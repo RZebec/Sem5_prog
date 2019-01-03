@@ -17,12 +17,12 @@ import (
 )
 
 type HandlerManager struct {
-	UserContext   user.UserContext
-	TicketContext ticket.TicketContext
-	Config        config.Configuration
-	Logger        logging.Logger
-	ApiConfiguration	config.ApiContext
-	TemplateManager		templateManager.TemplateContext
+	UserContext      user.UserContext
+	TicketContext    ticket.TicketContext
+	Config           config.Configuration
+	Logger           logging.Logger
+	ApiConfiguration config.ApiContext
+	TemplateManager  templateManager.TemplateContext
 }
 
 func (handlerManager *HandlerManager) RegisterHandlers() {
@@ -56,12 +56,12 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	http.HandleFunc("/admin", adminPageAuthenticationWrapper.ServeHTTP)
 
 	adminSetApiKeysHandler := admin.AdminSetApiKeysHandler{Logger: handlerManager.Logger, ApiConfiguration: handlerManager.ApiConfiguration}
-	adminSetApiKeysWrapper := wrappers.AdminWrapper{Next: adminSetApiKeysHandler, UserContext: handlerManager.UserContext,  Logger: handlerManager.Logger}
+	adminSetApiKeysWrapper := wrappers.AdminWrapper{Next: adminSetApiKeysHandler, UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
 	adminSetApiKeysAuthenticationWrapper := wrappers.EnforceAuthenticationWrapper{Next: adminSetApiKeysWrapper, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/set_api_keys", adminSetApiKeysAuthenticationWrapper.ServeHTTP)
 
 	adminUnlockUserHandler := admin.AdminUnlockUserHandler{UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
-	adminUnlockUserWrapper := wrappers.AdminWrapper{Next: adminUnlockUserHandler, UserContext: handlerManager.UserContext,  Logger: handlerManager.Logger}
+	adminUnlockUserWrapper := wrappers.AdminWrapper{Next: adminUnlockUserHandler, UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
 	adminUnlockUserAuthenticationWrapper := wrappers.EnforceAuthenticationWrapper{Next: adminUnlockUserWrapper, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/unlock_user", adminUnlockUserAuthenticationWrapper.ServeHTTP)
 

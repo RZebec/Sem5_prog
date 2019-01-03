@@ -2,8 +2,8 @@ package pages
 
 type BasePageData struct {
 	UserIsAuthenticated bool
-	UserIsAdmin bool
-	Active string
+	UserIsAdmin         bool
+	Active              string
 }
 
 /*

@@ -11,13 +11,13 @@ import (
 
 /*
 	A request for a admin should be relayed to the next handler.
- */
+*/
 func TestAdminWrapper_ServeHTTP_IsAdmin(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	nextHandler := testhelpers.LoggingHTPPHandler{}
 	testee := AdminWrapper{UserContext: mockedUserContext,
 		Logger: testhelpers.GetTestLogger(),
-		Next: &nextHandler}
+		Next:   &nextHandler}
 
 	req, err := http.NewRequest("GET", "/test", nil)
 	if err != nil {
@@ -38,13 +38,13 @@ func TestAdminWrapper_ServeHTTP_IsAdmin(t *testing.T) {
 
 /*
 	A request for non-admin should not be relayed.
- */
+*/
 func TestAdminWrapper_ServeHTTP_IsNoAdmin(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	nextHandler := testhelpers.LoggingHTPPHandler{}
 	testee := AdminWrapper{UserContext: mockedUserContext,
 		Logger: testhelpers.GetTestLogger(),
-		Next: &nextHandler}
+		Next:   &nextHandler}
 
 	req, err := http.NewRequest("GET", "/test", nil)
 	if err != nil {
@@ -66,13 +66,13 @@ func TestAdminWrapper_ServeHTTP_IsNoAdmin(t *testing.T) {
 
 /*
 	A request without authentication info should not be relayed to the next handler.
- */
+*/
 func TestAdminWrapper_ServeHTTP_NoValuesInContextSet(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	nextHandler := testhelpers.LoggingHTPPHandler{}
 	testee := AdminWrapper{UserContext: mockedUserContext,
 		Logger: testhelpers.GetTestLogger(),
-		Next: &nextHandler}
+		Next:   &nextHandler}
 
 	req, err := http.NewRequest("GET", "/test", nil)
 	if err != nil {

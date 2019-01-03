@@ -4,7 +4,7 @@ import "github.com/stretchr/testify/mock"
 
 /*
 	A mocked api configuration.
- */
+*/
 type MockedApiConfiguration struct {
 	mock.Mock
 }

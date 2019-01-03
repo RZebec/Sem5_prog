@@ -12,7 +12,7 @@ const isAuthenticatedKey = "IsAuthenticated"
 
 /*
 	Inject the context with authentication info.
- */
+*/
 func NewContextWithAuthenticationInfo(ctx context.Context, isAuthenticated bool, isAdmin bool) context.Context {
 	ctx = context.WithValue(ctx, isAdminKey, isAdmin)
 	return context.WithValue(ctx, isAuthenticatedKey, isAuthenticated)
@@ -20,7 +20,7 @@ func NewContextWithAuthenticationInfo(ctx context.Context, isAuthenticated bool,
 
 /*
 	Return true, if the user is a admin.
- */
+*/
 func IsAdmin(ctx context.Context) bool {
 	value, ok := ctx.Value(isAdminKey).(bool)
 	if ok {
@@ -32,7 +32,7 @@ func IsAdmin(ctx context.Context) bool {
 
 /*
 	Returns true if the user is authenticated.
- */
+*/
 func IsAuthenticated(ctx context.Context) bool {
 	value, ok := ctx.Value(isAuthenticatedKey).(bool)
 	if ok {
@@ -53,7 +53,7 @@ func UserIsLoggedInCheck(r *http.Request, userContext user.UserContext, accessTo
 
 	if err != nil {
 		logger.LogError("Login", err)
-		return false,  false,""
+		return false, false, ""
 	}
 
 	token = cookie.Value

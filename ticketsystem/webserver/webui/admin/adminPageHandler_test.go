@@ -40,7 +40,7 @@ func TestAdminPageHandler_ServeHTTP(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
 	mockedUserContext.On("GetAllLockedUsers").Return([]user.User{{"Test@Test.de", 1,
-	"Test","Test", user.RegisteredUser, user.WaitingToBeUnlocked}})
+		"Test", "Test", user.RegisteredUser, user.WaitingToBeUnlocked}})
 
 	rr := httptest.NewRecorder()
 
@@ -81,7 +81,7 @@ func TestAdminPageHandler_ServeHTTP_RenderTemplateError_500Returned(t *testing.T
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
 	mockedUserContext.On("GetAllLockedUsers").Return([]user.User{{"Test@Test.de", 1,
-		"Test","Test", user.RegisteredUser, user.WaitingToBeUnlocked}})
+		"Test", "Test", user.RegisteredUser, user.WaitingToBeUnlocked}})
 
 	testee := AdminPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager, ApiContext: mockedApiContext}
 
@@ -114,7 +114,7 @@ func TestAdminPageHandler_ServeHTTP_WrongRequest(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
 	mockedUserContext.On("GetAllLockedUsers").Return([]user.User{{"Test@Test.de", 1,
-		"Test","Test", user.RegisteredUser, user.WaitingToBeUnlocked}})
+		"Test", "Test", user.RegisteredUser, user.WaitingToBeUnlocked}})
 
 	testee := AdminPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager, ApiContext: mockedApiContext}
 

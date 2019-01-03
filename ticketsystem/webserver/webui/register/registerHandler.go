@@ -16,10 +16,10 @@ import (
 	Structure for the Register handler.
 */
 type RegisterHandler struct {
-	UserContext user.UserContext
-	Config      config.Configuration
-	Logger      logging.Logger
-	TemplateManager	templateManager.TemplateContext
+	UserContext     user.UserContext
+	Config          config.Configuration
+	Logger          logging.Logger
+	TemplateManager templateManager.TemplateContext
 }
 
 /*

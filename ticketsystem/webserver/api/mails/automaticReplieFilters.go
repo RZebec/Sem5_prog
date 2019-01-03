@@ -11,33 +11,31 @@ type AutomaticRepliesFilter interface {
 	IsAutomaticResponse(mail mail.Mail) bool
 }
 
-
 /*
 	A mail filter struct.
- */
+*/
 type RepliesFilter struct {
-
 }
 
 /*
 	Check if a mail is a automatic response.
- */
-func (r *RepliesFilter) IsAutomaticResponse (mail mail.Mail) bool{
-	for _, header := range mail.Headers{
+*/
+func (r *RepliesFilter) IsAutomaticResponse(mail mail.Mail) bool {
+	for _, header := range mail.Headers {
 		if strings.Contains(strings.ToLower(header), "x-autorespond") {
 			return true
 		}
 		if strings.Contains(strings.ToLower(header), "precedence") {
 			splitted := strings.Split(header, ":")
-			if len(splitted)  == 2 {
-				if strings.ToLower(splitted[1]) == "auto_reply" || strings.ToLower(splitted[1]) == "bulk" ||  strings.ToLower(splitted[1]) == "junk" {
+			if len(splitted) == 2 {
+				if strings.ToLower(splitted[1]) == "auto_reply" || strings.ToLower(splitted[1]) == "bulk" || strings.ToLower(splitted[1]) == "junk" {
 					return true
 				}
 			}
 		}
 		if strings.Contains(strings.ToLower(header), "auto-submitted") {
 			splitted := strings.Split(header, ":")
-			if len(splitted)  == 2 {
+			if len(splitted) == 2 {
 				if strings.ToLower(splitted[1]) == "auto-replied" {
 					return true
 				}

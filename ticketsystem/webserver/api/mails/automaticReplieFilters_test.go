@@ -8,7 +8,7 @@ import (
 
 /*
 	Specified header should be filtered out.
- */
+*/
 func TestRepliesFilter_IsAutomaticResponse_AutoRespondHeaderSet(t *testing.T) {
 	// Filter only looking at headers, so the rest can be ignored:
 	testMail := mail.Mail{Headers: []string{"x-autorespond"}}
@@ -19,7 +19,7 @@ func TestRepliesFilter_IsAutomaticResponse_AutoRespondHeaderSet(t *testing.T) {
 
 /*
 	Specified header should be filtered out.
- */
+*/
 func TestRepliesFilter_IsAutomaticResponse_PrecendenceSetToAutoReply(t *testing.T) {
 	// Filter only looking at headers, so the rest can be ignored:
 	testMail := mail.Mail{Headers: []string{"x-precedence:auto_reply"}}
@@ -30,7 +30,7 @@ func TestRepliesFilter_IsAutomaticResponse_PrecendenceSetToAutoReply(t *testing.
 
 /*
 	Specified header should be filtered out.
- */
+*/
 func TestRepliesFilter_IsAutomaticResponse_PrecendenceSetToBulk(t *testing.T) {
 	// Filter only looking at headers, so the rest can be ignored:
 	testMail := mail.Mail{Headers: []string{"precedence:bulk"}}
@@ -41,7 +41,7 @@ func TestRepliesFilter_IsAutomaticResponse_PrecendenceSetToBulk(t *testing.T) {
 
 /*
 	Specified header should be filtered out.
- */
+*/
 func TestRepliesFilter_IsAutomaticResponse_PrecendenceSetToJunk(t *testing.T) {
 	// Filter only looking at headers, so the rest can be ignored:
 	testMail := mail.Mail{Headers: []string{"precedence:junk"}}
@@ -52,7 +52,7 @@ func TestRepliesFilter_IsAutomaticResponse_PrecendenceSetToJunk(t *testing.T) {
 
 /*
 	Specified header should be filtered out.
- */
+*/
 func TestRepliesFilter_IsAutomaticResponse_AutoSubmittedSetToAutoReplied(t *testing.T) {
 	// Filter only looking at headers, so the rest can be ignored:
 	testMail := mail.Mail{Headers: []string{"auto-submitted:auto-replied"}}
@@ -63,7 +63,7 @@ func TestRepliesFilter_IsAutomaticResponse_AutoSubmittedSetToAutoReplied(t *test
 
 /*
 	Valid mail should not be filtered.
- */
+*/
 func TestRepliesFilter_IsAutomaticResponse_ReturnsFalse(t *testing.T) {
 	// Filter only looking at headers, so the rest can be ignored:
 	testMail := mail.Mail{Headers: []string{}}

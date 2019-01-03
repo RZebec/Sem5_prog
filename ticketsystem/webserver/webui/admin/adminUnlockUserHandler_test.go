@@ -151,4 +151,3 @@ func TestAdminUnlockUserHandle_ServeHTTP_UnlockAccount_ContextReturnError_500Ret
 
 	mockedUserContext.AssertExpectations(t)
 }
-

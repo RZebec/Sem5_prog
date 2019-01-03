@@ -54,4 +54,3 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		}
 	}
 }
-

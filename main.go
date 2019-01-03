@@ -94,12 +94,12 @@ func main() {
 	}
 
 	handlerManager := webui.HandlerManager{
-		UserContext:   &userContext,
-		TicketContext: &ticketContext,
-		Config:        configuration,
-		Logger:        logger,
+		UserContext:      &userContext,
+		TicketContext:    &ticketContext,
+		Config:           configuration,
+		Logger:           logger,
 		ApiConfiguration: apiConfig,
-		TemplateManager: &templateManager,
+		TemplateManager:  &templateManager,
 	}
 
 	templateManager.LoadTemplates(logger)
@@ -113,7 +113,7 @@ func main() {
 }
 
 func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mail.MailContext, ticketContext ticket.TicketContext,
-		userContext user.UserContext, logger logging.Logger) http.Handler {
+	userContext user.UserContext, logger logging.Logger) http.Handler {
 	incomingMailHandler := mails.IncomingMailHandler{Logger: logger, MailContext: mailContext, TicketContext: ticketContext,
 		UserContext: userContext, MailRepliesFilter: &mails.RepliesFilter{}}
 	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,

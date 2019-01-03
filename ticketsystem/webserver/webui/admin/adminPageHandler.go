@@ -14,19 +14,19 @@ import (
 	Structure for the Login handler.
 */
 type AdminPageHandler struct {
-	UserContext user.UserContext
-	Logger      logging.Logger
-	TemplateManager	templateManager.TemplateContext
-	ApiContext	config.ApiContext
+	UserContext     user.UserContext
+	Logger          logging.Logger
+	TemplateManager templateManager.TemplateContext
+	ApiContext      config.ApiContext
 }
 
 /*
 	Structure for the Login Page Data.
 */
 type adminPageData struct {
-	Users 		[]user.User
-	IncomingMailApiKey	string
-	OutgoingMailApiKey	string
+	Users              []user.User
+	IncomingMailApiKey string
+	OutgoingMailApiKey string
 	pages.BasePageData
 }
 
@@ -48,7 +48,7 @@ func (a AdminPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			OutgoingMailApiKey: outgoingMailApiKey,
 		}
 		data.UserIsAdmin = wrappers.IsAdmin(r.Context())
-		data.UserIsAuthenticated =  wrappers.IsAuthenticated(r.Context())
+		data.UserIsAuthenticated = wrappers.IsAuthenticated(r.Context())
 		data.Active = "admin"
 
 		templateRenderError := a.TemplateManager.RenderTemplate(w, "AdminPage", data)

@@ -18,9 +18,9 @@ import (
 	Structure for the Login handler.
 */
 type LoginHandler struct {
-	UserContext user.UserContext
-	Logger      logging.Logger
-	TemplateManager	templateManager.TemplateContext
+	UserContext     user.UserContext
+	Logger          logging.Logger
+	TemplateManager templateManager.TemplateContext
 }
 
 /*
@@ -72,6 +72,7 @@ func (l LoginHandler) ServeHTTPGetLoginPage(w http.ResponseWriter, r *http.Reque
 
 	if isUserLoggedIn {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
 	}
 
 	queryValues := r.URL.Query()
@@ -82,7 +83,7 @@ func (l LoginHandler) ServeHTTPGetLoginPage(w http.ResponseWriter, r *http.Reque
 	}
 
 	data := loginPageData{
-			IsLoginFailed: isLoginFailed,
+		IsLoginFailed: isLoginFailed,
 	}
 	data.UserIsAuthenticated = wrappers.IsAuthenticated(r.Context())
 	data.UserIsAdmin = userIsAdmin

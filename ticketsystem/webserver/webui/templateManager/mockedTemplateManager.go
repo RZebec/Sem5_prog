@@ -9,7 +9,7 @@ import (
 /*
 	A mocked template manager.
 */
-type MockedTemplateManager struct{
+type MockedTemplateManager struct {
 	mock.Mock
 }
 
@@ -28,4 +28,3 @@ func (m *MockedTemplateManager) RenderTemplate(w http.ResponseWriter, name strin
 	args := m.Called(w, name, data)
 	return args.Error(0)
 }
-

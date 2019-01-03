@@ -994,7 +994,7 @@ func TestLoginSystem_DisableVacationMode_WrongState(t *testing.T) {
 
 /*
 	Getting a existing user should be possible.
- */
+*/
 func TestLoginSystem_GetUserById(t *testing.T) {
 	testee := LoginSystem{}
 
@@ -1014,7 +1014,7 @@ func TestLoginSystem_GetUserById(t *testing.T) {
 
 /*
 	Getting a non existing user should return false.
- */
+*/
 func TestLoginSystem_GetUserById_UserIdDoesNotExist(t *testing.T) {
 	testee := LoginSystem{}
 
@@ -1032,10 +1032,9 @@ func TestLoginSystem_GetUserById_UserIdDoesNotExist(t *testing.T) {
 	assert.Equal(t, "", user.Mail, "Correct user should be returned")
 }
 
-
 /*
 	Getting a existing user should be possible.
- */
+*/
 func TestLoginSystem_GetUserForEmail(t *testing.T) {
 	testee := LoginSystem{}
 
@@ -1055,7 +1054,7 @@ func TestLoginSystem_GetUserForEmail(t *testing.T) {
 
 /*
 	Getting a non existing user should return false.
- */
+*/
 func TestLoginSystem_GetUserForEmail_UserIdDoesNotExist(t *testing.T) {
 	testee := LoginSystem{}
 

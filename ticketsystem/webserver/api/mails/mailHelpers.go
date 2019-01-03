@@ -8,15 +8,15 @@ import (
 
 /*
 	The mailIdExtractor
- */
+*/
 type mailIdExtractor struct {
 	regex *regexp.Regexp
 }
 
 /*
 	Create a new mail id extractor.
- */
-func newMailIdExtractor() *mailIdExtractor{
+*/
+func newMailIdExtractor() *mailIdExtractor {
 	reg, _ := regexp.Compile(`<\d+>`)
 	ext := mailIdExtractor{}
 	ext.regex = reg
@@ -25,16 +25,16 @@ func newMailIdExtractor() *mailIdExtractor{
 
 /*
 	Get the ticket id from a string.
- */
-func (m *mailIdExtractor) getTicketId(text string) (bool, int){
+*/
+func (m *mailIdExtractor) getTicketId(text string) (bool, int) {
 	hasId := m.regex.MatchString(text)
 	if hasId {
 		value := m.regex.FindStringSubmatch(text)
 		if len(value) > 0 {
 			stringValue := value[0]
-			stringValue = strings.Replace(stringValue, "<", "",1)
-			stringValue = strings.Replace(stringValue, ">", "",1)
-			inVal, err :=strconv.Atoi(stringValue)
+			stringValue = strings.Replace(stringValue, "<", "", 1)
+			stringValue = strings.Replace(stringValue, ">", "", 1)
+			inVal, err := strconv.Atoi(stringValue)
 
 			if err != nil {
 				return false, -1

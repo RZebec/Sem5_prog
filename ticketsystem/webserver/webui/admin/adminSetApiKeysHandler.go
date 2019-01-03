@@ -11,8 +11,8 @@ import (
 	Structure for the Login handler.
 */
 type AdminSetApiKeysHandler struct {
-	ApiConfiguration	config.ApiContext
-	Logger      		logging.Logger
+	ApiConfiguration config.ApiContext
+	Logger           logging.Logger
 }
 
 /*
@@ -47,4 +47,3 @@ func (a AdminSetApiKeysHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		}
 	}
 }
-

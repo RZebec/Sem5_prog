@@ -123,7 +123,7 @@ func (m *AckManager) writeDataToFile() error {
 	m.fileAccessMutex.Lock()
 	defer m.fileAccessMutex.Unlock()
 	if len(m.acknowledgments) == 0 {
-		m.acknowledgments = make([]mail.Acknowledgment,0)
+		m.acknowledgments = make([]mail.Acknowledgment, 0)
 	}
 	jsonData, err := json.MarshalIndent(m.acknowledgments, "", "    ")
 	if err != nil {

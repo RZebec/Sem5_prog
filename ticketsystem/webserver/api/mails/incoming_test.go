@@ -19,12 +19,11 @@ import (
 	"time"
 )
 
-
 type MockedMailFilter struct {
 	mock.Mock
 }
 
-func (m *MockedMailFilter)IsAutomaticResponse(mail mail.Mail) bool {
+func (m *MockedMailFilter) IsAutomaticResponse(mail mail.Mail) bool {
 	args := m.Called(mail)
 	return args.Bool(0)
 }
@@ -36,7 +35,7 @@ func getTestHandlerWithMockedData() IncomingMailHandler {
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
-	mockedMailFilter:= new(MockedMailFilter)
+	mockedMailFilter := new(MockedMailFilter)
 	mockedMailFilter.On("IsAutomaticResponse", mock.Anything).Return(false)
 	return IncomingMailHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext, TicketContext: mockedTicketContext,
 		UserContext: mockedUserContext, MailRepliesFilter: mockedMailFilter}
@@ -279,7 +278,6 @@ func TestIncomingMailHandler_ServeHTTP_MailFiltered(t *testing.T) {
 	mockedFilter := new(MockedMailFilter)
 	mockedFilter.On("IsAutomaticResponse", mock.Anything).Return(true)
 	testee.MailRepliesFilter = mockedFilter
-
 
 	jsonData, _ := json.Marshal(getTestMails())
 

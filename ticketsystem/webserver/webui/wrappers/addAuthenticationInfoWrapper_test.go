@@ -14,13 +14,13 @@ import (
 
 /*
 	Correct authentication info should be added.
- */
-func TestAddAuthenticationInfoWrapper_ServeHTTP_UserIsAuthenticatedAndAdmin(t *testing.T){
+*/
+func TestAddAuthenticationInfoWrapper_ServeHTTP_UserIsAuthenticatedAndAdmin(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	nextHandler := testhelpers.LoggingHTPPHandler{}
 	testee := AddAuthenticationInfoWrapper{UserContext: mockedUserContext,
 		Logger: testhelpers.GetTestLogger(),
-		Next: &nextHandler}
+		Next:   &nextHandler}
 
 	// Mock the context:
 	mockedUserContext.On("RefreshToken", mock.Anything).Return("tete", nil)
@@ -42,7 +42,7 @@ func TestAddAuthenticationInfoWrapper_ServeHTTP_UserIsAuthenticatedAndAdmin(t *t
 	assert.True(t, nextHandler.HasBeenCalled, "The next handler should be called")
 	isAdmin := IsAdmin(nextHandler.Request.Context())
 	isAuthenticated := IsAuthenticated(nextHandler.Request.Context())
-	assert.True(t,isAdmin, "The next handler should get the info that the user is a admin")
+	assert.True(t, isAdmin, "The next handler should get the info that the user is a admin")
 	assert.True(t, isAuthenticated, "The next handler should get the info that the user is authenticated")
 
 	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
@@ -51,13 +51,13 @@ func TestAddAuthenticationInfoWrapper_ServeHTTP_UserIsAuthenticatedAndAdmin(t *t
 
 /*
 	Combination if user is authenticated but no admin should work.
- */
-func TestAddAuthenticationInfoWrapper_ServeHTTP_UserIsAuthenticatedAndNoAdmin(t *testing.T){
+*/
+func TestAddAuthenticationInfoWrapper_ServeHTTP_UserIsAuthenticatedAndNoAdmin(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	nextHandler := testhelpers.LoggingHTPPHandler{}
 	testee := AddAuthenticationInfoWrapper{UserContext: mockedUserContext,
 		Logger: testhelpers.GetTestLogger(),
-		Next: &nextHandler}
+		Next:   &nextHandler}
 
 	// Mock the context:
 	mockedUserContext.On("RefreshToken", mock.Anything).Return("tete", nil)
@@ -80,7 +80,7 @@ func TestAddAuthenticationInfoWrapper_ServeHTTP_UserIsAuthenticatedAndNoAdmin(t 
 	isAdmin := IsAdmin(nextHandler.Request.Context())
 	isAuthenticated := IsAuthenticated(nextHandler.Request.Context())
 	// The user is no admin:
-	assert.False(t,isAdmin, "The next handler should get the info that the user is a no admin")
+	assert.False(t, isAdmin, "The next handler should get the info that the user is a no admin")
 	assert.True(t, isAuthenticated, "The next handler should get the info that the user is authenticated")
 
 	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
@@ -89,13 +89,13 @@ func TestAddAuthenticationInfoWrapper_ServeHTTP_UserIsAuthenticatedAndNoAdmin(t 
 
 /*
 	A user which is not authenticated.
- */
-func TestAddAuthenticationInfoWrapper_ServeHTTP_NotAuthenticated(t *testing.T){
+*/
+func TestAddAuthenticationInfoWrapper_ServeHTTP_NotAuthenticated(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	nextHandler := testhelpers.LoggingHTPPHandler{}
 	testee := AddAuthenticationInfoWrapper{UserContext: mockedUserContext,
 		Logger: testhelpers.GetTestLogger(),
-		Next: &nextHandler}
+		Next:   &nextHandler}
 
 	// Mock the context:
 	mockedUserContext.On("SessionIsValid", mock.Anything).Return(false, -1,
@@ -117,7 +117,7 @@ func TestAddAuthenticationInfoWrapper_ServeHTTP_NotAuthenticated(t *testing.T){
 	isAdmin := IsAdmin(nextHandler.Request.Context())
 	isAuthenticated := IsAuthenticated(nextHandler.Request.Context())
 	// The user is not authenticated:
-	assert.False(t,isAdmin, "The next handler should get the info that the user is a no admin")
+	assert.False(t, isAdmin, "The next handler should get the info that the user is a no admin")
 	assert.False(t, isAuthenticated, "The next handler should get the info that the user is not authenticated")
 
 	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
@@ -126,13 +126,13 @@ func TestAddAuthenticationInfoWrapper_ServeHTTP_NotAuthenticated(t *testing.T){
 
 /*
 	A missing cookie should result in a non-authenticated user.
- */
-func TestAddAuthenticationInfoWrapper_ServeHTTP_NotCookieSet(t *testing.T){
+*/
+func TestAddAuthenticationInfoWrapper_ServeHTTP_NotCookieSet(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	nextHandler := testhelpers.LoggingHTPPHandler{}
 	testee := AddAuthenticationInfoWrapper{UserContext: mockedUserContext,
 		Logger: testhelpers.GetTestLogger(),
-		Next: &nextHandler}
+		Next:   &nextHandler}
 
 	req, err := http.NewRequest("GET", shared.ReceivePath, nil)
 	if err != nil {
@@ -149,7 +149,7 @@ func TestAddAuthenticationInfoWrapper_ServeHTTP_NotCookieSet(t *testing.T){
 	isAdmin := IsAdmin(nextHandler.Request.Context())
 	isAuthenticated := IsAuthenticated(nextHandler.Request.Context())
 	// The user is not authenticated:
-	assert.False(t,isAdmin, "The next handler should get the info that the user is a no admin")
+	assert.False(t, isAdmin, "The next handler should get the info that the user is a no admin")
 	assert.False(t, isAuthenticated, "The next handler should get the info that the user is not authenticated")
 
 	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
