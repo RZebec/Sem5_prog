@@ -1,14 +1,21 @@
 package templateManager
 
 /*
+	Data for the test page
+ */
+type testPageData struct {
+	Title string
+}
+
+/*
 	Expected result for the access denied page test.
 */
-var accessDeniedResultPage = `<!DOCTYPE html>
+var testPage = `<!DOCTYPE html>
 	<html>
 
 	<head>
 		<title>
-			 Access Denied 
+			 {{.Title}}
 		</title>
 		<link rel="stylesheet" href="/files/style/main">
 		 

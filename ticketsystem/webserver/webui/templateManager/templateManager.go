@@ -68,13 +68,30 @@ func (t *TemplateManager) LoadTemplates(logger logging.Logger) (err error) {
 	if err != nil {
 		return err
 	}
-	// TODO: addTemplate errors werden ignoriert
-	t.addTemplate(pages.IndexPage, "IndexPage", baseTemplate, logger)
-	t.addTemplate(pages.RegisterPage, "RegisterPage", baseTemplate, logger)
-	t.addTemplate(pages.LoginPage, "LoginPage", baseTemplate, logger)
-	t.addTemplate(pages.AdminPage, "AdminPage", baseTemplate, logger)
-	t.addTemplate(pages.TicketExplorerPage, "TicketExplorerPage", baseTemplate, logger)
-	t.addTemplate(pages.TicketViewPage, "TicketViewPage", baseTemplate, logger)
+	err = t.addTemplate(pages.IndexPage, "IndexPage", baseTemplate, logger)
+	if err != nil {
+		return err
+	}
+	err = t.addTemplate(pages.RegisterPage, "RegisterPage", baseTemplate, logger)
+	if err != nil {
+		return err
+	}
+	err = t.addTemplate(pages.LoginPage, "LoginPage", baseTemplate, logger)
+	if err != nil {
+		return err
+	}
+	err = t.addTemplate(pages.AdminPage, "AdminPage", baseTemplate, logger)
+	if err != nil {
+		return err
+	}
+	err = t.addTemplate(pages.TicketExplorerPage, "TicketExplorerPage", baseTemplate, logger)
+	if err != nil {
+		return err
+	}
+	err = t.addTemplate(pages.TicketViewPage, "TicketViewPage", baseTemplate, logger)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -83,13 +100,18 @@ func (t *TemplateManager) LoadTemplates(logger logging.Logger) (err error) {
 	Helper function.
 	Adds a template to the template map with the corresponding name and template string.
 */
-func (t *TemplateManager) addTemplate(templateString string, templateName string, baseTemplate *template.Template, logger logging.Logger) {
+func (t *TemplateManager) addTemplate(templateString string, templateName string, baseTemplate *template.Template, logger logging.Logger) error {
 	var err error
+
+	if t.Templates == nil {
+		t.Templates = make(map[string]*template.Template)
+	}
 
 	t.Templates[templateName], err = baseTemplate.Clone()
 
 	if err != nil {
 		logger.LogError("Template", err)
+		return err
 	}
 
 	t.Templates[templateName].New(templateName)
@@ -98,7 +120,9 @@ func (t *TemplateManager) addTemplate(templateString string, templateName string
 
 	if err != nil {
 		logger.LogError("Template", err)
+		return err
 	}
+	return nil
 }
 
 /*
