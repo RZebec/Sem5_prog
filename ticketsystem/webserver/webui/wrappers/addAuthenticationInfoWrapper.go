@@ -21,7 +21,7 @@ type AddAuthenticationInfoWrapper struct {
 	The Authentication handler wrapper.
 */
 func (h AddAuthenticationInfoWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	userIsLoggedIn, isAdmin, token := UserIsLoggedInCheck(r, h.UserContext, shared.AccessTokenCookieName, h.Logger)
+	userIsLoggedIn, isAdmin, token, userId := UserIsLoggedInCheck(r, h.UserContext, shared.AccessTokenCookieName, h.Logger)
 
 	if userIsLoggedIn {
 		newToken, err := h.UserContext.RefreshToken(token)
@@ -32,6 +32,6 @@ func (h AddAuthenticationInfoWrapper) ServeHTTP(w http.ResponseWriter, r *http.R
 
 		helpers.SetCookie(w, shared.AccessTokenCookieName, newToken)
 	}
-	ctx := NewContextWithAuthenticationInfo(r.Context(), userIsLoggedIn, isAdmin)
+	ctx := NewContextWithAuthenticationInfo(r.Context(), userIsLoggedIn, isAdmin, userId)
 	h.Next.ServeHTTP(w, r.WithContext(ctx))
 }

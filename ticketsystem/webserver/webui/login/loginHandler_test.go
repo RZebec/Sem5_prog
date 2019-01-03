@@ -39,7 +39,7 @@ func TestLoginHandler_ServeHTTPGetLoginPage_UserNotLoggedIn(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTPGetLoginPage)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -69,7 +69,7 @@ func TestLoginHandler_ServeHTTPGetLoginPage_UserAlreadyLoggedIn(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTPGetLoginPage)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -105,7 +105,7 @@ func TestLoginHandler_ServeHTTPPostLoginData_LoginSuccessful(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTPPostLoginData)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, true)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, true, 1)
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -143,7 +143,7 @@ func TestLoginHandler_ServeHTTPPostLoginData_LoginFailed(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTPPostLoginData)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, true)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, true, 1)
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()

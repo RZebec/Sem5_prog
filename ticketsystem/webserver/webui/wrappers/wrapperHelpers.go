@@ -9,13 +9,15 @@ import (
 
 const isAdminKey = "IsAdmin"
 const isAuthenticatedKey = "IsAuthenticated"
+const userIdKey = "userId"
 
 /*
 	Inject the context with authentication info.
 */
-func NewContextWithAuthenticationInfo(ctx context.Context, isAuthenticated bool, isAdmin bool) context.Context {
+func NewContextWithAuthenticationInfo(ctx context.Context, isAuthenticated bool, isAdmin bool, userId int) context.Context {
 	ctx = context.WithValue(ctx, isAdminKey, isAdmin)
-	return context.WithValue(ctx, isAuthenticatedKey, isAuthenticated)
+	ctx = context.WithValue(ctx, isAuthenticatedKey, isAuthenticated)
+	return context.WithValue(ctx, userIdKey, userId)
 }
 
 /*
@@ -43,9 +45,21 @@ func IsAuthenticated(ctx context.Context) bool {
 }
 
 /*
+	Get the user Id.
+ */
+func GetUserId(ctx context.Context) int {
+	value, ok := ctx.Value(userIdKey).(int)
+	if ok {
+		return value
+	} else {
+		return -1
+	}
+}
+
+/*
 	Function used to check if a user is logged in and if the session of the aforementioned user is valid.
 */
-func UserIsLoggedInCheck(r *http.Request, userContext user.UserContext, accessTokenCookieName string, logger logging.Logger) (isUserLoggedIn bool, isAdmin bool, accessTokenValue string) {
+func UserIsLoggedInCheck(r *http.Request, userContext user.UserContext, accessTokenCookieName string, logger logging.Logger) (isUserLoggedIn bool, isAdmin bool, accessTokenValue string, userId int) {
 	userIsLoggedIn := false
 	token := ""
 
@@ -53,11 +67,11 @@ func UserIsLoggedInCheck(r *http.Request, userContext user.UserContext, accessTo
 
 	if err != nil {
 		logger.LogError("Login", err)
-		return false, false, ""
+		return false, false, "", -1
 	}
 
 	token = cookie.Value
-	userIsLoggedIn, _, _, role, err := userContext.SessionIsValid(token)
+	userIsLoggedIn, userId, _, role, err := userContext.SessionIsValid(token)
 
-	return userIsLoggedIn, role == user.Admin, token
+	return userIsLoggedIn, role == user.Admin, token, userId
 }
