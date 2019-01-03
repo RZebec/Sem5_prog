@@ -19,7 +19,7 @@ func TestLogoutHandler_ServeHTTP_UserWasLoggedIn(t *testing.T) {
 	testee := LogoutHandler{UserContext: mockedUserContext, Logger: testhelpers.GetTestLogger()}
 	mockedUserContext.On("Logout", cookieValue)
 
-	req, err := http.NewRequest("POST", "/logout", nil)
+	req, err := http.NewRequest("GET", "/logout", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -33,7 +33,7 @@ func TestLogoutHandler_ServeHTTP_UserWasLoggedIn(t *testing.T) {
 	resp := rr.Result()
 
 	newLocation := resp.Header.Get("location")
-	assert.Equal(t, http.StatusOK, resp.StatusCode, "Should return status code 200")
+	assert.Equal(t, http.StatusFound, resp.StatusCode, "Should return status code 302")
 	assert.Equal(t, "/", newLocation, "Should be redirected to /")
 
 	cookieExists, cookieValue := testhelpers.GetCookieValue(resp.Cookies(), shared.AccessTokenCookieName)
@@ -50,7 +50,7 @@ func TestLogoutHandler_ServeHTTP_UserWasNotLoggedIn(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	testee := LogoutHandler{UserContext: mockedUserContext, Logger: testhelpers.GetTestLogger()}
 
-	req, err := http.NewRequest("POST", "/logout", nil)
+	req, err := http.NewRequest("GET", "/logout", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -64,7 +64,7 @@ func TestLogoutHandler_ServeHTTP_UserWasNotLoggedIn(t *testing.T) {
 	resp := rr.Result()
 
 	newLocation := resp.Header.Get("location")
-	assert.Equal(t, http.StatusOK, resp.StatusCode, "Should return status code 200")
+	assert.Equal(t, http.StatusFound, resp.StatusCode, "Should return status code 302")
 	assert.Equal(t, "/", newLocation, "Should be redirected to /")
 
 	cookieExists, cookieValue := testhelpers.GetCookieValue(resp.Cookies(), shared.AccessTokenCookieName)

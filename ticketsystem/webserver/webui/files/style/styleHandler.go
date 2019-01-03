@@ -162,6 +162,18 @@ var tableStyle = `
         background-color: rgba(76, 175, 79, 0.466);
     }`
 
+var adminStyle = `
+    
+    div.main {
+		text-align: left;
+        width: 75em;
+        padding: 0.5em 1.5em 0.75em;
+        border: 2px solid gray;
+        border-radius: 10px;
+        float: left;
+        margin-top: 1.5em;
+    }`
+
 /*
 	The handler for the style(css) files.
 */
@@ -177,5 +189,7 @@ func HandelStyle(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(centerMain))
 	case "table":
 		w.Write([]byte(tableStyle))
+	case "admin":
+		w.Write([]byte(adminStyle))
 	}
 }

@@ -12,6 +12,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/logout"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/register"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/tickets"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"net/http"
 )
@@ -61,8 +62,28 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	http.HandleFunc("/set_api_keys", adminSetApiKeysAuthenticationWrapper.ServeHTTP)
 
 	adminUnlockUserHandler := admin.AdminUnlockUserHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
-	adminUnlockUserWrapper := wrappers.AdminWrapper{Next: adminUnlockUserHandler, UserContext: handlerManager.UserContext,  Logger: handlerManager.Logger}
+	adminUnlockUserWrapper := wrappers.AdminWrapper{Next: adminUnlockUserHandler, UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
 	adminUnlockUserAuthenticationWrapper := wrappers.EnforceAuthenticationWrapper{Next: adminUnlockUserWrapper, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/unlock_user", adminUnlockUserAuthenticationWrapper.ServeHTTP)
 
+	allTicketExplorerPageHandler := tickets.AllTicketsExplorerPageHandler{TicketContext: handlerManager.TicketContext, TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
+	allTicketExplorerPageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
+	allTicketExplorerPageHandlerWrapper.Next = allTicketExplorerPageHandler
+	allTicketExplorerPageHandlerWrapper.Logger = handlerManager.Logger
+	allTicketExplorerPageHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/all_tickets", allTicketExplorerPageHandlerWrapper.ServeHTTP)
+
+	openTicketExplorerPageHandler := tickets.OpenTicketsExplorerPageHandler{TicketContext: handlerManager.TicketContext, TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
+	openTicketExplorerPageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
+	openTicketExplorerPageHandlerWrapper.Next = openTicketExplorerPageHandler
+	openTicketExplorerPageHandlerWrapper.Logger = handlerManager.Logger
+	openTicketExplorerPageHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/open_tickets", openTicketExplorerPageHandlerWrapper.ServeHTTP)
+
+	userTicketExplorerPageHandler := tickets.UserTicketsExplorerPageHandler{TicketContext: handlerManager.TicketContext, TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
+	userTicketExplorerPageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
+	userTicketExplorerPageHandlerWrapper.Next = userTicketExplorerPageHandler
+	userTicketExplorerPageHandlerWrapper.Logger = handlerManager.Logger
+	userTicketExplorerPageHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/user_tickets", userTicketExplorerPageHandlerWrapper.ServeHTTP)
 }

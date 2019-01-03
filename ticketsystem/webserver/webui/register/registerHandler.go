@@ -76,10 +76,10 @@ func (l RegisterHandler) ServeHTTPGetRegisterPage(w http.ResponseWriter, r *http
 		}
 
 		queryValues := r.URL.Query()
-		isRegisteringFailedQueryValue := queryValues.Get("IsRegisteringFailed")
-		isRegisteringFailed, err := strconv.ParseBool(isRegisteringFailedQueryValue)
+		queryValue := queryValues.Get("IsRegisteringFailed")
+		isRegisteringFailed, err := strconv.ParseBool(queryValue)
 
-		if err != nil && isRegisteringFailedQueryValue != "" {
+		if err != nil && queryValue != "" {
 			l.Logger.LogError("Register", err)
 			isRegisteringFailed = false
 		}

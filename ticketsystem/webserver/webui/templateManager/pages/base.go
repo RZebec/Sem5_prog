@@ -26,7 +26,9 @@ var Base = `
 		<div class="topnav">
 			<a {{if eq .Active "index" }}class="active"{{end}} href="/">Home</a>
 
-			<a {{if eq .Active "tickets" }}class="active"{{end}} href="/tickets">Tickets</a>
+			<a {{if eq .Active "all_tickets" }}class="active"{{end}} href="/all_tickets">All Tickets</a>
+
+			<a {{if eq .Active "open_tickets" }}class="active"{{end}} href="/open_tickets">Open Tickets</a>
 	
 			<span>OP-Ticket-System</span>
 
@@ -34,6 +36,7 @@ var Base = `
 				{{if .UserIsAdmin}}
 					<a {{if eq .Active "admin" }}class="active"{{end}} href="/admin">Admin</a>
 				{{end}}
+				<a {{if eq .Active "user_tickets" }}class="active"{{end}} href="/my_tickets">My Tickets</a>
 				<a href="/user_logout">Logout</a>				
 			{{else}}
 				<a {{if eq .Active "login" }}class="active"{{end}} href="/login">Login</a>

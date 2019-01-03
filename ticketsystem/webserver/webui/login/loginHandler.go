@@ -76,9 +76,10 @@ func (l LoginHandler) ServeHTTPGetLoginPage(w http.ResponseWriter, r *http.Reque
 	}
 
 	queryValues := r.URL.Query()
-	isLoginFailed, parseError := strconv.ParseBool(queryValues.Get("IsLoginFailed"))
+	queryValue := queryValues.Get("IsLoginFailed")
+	isLoginFailed, parseError := strconv.ParseBool(queryValue)
 
-	if parseError != nil {
+	if parseError != nil && queryValue != ""{
 		l.Logger.LogError("Login", parseError)
 	}
 

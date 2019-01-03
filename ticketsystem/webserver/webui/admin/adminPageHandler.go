@@ -11,7 +11,7 @@ import (
 )
 
 /*
-	Structure for the Login handler.
+	Structure for the Admin handler.
 */
 type AdminPageHandler struct {
 	UserContext     user.UserContext
@@ -21,7 +21,7 @@ type AdminPageHandler struct {
 }
 
 /*
-	Structure for the Login Page Data.
+	Structure for the Admin Page Data.
 */
 type adminPageData struct {
 	Users              []user.User

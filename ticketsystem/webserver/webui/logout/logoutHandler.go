@@ -21,7 +21,7 @@ type LogoutHandler struct {
 	The Logout handler.
 */
 func (l LogoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if strings.ToLower(r.Method) != "post" {
+	if strings.ToLower(r.Method) != "get" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {
 		cookie, err := r.Cookie(shared.AccessTokenCookieName)
@@ -29,14 +29,14 @@ func (l LogoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			l.Logger.LogError("Logout", err)
 			helpers.RemoveCookie(w, shared.AccessTokenCookieName)
-			http.Redirect(w, r, "/", 200)
+			http.Redirect(w, r, "/", http.StatusFound)
 			return
 		}
 
 		token := cookie.Value
 		l.UserContext.Logout(token)
 		helpers.RemoveCookie(w, shared.AccessTokenCookieName)
-		http.Redirect(w, r, "/", 200)
+		http.Redirect(w, r, "/", http.StatusFound)
 
 		return
 	}
