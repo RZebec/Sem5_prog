@@ -16,6 +16,22 @@ type MockedTicketContext struct {
 /*
 	Mocked function.
 */
+func (m *MockedTicketContext) GetTicketsForEditorId(userId int) []ticket.TicketInfo {
+	args := m.Called(userId)
+	return args.Get(0).([]ticket.TicketInfo)
+}
+
+/*
+	Mocked function.
+*/
+func (m *MockedTicketContext) GetTicketsForCreatorMail(mail string) []ticket.TicketInfo {
+	args := m.Called(mail)
+	return args.Get(0).([]ticket.TicketInfo)
+}
+
+/*
+	Mocked function.
+*/
 func (m *MockedTicketContext) CreateNewTicketForInternalUser(title string, editor user.User, initialMessage ticket.MessageEntry) (*ticket.Ticket, error) {
 	args := m.Called(title, editor, initialMessage)
 	return args.Get(0).(*ticket.Ticket), args.Error(1)
