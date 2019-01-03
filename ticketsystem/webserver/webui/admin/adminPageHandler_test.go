@@ -1,9 +1,9 @@
 package admin
 
 import (
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -13,19 +13,15 @@ import (
 )
 
 /*
-	A logger for tests.
+	A valid request should be possible.
 */
-func getTestLogger() logging.Logger {
-	return logging.ConsoleLogger{SetTimeStamp: false}
-}
-
-func TestAdminPageHandler_ServeHTTP(t *testing.T) {
+func TestAdminPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	req, err := http.NewRequest("GET", "/admin", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	testLogger := getTestLogger()
+	testLogger := testhelpers.GetTestLogger()
 
 	mockedApiContext := new(mockedForTests.MockedApiConfiguration)
 
@@ -56,6 +52,9 @@ func TestAdminPageHandler_ServeHTTP(t *testing.T) {
 	mockedUserContext.AssertExpectations(t)
 }
 
+/*
+	A error from rendering the template should result in a 500.
+*/
 func TestAdminPageHandler_ServeHTTP_RenderTemplateError_500Returned(t *testing.T) {
 	req, err := http.NewRequest("GET", "/admin", nil)
 	if err != nil {
@@ -64,7 +63,7 @@ func TestAdminPageHandler_ServeHTTP_RenderTemplateError_500Returned(t *testing.T
 
 	rr := httptest.NewRecorder()
 
-	testLogger := getTestLogger()
+	testLogger := testhelpers.GetTestLogger()
 
 	mockedApiContext := new(mockedForTests.MockedApiConfiguration)
 
@@ -91,6 +90,9 @@ func TestAdminPageHandler_ServeHTTP_RenderTemplateError_500Returned(t *testing.T
 	assert.Equal(t, http.StatusInternalServerError, rr.Code, "Status code 500 should be returned")
 }
 
+/*
+	Only GET Methods should be allowed.
+*/
 func TestAdminPageHandler_ServeHTTP_WrongRequest(t *testing.T) {
 	req, err := http.NewRequest("POST", "/admin", nil)
 	if err != nil {
@@ -99,7 +101,7 @@ func TestAdminPageHandler_ServeHTTP_WrongRequest(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	testLogger := getTestLogger()
+	testLogger := testhelpers.GetTestLogger()
 
 	mockedApiContext := new(mockedForTests.MockedApiConfiguration)
 

@@ -2,6 +2,7 @@ package admin
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -22,7 +23,7 @@ func TestAdminSetApiKeysHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	testLogger := getTestLogger()
+	testLogger := testhelpers.GetTestLogger()
 
 	mockedApiContext := new(mockedForTests.MockedApiConfiguration)
 
@@ -49,7 +50,7 @@ func TestAdminSetApiKeysHandler_ServeHTTP_IncorrectData(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	testLogger := getTestLogger()
+	testLogger := testhelpers.GetTestLogger()
 
 	mockedApiContext := new(mockedForTests.MockedApiConfiguration)
 
@@ -79,7 +80,7 @@ func TestAdminSetApiKeysHandler_ServeHTTP_ValidRequest(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	testLogger := getTestLogger()
+	testLogger := testhelpers.GetTestLogger()
 
 	mockedApiContext := new(mockedForTests.MockedApiConfiguration)
 	mockedApiContext.On("ChangeIncomingMailApiKey", mock.Anything).Return(nil)
@@ -112,7 +113,7 @@ func TestAdminSetApiKeysHandler_ServeHTTP_ChangeOutgoing_ContextReturnError_500R
 
 	rr := httptest.NewRecorder()
 
-	testLogger := getTestLogger()
+	testLogger := testhelpers.GetTestLogger()
 
 	mockedApiContext := new(mockedForTests.MockedApiConfiguration)
 	mockedApiContext.On("ChangeIncomingMailApiKey", mock.Anything).Return(nil)
@@ -145,7 +146,7 @@ func TestAdminSetApiKeysHandler_ServeHTTP_ChangeIncoming_ContextReturnError_500R
 
 	rr := httptest.NewRecorder()
 
-	testLogger := getTestLogger()
+	testLogger := testhelpers.GetTestLogger()
 
 	mockedApiContext := new(mockedForTests.MockedApiConfiguration)
 	mockedApiContext.On("ChangeIncomingMailApiKey", mock.Anything).Return(errors.New("TestError"))
