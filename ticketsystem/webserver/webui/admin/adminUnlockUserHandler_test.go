@@ -3,6 +3,7 @@ package admin
 import (
 	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -23,7 +24,7 @@ func TestAdminUnlockUserHandlerWrongRequestMethod_ServeHTTP(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	testLogger := getTestLogger()
+	testLogger := testhelpers.GetTestLogger()
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
@@ -50,7 +51,7 @@ func TestAdminUnlockUserHandle_ServeHTTP_IncorrectData(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	testLogger := getTestLogger()
+	testLogger := testhelpers.GetTestLogger()
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
@@ -76,7 +77,7 @@ func TestAdminUnlockUserHandle_ServeHTTP_NoPresentCookie(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	testLogger := getTestLogger()
+	testLogger := testhelpers.GetTestLogger()
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
@@ -106,7 +107,7 @@ func TestAdminUnlockUserHandle_ServeHTTP_ValidRequest(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	testLogger := getTestLogger()
+	testLogger := testhelpers.GetTestLogger()
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedUserContext.On("UnlockAccount", mock.Anything, mock.Anything).Return(true, nil)
@@ -137,7 +138,7 @@ func TestAdminUnlockUserHandle_ServeHTTP_UnlockAccount_ContextReturnError_500Ret
 
 	rr := httptest.NewRecorder()
 
-	testLogger := getTestLogger()
+	testLogger := testhelpers.GetTestLogger()
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedUserContext.On("UnlockAccount", mock.Anything, mock.Anything).Return(false, errors.New("TestError"))

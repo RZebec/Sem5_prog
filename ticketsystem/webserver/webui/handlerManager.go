@@ -38,7 +38,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 
 	http.HandleFunc("/", indexPageAuthenticationInfoWrapper.ServeHTTP)
 
-	registerHandler := register.RegisterHandler{UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
+	registerHandler := register.RegisterHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
 	http.HandleFunc("/register", registerHandler.ServeHTTPGetRegisterPage)
 	http.HandleFunc("/user_register", registerHandler.ServeHTTPPostRegisteringData)
 
@@ -60,7 +60,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	adminSetApiKeysAuthenticationWrapper := wrappers.EnforceAuthenticationWrapper{Next: adminSetApiKeysWrapper, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/set_api_keys", adminSetApiKeysAuthenticationWrapper.ServeHTTP)
 
-	adminUnlockUserHandler := admin.AdminUnlockUserHandler{UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
+	adminUnlockUserHandler := admin.AdminUnlockUserHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
 	adminUnlockUserWrapper := wrappers.AdminWrapper{Next: adminUnlockUserHandler, UserContext: handlerManager.UserContext,  Logger: handlerManager.Logger}
 	adminUnlockUserAuthenticationWrapper := wrappers.EnforceAuthenticationWrapper{Next: adminUnlockUserWrapper, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/unlock_user", adminUnlockUserAuthenticationWrapper.ServeHTTP)
