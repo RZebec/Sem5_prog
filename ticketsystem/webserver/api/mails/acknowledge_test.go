@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"encoding/json"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
@@ -64,7 +65,7 @@ func (m *MockedAcknowledgementMailContext) CreateNewOutgoingMail(receiver string
 func TestAcknowledgeMailHandler_ServeHTTP_OkReturned(t *testing.T) {
 	mockedMailContext := new(MockedAcknowledgementMailContext)
 	mockedMailContext.throwError = false
-	testee := AcknowledgeMailHandler{Logger: getTestLogger(), MailContext: mockedMailContext}
+	testee := AcknowledgeMailHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	jsonData, _ := json.Marshal(getTestAcknowledgements())
 
@@ -90,7 +91,7 @@ func TestAcknowledgeMailHandler_ServeHTTP_OkReturned(t *testing.T) {
 func TestAcknowledgeMailHandler_ServeHTTP_500Returned(t *testing.T) {
 	mockedMailContext := new(MockedAcknowledgementMailContext)
 	mockedMailContext.throwError = true
-	testee := AcknowledgeMailHandler{Logger: getTestLogger(), MailContext: mockedMailContext}
+	testee := AcknowledgeMailHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	jsonData, _ := json.Marshal(getTestAcknowledgements())
 
@@ -111,7 +112,7 @@ func TestAcknowledgeMailHandler_ServeHTTP_500Returned(t *testing.T) {
 func TestAcknowledgeMailHandler_ServeHTTP_InvalidPayload_400Returned(t *testing.T) {
 	mockedMailContext := new(MockedAcknowledgementMailContext)
 	mockedMailContext.throwError = false
-	testee := AcknowledgeMailHandler{Logger: getTestLogger(), MailContext: mockedMailContext}
+	testee := AcknowledgeMailHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	jsonData, _ := json.Marshal(getTestAcknowledgements())
 	// Make the jsonData invalid:
