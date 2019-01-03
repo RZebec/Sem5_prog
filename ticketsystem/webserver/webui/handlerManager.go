@@ -46,7 +46,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	http.HandleFunc("/login", loginHandler.ServeHTTPGetLoginPage)
 	http.HandleFunc("/user_login", loginHandler.ServeHTTPPostLoginData)
 
-	logoutHandler := logout.LogoutHandler{UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
+	logoutHandler := logout.LogoutHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
 	logoutWrapper := wrappers.EnforceAuthenticationWrapper{Next: logoutHandler, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/user_logout", logoutWrapper.ServeHTTP)
 
