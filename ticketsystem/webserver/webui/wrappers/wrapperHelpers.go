@@ -10,11 +10,17 @@ import (
 const isAdminKey = "IsAdmin"
 const isAuthenticatedKey = "IsAuthenticated"
 
+/*
+	Inject the context with authentication info.
+ */
 func newContextWithAuthenticationInfo(ctx context.Context, isAuthenticated bool, isAdmin bool) context.Context {
 	ctx = context.WithValue(ctx, isAdminKey, isAdmin)
 	return context.WithValue(ctx, isAuthenticatedKey, isAuthenticated)
 }
 
+/*
+	Return true, if the user is a admin.
+ */
 func IsAdmin(ctx context.Context) bool {
 	value, ok := ctx.Value(isAdminKey).(bool)
 	if ok {
@@ -24,6 +30,9 @@ func IsAdmin(ctx context.Context) bool {
 	}
 }
 
+/*
+	Returns true if the user is authenticated.
+ */
 func IsAuthenticated(ctx context.Context) bool {
 	value, ok := ctx.Value(isAuthenticatedKey).(bool)
 	if ok {

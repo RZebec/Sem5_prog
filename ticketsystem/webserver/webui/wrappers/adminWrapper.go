@@ -2,7 +2,6 @@ package wrappers
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"net/http"
 )
@@ -12,7 +11,6 @@ import (
 */
 type AdminWrapper struct {
 	Next        HttpHandler
-	Config      config.Configuration
 	UserContext user.UserContext
 	Logger      logging.Logger
 }
