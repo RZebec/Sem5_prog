@@ -102,3 +102,11 @@ func (m *MockedUserContext) GetUserById(userId int) (exists bool, existingUser u
 	args := m.Called(userId)
 	return args.Bool(0), args.Get(1).(user.User)
 }
+
+/*
+	Mocked function.
+*/
+func (m *MockedUserContext) GetAllActiveUsers() []user.User {
+	args := m.Called()
+	return args.Get(0).([]user.User)
+}
