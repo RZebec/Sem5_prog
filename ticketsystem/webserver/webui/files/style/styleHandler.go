@@ -96,7 +96,16 @@ var centerMain = `
         color: black;
         border-radius: 5px;
     }
-    
+
+	select {
+		width: 100%;
+        margin-bottom: 0.75em;
+        margin-top: 0.2em;
+        border: 2px solid white;
+        color: black;
+        border-radius: 5px;
+	}
+
 	.submit-button {
     	background-color: #4caf50;
     	color: white;
@@ -106,7 +115,7 @@ var centerMain = `
     	border: none;
     	height: 2em;
     	text-decoration: none;
-		margin-bottom: 0.75em;
+		margin-bottom: 1.25em;
 		margin-top: 1em;
 	}
     
@@ -174,7 +183,6 @@ var largeMainStyle = `
         float: left;
         margin-top: 1.5em;
     }`
-
 /*
 	The handler for the style(css) files.
 */

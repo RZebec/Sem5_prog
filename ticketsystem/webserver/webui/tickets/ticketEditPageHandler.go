@@ -31,7 +31,8 @@ type ticketEditPageData struct {
 	TicketInfo 		ticket.TicketInfo
 	OtherTickets	[]ticket.TicketInfo
 	Users			[]user.User
-	OtherStates		[]ticket.TicketState
+	OtherState1		ticket.TicketState
+	OtherState2		ticket.TicketState
 	pages.BasePageData
 }
 
@@ -76,12 +77,13 @@ func (t TicketEditPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 			TicketInfo: 	ticketInfo,
 			OtherTickets:	otherTickets,
 			Users:			users,
-			OtherStates:	otherStates,
+			OtherState1:	otherStates[0],
+			OtherState2:	otherStates[1],
 		}
-
+		
 		data.UserIsAdmin = wrappers.IsAdmin(r.Context())
 		data.UserIsAuthenticated = wrappers.IsAuthenticated(r.Context())
-		data.Active = "ticket_edit"
+		data.Active = ""
 
 		templateRenderError := t.TemplateManager.RenderTemplate(w, "TicketEditPage", data)
 
