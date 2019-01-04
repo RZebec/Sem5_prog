@@ -59,7 +59,7 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 				return
 			}
 
-			http.Redirect(w, r, "/admin", http.StatusOK)
+			http.Redirect(w, r, "/admin", http.StatusFound)
 			return
 		}
 	}

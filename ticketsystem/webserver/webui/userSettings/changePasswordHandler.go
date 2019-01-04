@@ -1,9 +1,9 @@
 package userSettings
 
 import (
-	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"html"
 	"net/http"
 	"strings"
@@ -30,15 +30,9 @@ func (c ChangePasswordHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		oldPassword = html.EscapeString(oldPassword)
 		newPassword = html.EscapeString(newPassword)
 
-		accessTokenCookie, err := r.Cookie(shared.AccessTokenCookieName)
+		accessToken := wrappers.GetUserToken(r.Context())
 
-		if err != nil {
-			c.Logger.LogError("ChangePasswordHandler", err)
-			http.Redirect(w, r, "/", http.StatusBadRequest)
-			return
-		}
-
-		isChanged, err := c.UserContext.ChangePassword(accessTokenCookie.Value, oldPassword, newPassword)
+		isChanged, err := c.UserContext.ChangePassword(accessToken, oldPassword, newPassword)
 
 		if err != nil {
 			c.Logger.LogError("ChangePasswordHandler", err)

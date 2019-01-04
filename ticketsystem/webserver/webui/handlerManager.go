@@ -129,7 +129,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	setStateWrapper.UserContext = handlerManager.UserContext
 	http.HandleFunc("/ticket_setState", setStateWrapper.ServeHTTP)
 
-	userSettingsPageHandler := userSettings.UserSettingsPageHandler{TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
+	userSettingsPageHandler := userSettings.UserSettingsPageHandler{UserContext: handlerManager.UserContext, TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
 	userSettingsPageHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
 	userSettingsPageHandlerWrapper.Next = userSettingsPageHandler
 	userSettingsPageHandlerWrapper.Logger = handlerManager.Logger
