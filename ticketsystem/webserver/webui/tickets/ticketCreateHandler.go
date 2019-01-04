@@ -58,7 +58,13 @@ func (t TicketCreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		exist, userId := t.UserContext.GetUserForEmail(mail)
 
-		if !exist {
+		if loggedInUserId != userId {
+			t.Logger.LogError("TicketCreateHandler", errors.New("User with the corresponding mail address is not logged in!"))
+			http.Redirect(w, r, "/ticket_create", http.StatusBadRequest)
+			return
+		}
+
+		if !isUserLoggedIn && !exist {
 			initialMessage := ticket.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
 
 			ticket, err := t.TicketContext.CreateNewTicket(title, ticket.Creator{Mail: mail, FirstName: firstName, LastName: lastName}, initialMessage)
@@ -72,12 +78,6 @@ func (t TicketCreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			ticketId := strconv.Itoa(ticket.Info().Id)
 
 			http.Redirect(w, r, "/ticket/" + ticketId, 302)
-			return
-		}
-
-		if !isUserLoggedIn || loggedInUserId != userId {
-			t.Logger.LogError("TicketCreateHandler", errors.New("User with the corresponding mail address is not logged in!"))
-			http.Redirect(w, r, "/ticket_create", http.StatusBadRequest)
 			return
 		}
 

@@ -458,3 +458,47 @@ func TestTicketCreateHandler_ServeHTTP_CreateNewTicketForInternalUserError500(t 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
 }
+
+/*
+	If a not logged in user tries to create a ticket for another user it should result in a 400.
+*/
+func TestTicketCreateHandler_ServeHTTP_NotLoggedInUserTriesToCreateTicketForOtherMail(t *testing.T) {
+	mail := "test2@test.com"
+	title := "Test Ticket"
+	message := "This is a Test Ticket Message"
+	internal := "false"
+
+	req, err := http.NewRequest("POST", "/create_ticket", nil)
+	req.Form = url.Values{}
+	req.Form.Add("mail", mail)
+	req.Form.Add("title", title)
+	req.Form.Add("message", message)
+	req.Form.Add("internal", internal)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testLogger := testhelpers.GetTestLogger()
+
+	mockedTicketContext := new(mockedForTests.MockedTicketContext)
+	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedUserContext.On("GetUserForEmail", mail).Return(true, 5)
+
+	testee := TicketCreateHandler{TicketContext: mockedTicketContext, UserContext: mockedUserContext, Logger: testLogger}
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(testee.ServeHTTP)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
+
+	handler.ServeHTTP(rr, req.WithContext(ctx))
+
+	resp := rr.Result()
+
+	newLocation := resp.Header.Get("location")
+	assert.Equal(t, http.StatusBadRequest, resp.StatusCode, "Should return status code 400")
+	assert.Equal(t, "/ticket_create", newLocation, "Should be redirected to \"/ticket_create\"")
+
+	mockedTicketContext.AssertExpectations(t)
+	mockedUserContext.AssertExpectations(t)
+}
