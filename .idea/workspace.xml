@@ -3,11 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="d72a36f5-044f-48d5-9693-34cee9f0b8ce" name="Default Changelist" comment="test tickettool">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ticketTool/mailGeneration/mailGeneration_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketTool/mailGeneration/mailGeneration_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketTool/inputOutput/inputOutput.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketTool/inputOutput/inputOutput.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ticketTool/mailGeneration/mailGenerator.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketTool/mailGeneration/mailGenerator.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketTool/recieve/confirm/confirm.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketTool/recieve/confirm/confirm.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ticketTool/send/send_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketTool/send/send.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketTool/send/send.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketTool/send/sender/sender.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketTool/send/sender/sender.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,13 +17,13 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/IIIDDD$go_test_Sem5_prog.out" NAME="go test Sem5_prog Coverage Results" MODIFIED="1546018538594" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/IIIDDD$go_test_ticketTool.out" NAME="go test ticketTool Coverage Results" MODIFIED="1546018450174" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/IIIDDD$ticketContext_test_go.out" NAME="ticketContext_test.go Coverage Results" MODIFIED="1546075429561" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/IIIDDD$go_test_data.out" NAME="go test data Coverage Results" MODIFIED="1546075875521" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/IIIDDD$go_test_ticketsystem.out" NAME="go test ticketsystem Coverage Results" MODIFIED="1546018469769" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/IIIDDD$go_test_recieve.out" NAME="go test recieve Coverage Results" MODIFIED="1546426000000" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/IIIDDD$go_test_ticket.out" NAME="go test ticket Coverage Results" MODIFIED="1546077388527" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/IIIDDD$go_test_Sem5_prog.out" NAME="go test Sem5_prog Coverage Results" MODIFIED="1542824147102" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/IIIDDD$TestLoginSystem_Initialize_InvalidPath_ErrorReturned_in_sessionManager_test_go.out" NAME="TestLoginSystem_Initialize_InvalidPath_ErrorReturned in sessionManager_test.go Coverage Results" MODIFIED="1540488932022" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/IIIDDD$go_test_session.out" NAME="go test session Coverage Results" MODIFIED="1540541657853" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/IIIDDD$go_test_config.out" NAME="go test config Coverage Results" MODIFIED="1542381395853" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/Sem5_prog$go_test_Sem5_prog.out" NAME="go test Sem5_prog Coverage Results" MODIFIED="1540398178573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/IIIDDD$TestAccessDeniedPageHandler_in_de_vorlesung_projekt_IIIDDD_ticketsystem_webserver_webui_templateManager.out" NAME="TestAccessDeniedPageHandler in de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager Coverage Results" MODIFIED="1542793479332" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/Sem5_prog$go_test_session.out" NAME="go test session Coverage Results" MODIFIED="1540397922017" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
   <component name="CoverageViewManager">
     <option name="myElementSize" value="160" />
@@ -31,20 +32,22 @@
     <session id="2654603">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="5" />
+          <entry key="project.closed" value="6" />
+          <entry key="project.open.time.1" value="1" />
           <entry key="project.open.time.11" value="1" />
           <entry key="project.open.time.17" value="1" />
           <entry key="project.open.time.19" value="1" />
           <entry key="project.open.time.2" value="1" />
+          <entry key="project.open.time.21" value="1" />
           <entry key="project.open.time.24" value="1" />
           <entry key="project.open.time.25" value="1" />
           <entry key="project.open.time.28" value="1" />
-          <entry key="project.opened" value="7" />
+          <entry key="project.opened" value="9" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="go" value="201" />
+          <entry key="go" value="214" />
           <entry key="json" value="15" />
           <entry key="keys" value="1" />
           <entry key="pem" value="2" />
@@ -52,20 +55,20 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Go" value="201" />
+          <entry key="Go" value="214" />
           <entry key="JSON" value="15" />
           <entry key="PLAIN_TEXT" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="go" value="9558" />
+          <entry key="go" value="12131" />
           <entry key="txt" value="284" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Go" value="9558" />
+          <entry key="Go" value="12131" />
           <entry key="PLAIN_TEXT" value="284" />
         </counts>
       </usages-collector>
@@ -79,53 +82,7 @@
     </session>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ticketTool/send/send.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="239">
-              <caret line="38" column="38" selection-start-line="38" selection-start-column="32" selection-end-line="38" selection-end-column="38" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1197">
-              <caret line="88" column="62" selection-start-line="88" selection-start-column="62" selection-end-line="88" selection-end-column="62" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recieve.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="630">
-              <caret line="49" column="17" lean-forward="true" selection-start-line="49" selection-start-column="17" selection-end-line="49" selection-end-column="17" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="27" column="1" lean-forward="true" selection-start-line="27" selection-start-column="1" selection-end-line="27" selection-end-column="1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ticketTool/send/sender/sender.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-685">
-              <caret line="18" column="5" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -180,7 +137,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/ticketsystem/webserver/data/user/User.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/data/ticket/creator.go" />
         <option value="$PROJECT_DIR$/ticketsystem/webserver/data/user/userContext_testdata.go" />
         <option value="$PROJECT_DIR$/ticketsystem/logging/logger.go" />
@@ -216,11 +172,8 @@
         <option value="$PROJECT_DIR$/ticketTool/recieve/sharing/sharing.go" />
         <option value="$PROJECT_DIR$/unacknowledgedmails.json" />
         <option value="$PROJECT_DIR$/ticketTool/recieve/acknowledgementStorage/acknowledgementStorage.go" />
-        <option value="$PROJECT_DIR$/ticketTool/recieve/confirm/confirm.go" />
         <option value="$PROJECT_DIR$/ticketTool/recieve/confirm/confirm_test.go" />
         <option value="$PROJECT_DIR$/ticketTool/configuration/configuration.go" />
-        <option value="$PROJECT_DIR$/ticketTool/send/send.go" />
-        <option value="$PROJECT_DIR$/ticketTool/send/sender/sender.go" />
         <option value="$PROJECT_DIR$/ticketTool/send/send_test.go" />
         <option value="$PROJECT_DIR$/ticketTool/recieve/recieve.go" />
         <option value="$PROJECT_DIR$/ticketTool/recieve/acknowledgementStorage/mockedAcknowledgeentStorage.go" />
@@ -228,9 +181,13 @@
         <option value="$PROJECT_DIR$/ticketTool/recieve/confirm/mockedConfirm.go" />
         <option value="$PROJECT_DIR$/ticketTool/recieve/recieve_test.go" />
         <option value="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever_test.go" />
-        <option value="$PROJECT_DIR$/ticketTool/mailGeneration/mailGenerator.go" />
         <option value="$PROJECT_DIR$/ticketTool/mailGeneration/mailGeneration_test.go" />
+        <option value="$PROJECT_DIR$/ticketTool/send/send.go" />
+        <option value="$PROJECT_DIR$/ticketTool/send/sender/sender.go" />
         <option value="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go" />
+        <option value="$PROJECT_DIR$/ticketTool/recieve/confirm/confirm.go" />
+        <option value="$PROJECT_DIR$/ticketTool/mailGeneration/mailGenerator.go" />
+        <option value="$PROJECT_DIR$/ticketTool/inputOutput/inputOutput.go" />
       </list>
     </option>
   </component>
@@ -248,12 +205,14 @@
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
+  <component name="ProjectReloadState">
+    <option name="STATE" value="2" />
+  </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -283,44 +242,19 @@
               <item name="IIIDDD" type="b2602c69:ProjectViewProjectNode" />
               <item name="IIIDDD" type="462c0819:PsiDirectoryNode" />
               <item name="ticketTool" type="462c0819:PsiDirectoryNode" />
-              <item name="inputOutput" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IIIDDD" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IIIDDD" type="462c0819:PsiDirectoryNode" />
-              <item name="ticketTool" type="462c0819:PsiDirectoryNode" />
-              <item name="mailGeneration" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IIIDDD" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IIIDDD" type="462c0819:PsiDirectoryNode" />
-              <item name="ticketTool" type="462c0819:PsiDirectoryNode" />
               <item name="recieve" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="IIIDDD" type="b2602c69:ProjectViewProjectNode" />
               <item name="IIIDDD" type="462c0819:PsiDirectoryNode" />
               <item name="ticketTool" type="462c0819:PsiDirectoryNode" />
-              <item name="recieve" type="462c0819:PsiDirectoryNode" />
-              <item name="recviever" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IIIDDD" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IIIDDD" type="462c0819:PsiDirectoryNode" />
-              <item name="ticketTool" type="462c0819:PsiDirectoryNode" />
               <item name="send" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IIIDDD" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IIIDDD" type="462c0819:PsiDirectoryNode" />
-              <item name="ticketTool" type="462c0819:PsiDirectoryNode" />
-              <item name="send" type="462c0819:PsiDirectoryNode" />
-              <item name="sender" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -328,7 +262,7 @@
     <property name="GO_FMT" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546433608324" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546519920483" />
     <property name="go.gopath.indexing.explicitly.defined" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$" />
@@ -347,121 +281,6 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\User\go\src\de\vorlesung\projekt\IIIDDD" />
     </key>
-  </component>
-  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
-    <UpdatedFiles>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Updated from server" />
-        <option name="myStatusName" value="Changed on server" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="CHANGED_ON_SERVER" />
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Updated" />
-          <option name="myStatusName" value="Changed" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="UPDATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/ticketTool/recieve/confirm/confirm.go</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/ticketTool/recieve/confirm/confirm_test.go</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/ticketTool/recieve/recieve.go</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/ticketTool/recieve/recviever/reciever_test.go</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Created" />
-          <option name="myStatusName" value="Created" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="CREATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/ticketTool/recieve/acknowledgementStorage/mockedAcknowledgementStorage.go</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Deleted" />
-          <option name="myStatusName" value="Deleted" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="true" />
-          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Restored" />
-          <option name="myStatusName" value="Will be restored" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="RESTORED" />
-        </FILE-GROUP>
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Modified" />
-        <option name="myStatusName" value="Modified" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MODIFIED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Skipped" />
-        <option name="myStatusName" value="Skipped" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SKIPPED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with conflicts" />
-        <option name="myStatusName" value="Will be merged with conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_CONFLICTS" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with tree conflicts" />
-        <option name="myStatusName" value="Merged with tree conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with property conflicts" />
-        <option name="myStatusName" value="Will be merged with property conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged" />
-        <option name="myStatusName" value="Will be merged" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Not in repository" />
-        <option name="myStatusName" value="Not in repository" />
-        <option name="mySupportsDeletion" value="true" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="UNKNOWN" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally added" />
-        <option name="myStatusName" value="Locally added" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_ADDED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally removed" />
-        <option name="myStatusName" value="Locally removed" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_REMOVED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Switched" />
-        <option name="myStatusName" value="Switched" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SWITCHED" />
-      </FILE-GROUP>
-    </UpdatedFiles>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -573,6 +392,8 @@
       <workItem from="1546249499352" duration="10159000" />
       <workItem from="1546351538062" duration="9672000" />
       <workItem from="1546421522416" duration="12267000" />
+      <workItem from="1546518555547" duration="1364000" />
+      <workItem from="1546601381593" duration="4595000" />
     </task>
     <task id="LOCAL-00001" summary="HttpRequest, Input implementiert&#10;als nächstes Tests">
       <created>1545905848538</created>
@@ -764,7 +585,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="115836000" />
+    <option name="totallyTimeSpent" value="121797000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -778,18 +599,17 @@
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24130106" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24886535" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info id="Designer" order="3" />
       <window_info id="Image Layers" order="4" />
       <window_info id="Capture Tool" order="5" />
       <window_info id="UI Designer" order="6" />
-      <window_info anchor="bottom" id="Messages" />
       <window_info anchor="bottom" id="Docker" order="0" show_stripe_button="false" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info active="true" anchor="bottom" id="Find" order="2" sideWeight="0.49307036" visible="true" weight="0.32936078" />
-      <window_info active="true" anchor="bottom" id="Run" order="3" sideWeight="0.4871407" visible="true" weight="0.45171848" />
+      <window_info anchor="bottom" id="Run" order="3" sideWeight="0.4871407" weight="0.45171848" />
       <window_info anchor="bottom" id="Debug" order="4" sideWeight="0.49093816" weight="0.30441898" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
@@ -798,6 +618,7 @@
       <window_info anchor="bottom" id="Version Control" order="9" sideWeight="0.49924356" weight="0.3289689" />
       <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49733475" weight="0.32832617" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50075644" side_tool="true" weight="0.32733223" />
+      <window_info anchor="bottom" id="Messages" order="12" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -925,7 +746,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/ticketTool/recieve/confirm/confirm.go</url>
-          <line>53</line>
+          <line>61</line>
           <option name="timeStamp" value="54" />
         </line-breakpoint>
       </breakpoints>
@@ -1083,13 +904,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/configuration/configuration.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="595">
-          <caret line="49" selection-start-line="49" selection-end-line="49" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ticketTool/configuration/configuration_test.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
@@ -1103,16 +917,6 @@
           <caret line="206" column="22" selection-start-line="206" selection-start-column="22" selection-end-line="206" selection-end-column="22" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/client/client.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="118" column="5" lean-forward="true" selection-start-line="118" selection-start-column="5" selection-end-line="118" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/inputOutput/inputOutput.go">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/ticketTool/client/mockedClient.go">
       <provider selected="true" editor-type-id="text-editor">
@@ -1128,33 +932,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recieve_test.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="39" column="4" selection-start-line="39" selection-start-column="4" selection-end-line="39" selection-end-column="4" />
-          <folding>
-            <element signature="e#14#287#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/acknowledgementStorage/acknowledgementStorage.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="517">
-          <caret line="121" column="46" selection-start-line="121" selection-end-line="121" selection-end-column="46" />
-          <folding>
-            <element signature="e#2197#2239#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recieve_test.go" />
     <entry file="file://$PROJECT_DIR$/ticketTool/recieve/acknowledgementStorage/mockedAcknowledgementStorage.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="561">
           <caret line="33" column="23" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
-          <folding>
-            <element signature="e#32#142#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1162,9 +944,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
           <caret line="11" column="42" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="42" />
-          <folding>
-            <element signature="e#17#127#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1175,23 +954,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/confirm/confirm.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="1" lean-forward="true" selection-start-column="1" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ticketTool/inputOutput/mockedInputOutput.go">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/send/send_test.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="26" selection-start-line="26" selection-end-line="26" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketTool/send/send_test.go" />
     <entry file="file://C:/Go/src/testing/testing.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="124">
@@ -1213,13 +979,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/mailGeneration/mailGenerator.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="36" column="43" lean-forward="true" selection-start-line="36" selection-start-column="43" selection-end-line="36" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ticketTool/mailGeneration/mailGeneration_test.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="867">
@@ -1234,20 +993,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/send/send.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="38" column="38" selection-start-line="38" selection-start-column="32" selection-end-line="38" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/send/sender/sender.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-685">
-          <caret line="18" column="5" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="190">
@@ -1255,17 +1000,76 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go">
+    <entry file="file://$PROJECT_DIR$/ticketTool/send/sender/sender.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1197">
-          <caret line="88" column="62" selection-start-line="88" selection-start-column="62" selection-end-line="88" selection-end-column="62" />
+        <state relative-caret-position="306">
+          <caret line="68" column="59" selection-start-line="68" selection-start-column="59" selection-end-line="68" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketTool/send/send.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="41" column="48" selection-start-line="41" selection-start-column="48" selection-end-line="41" selection-end-column="48" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recieve.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
+        <state relative-caret-position="549">
           <caret line="49" column="17" lean-forward="true" selection-start-line="49" selection-start-column="17" selection-end-line="49" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="512">
+          <caret line="96" column="129" selection-start-line="96" selection-start-column="129" selection-end-line="96" selection-end-column="129" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/confirm/confirm.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="748">
+          <caret line="56" column="41" selection-start-line="56" selection-start-column="41" selection-end-line="56" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/acknowledgementStorage/acknowledgementStorage.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1104">
+          <caret line="121" column="46" selection-start-line="121" selection-end-line="121" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketTool/mailGeneration/mailGenerator.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="79" column="34" selection-start-line="79" selection-start-column="34" selection-end-line="79" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketTool/inputOutput/inputOutput.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="407">
+          <caret line="27" column="46" selection-start-line="27" selection-start-column="46" selection-end-line="27" selection-end-column="46" />
+          <folding>
+            <element signature="e#21#64#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketTool/configuration/configuration.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="30" column="24" selection-start-line="30" selection-start-column="24" selection-end-line="30" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketTool/client/client.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1785">
+          <caret line="118" column="5" lean-forward="true" selection-start-line="118" selection-start-column="5" selection-end-line="118" selection-end-column="5" />
         </state>
       </provider>
     </entry>

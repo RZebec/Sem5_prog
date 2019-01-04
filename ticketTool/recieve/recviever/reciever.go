@@ -19,6 +19,9 @@ type Reciever struct {
 	confirmator   confirm.Confirmation
 }
 
+/*
+initialize Reciever
+*/
 func CreateReciever(config configuration.Configuration, io inputOutput.InputOutput, apiClient client.Client,
 	storage acknowledgementStorage.AckStorage, confirmation confirm.Confirmation) Reciever {
 	reciever := Reciever{io: io, apiClient: apiClient, storage: storage, recieveConfig: config, confirmator: confirmation}
@@ -26,23 +29,23 @@ func CreateReciever(config configuration.Configuration, io inputOutput.InputOutp
 }
 
 func (r *Reciever) Run() error {
-	recieveMails, err := r.apiClient.ReceiveMails()
+	recieveMails, err := r.apiClient.ReceiveMails() //recieve Mails from Server
 	if err != nil {
 		r.io.Print("Transmission is going wrong. Retry? (n,press any key)")
-		answer := r.io.ReadEntry()
+		answer := r.io.ReadEntry() //request if you want to retry the transmission
 		if answer == "n" {
 			return err
 		}
 	} else {
 		r.io.Print(strconv.Itoa(len(recieveMails)) + " Mails are coming from Server")
-		acknowledges := r.confirmator.GetAllAcknowledges(recieveMails)
-		err := r.storage.AppendAcknowledgements(acknowledges)
+		acknowledges := r.confirmator.GetAllAcknowledges(recieveMails) //create Acknowledges from Mails
+		err := r.storage.AppendAcknowledgements(acknowledges)          //store these Acknowledges
 		if err != nil {
 			r.io.Print("mails cant't saved: " + err.Error())
 			return err
 		}
 		r.io.Print("Save Acknowledges...")
-		allAcknowledges, err := r.storage.ReadAcknowledgements()
+		allAcknowledges, err := r.storage.ReadAcknowledgements() //read the recieved Acknowledges and previous Acknowledges
 		if err != nil {
 			r.io.Print("couldn't read storaged Acknowledges")
 			return err
@@ -59,34 +62,40 @@ func (r *Reciever) Run() error {
 	return nil
 }
 
+/*
+you can select between one specify confirm or if you want all confirm
+*/
 func (r *Reciever) allOrSpecifyConfirm(allAcknowledges *[]mail.Acknowledgment) {
 	for true {
 		r.io.Print("send all Acknowledges or specify Acknowledges to Server. Or stop reciever (all/specify/stop):")
 		answer := r.io.ReadEntry()
 		if answer == "all" {
-			ackError := r.apiClient.AcknowledgeMails(*allAcknowledges)
+			ackError := r.apiClient.AcknowledgeMails(*allAcknowledges) //send a list from all Acknowledges back to Server
 			if ackError != nil {
 				r.io.Print("acknowlege is not posted")
 			} else {
 				r.io.Print("E-Mails are Acknowledged: ")
-				err := r.storage.DeleteAcknowledges(*allAcknowledges)
+				err := r.storage.DeleteAcknowledges(*allAcknowledges) //if the send process was sucessfull, delete all Acknowledges from your Storage
 				if err != nil {
 					r.io.Print("Acknowledges couldn't deleted: " + err.Error())
 					break
 				}
 				break
 			}
-		} else if answer == "specify" {
+		} else if answer == "specify" { // specify confirmation
 			r.confirmator.ShowAllEmailAcks(*allAcknowledges)
 			r.io.Print("Specify Acknowledge by Subject: ")
 			answer := r.io.ReadEntry()
+			/*
+				get back a List with one Acknowledge and delete the selected Acknowledge from the List of all
+			*/
 			newAcknowledges, selectedAck := r.confirmator.GetSingleAcknowledges(*allAcknowledges, answer)
-			allAcknowledges = &newAcknowledges
-			ackError := r.apiClient.AcknowledgeMails(selectedAck)
+			allAcknowledges = &newAcknowledges                    //all Acknowledges - selected Acknowledge = allAcknowledges
+			ackError := r.apiClient.AcknowledgeMails(selectedAck) //send back the List with one Acknowledge
 			if ackError != nil {
 				fmt.Println("acknowlege is not posted")
 			} else {
-				err := r.storage.DeleteAcknowledges(selectedAck)
+				err := r.storage.DeleteAcknowledges(selectedAck) //if send process was sucessfull, delete the selected Acknowledge
 				if err != nil {
 					r.io.Print("Selected Acknowledge couldn't deleted: " + err.Error())
 				}

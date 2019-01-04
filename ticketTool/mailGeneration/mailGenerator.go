@@ -8,6 +8,9 @@ import (
 	"time"
 )
 
+/*
+mails for Random Mail generator
+*/
 var senders = []string{"test1@gmx.de", "Oberheld.asdf@web.de", "horstChristianAnderson@zip.org", "css@asd.com", "ad.du@ff.de",
 	"kaka@lang.de", "abc.defg@hij.de", "blabla@bla.de", "labor@saft.de", "orange@blau.de", "hohlfruch@haze.de", "test2@gmx.de",
 	"SuperOberheld.asdf@web.de", "FranzhorstChristianAnderson@zip.org", "Terrorist@asd.com",
@@ -23,10 +26,16 @@ type MailGenerator struct {
 	io inputOutput.InputOutput
 }
 
+/*
+create Generator
+*/
 func CreateMailGenerator(io inputOutput.InputOutput) MailGenerator {
 	return MailGenerator{io: io}
 }
 
+/*
+create Random Mails by number Of Mails n, subjectLength and contentlength
+*/
 func (m *MailGenerator) RandomMail(n int, subjectLength int, contentLength int) []mail.Mail {
 	mails := make([]mail.Mail, n)
 	for i := 0; i < n; i++ {
@@ -41,6 +50,7 @@ func (m *MailGenerator) RandomMail(n int, subjectLength int, contentLength int) 
 	return mails
 }
 
+//get send and recieve mailadress back
 func generateTwoMailAdresses_FromRandomPool() (string, string) {
 	for true {
 		adressOne := senders[rand.Intn(len(senders))]
@@ -53,6 +63,9 @@ func generateTwoMailAdresses_FromRandomPool() (string, string) {
 	return "", ""
 }
 
+/*
+create a Mail on your own and get back a List with one entry
+*/
 func (m *MailGenerator) ExplicitMail() []mail.Mail {
 	email := mail.Mail{}
 	m.io.Print("Entry subject: ")
@@ -69,6 +82,9 @@ func (m *MailGenerator) ExplicitMail() []mail.Mail {
 	return mails
 }
 
+/*
+generate Random Text in Asciichars
+*/
 func randomText(numberOfChar int) string {
 	text := ""
 	for i := 0; i < numberOfChar; i++ {
