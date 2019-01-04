@@ -16,7 +16,7 @@ func TestTicketInfo_Copy(t *testing.T) {
 	creator := Creator{Mail: origUser.Mail, FirstName: origUser.FirstName, LastName: origUser.LastName}
 	origTicketInfo := TicketInfo{Id: 5, Title: "OrigTitle", HasEditor: true,
 		CreationTime: refTimestamp, LastModificationTime: refTimestamp,
-		Editor: origUser, Creator: creator}
+		Editor: origUser, Creator: creator, State: Open}
 
 	copiedTicket := origTicketInfo.Copy()
 
@@ -27,6 +27,7 @@ func TestTicketInfo_Copy(t *testing.T) {
 	copiedTicket.Title = "changed"
 	copiedTicket.CreationTime = time.Now()
 	copiedTicket.LastModificationTime = time.Now()
+	copiedTicket.State = Closed
 
 	// Assert that the original ticket info has not been changed:
 	assert.Equal(t, "Müller", origTicketInfo.Creator.LastName, "Original creator name should not be changed")
@@ -35,4 +36,5 @@ func TestTicketInfo_Copy(t *testing.T) {
 	assert.Equal(t, "OrigTitle", origTicketInfo.Title, "Original title should not be changed")
 	assert.Equal(t, refTimestamp, origTicketInfo.CreationTime, "Original creation time should not be changed")
 	assert.Equal(t, refTimestamp, origTicketInfo.LastModificationTime, "Original last modification time should not be changed")
+	assert.Equal(t, Open, origTicketInfo.State, "Original state should not be changed")
 }

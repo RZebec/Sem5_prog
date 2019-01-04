@@ -86,15 +86,11 @@ func (c *ApiConfiguration) ChangeOutgoingMailApiKey(newKey string) error {
 	Create and initialize the configuration.
 */
 func CreateAndInitialize(config Configuration) (*ApiConfiguration, error) {
-	exists, err := helpers.FilePathExists(config.ApiKeyFilePath)
+	existed, err := helpers.CreateFileWithPathIfNotExists(config.ApiKeyFilePath)
 	if err != nil {
 		return nil, err
 	}
-	if !exists {
-		err = helpers.CreateFileIfNotExists(config.ApiKeyFilePath)
-		if err != nil {
-			return nil, err
-		}
+	if !existed {
 		// Create default api keys:
 		config := ApiConfiguration{
 			incomingMailApiKey: "MW0j6HXw0QrksRz0lcKUisoJqkAjAhcgs1MFjFWIfTUWoccWmYhBippVGzD5I8dVyx6GXdpkTbOONeAuGw1HreDWbswBMGpnx9Lrk7rglPfaWqLzguAMJdnX7PFhOhbj",
@@ -119,7 +115,7 @@ func CreateAndInitialize(config Configuration) (*ApiConfiguration, error) {
 }
 
 /*
-	Validate the configuartion.
+	Validate the configuration.
 */
 func (c *ApiConfiguration) Validate() (bool, string) {
 	if c.incomingMailApiKey == "" || len(c.incomingMailApiKey) < 128 {
@@ -161,6 +157,9 @@ func readKeysFromFile(filePath string) (ApiConfiguration, error) {
 		return ApiConfiguration{}, err
 	}
 	parsedData := new(persistedData)
-	json.Unmarshal(fileValue, &parsedData)
+	err = json.Unmarshal(fileValue, &parsedData)
+	if err != nil {
+		return ApiConfiguration{}, err
+	}
 	return ApiConfiguration{incomingMailApiKey: parsedData.IncomingMailApiKey, outgoingMailApiKey: parsedData.OutgoingMailApiKey}, nil
 }

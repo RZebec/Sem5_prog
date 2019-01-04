@@ -200,6 +200,60 @@ func TestTicketManager_SetEditor_PreviousEditorSet_EditorIsUpdated(t *testing.T)
 }
 
 /*
+	Removing a editor from a ticket should set the invalid default editor.
+*/
+func TestTicketManager_RemoveEditor(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	// Load some prepared tickets:
+	err = writeTestDataToFolder(folderPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	// Ensure, that the ticket has a editor set:
+	_, testTicket := testee.GetTicketById(3)
+	assert.True(t, testTicket.info.HasEditor, "Editor should be set")
+
+	// Remove the editor:
+	err = testee.RemoveEditor(testTicket.info.Id)
+	assert.Nil(t, err)
+
+	// Assert that the ticket has been updated:
+	_, updatedTicket := testee.GetTicketById(testTicket.info.Id)
+	assert.False(t, updatedTicket.info.HasEditor, "Editor should not be set")
+	assert.Equal(t, user.GetInvalidDefaultUser(), updatedTicket.info.Editor, "Editor should be set to invalid id 0")
+
+	// Assert that the stored file has been updated:
+	storedTicket, err := readTicketFromFile(updatedTicket.filePath)
+	assert.Equal(t, user.GetInvalidDefaultUser(), storedTicket.info.Editor)
+	assert.False(t, storedTicket.info.HasEditor)
+}
+
+/*
+	Removing a editor from a non existing ticket should return a error.
+*/
+func TestTicketManager_RemoveEditor_TicketDoesNotExist(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	// Load some prepared tickets:
+	err = writeTestDataToFolder(folderPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	// Remove the editor:
+	err = testee.RemoveEditor(9999)
+	assert.Equal(t, "ticket does not exist", err.Error())
+}
+
+/*
 	A ticket can be merged with another ticket. The messages from the newer tickets will be attached to the older ticket.
 	The newer ticket will be deleted.
 */
@@ -375,6 +429,39 @@ func TestTicketManager_GetAllTicketInfo_NoTickets_EmptyArrayReturned(t *testing.
 	testee.Initialize(folderPath)
 
 	tickets := testee.GetAllTicketInfo()
+	assert.Equal(t, 0, len(tickets))
+}
+
+/*
+	Getting the open ticket infos when ticket exist, should return the infos for the open tickets.
+*/
+func TestTicketManager_GetAllOpenTickets_TicketsExist_TicketInfoReturned(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	err = writeTestDataToFolder(folderPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	tickets := testee.GetAllOpenTickets()
+	assert.Equal(t, 2, len(tickets))
+}
+
+/*
+	Getting the ticket infos for open tickets when no tickets exists, should return a empty array.
+*/
+func TestTicketManager_GetAllOpenTickets_NoTickets_EmptyArrayReturned(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	tickets := testee.GetAllOpenTickets()
 	assert.Equal(t, 0, len(tickets))
 }
 
@@ -652,6 +739,58 @@ func TestTicketManager_AppendMessageToTicket_TicketDoesNotExist_ErrorReturned(t 
 	_, err = testee.AppendMessageToTicket(999, message)
 	assert.Equal(t, "ticket does not exist", err.Error())
 
+}
+
+/*
+	Setting the state of the ticket should change the state in memory and in the persisted ticket.
+*/
+func TestTicketManager_SetTicketState_StateUpdated(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	// Load some prepared tickets:
+	err = writeTestDataToFolder(folderPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	// Ensure, that the ticket has state open set:
+	_, testTicket := testee.GetTicketById(2)
+	assert.Equal(t, Open, testTicket.info.State, "State should be set to open")
+
+	// Update the state:
+	_, err = testee.SetTicketState(2, Closed)
+	assert.Nil(t, err)
+
+	// Assert that the ticket has been updated:
+	_, updatedTicket := testee.GetTicketById(testTicket.info.Id)
+	assert.Equal(t, Closed, updatedTicket.info.State, "State should now be set to closed")
+
+	// Assert that the stored file has been updated:
+	storedTicket, err := readTicketFromFile(updatedTicket.filePath)
+	assert.Equal(t, Closed, storedTicket.info.State, "The persisted state should be closed")
+}
+
+/*
+	Setting the state of a non existing ticket should return a error..
+*/
+func TestTicketManager_SetTicketState_TicketDoesNotExist(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	// Load some prepared tickets:
+	err = writeTestDataToFolder(folderPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	// Update the state:
+	_, err = testee.SetTicketState(9999, Closed)
+	assert.Equal(t, "ticket does not exist", err.Error())
 }
 
 /*

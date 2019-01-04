@@ -2,12 +2,16 @@ package main
 
 import (
 	"bufio"
+	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/api"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/api/mails"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"fmt"
 	"net/http"
 	"os"
@@ -33,7 +37,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(apiConfig)
 
 	if !configuration.ValidateConfiguration(logger) {
 		fmt.Println("Configuration is not valid. Press enter to exit application.")
@@ -41,6 +44,12 @@ func main() {
 		reader.ReadByte()
 		return
 	}
+
+	mailContext := mail.MailManager{}
+	err = mailContext.Initialize(configuration.MailDataFolderPath, configuration.SendingMailAddress, logger)
+	mailContext.CreateNewOutgoingMail("test1@test1.de", "testSubject1", "TestContent1")
+	mailContext.CreateNewOutgoingMail("test2@test2.de", "testSubject2", "TestContent2")
+	mailContext.CreateNewOutgoingMail("test3@test2.de", "testSubject3", "TestContent2")
 
 	userContext := user.LoginSystem{}
 	err = userContext.Initialize(configuration.LoginDataFolderPath)
@@ -72,16 +81,44 @@ func main() {
 	g := ticketContext.GetAllTicketInfo()
 	fmt.Println(len(g))
 
-	exampleHandler := webui.ExampleHtmlHandler{Prefix: "Das ist mein Prefix"}
-	wrapper := core.Handler{Next: exampleHandler}
+	http.HandleFunc(shared.SendPath, getIncomingMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
+	http.HandleFunc(shared.AcknowledgmentPath, getAcknowledgeMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
+	http.HandleFunc(shared.ReceivePath, getOutgoingMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
 
-	http.HandleFunc("/", foohandler)
-	http.HandleFunc("/files/", tempHandler)
-	http.HandleFunc("/example", wrapper.ServeHTTP)
+	handlerManager := webui.HandlerManager{
+		UserContext:   &userContext,
+		TicketContext: &ticketContext,
+		Config:        configuration,
+		Logger:        logger,
+	}
+
+	templateManager.LoadTemplates(logger)
+	handlerManager.RegisterHandlers()
 
 	if err := http.ListenAndServeTLS(configuration.GetServiceUrl(), configuration.CertificatePath, configuration.CertificateKeyPath, nil); err != nil {
-		panic(err)
+		logger.LogError("Main", err)
 	}
 
 	//staticFileHandlers.StaticFileHandler()
+}
+
+func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mail.MailContext, logger logging.Logger) http.Handler {
+	incomingMailHandler := mails.IncomingMailHandler{Logger: logger, MailContext: mailContext}
+	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,
+		Next: &incomingMailHandler, AllowedMethod: "POST", Logger: logger}
+	return &apiAuthenticationHandler
+}
+
+func getAcknowledgeMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mail.MailContext, logger logging.Logger) http.Handler {
+	incomingMailHandler := mails.AcknowledgeMailHandler{Logger: logger, MailContext: mailContext}
+	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,
+		Next: &incomingMailHandler, AllowedMethod: "POST", Logger: logger}
+	return &apiAuthenticationHandler
+}
+
+func getOutgoingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mail.MailContext, logger logging.Logger) http.Handler {
+	outgoingMailHandler := mails.OutgoingMailHandler{Logger: logger, MailContext: mailContext}
+	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetOutgoingMailApiKey,
+		Next: &outgoingMailHandler, AllowedMethod: "GET", Logger: logger}
+	return &apiAuthenticationHandler
 }

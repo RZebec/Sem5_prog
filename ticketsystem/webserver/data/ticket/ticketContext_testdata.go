@@ -17,7 +17,8 @@ const firstTestTicket = `{
 "LastName": "Mustermann"
 },
 "CreationTime": "2018-10-27T18:23:04.0276343+02:00",
-"LastModificationTime": "2018-10-27T18:23:04.0276343+02:00"
+"LastModificationTime": "2018-10-27T18:23:04.0276343+02:00",
+"State": 1
 },
 "Messages": [
 {
@@ -47,7 +48,8 @@ const secondTestTicket = `{
             "LastName": "Mustermann"
         },
         "CreationTime": "2018-10-27T18:23:04.0896374+02:00",
-        "LastModificationTime": "2018-10-27T18:23:04.0896374+02:00"
+        "LastModificationTime": "2018-10-27T18:23:04.0896374+02:00",
+		"State": 1
     },
     "Messages": [
         {
@@ -77,7 +79,8 @@ const thirdTestTicket = `{
             "LastName": "Mustermann"
         },
         "CreationTime": "2018-10-27T18:23:04.1016353+02:00",
-        "LastModificationTime": "2018-10-27T18:23:04.1016353+02:00"
+        "LastModificationTime": "2018-10-27T18:23:04.1016353+02:00",
+		"State": 2
     },
     "Messages": [
         {
@@ -107,7 +110,8 @@ const fourthTestTicket = `{
             "LastName": "Test"
         },
         "CreationTime": "2018-10-27T18:23:04.1141357+02:00",
-        "LastModificationTime": "2018-10-27T18:23:04.1141357+02:00"
+        "LastModificationTime": "2018-10-27T18:23:04.1141357+02:00",
+		"State": 3
     },
     "Messages": [
         {
