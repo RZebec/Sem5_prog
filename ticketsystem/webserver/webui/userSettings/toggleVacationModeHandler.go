@@ -1,9 +1,9 @@
 package userSettings
 
 import (
-	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"html"
 	"net/http"
 	"strconv"
@@ -37,23 +37,17 @@ func (v ToggleVacationModeHandler) ServeHTTP(w http.ResponseWriter, r *http.Requ
 			return
 		}
 
-		accessTokenCookie, err := r.Cookie(shared.AccessTokenCookieName)
-
-		if err != nil {
-			v.Logger.LogError("ToggleVacationModeHandler", err)
-			http.Redirect(w, r, "/", http.StatusBadRequest)
-			return
-		}
+		accessToken := wrappers.GetUserToken(r.Context())
 
 		if vacation {
-			err := v.UserContext.EnableVacationMode(accessTokenCookie.Value)
+			err := v.UserContext.EnableVacationMode(accessToken)
 			if err != nil {
 				v.Logger.LogError("ToggleVacationModeHandler", err)
 				http.Redirect(w, r, "/", http.StatusBadRequest)
 				return
 			}
 		} else {
-			err := v.UserContext.DisableVacationMode(accessTokenCookie.Value)
+			err := v.UserContext.DisableVacationMode(accessToken)
 			if err != nil {
 				v.Logger.LogError("ToggleVacationModeHandler", err)
 				http.Redirect(w, r, "/", http.StatusBadRequest)

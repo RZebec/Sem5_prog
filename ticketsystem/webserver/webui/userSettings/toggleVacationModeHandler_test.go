@@ -1,7 +1,6 @@
 package userSettings
 
 import (
-	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
@@ -21,9 +20,6 @@ func TestToggleVacationModeHandler_ServeHTTP_ValidRequest_RedirectedToUserSettin
 	req.Form = url.Values{}
 	req.Form.Add("vacationMode", "true")
 
-	cookie := http.Cookie{Name: shared.AccessTokenCookieName, Value: "test"}
-	req.AddCookie(&cookie)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -33,7 +29,7 @@ func TestToggleVacationModeHandler_ServeHTTP_ValidRequest_RedirectedToUserSettin
 	testLogger := testhelpers.GetTestLogger()
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
-	mockedUserContext.On("EnableVacationMode", "test").Return(nil)
+	mockedUserContext.On("EnableVacationMode", "").Return(nil)
 
 	testee := ToggleVacationModeHandler{UserContext: mockedUserContext, Logger: testLogger}
 
@@ -56,9 +52,6 @@ func TestToggleVacationModeHandler_ServeHTTP_ValidRequest_DisableVacationMode_Re
 	req.Form = url.Values{}
 	req.Form.Add("vacationMode", "false")
 
-	cookie := http.Cookie{Name: shared.AccessTokenCookieName, Value: "test"}
-	req.AddCookie(&cookie)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -68,7 +61,7 @@ func TestToggleVacationModeHandler_ServeHTTP_ValidRequest_DisableVacationMode_Re
 	testLogger := testhelpers.GetTestLogger()
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
-	mockedUserContext.On("DisableVacationMode", "test").Return(nil)
+	mockedUserContext.On("DisableVacationMode", "").Return(nil)
 
 	testee := ToggleVacationModeHandler{UserContext: mockedUserContext, Logger: testLogger}
 
@@ -90,9 +83,6 @@ func TestToggleVacationModeHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 	req, err := http.NewRequest("GET", "/user_settings", nil)
 	req.Form = url.Values{}
 	req.Form.Add("vacationMode", "true")
-
-	cookie := http.Cookie{Name: shared.AccessTokenCookieName, Value: "test"}
-	req.AddCookie(&cookie)
 
 	if err != nil {
 		t.Fatal(err)
@@ -122,40 +112,6 @@ func TestToggleVacationModeHandler_ServeHTTP_ParsingError(t *testing.T) {
 	req, err := http.NewRequest("POST", "/user_settings", nil)
 	req.Form = url.Values{}
 	req.Form.Add("vacationMode", "fasfasf")
-
-	cookie := http.Cookie{Name: shared.AccessTokenCookieName, Value: "test"}
-	req.AddCookie(&cookie)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	rr := httptest.NewRecorder()
-
-	testLogger := testhelpers.GetTestLogger()
-
-	mockedUserContext := new(mockedForTests.MockedUserContext)
-
-	testee := ToggleVacationModeHandler{UserContext: mockedUserContext, Logger: testLogger}
-
-	handler := http.HandlerFunc(testee.ServeHTTP)
-
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
-	handler.ServeHTTP(rr, req.WithContext(ctx))
-
-	assert.Equal(t, http.StatusBadRequest, rr.Code, "Status code 400 should be returned")
-	assert.Equal(t, "/", rr.Header().Get("location"), "User should be redirected to url \"/\"")
-
-	mockedUserContext.AssertExpectations(t)
-}
-
-/*
-	Cookie Error should return a 400.
-*/
-func TestToggleVacationModeHandler_ServeHTTP_CookieError(t *testing.T) {
-	req, err := http.NewRequest("POST", "/user_settings", nil)
-	req.Form = url.Values{}
-	req.Form.Add("vacationMode", "true")
 
 	if err != nil {
 		t.Fatal(err)
@@ -188,9 +144,6 @@ func TestToggleVacationModeHandler_ServeHTTP_EnableVacationModeError(t *testing.
 	req.Form = url.Values{}
 	req.Form.Add("vacationMode", "true")
 
-	cookie := http.Cookie{Name: shared.AccessTokenCookieName, Value: "test"}
-	req.AddCookie(&cookie)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -200,7 +153,7 @@ func TestToggleVacationModeHandler_ServeHTTP_EnableVacationModeError(t *testing.
 	testLogger := testhelpers.GetTestLogger()
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
-	mockedUserContext.On("EnableVacationMode", "test").Return(errors.New("TestError"))
+	mockedUserContext.On("EnableVacationMode", "").Return(errors.New("TestError"))
 
 	testee := ToggleVacationModeHandler{UserContext: mockedUserContext, Logger: testLogger}
 
@@ -223,9 +176,6 @@ func TestToggleVacationModeHandler_ServeHTTP_DisableVacationModeError(t *testing
 	req.Form = url.Values{}
 	req.Form.Add("vacationMode", "false")
 
-	cookie := http.Cookie{Name: shared.AccessTokenCookieName, Value: "test"}
-	req.AddCookie(&cookie)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -235,7 +185,7 @@ func TestToggleVacationModeHandler_ServeHTTP_DisableVacationModeError(t *testing
 	testLogger := testhelpers.GetTestLogger()
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
-	mockedUserContext.On("DisableVacationMode", "test").Return(errors.New("TestError"))
+	mockedUserContext.On("DisableVacationMode", "").Return(errors.New("TestError"))
 
 	testee := ToggleVacationModeHandler{UserContext: mockedUserContext, Logger: testLogger}
 
