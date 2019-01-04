@@ -121,7 +121,7 @@ func (t TicketSetEditorHandler) handleRemoveEditorRequest(w http.ResponseWriter,
 		http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusOK)
+	http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusFound)
 }
 
 /*
@@ -191,5 +191,5 @@ func (t TicketSetEditorHandler) handleChangeEditorRequest(w http.ResponseWriter,
 		http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusOK)
+	http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusFound)
 }

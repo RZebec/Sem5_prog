@@ -33,9 +33,10 @@ var TicketEditPage = `
 						</select>
 						<button type="submit" id="submitChangeState" class="submit-button">Change State</button>
 					</form>
-					<form id="change_editor_form" method="POST" name="change_editor_form" action="/ticket_editor_change">
+					<form id="change_editor_form" method="POST" name="change_editor_form" action="/ticket_setEditor">
+						<input type="hidden" name="ticketId" value="{{.TicketInfo.Id}}"/>
 						<label>Editor:</label>
-						<select name="userId" id="userId">
+						<select name="editorUserId" id="editorUserId">
 						{{range .Users}}	
   							<option value="{{.UserId}}">{{.Mail}}</option>
 						{{end}}
