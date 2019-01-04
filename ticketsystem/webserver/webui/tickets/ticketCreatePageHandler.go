@@ -27,6 +27,8 @@ type ticketCreatePageData struct {
 	pages.BasePageData
 	IsUserLoggedIn	bool
 	UserName	string
+	FirstName	string
+	LastName	string
 }
 
 /*
@@ -41,6 +43,8 @@ func (t TicketCreatePageHandler) ServeHTTP(w http.ResponseWriter, r *http.Reques
 		data := ticketCreatePageData{
 			UserName: "",
 			IsUserLoggedIn:	false,
+			FirstName: "",
+			LastName: "",
 		}
 
 		if isUserLoggedIn {
@@ -52,6 +56,8 @@ func (t TicketCreatePageHandler) ServeHTTP(w http.ResponseWriter, r *http.Reques
 				data = ticketCreatePageData{
 					UserName: user.Mail,
 					IsUserLoggedIn:	isUserLoggedIn,
+					FirstName: user.FirstName,
+					LastName: user.LastName,
 				}
 			} else {
 				t.Logger.LogError("TicketCreatePageHandler", errors.New("User ID couldn´t be referenced back to a user!"))

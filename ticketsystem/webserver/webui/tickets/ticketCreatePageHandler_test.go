@@ -39,6 +39,8 @@ func TestTicketCreatePageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	data := ticketCreatePageData{
 		UserName: testUser.Mail,
 		IsUserLoggedIn:	true,
+		FirstName: "Dieter",
+		LastName: "Dietrich",
 	}
 
 	data.UserIsAdmin = false
@@ -113,6 +115,8 @@ func TestTicketCreatePageHandler_ServeHTTP_ContextError_RenderError(t *testing.T
 	data := ticketCreatePageData{
 		UserName: testUser.Mail,
 		IsUserLoggedIn:	true,
+		FirstName: "Dieter",
+		LastName: "Dietrich",
 	}
 
 	data.UserIsAdmin = false
