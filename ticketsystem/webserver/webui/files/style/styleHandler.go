@@ -183,6 +183,38 @@ var largeMainStyle = `
         float: left;
         margin-top: 1.5em;
     }`
+
+var messageStyle = `
+    
+    input[type=text], input[type=password] {
+        width: 99%;
+		height: 100%;
+        border: 2px solid white;
+        color: black;
+        border-radius: 5px;
+		margin-right: 1em;
+    }
+
+	.submit-button {
+    	background-color: #4caf50;
+    	color: white;
+    	cursor: pointer;
+    	width: 99%;
+		height: 100%;
+		margin-right: 1em;
+    	outline: none;
+    	border: none;
+    	height: 2em;
+    	text-decoration: none;
+	}
+    
+    .submit-button:hover {
+        background-color: rgba(76, 175, 79, 0.466);
+    }
+
+	.error-message{
+		color: red;
+	}`
 /*
 	The handler for the style(css) files.
 */
@@ -200,5 +232,7 @@ func HandelStyle(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(tableStyle))
 	case "largeMainStyle":
 		w.Write([]byte(largeMainStyle))
+	case "message":
+		w.Write([]byte(messageStyle))
 	}
 }

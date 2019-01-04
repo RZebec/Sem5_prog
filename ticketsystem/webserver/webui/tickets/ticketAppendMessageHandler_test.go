@@ -59,7 +59,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_ValidRequest(t *
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
-	assert.Equal(t, 200, resp.StatusCode, "Should return 200")
+	assert.Equal(t, 302, resp.StatusCode, "Should return 302")
 	assert.Equal(t, "/ticket/2", resp.Header.Get("location"))
 
 	mockedTicketContext.AssertExpectations(t)
@@ -390,7 +390,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedUser_ValidRequest(
 	handler.ServeHTTP(rr, req)
 
 	resp := rr.Result()
-	assert.Equal(t, 200, resp.StatusCode, "Should return 200")
+	assert.Equal(t, 302, resp.StatusCode, "Should return 302")
 	assert.Equal(t, "/ticket/2", resp.Header.Get("location"))
 
 	mockedTicketContext.AssertExpectations(t)
@@ -617,7 +617,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedUser_OnlyInternalS
 	handler.ServeHTTP(rr, req)
 
 	resp := rr.Result()
-	assert.Equal(t, 200, resp.StatusCode, "Should return 200")
+	assert.Equal(t, 302, resp.StatusCode, "Should return 302")
 	assert.Equal(t, "/ticket/2", resp.Header.Get("location"))
 
 	mockedTicketContext.AssertExpectations(t)
@@ -712,7 +712,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedWithMailOfExisting
 	handler.ServeHTTP(rr, req)
 
 	resp := rr.Result()
-	assert.Equal(t, 200, resp.StatusCode, "Should return 200")
+	assert.Equal(t, 302, resp.StatusCode, "Should return 302")
 	assert.Equal(t, "/login", resp.Header.Get("location"))
 
 	mockedTicketContext.AssertExpectations(t)

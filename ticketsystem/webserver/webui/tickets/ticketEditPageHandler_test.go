@@ -61,7 +61,8 @@ func TestTicketEditPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 		TicketInfo: 	testTicketInfo,
 		OtherTickets:	filteredTickets,
 		Users:			allTestUsers,
-		OtherStates:	states,
+		OtherState1:	states[0],
+		OtherState2:	states[1],
 	}
 
 	// Execute the test:
@@ -71,7 +72,7 @@ func TestTicketEditPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 
 	data.UserIsAdmin = false
 	data.UserIsAuthenticated = true
-	data.Active = "ticket_edit"
+	data.Active = ""
 
 	mockedTicketContext.On("GetTicketById", 5).Return(true, testTicket)
 	mockedTicketContext.On("GetAllTicketInfo").Return(allTestTickets)
@@ -237,7 +238,8 @@ func TestTicketEditPageHandler_ServeHTTP_RenderTemplateError(t *testing.T) {
 		TicketInfo: 	testTicketInfo,
 		OtherTickets:	filteredTickets,
 		Users:			allTestUsers,
-		OtherStates:	states,
+		OtherState1:	states[0],
+		OtherState2:	states[1],
 	}
 
 	// Execute the test:
@@ -247,7 +249,7 @@ func TestTicketEditPageHandler_ServeHTTP_RenderTemplateError(t *testing.T) {
 
 	data.UserIsAdmin = false
 	data.UserIsAuthenticated = true
-	data.Active = "ticket_edit"
+	data.Active = ""
 
 	mockedTicketContext.On("GetTicketById", 5).Return(true, testTicket)
 	mockedTicketContext.On("GetAllTicketInfo").Return(allTestTickets)
