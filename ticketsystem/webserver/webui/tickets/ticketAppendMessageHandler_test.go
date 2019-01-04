@@ -31,13 +31,15 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_ValidRequest(t *
 	// Create and setup mocked interfaces:
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedMailContext := new(mockedForTests.MockedMailContext)
 
 	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
 	mockedUserContext.On("GetUserById", userId).Return(true, userFromContext)
 	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticket.Ticket{}, nil)
+	mockedMailContext.On("CreateNewOutgoingMail", mock.Anything, mock.Anything, mock.Anything).Return(nil)
 
 	testee := TicketAppendMessageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext,
-		Logger: testhelpers.GetTestLogger()}
+		Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -62,6 +64,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_ValidRequest(t *
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
+	mockedMailContext.AssertExpectations(t)
 
 	// Assert that the message entry has been created:
 	assert.Equal(t, ticketId, mockedTicketContext.Calls[1].Arguments[0].(int), "The correct ticket id should be used.")
@@ -86,6 +89,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_ContextReturnsEr
 	// Create and setup mocked interfaces:
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedMailContext := new(mockedForTests.MockedMailContext)
 
 	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
 	mockedUserContext.On("GetUserById", userId).Return(true, userFromContext)
@@ -93,7 +97,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_ContextReturnsEr
 		errors.New("TestError"))
 
 	testee := TicketAppendMessageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext,
-		Logger: testhelpers.GetTestLogger()}
+		Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -132,11 +136,12 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_TicketDoesNotExi
 	// Create and setup mocked interfaces:
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedMailContext := new(mockedForTests.MockedMailContext)
 
 	mockedTicketContext.On("GetTicketById", ticketId).Return(false, &ticket.Ticket{})
 
 	testee := TicketAppendMessageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext,
-		Logger: testhelpers.GetTestLogger()}
+		Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -161,6 +166,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_TicketDoesNotExi
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
+	mockedMailContext.AssertExpectations(t)
 }
 
 /*
@@ -174,9 +180,10 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_InvalidTicketId_
 	// Create and setup mocked interfaces:
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedMailContext := new(mockedForTests.MockedMailContext)
 
 	testee := TicketAppendMessageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext,
-		Logger: testhelpers.GetTestLogger()}
+		Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -201,6 +208,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_InvalidTicketId_
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
+	mockedMailContext.AssertExpectations(t)
 }
 
 /*
@@ -217,12 +225,13 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_UserDoesNotExist
 	// Create and setup mocked interfaces:
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedMailContext := new(mockedForTests.MockedMailContext)
 
 	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
 	mockedUserContext.On("GetUserById", userId).Return(false, userFromContext)
 
 	testee := TicketAppendMessageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext,
-		Logger: testhelpers.GetTestLogger()}
+		Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -247,6 +256,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_UserDoesNotExist
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
+	mockedMailContext.AssertExpectations(t)
 }
 
 /*
@@ -262,12 +272,13 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_EmptyContent_Inv
 	// Create and setup mocked interfaces:
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedMailContext := new(mockedForTests.MockedMailContext)
 
 	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
 	mockedUserContext.On("GetUserById", userId).Return(true, userFromContext)
 
 	testee := TicketAppendMessageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext,
-		Logger: testhelpers.GetTestLogger()}
+		Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -292,6 +303,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_EmptyContent_Inv
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
+	mockedMailContext.AssertExpectations(t)
 }
 
 /*
@@ -306,12 +318,13 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_InvalidOnlyInter
 	// Create and setup mocked interfaces:
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedMailContext := new(mockedForTests.MockedMailContext)
 
 	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
 	mockedUserContext.On("GetUserById", userId).Return(true, userFromContext)
 
 	testee := TicketAppendMessageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext,
-		Logger: testhelpers.GetTestLogger()}
+		Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -336,6 +349,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_InvalidOnlyInter
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
+	mockedMailContext.AssertExpectations(t)
 }
 
 /*
@@ -350,13 +364,15 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedUser_ValidRequest(
 	// Create and setup mocked interfaces:
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedMailContext := new(mockedForTests.MockedMailContext)
 
 	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
 	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticket.Ticket{}, nil)
 	mockedUserContext.On("GetUserForEmail", userMail).Return(false, userId)
+	mockedMailContext.On("CreateNewOutgoingMail", mock.Anything, mock.Anything, mock.Anything).Return(nil)
 
 	testee := TicketAppendMessageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext,
-		Logger: testhelpers.GetTestLogger()}
+		Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -379,6 +395,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedUser_ValidRequest(
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
+	mockedMailContext.AssertExpectations(t)
 
 	// Assert that the message entry has been created:
 	assert.Equal(t, ticketId, mockedTicketContext.Calls[1].Arguments[0].(int), "The correct ticket id should be used.")
@@ -401,6 +418,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedUser_ContextReturn
 	// Create and setup mocked interfaces:
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedMailContext := new(mockedForTests.MockedMailContext)
 
 	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
 	mockedUserContext.On("GetUserForEmail", userMail).Return(false, userId)
@@ -408,7 +426,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedUser_ContextReturn
 		errors.New("TestError"))
 
 	testee := TicketAppendMessageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext,
-		Logger: testhelpers.GetTestLogger()}
+		Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -432,6 +450,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedUser_ContextReturn
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
+	mockedMailContext.AssertExpectations(t)
 }
 
 /*
@@ -445,11 +464,12 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedUser_TicketDoesNot
 	// Create and setup mocked interfaces:
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedMailContext := new(mockedForTests.MockedMailContext)
 
 	mockedTicketContext.On("GetTicketById", ticketId).Return(false, &ticket.Ticket{})
 
 	testee := TicketAppendMessageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext,
-		Logger: testhelpers.GetTestLogger()}
+		Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -472,6 +492,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedUser_TicketDoesNot
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
+	mockedMailContext.AssertExpectations(t)
 }
 
 /*
@@ -484,9 +505,10 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedUser_InvalidTicket
 	// Create and setup mocked interfaces:
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedMailContext := new(mockedForTests.MockedMailContext)
 
 	testee := TicketAppendMessageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext,
-		Logger: testhelpers.GetTestLogger()}
+		Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -509,6 +531,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedUser_InvalidTicket
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
+	mockedMailContext.AssertExpectations(t)
 }
 
 /*
@@ -523,12 +546,13 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedUser_EmptyContent_
 	// Create and setup mocked interfaces:
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedMailContext := new(mockedForTests.MockedMailContext)
 
 	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
 	mockedUserContext.On("GetUserForEmail", userMail).Return(false, userId)
 
 	testee := TicketAppendMessageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext,
-		Logger: testhelpers.GetTestLogger()}
+		Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -552,6 +576,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedUser_EmptyContent_
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
+	mockedMailContext.AssertExpectations(t)
 }
 
 /*
@@ -565,13 +590,15 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedUser_OnlyInternalS
 	// Create and setup mocked interfaces:
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedMailContext := new(mockedForTests.MockedMailContext)
 
 	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
 	mockedUserContext.On("GetUserForEmail", userMail).Return(false, userId)
 	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticket.Ticket{}, nil)
+	mockedMailContext.On("CreateNewOutgoingMail", mock.Anything, mock.Anything, mock.Anything).Return(nil)
 
 	testee := TicketAppendMessageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext,
-		Logger: testhelpers.GetTestLogger()}
+		Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -595,6 +622,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedUser_OnlyInternalS
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
+	mockedMailContext.AssertExpectations(t)
 
 	// Assert that the message entry has been created:
 	assert.Equal(t, ticketId, mockedTicketContext.Calls[1].Arguments[0].(int), "The correct ticket id should be used.")
@@ -615,11 +643,12 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedUser_MailIsInvalid
 	// Create and setup mocked interfaces:
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedMailContext := new(mockedForTests.MockedMailContext)
 
 	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
 
 	testee := TicketAppendMessageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext,
-		Logger: testhelpers.GetTestLogger()}
+		Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -643,6 +672,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedUser_MailIsInvalid
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
+	mockedMailContext.AssertExpectations(t)
 }
 
 /*
@@ -657,12 +687,13 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedWithMailOfExisting
 	// Create and setup mocked interfaces:
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedMailContext := new(mockedForTests.MockedMailContext)
 
 	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
 	mockedUserContext.On("GetUserForEmail", userMail).Return(true, userId)
 
 	testee := TicketAppendMessageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext,
-		Logger: testhelpers.GetTestLogger()}
+		Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -686,6 +717,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_NonAuthenticatedWithMailOfExisting
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
+	mockedMailContext.AssertExpectations(t)
 }
 
 /*
@@ -695,9 +727,10 @@ func TestTicketAppendMessageHandler_ServeHTTP_InvalidRequestMethod(t *testing.T)
 	// Create and setup mocked interfaces:
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedMailContext := new(mockedForTests.MockedMailContext)
 
 	testee := TicketAppendMessageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext,
-		Logger: testhelpers.GetTestLogger()}
+		Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -713,4 +746,5 @@ func TestTicketAppendMessageHandler_ServeHTTP_InvalidRequestMethod(t *testing.T)
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
+	mockedMailContext.AssertExpectations(t)
 }

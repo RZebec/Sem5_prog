@@ -209,7 +209,7 @@ func TestIncomingMailHandler_handleIncomingMails_TicketExists_MailSent(t *testin
 
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	expectedSubject := "New Entry for your ticket: " + html.EscapeString(testMail.Subject)
-	expectedMailContent := mail.BuildNotificationMailContent(existingTicket.Info().Creator.Mail, testMail.Sender, testMail.Content)
+	expectedMailContent := mail.BuildAppendMessageNotificationMailContent(existingTicket.Info().Creator.Mail, testMail.Sender, testMail.Content)
 
 	mockedMailContext.On("CreateNewOutgoingMail", "", expectedSubject, expectedMailContent).Return(nil)
 

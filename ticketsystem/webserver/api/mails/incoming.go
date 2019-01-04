@@ -105,7 +105,7 @@ func (h *IncomingMailHandler) handleIncomingMails(data []mail.Mail) error {
 				if strings.ToLower(incomingMail.Sender) != strings.ToLower(ticketCreatorMail) {
 					subject := "New Entry for your ticket: " + html.EscapeString(incomingMail.Subject)
 					senderOfMail := html.EscapeString(incomingMail.Sender)
-					content := html.EscapeString(mail.BuildNotificationMailContent(ticketCreatorMail,
+					content := html.EscapeString(mail.BuildAppendMessageNotificationMailContent(ticketCreatorMail,
 						senderOfMail, incomingMail.Content))
 					err = h.MailContext.CreateNewOutgoingMail(existingTicket.Info().Creator.Mail, subject, content)
 					if err != nil {

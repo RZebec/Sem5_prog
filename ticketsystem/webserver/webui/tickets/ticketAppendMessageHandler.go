@@ -3,6 +3,7 @@ package tickets
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/validation/mail"
+	mailContext "de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
@@ -21,6 +22,7 @@ type TicketAppendMessageHandler struct {
 	UserContext   user.UserContext
 	Logger        logging.Logger
 	TicketContext ticket.TicketContext
+	MailContext	  mailContext.MailContext
 }
 
 /*
@@ -54,7 +56,7 @@ func (t TicketAppendMessageHandler) handlerForAuthenticatedUser(w http.ResponseW
 		return
 	}
 
-	tickedExists, _ := t.TicketContext.GetTicketById(ticketId)
+	tickedExists, existingTicket := t.TicketContext.GetTicketById(ticketId)
 	if !tickedExists {
 		t.Logger.LogError("TicketAppendMessageHandler", errors.New("invalid ticket id, ticket does not exist"))
 		http.Redirect(w, r, "/", http.StatusBadRequest)
@@ -99,6 +101,20 @@ func (t TicketAppendMessageHandler) handlerForAuthenticatedUser(w http.ResponseW
 		return
 	}
 
+	// Notify the creator:
+	sender := strings.ToLower(authenticatedUser.Mail)
+	receiver := strings.ToLower(existingTicket.Info().Creator.Mail)
+	if sender != receiver {
+		subject := mailContext.BuildAppendMessageNotificationMailSubject(ticketId)
+		mailContent := mailContext.BuildAppendMessageNotificationMailContent(receiver, sender, content)
+		err = t.MailContext.CreateNewOutgoingMail(existingTicket.Info().Creator.Mail, subject, mailContent)
+		if err != nil {
+			t.Logger.LogError("TicketAppendMessageHandler", err)
+			http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusInternalServerError)
+			return
+		}
+	}
+
 	http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusOK)
 }
 
@@ -115,7 +131,7 @@ func (t TicketAppendMessageHandler) handlerForNonAuthenticatedUser(w http.Respon
 		return
 	}
 
-	tickedExists, _ := t.TicketContext.GetTicketById(ticketId)
+	tickedExists, existingTicket := t.TicketContext.GetTicketById(ticketId)
 	if !tickedExists {
 		t.Logger.LogError("TicketAppendMessageHandler", errors.New("invalid ticket id. ticket does not exist."))
 		http.Redirect(w, r, "/", http.StatusBadRequest)
@@ -161,6 +177,20 @@ func (t TicketAppendMessageHandler) handlerForNonAuthenticatedUser(w http.Respon
 		t.Logger.LogError("TicketAppendMessageHandler", err)
 		http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusInternalServerError)
 		return
+	}
+
+	// Notify the creator:
+	sender := strings.ToLower(rawMail)
+	receiver := strings.ToLower(existingTicket.Info().Creator.Mail)
+	if sender != receiver {
+		subject := mailContext.BuildAppendMessageNotificationMailSubject(ticketId)
+		mailContent := mailContext.BuildAppendMessageNotificationMailContent(receiver, sender, content)
+		err = t.MailContext.CreateNewOutgoingMail(existingTicket.Info().Creator.Mail, subject, mailContent)
+		if err != nil {
+			t.Logger.LogError("TicketAppendMessageHandler", err)
+			http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusInternalServerError)
+			return
+		}
 	}
 
 	http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusOK)

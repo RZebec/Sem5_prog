@@ -3,6 +3,7 @@ package webui
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/admin"
@@ -25,6 +26,7 @@ type HandlerManager struct {
 	Logger           logging.Logger
 	ApiConfiguration config.ApiContext
 	TemplateManager  templateManager.TemplateContext
+	MailContext 	 mail.MailContext
 }
 
 func (handlerManager *HandlerManager) RegisterHandlers() {
@@ -96,12 +98,20 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	http.HandleFunc("/ticket/", ticketViewPageHandlerWrapper.ServeHTTP)
 
 	ticketAppendMessageHandler := tickets.TicketAppendMessageHandler{TicketContext: handlerManager.TicketContext,
-		UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
+		UserContext: handlerManager.UserContext, MailContext: handlerManager.MailContext, Logger: handlerManager.Logger}
 	ticketAppendHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
 	ticketAppendHandlerWrapper.UserContext = handlerManager.UserContext
 	ticketAppendHandlerWrapper.Logger = handlerManager.Logger
 	ticketAppendHandlerWrapper.Next = ticketAppendMessageHandler
 	http.HandleFunc("/append_message", ticketAppendHandlerWrapper.ServeHTTP)
+
+	ticketMergeHandler := tickets.TickerMergeHandler{TicketContext: handlerManager.TicketContext,
+		MailContext: handlerManager.MailContext, Logger: handlerManager.Logger}
+	ticketMergeEnforceAuthenticationWrapper:= wrappers.EnforceAuthenticationWrapper{}
+	ticketMergeEnforceAuthenticationWrapper.Next = ticketMergeHandler
+	ticketMergeEnforceAuthenticationWrapper.Logger = handlerManager.Logger
+	ticketMergeEnforceAuthenticationWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/merge_tickets", ticketMergeEnforceAuthenticationWrapper.ServeHTTP)
 
 	userSettingsPageHandler := userSettings.UserSettingsPageHandler{TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
 	userSettingsPageHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
