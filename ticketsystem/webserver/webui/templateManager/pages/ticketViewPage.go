@@ -97,7 +97,6 @@ var TicketViewPage = `
                             <th>
                                 Created on
                             </th>
-							<
 						</tr>
                         {{range .Messages}}
                         <tr>
