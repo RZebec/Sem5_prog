@@ -10,7 +10,10 @@ import (
 	"strings"
 )
 
-type TickerMergeHandler struct {
+/*
+	A ticket merge handler.
+ */
+type TicketMergeHandler struct {
 	Logger        logging.Logger
 	TicketContext ticket.TicketContext
 	MailContext   mail.MailContext
@@ -19,7 +22,7 @@ type TickerMergeHandler struct {
 /*
 	Merge two tickets.
 */
-func (t TickerMergeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (t TicketMergeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if strings.ToLower(r.Method) != "post" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {
@@ -28,28 +31,27 @@ func (t TickerMergeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		firstTicketId, err := strconv.Atoi(rawFirstTickedId)
 		if err != nil {
-			t.Logger.LogError("TickerMergeHandler", err)
+			t.Logger.LogError("TicketMergeHandler", err)
 			http.Redirect(w, r, "/", http.StatusBadRequest)
 			return
 		}
 		secondTicketId, err := strconv.Atoi(rawSecondTickedId)
 		if err != nil {
-			t.Logger.LogError("TickerMergeHandler", err)
+			t.Logger.LogError("TicketMergeHandler", err)
 			http.Redirect(w, r, "/", http.StatusBadRequest)
 			return
 		}
 
 		firstTicketExists, firstTicket := t.TicketContext.GetTicketById(firstTicketId)
 		if !firstTicketExists {
-			t.Logger.LogError("TickerMergeHandler", errors.New("ticket does not exist. id: "+rawFirstTickedId))
+			t.Logger.LogError("TicketMergeHandler", errors.New("ticket does not exist. id: "+rawFirstTickedId))
 			http.Redirect(w, r, "/", http.StatusBadRequest)
 			return
-
 		}
 
 		secondTicketExists, secondTicket := t.TicketContext.GetTicketById(secondTicketId)
 		if !secondTicketExists {
-			t.Logger.LogError("TickerMergeHandler", errors.New("ticket does not exist. id: "+rawSecondTickedId))
+			t.Logger.LogError("TicketMergeHandler", errors.New("ticket does not exist. id: "+rawSecondTickedId))
 			http.Redirect(w, r, "/", http.StatusBadRequest)
 			return
 
@@ -57,7 +59,7 @@ func (t TickerMergeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		success, err := t.TicketContext.MergeTickets(firstTicketId, secondTicketId)
 		if err != nil {
-			t.Logger.LogError("TickerMergeHandler", err)
+			t.Logger.LogError("TicketMergeHandler", err)
 			http.Redirect(w, r, "/", http.StatusInternalServerError)
 			return
 		}

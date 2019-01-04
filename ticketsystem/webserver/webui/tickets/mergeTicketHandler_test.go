@@ -30,7 +30,7 @@ func TestTickerMergeHandler_ServeHTTP_TicketsMerged(t *testing.T) {
 	mockedTicketContext.On("GetTicketById", secondTicketId).Return(true, &ticket.Ticket{})
 	mockedTicketContext.On("MergeTickets", firstTicketId, secondTicketId).Return(true, nil)
 
-	testee := TickerMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
+	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext}
 
 	req, err := http.NewRequest("POST", "/test", nil)
@@ -62,7 +62,7 @@ func TestTickerMergeHandler_ServeHTTP_InvalidFirstTicketId_InvalidRequest(t *tes
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 
-	testee := TickerMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
+	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext}
 
 	req, err := http.NewRequest("POST", "/test", nil)
@@ -94,7 +94,7 @@ func TestTickerMergeHandler_ServeHTTP_InvalidSecondTicketId_InvalidRequest(t *te
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 
-	testee := TickerMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
+	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext}
 
 	req, err := http.NewRequest("POST", "/test", nil)
@@ -131,7 +131,7 @@ func TestTickerMergeHandler_ServeHTTP_FirstTicketDoesNotExist_InvalidRequest(t *
 
 	mockedTicketContext.On("GetTicketById", firstTicketId).Return(false, &ticket.Ticket{})
 
-	testee := TickerMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
+	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext}
 
 	req, err := http.NewRequest("POST", "/test", nil)
@@ -169,7 +169,7 @@ func TestTickerMergeHandler_ServeHTTP_SecondTicketDoesNotExist_InvalidRequest(t 
 	mockedTicketContext.On("GetTicketById", firstTicketId).Return(true, &ticket.Ticket{})
 	mockedTicketContext.On("GetTicketById", secondTicketId).Return(false, &ticket.Ticket{})
 
-	testee := TickerMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
+	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext}
 
 	req, err := http.NewRequest("POST", "/test", nil)
@@ -209,7 +209,7 @@ func TestTickerMergeHandler_ServeHTTP_ContextReturnsError_Returns500(t *testing.
 	mockedTicketContext.On("MergeTickets", firstTicketId, secondTicketId).
 		Return(false, errors.New("TestError"))
 
-	testee := TickerMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
+	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext}
 
 	req, err := http.NewRequest("POST", "/test", nil)
@@ -251,7 +251,7 @@ func TestTickerMergeHandler_ServeHTTP_FirstMailNotSent_Returns500(t *testing.T) 
 	mockedMailContext.On("CreateNewOutgoingMail", mock.Anything, mock.Anything, mock.Anything).
 		Return(errors.New("TestError"))
 
-	testee := TickerMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
+	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext}
 
 	req, err := http.NewRequest("POST", "/test", nil)
@@ -297,7 +297,7 @@ func TestTickerMergeHandler_ServeHTTP_SecondMailNotSent_Returns500(t *testing.T)
 	mockedMailContext.On("CreateNewOutgoingMail", mock.Anything, mock.Anything, mock.Anything).
 		Return(errors.New("TestError")).Once()
 
-	testee := TickerMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
+	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext}
 
 	req, err := http.NewRequest("POST", "/test", nil)
@@ -332,7 +332,7 @@ func TestTickerMergeHandler_ServeHTTP_InvalidRequestMethod(t *testing.T) {
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 
-	testee := TickerMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
+	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext}
 
 	req, err := http.NewRequest("GET", "/test", nil)
