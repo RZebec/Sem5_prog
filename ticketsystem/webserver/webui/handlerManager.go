@@ -121,7 +121,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	setEditorWrapper.UserContext = handlerManager.UserContext
 	http.HandleFunc("/ticket_setEditor", setEditorWrapper.ServeHTTP)
 
-	userSettingsPageHandler := userSettings.UserSettingsPageHandler{TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
+	userSettingsPageHandler := userSettings.UserSettingsPageHandler{UserContext: handlerManager.UserContext, TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
 	userSettingsPageHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
 	userSettingsPageHandlerWrapper.Next = userSettingsPageHandler
 	userSettingsPageHandlerWrapper.Logger = handlerManager.Logger
