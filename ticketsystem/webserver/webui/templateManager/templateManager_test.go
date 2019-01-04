@@ -20,7 +20,7 @@ func TestTemplateManager_LoadTemplates(t *testing.T) {
 	err := testee.LoadTemplates(testhelpers.GetTestLogger())
 
 	assert.Nil(t, err, "All templates should be loaded without error")
-	assert.Equal(t, 7, len(testee.Templates), "All templates should be loaded")
+	assert.Equal(t, 8, len(testee.Templates), "All templates should be loaded")
 }
 
 /*
