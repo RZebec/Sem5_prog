@@ -22,8 +22,9 @@ import (
 func TestTicketViewPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedTemplateManager := new(templateManager.MockedTemplateManager)
+	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	testee := TicketViewPageHandler{TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager,
+	testee := TicketViewPageHandler{TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager, UserContext: mockedUserContext,
 		Logger: testhelpers.GetTestLogger()}
 
 	testEditor := user.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
@@ -35,6 +36,7 @@ func TestTicketViewPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 
 	mockedTicketContext.On("GetTicketById", 5).Return(true, testTicket)
 	mockedTemplateManager.On("RenderTemplate", mock.Anything, "TicketViewPage", mock.Anything).Return(nil)
+
 
 	req, err := http.NewRequest("GET", "/ticket/5", nil)
 	if err != nil {
@@ -55,6 +57,7 @@ func TestTicketViewPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedTemplateManager.AssertExpectations(t)
+	mockedUserContext.AssertExpectations(t)
 }
 
 /*
@@ -63,8 +66,9 @@ func TestTicketViewPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 func TestTicketViewPageHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedTemplateManager := new(templateManager.MockedTemplateManager)
+	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	testee := TicketViewPageHandler{TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager,
+	testee := TicketViewPageHandler{TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager, UserContext: mockedUserContext,
 		Logger: testhelpers.GetTestLogger()}
 
 	req, err := http.NewRequest("POST", "/ticket/5", nil)
@@ -84,6 +88,7 @@ func TestTicketViewPageHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedTemplateManager.AssertExpectations(t)
+	mockedUserContext.AssertExpectations(t)
 }
 
 /*
@@ -92,8 +97,9 @@ func TestTicketViewPageHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 func TestTicketViewPageHandler_ServeHTTP_ContextError_RenderError(t *testing.T) {
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedTemplateManager := new(templateManager.MockedTemplateManager)
+	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	testee := TicketViewPageHandler{TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager,
+	testee := TicketViewPageHandler{TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager, UserContext: mockedUserContext,
 		Logger: testhelpers.GetTestLogger()}
 
 	testEditor := user.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
@@ -125,6 +131,7 @@ func TestTicketViewPageHandler_ServeHTTP_ContextError_RenderError(t *testing.T) 
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedTemplateManager.AssertExpectations(t)
+	mockedUserContext.AssertExpectations(t)
 }
 
 /*
@@ -133,8 +140,9 @@ func TestTicketViewPageHandler_ServeHTTP_ContextError_RenderError(t *testing.T) 
 func TestTicketViewPageHandler_ServeHTTP_IdConversionError(t *testing.T) {
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedTemplateManager := new(templateManager.MockedTemplateManager)
+	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	testee := TicketViewPageHandler{TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager,
+	testee := TicketViewPageHandler{TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager, UserContext: mockedUserContext,
 		Logger: testhelpers.GetTestLogger()}
 
 	req, err := http.NewRequest("GET", "/ticket/asdh", nil)
@@ -156,6 +164,7 @@ func TestTicketViewPageHandler_ServeHTTP_IdConversionError(t *testing.T) {
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedTemplateManager.AssertExpectations(t)
+	mockedUserContext.AssertExpectations(t)
 }
 
 /*
@@ -164,8 +173,9 @@ func TestTicketViewPageHandler_ServeHTTP_IdConversionError(t *testing.T) {
 func TestTicketViewPageHandler_ServeHTTP_TicketDoesNotExist(t *testing.T) {
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedTemplateManager := new(templateManager.MockedTemplateManager)
+	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	testee := TicketViewPageHandler{TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager,
+	testee := TicketViewPageHandler{TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager, UserContext: mockedUserContext,
 		Logger: testhelpers.GetTestLogger()}
 
 	mockedTicketContext.On("GetTicketById", 5).Return(false, new(ticket.Ticket))
@@ -189,6 +199,7 @@ func TestTicketViewPageHandler_ServeHTTP_TicketDoesNotExist(t *testing.T) {
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedTemplateManager.AssertExpectations(t)
+	mockedUserContext.AssertExpectations(t)
 }
 
 /*
@@ -197,8 +208,9 @@ func TestTicketViewPageHandler_ServeHTTP_TicketDoesNotExist(t *testing.T) {
 func TestTicketViewPageHandler_ServeHTTP_DoNotShowInternalOnlyMessages(t *testing.T) {
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedTemplateManager := new(templateManager.MockedTemplateManager)
+	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	testee := TicketViewPageHandler{TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager,
+	testee := TicketViewPageHandler{TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager, UserContext: mockedUserContext,
 		Logger: testhelpers.GetTestLogger()}
 
 	testEditor := user.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
@@ -243,6 +255,7 @@ func TestTicketViewPageHandler_ServeHTTP_DoNotShowInternalOnlyMessages(t *testin
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedTemplateManager.AssertExpectations(t)
+	mockedUserContext.AssertExpectations(t)
 }
 
 /*
@@ -251,8 +264,9 @@ func TestTicketViewPageHandler_ServeHTTP_DoNotShowInternalOnlyMessages(t *testin
 func TestTicketViewPageHandler_ServeHTTP_ShowInternalOnlyMessages(t *testing.T) {
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedTemplateManager := new(templateManager.MockedTemplateManager)
+	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	testee := TicketViewPageHandler{TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager,
+	testee := TicketViewPageHandler{TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager, UserContext: mockedUserContext,
 		Logger: testhelpers.GetTestLogger()}
 
 	testEditor := user.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
@@ -270,11 +284,12 @@ func TestTicketViewPageHandler_ServeHTTP_ShowInternalOnlyMessages(t *testing.T) 
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 4)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
 
 	data := ticketViewPageData{
 		TicketInfo: testTicketInfo,
 		Messages:	testMessages,
+		UserName:	testEditor.Mail,
 	}
 
 	data.UserIsAdmin = false
@@ -283,7 +298,7 @@ func TestTicketViewPageHandler_ServeHTTP_ShowInternalOnlyMessages(t *testing.T) 
 
 	mockedTicketContext.On("GetTicketById", 5).Return(true, testTicket)
 	mockedTemplateManager.On("RenderTemplate", mock.Anything, "TicketViewPage", data).Return(nil)
-
+	mockedUserContext.On("GetUserById", 5).Return(true, testEditor)
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -295,4 +310,5 @@ func TestTicketViewPageHandler_ServeHTTP_ShowInternalOnlyMessages(t *testing.T) 
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedTemplateManager.AssertExpectations(t)
+	mockedUserContext.AssertExpectations(t)
 }

@@ -14,14 +14,15 @@ var TicketEditPage = `
 			<div class="container">
 				<div class="main">
 					<h2>Ticket Edit</h2>
-					<form id="merge_form" method="POST" name="merge_form" action="/ticket_merge">
+					<form id="merge_form" method="POST" name="merge_form" action="/merge_tickets">
 						<label>Merge ticket with:</label>
-						<select name="ticketId" id="ticketId">
+						<input type="hidden" name="firstTicketId" value="{{.TicketInfo.Id}}"/>
+						<select name="secondTicketId" id="secondTicketId">
 						{{range .OtherTickets}}	
   							<option value="{{.Id}}">{{.Id}}-{{.Title}}</option>
 						{{end}}
 						</select>
-						<button type="submit" id="submitMerge" class="submit-button" disabled>Merge Tickets</button>
+						<button type="submit" id="submitMerge" class="submit-button">Merge Tickets</button>
 					</form>
 					<form id="change_state_form" method="POST" name="change_state_form" action="/ticket_state_change">
 						<label>State:</label>

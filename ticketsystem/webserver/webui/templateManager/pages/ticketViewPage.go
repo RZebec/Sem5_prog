@@ -9,12 +9,13 @@ var TicketViewPage = `
 
 	{{ define "StylesAndScripts" }}
 		<link rel="stylesheet" href="/files/style/table"> 
+		<link rel="stylesheet" href="/files/style/message">
+		<script src="/files/script/message"></script>
 	{{ end }}
 	
 	{{ define "Content" }}
 		<div class="content">
 			<div class="container">
-				<div class="main">
 					<table>
 						<tr>
 							<th>
@@ -125,7 +126,59 @@ var TicketViewPage = `
                         </tr>
 						{{end}}
 					</table>
-				</div>
+					<table>
+						<tr>
+							<th>
+								Creator
+                            </th>
+                            <th>
+                                Message
+                            </th>
+							{{if .UserIsAuthenticated}}
+							<th>
+								<label>Internal Only</label>
+							</th>
+							{{end}}
+                            <th>
+                            </th>
+						</tr>
+						<tr>
+							<form id="appendMessageForm" method="POST" name="appendMessageForm" action="/append_message">
+								<td>
+								{{if .UserIsAuthenticated}}
+                                	<input type="text" name="mail" id="mail" value="{{.UserName}}" readonly/>
+								{{else}}
+									<input type="text" name="mail" id="mail" value=""/>
+								{{end}}
+                            	</td>
+                            	<td>
+                                	<input type="text" name="messageContent" id="messageContent" value=""/>
+                            	</td>
+								{{if .UserIsAuthenticated}}
+								<td>
+									<input type="radio" name="onlyInternal" id="onlyInternal" value="true"/> Yes
+									<input type="radio" name="onlyInternal" id="onlyInternal" value="false" checked/> No
+								</td>
+								{{end}}
+                            	<td>
+									<input type="hidden" name="ticketId" value="{{.TicketInfo.Id}}"/>
+									<button type="submit" id="submitAppendMessage" class="submit-button" disabled>Submit Append Message</button>
+                            	</td>
+							</form>
+                        </tr>
+						<tr>
+							<td>
+								<span id="mailNotice" class="error-message"></span>
+							</td>
+							<td>
+								<span id="messageNotice" class="error-message"></span>
+							</td>
+							{{if .UserIsAuthenticated}}
+								<td></td>
+							{{end}}
+							<td></td>
+						</tr>
+					</table>
 			</div>
 		</div>
 	</body>

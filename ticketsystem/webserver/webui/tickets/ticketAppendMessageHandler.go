@@ -115,7 +115,7 @@ func (t TicketAppendMessageHandler) handlerForAuthenticatedUser(w http.ResponseW
 		}
 	}
 
-	http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusOK)
+	http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusFound)
 }
 
 /*
@@ -155,7 +155,7 @@ func (t TicketAppendMessageHandler) handlerForNonAuthenticatedUser(w http.Respon
 	userExists, _ := t.UserContext.GetUserForEmail(rawMail)
 	if userExists {
 		t.Logger.LogError("TicketAppendMessageHandler", errors.New("user is registered but not logged in"))
-		http.Redirect(w, r, "/login", http.StatusOK)
+		http.Redirect(w, r, "/login", http.StatusFound)
 		return
 	}
 
@@ -193,5 +193,5 @@ func (t TicketAppendMessageHandler) handlerForNonAuthenticatedUser(w http.Respon
 		}
 	}
 
-	http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusOK)
+	http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusFound)
 }

@@ -69,7 +69,7 @@ func (t TicketEditPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 		otherTickets := t.TicketContext.GetAllTicketInfo()
 
-		otherTickets = filterOutTicket(ticketInfo.Id, otherTickets)
+		otherTickets = filterOutTicket(ticketInfo, otherTickets)
 
 		otherStates := getOtherTicketStates(ticketInfo.State)
 
@@ -94,9 +94,9 @@ func (t TicketEditPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func filterOutTicket(ticketIdToFilter int, tickets []ticket.TicketInfo) (result []ticket.TicketInfo) {
+func filterOutTicket(ticketInfo ticket.TicketInfo, tickets []ticket.TicketInfo) (result []ticket.TicketInfo) {
 	for _, t := range tickets {
-		if t.Id != ticketIdToFilter {
+		if t.Id != ticketInfo.Id && t.Editor == ticketInfo.Editor {
 			result = append(result, t)
 		}
 	}

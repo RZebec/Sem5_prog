@@ -48,7 +48,7 @@ func TestTickerMergeHandler_ServeHTTP_TicketsMerged(t *testing.T) {
 	handler.ServeHTTP(rr, req)
 
 	resp := rr.Result()
-	assert.Equal(t, 200, resp.StatusCode, "Should return 200")
+	assert.Equal(t, http.StatusFound, resp.StatusCode, "Should return 302")
 	assert.Equal(t, "/ticket/4", resp.Header.Get("location"))
 
 	mockedTicketContext.AssertExpectations(t)
