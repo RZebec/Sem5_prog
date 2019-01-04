@@ -121,6 +121,14 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	setEditorWrapper.UserContext = handlerManager.UserContext
 	http.HandleFunc("/ticket_setEditor", setEditorWrapper.ServeHTTP)
 
+	ticketSetStateHandler := tickets.SetTicketStateHandler{TicketContext: handlerManager.TicketContext,
+		MailContext: handlerManager.MailContext, UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
+	setStateWrapper := wrappers.EnforceAuthenticationWrapper{}
+	setStateWrapper.Next = ticketSetStateHandler
+	setStateWrapper.Logger = handlerManager.Logger
+	setStateWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/ticket_setEditor", setStateWrapper.ServeHTTP)
+
 	userSettingsPageHandler := userSettings.UserSettingsPageHandler{TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
 	userSettingsPageHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
 	userSettingsPageHandlerWrapper.Next = userSettingsPageHandler
