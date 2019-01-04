@@ -58,7 +58,7 @@ func TestTicketSetEditorHandler_ServeHTTP_SetEditor_ValidRequest(t *testing.T) {
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
-	assert.Equal(t, 200, resp.StatusCode, "Should return 200")
+	assert.Equal(t, http.StatusFound, resp.StatusCode, "Should return 302")
 	assert.Equal(t, "/ticket/4", resp.Header.Get("location"))
 
 	mockedUserContext.AssertExpectations(t)
@@ -111,7 +111,7 @@ func TestTicketSetEditorHandler_ServeHTTP_RemoveEditor_ValidRequest(t *testing.T
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
-	assert.Equal(t, 200, resp.StatusCode, "Should return 200")
+	assert.Equal(t, http.StatusFound, resp.StatusCode, "Should return 302")
 	assert.Equal(t, "/ticket/4", resp.Header.Get("location"))
 
 	mockedUserContext.AssertExpectations(t)

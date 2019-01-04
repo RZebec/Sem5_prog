@@ -10,7 +10,7 @@ import (
 )
 
 /*
-	Structure for the Login handler.
+	Structure for the Change Password handler.
 */
 type ChangePasswordHandler struct {
 	UserContext     user.UserContext
@@ -18,7 +18,7 @@ type ChangePasswordHandler struct {
 }
 
 /*
-	The Login handler.
+	The Change Password handler.
 */
 func (c ChangePasswordHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if strings.ToLower(r.Method) != "post" {

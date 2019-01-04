@@ -143,6 +143,13 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	changePasswordHandlerWrapper.UserContext = handlerManager.UserContext
 	http.HandleFunc("/user_change_password", changePasswordHandlerWrapper.ServeHTTP)
 
+	toggleVacationModeHandler := userSettings.ToggleVacationModeHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
+	toggleVacationModeHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
+	toggleVacationModeHandlerWrapper.Next = toggleVacationModeHandler
+	toggleVacationModeHandlerWrapper.Logger = handlerManager.Logger
+	toggleVacationModeHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/user_toggle_vacation", toggleVacationModeHandlerWrapper.ServeHTTP)
+
 	ticketCreatePageHandler := tickets.TicketCreatePageHandler{UserContext: handlerManager.UserContext, TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
 	ticketCreatePageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
 	ticketCreatePageHandlerWrapper.Next = ticketCreatePageHandler
