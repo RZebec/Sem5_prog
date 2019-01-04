@@ -44,6 +44,8 @@ type UserContext interface {
 	ChangePassword(currentUserToken string, currentUserPassword string, newPassword string) (changed bool, err error)
 	// Get all locked users:
 	GetAllLockedUsers() []User
+	// Get all active users:
+	GetAllActiveUsers() []User
 	// Check if the given mail is for a registered user.
 	GetUserForEmail(mailAddress string) (isRegisteredUser bool, userId int)
 	// Get user by its id.
