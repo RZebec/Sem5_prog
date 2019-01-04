@@ -66,7 +66,7 @@ func UserIsLoggedInCheck(r *http.Request, userContext user.UserContext, accessTo
 	cookie, err := r.Cookie(accessTokenCookieName)
 
 	if err != nil {
-		logger.LogError("Login", err)
+		logger.LogError("UserIsLoggedInCheck", err)
 		return false, false, "", -1
 	}
 

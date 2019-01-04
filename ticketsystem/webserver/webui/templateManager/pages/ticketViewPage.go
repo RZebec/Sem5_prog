@@ -8,7 +8,7 @@ var TicketViewPage = `
 	{{ define "Title" }} Ticket {{ end }}
 
 	{{ define "StylesAndScripts" }}
-		<link rel="stylesheet" href="/files/style/tickets"> 
+		<link rel="stylesheet" href="/files/style/table"> 
 	{{ end }}
 	
 	{{ define "Content" }}
@@ -32,6 +32,9 @@ var TicketViewPage = `
                             <th>
                                 Updated on
                             </th>
+							<th>
+								State
+							</th>
 							<th></th>
 						</tr>
                         <tr>
@@ -74,6 +77,9 @@ var TicketViewPage = `
 								document.getElementById("lastModificationTime").innerHTML = lastModificationTime;
 							</script>
 							<td>
+								{{.TicketInfo.State}}
+							</td>
+							<td>
 								<button class="view-button" onclick="location.href='ticket_edit/{{.TicketInfo.Id}}';">
 									Edit
 								</button>
@@ -91,6 +97,7 @@ var TicketViewPage = `
                             <th>
                                 Created on
                             </th>
+							<
 						</tr>
                         {{range .Messages}}
                         <tr>

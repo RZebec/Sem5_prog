@@ -43,7 +43,7 @@ func TestRegisterHandler_ServeHTTPPostRegisteringData_ValidRequest_RedirectedToL
 	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
-	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
+	assert.Equal(t, 303, rr.Code, "Status code 303 should be returned")
 	assert.Equal(t, "/login", rr.Header().Get("location"), "User should be redirected to url \"/login\"")
 
 	mockedUserContext.AssertExpectations(t)
@@ -83,7 +83,7 @@ func TestRegisterHandler_ServeHTTPPostRegisteringData_WrongRequestMethod(t *test
 }
 
 /*
-	An unsuccessful registering procedure should return the same page
+	An unsuccessful registering procedure should return the same page.
 */
 func TestRegisterHandler_ServeHTTPPostRegisteringData_UnsuccessfulRegistering_RedirectedToSamePageWithMessage(t *testing.T) {
 	req, err := http.NewRequest("POST", "/user_register", nil)
@@ -113,14 +113,14 @@ func TestRegisterHandler_ServeHTTPPostRegisteringData_UnsuccessfulRegistering_Re
 
 	rr.Result()
 
-	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
+	assert.Equal(t, 303, rr.Code, "Status code 303 should be returned")
 	assert.Equal(t, "/register?IsRegisteringFailed=true", rr.Header().Get("location"), "User should be redirected to url \"/register?IsRegisteringFailed=true\"")
 
 	mockedUserContext.AssertExpectations(t)
 }
 
 /*
-	An unsuccessful registering procedure should return the same page
+	An unsuccessful registering procedure should return the same page.
 */
 func TestRegisterHandler_ServeHTTPPostRegisteringData_ContextReturnError_RedirectedToSamePageWithMessage(t *testing.T) {
 	req, err := http.NewRequest("POST", "/user_register", nil)
@@ -150,7 +150,7 @@ func TestRegisterHandler_ServeHTTPPostRegisteringData_ContextReturnError_Redirec
 
 	rr.Result()
 
-	assert.Equal(t, http.StatusInternalServerError, rr.Code, "Status code 500 should be returned")
+	assert.Equal(t, 303, rr.Code, "Status code 303 should be returned")
 	assert.Equal(t, "/register?IsRegisteringFailed=true", rr.Header().Get("location"), "User should be redirected to url \"/register?IsRegisteringFailed=true\"")
 
 	mockedUserContext.AssertExpectations(t)
