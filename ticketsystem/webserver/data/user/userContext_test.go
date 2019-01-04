@@ -724,6 +724,27 @@ func TestLoginSystem_GetAllLockedUsers(t *testing.T) {
 	assert.True(t, secondUserIsReturned, "The second created user should be returned")
 }
 
+/*
+	Get all active users should return all active users.
+*/
+func TestLoginSystem_GetAllActiveUsers(t *testing.T) {
+	testee := LoginSystem{}
+
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+	// Write example data to the file
+	sampleDataPath := path.Join(folderPath, "loginData.json")
+	writeTestDataToFile(t, sampleDataPath)
+
+	err = testee.Initialize(folderPath)
+
+	activeUsers := testee.GetAllActiveUsers()
+
+	// Assert that all users are returned:
+	assert.Equal(t, 6, len(activeUsers))
+}
+
 /**
 Trying to unlock a account with a user witch is not a admin should fail.
 */

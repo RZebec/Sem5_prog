@@ -373,6 +373,26 @@ func (s *LoginSystem) GetAllLockedUsers() []User {
 }
 
 /*
+	Get all users which are active.
+*/
+func (s *LoginSystem) GetAllActiveUsers() []User {
+	s.cachedUserDataMutex.RLock()
+	defer s.cachedUserDataMutex.RUnlock()
+
+	var lockedUsers []User
+	for _, storedUser := range s.cachedUserData {
+		if storedUser.State == Active {
+			user := User{Mail: storedUser.Mail, UserId: storedUser.UserId,
+				FirstName: storedUser.FirstName, LastName: storedUser.LastName,
+				Role: storedUser.Role, State: storedUser.State}
+			lockedUsers = append(lockedUsers, user.Copy())
+		}
+	}
+
+	return lockedUsers
+}
+
+/*
 	Unlock a account which is waiting to be unlocked. The current session needs the permission to do this.
 */
 func (s *LoginSystem) UnlockAccount(currentToken string, userIdToUnlock int) (unlocked bool, err error) {
