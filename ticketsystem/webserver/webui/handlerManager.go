@@ -64,7 +64,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	adminSetApiKeysAuthenticationWrapper := wrappers.EnforceAuthenticationWrapper{Next: adminSetApiKeysWrapper, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/set_api_keys", adminSetApiKeysAuthenticationWrapper.ServeHTTP)
 
-	adminUnlockUserHandler := admin.AdminUnlockUserHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
+	adminUnlockUserHandler := admin.AdminUnlockUserHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger, MailContext: handlerManager.MailContext}
 	adminUnlockUserWrapper := wrappers.AdminWrapper{Next: adminUnlockUserHandler, UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
 	adminUnlockUserAuthenticationWrapper := wrappers.EnforceAuthenticationWrapper{Next: adminUnlockUserWrapper, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/unlock_user", adminUnlockUserAuthenticationWrapper.ServeHTTP)

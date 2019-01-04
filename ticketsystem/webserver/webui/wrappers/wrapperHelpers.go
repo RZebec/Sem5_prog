@@ -62,7 +62,7 @@ func GetUserId(ctx context.Context) int {
 	Get the user token.
  */
 func GetUserToken(ctx context.Context) string {
-	value, ok := ctx.Value(userIdKey).(string)
+	value, ok := ctx.Value(userTokenKey).(string)
 	if ok {
 		return value
 	} else {
