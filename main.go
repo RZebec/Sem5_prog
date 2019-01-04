@@ -100,6 +100,7 @@ func main() {
 		Logger:           logger,
 		ApiConfiguration: apiConfig,
 		TemplateManager:  &templateManager,
+		MailContext:	  &mailContext,
 	}
 
 	templateManager.LoadTemplates(logger)
