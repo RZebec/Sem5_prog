@@ -37,7 +37,8 @@ var Base = `
 					<a {{if eq .Active "admin" }}class="active"{{end}} href="/admin">Admin</a>
 				{{end}}
 				<a {{if eq .Active "user_tickets" }}class="active"{{end}} href="/user_tickets">My Tickets</a>
-				<a href="/user_logout">Logout</a>				
+				<a {{if eq .Active "settings" }}class="active"{{end}} href="/user_settings">Settings</a>
+				<a href="/user_logout">Logout</a>
 			{{else}}
 				<a {{if eq .Active "login" }}class="active"{{end}} href="/login">Login</a>
 				<a {{if eq .Active "register" }}class="active"{{end}} href="/register">Register</a>				

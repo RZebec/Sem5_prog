@@ -34,14 +34,6 @@ func (t UserTicketsExplorerPageHandler) ServeHTTP(w http.ResponseWriter, r *http
 	if strings.ToLower(r.Method) != "get" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {
-		// Checks if the User is already logged in and if so redirects him to the login page
-		isUserLoggedIn := wrappers.IsAuthenticated(r.Context())
-
-		if !isUserLoggedIn {
-			http.Redirect(w, r, "/login", http.StatusForbidden)
-			return
-		}
-
 		userId := wrappers.GetUserId(r.Context())
 		tickets := t.TicketContext.GetTicketsForEditorId(userId)
 

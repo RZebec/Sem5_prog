@@ -250,11 +250,19 @@ func TestRegisterHandler_ServeHTTPGetRegisterPage_RegisteringFailed(t *testing.T
 		t.Fatal(err)
 	}
 
+	data := registerPageData{
+		IsRegisteringFailed: true,
+	}
+
+	data.UserIsAuthenticated = wrappers.IsAuthenticated(req.Context())
+	data.UserIsAdmin = wrappers.IsAuthenticated(req.Context())
+	data.Active = "register"
+
 	testLogger := testhelpers.GetTestLogger()
 
 	mockedTemplateManager := new(templateManager.MockedTemplateManager)
 
-	mockedTemplateManager.On("RenderTemplate", mock.Anything, mock.Anything, mock.Anything).Return(nil)
+	mockedTemplateManager.On("RenderTemplate", mock.Anything, mock.Anything, data).Return(nil)
 
 	rr := httptest.NewRecorder()
 

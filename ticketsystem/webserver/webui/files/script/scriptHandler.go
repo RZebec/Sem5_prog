@@ -128,6 +128,54 @@ var apiKeyScript = `
     	}
 	};`
 
+var userSettingsScript = `
+
+	function validate() {
+    	var isValid = true;
+    	
+    	var old_password = document.getElementById("old_password").value;
+    	var new_password = document.getElementById("new_password").value;
+		var new_repeat_password = document.getElementById("new_repeat_password").value;
+		
+		if (old_password === "") {
+		    isValid = false;
+		    document.getElementById("oldPasswordNotice").innerHTML = "Old password can´t be empty!\r\n";
+		} else {
+		    document.getElementById("oldPasswordNotice").innerHTML = "";
+		}
+		
+		if (!validatePassword(new_password)) {
+		    isValid = false;
+		    document.getElementById("passwordNotice").innerHTML = "Password must contain at least one upper case letter, one lower case letter, one number and one special character!\r\n";
+		} else {
+		    document.getElementById("passwordNotice").innerHTML = "";
+		}
+		
+		if (new_password !== new_repeat_password) {
+		    isValid = false;
+		    document.getElementById("passwordNotTheSameNotice").innerHTML = "Repeat the new password!\r\n";
+		} else {
+		    document.getElementById("passwordNotTheSameNotice").innerHTML = "";
+		}
+		
+		document.getElementById("submitChange").disabled = !isValid;
+	}
+	
+	function validatePassword(password) {
+		//Source: https://stackoverflow.com/questions/19605150/regex-for-password-must-contain-at-least-eight-characters-at-least-one-number-a
+  		var re = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-=]).{8,}$/;
+  		return re.test(password);
+	}
+	
+	window.onload = function(){
+    	var inputs = document.getElementsByTagName('input');
+    	for(var i=0; i<inputs.length; i++){
+    	    inputs[i].onkeyup = validate;
+    	    inputs[i].onblur = validate;
+    	}
+	};`
+
+
 /*
 	The handler for the script(Javascript) files.
 */
@@ -143,5 +191,7 @@ func HandelScript(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(apiKeyScript))
 	case "register":
 		w.Write([]byte(registerScript))
+	case "user_settings":
+		w.Write([]byte(userSettingsScript))
 	}
 }

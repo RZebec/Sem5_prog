@@ -13,6 +13,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/register"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/tickets"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/userSettings"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"net/http"
 )
@@ -88,9 +89,23 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	http.HandleFunc("/user_tickets", userTicketExplorerPageHandlerWrapper.ServeHTTP)
 
 	ticketViewPageHandler := tickets.TicketViewPageHandler{TicketContext: handlerManager.TicketContext, TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
-	ticketViewPageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
+	ticketViewPageHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
 	ticketViewPageHandlerWrapper.Next = ticketViewPageHandler
 	ticketViewPageHandlerWrapper.Logger = handlerManager.Logger
 	ticketViewPageHandlerWrapper.UserContext = handlerManager.UserContext
 	http.HandleFunc("/ticket/", ticketViewPageHandlerWrapper.ServeHTTP)
+
+	userSettingsPageHandler := userSettings.UserSettingsPageHandler{TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
+	userSettingsPageHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
+	userSettingsPageHandlerWrapper.Next = userSettingsPageHandler
+	userSettingsPageHandlerWrapper.Logger = handlerManager.Logger
+	userSettingsPageHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/user_settings", userSettingsPageHandlerWrapper.ServeHTTP)
+
+	changePasswordHandler := userSettings.ChangePasswordHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
+	changePasswordHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
+	changePasswordHandlerWrapper.Next = changePasswordHandler
+	changePasswordHandlerWrapper.Logger = handlerManager.Logger
+	changePasswordHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/user_change_password", changePasswordHandlerWrapper.ServeHTTP)
 }

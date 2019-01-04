@@ -92,6 +92,10 @@ func (t *TemplateManager) LoadTemplates(logger logging.Logger) (err error) {
 	if err != nil {
 		return err
 	}
+	err = t.addTemplate(pages.UserSettingsPage, "UserSettingsPage", baseTemplate, logger)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

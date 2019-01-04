@@ -118,34 +118,3 @@ func TestUserTicketsExplorerPageHandler_ServeHTTP_ContextError_RenderError(t *te
 	mockedTicketContext.AssertExpectations(t)
 	mockedTemplateManager.AssertExpectations(t)
 }
-
-/*
-	Should return the Login Page if a user is not logged in.
-*/
-func TestUserTicketsExplorerPageHandler_ServeHTTP_UserNotLoggedIn_ReturnLoginPage(t *testing.T) {
-	mockedTicketContext := new(mockedForTests.MockedTicketContext)
-	mockedTemplateManager := new(templateManager.MockedTemplateManager)
-
-	testee := UserTicketsExplorerPageHandler{TicketContext:mockedTicketContext, TemplateManager: mockedTemplateManager,
-		Logger: testhelpers.GetTestLogger()}
-
-	req, err := http.NewRequest("GET", "/user_tickets", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// Execute the test:
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
-	handler.ServeHTTP(rr, req.WithContext(ctx))
-
-	resp := rr.Result()
-
-	newLocation := resp.Header.Get("location")
-	assert.Equal(t, http.StatusForbidden, resp.StatusCode, "Should return status code 403")
-	assert.Equal(t, "/login", newLocation, "Should return \"login\"")
-
-	mockedTicketContext.AssertExpectations(t)
-	mockedTemplateManager.AssertExpectations(t)
-}
