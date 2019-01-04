@@ -107,6 +107,7 @@ var centerMain = `
     	height: 2em;
     	text-decoration: none;
 		margin-bottom: 0.75em;
+		margin-top: 1em;
 	}
     
     .submit-button:hover {
@@ -162,7 +163,7 @@ var tableStyle = `
         background-color: rgba(76, 175, 79, 0.466);
     }`
 
-var adminStyle = `
+var largeMainStyle = `
     
     div.main {
 		text-align: left;
@@ -189,7 +190,7 @@ func HandelStyle(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(centerMain))
 	case "table":
 		w.Write([]byte(tableStyle))
-	case "admin":
-		w.Write([]byte(adminStyle))
+	case "largeMainStyle":
+		w.Write([]byte(largeMainStyle))
 	}
 }

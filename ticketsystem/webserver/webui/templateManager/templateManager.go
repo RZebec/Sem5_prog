@@ -96,6 +96,10 @@ func (t *TemplateManager) LoadTemplates(logger logging.Logger) (err error) {
 	if err != nil {
 		return err
 	}
+	err = t.addTemplate(pages.TicketCreatePage, "TicketCreatePage", baseTemplate, logger)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

@@ -175,6 +175,52 @@ var userSettingsScript = `
     	}
 	};`
 
+var createTicketScript = `
+
+	function validate() {
+    	var isValid = true;
+    	
+    	var mail = document.getElementById("mail").value;
+    	var title = document.getElementById("title").value;
+		var message = document.getElementById("message").value;
+		
+		if (title === "") {
+		    isValid = false;
+		    document.getElementById("titleNotice").innerHTML = "Title can´t be empty!\r\n";
+		} else {
+		    document.getElementById("titleNotice").innerHTML = "";
+		}
+		
+		if (!validateEmail(mail)) {
+		    isValid = false;
+		    document.getElementById("mailNotice").innerHTML = "Mail Address is not Valid!\r\n";
+		} else {
+		    document.getElementById("mailNotice").innerHTML = "";
+		}
+		
+		if (message === "") {
+		    isValid = false;
+		    document.getElementById("messageNotice").innerHTML = "Message can´t be empty!\r\n";
+		} else {
+		    document.getElementById("messageNotice").innerHTML = "";
+		}
+		
+		document.getElementById("submitTicket").disabled = !isValid;
+	}
+	
+	function validateEmail(email) {
+		//Source: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
+  		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  		return re.test(email);
+	}
+	
+	window.onload = function(){
+    	var inputs = document.getElementsByTagName('input');
+    	for(var i=0; i<inputs.length; i++){
+    	    inputs[i].onkeyup = validate;
+    	    inputs[i].onblur = validate;
+    	}
+	};`
 
 /*
 	The handler for the script(Javascript) files.
@@ -193,5 +239,7 @@ func HandelScript(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(registerScript))
 	case "user_settings":
 		w.Write([]byte(userSettingsScript))
+	case "ticket_create":
+		w.Write([]byte(createTicketScript))
 	}
 }

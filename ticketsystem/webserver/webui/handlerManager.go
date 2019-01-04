@@ -89,7 +89,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	http.HandleFunc("/user_tickets", userTicketExplorerPageHandlerWrapper.ServeHTTP)
 
 	ticketViewPageHandler := tickets.TicketViewPageHandler{TicketContext: handlerManager.TicketContext, TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
-	ticketViewPageHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
+	ticketViewPageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
 	ticketViewPageHandlerWrapper.Next = ticketViewPageHandler
 	ticketViewPageHandlerWrapper.Logger = handlerManager.Logger
 	ticketViewPageHandlerWrapper.UserContext = handlerManager.UserContext
@@ -108,4 +108,11 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	changePasswordHandlerWrapper.Logger = handlerManager.Logger
 	changePasswordHandlerWrapper.UserContext = handlerManager.UserContext
 	http.HandleFunc("/user_change_password", changePasswordHandlerWrapper.ServeHTTP)
+
+	ticketCreatePageHandler := tickets.TicketCreatePageHandler{UserContext: handlerManager.UserContext, TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
+	ticketCreatePageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
+	ticketCreatePageHandlerWrapper.Next = ticketCreatePageHandler
+	ticketCreatePageHandlerWrapper.Logger = handlerManager.Logger
+	ticketCreatePageHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/ticket_create", ticketCreatePageHandlerWrapper.ServeHTTP)
 }

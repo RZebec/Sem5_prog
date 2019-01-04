@@ -7,7 +7,7 @@ var AdminPage = `
 		<script src="/files/script/apiKey"></script>
 		<link rel="stylesheet" href="/files/style/table">
 		<link rel="stylesheet" href="/files/style/center_main">
-		<link rel="stylesheet" href="/files/style/admin"> 
+		<link rel="stylesheet" href="/files/style/largeMainStyle"> 
 	{{ end }}
 	
 	{{ define "Content" }}

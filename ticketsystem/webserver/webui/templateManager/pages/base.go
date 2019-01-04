@@ -29,6 +29,8 @@ var Base = `
 			<a {{if eq .Active "all_tickets" }}class="active"{{end}} href="/all_tickets">All Tickets</a>
 
 			<a {{if eq .Active "open_tickets" }}class="active"{{end}} href="/open_tickets">Open Tickets</a>
+
+			<a {{if eq .Active "ticket_create" }}class="active"{{end}} href="/ticket_create">Create Ticket</a>
 	
 			<span>OP Ticket System</span>
 
