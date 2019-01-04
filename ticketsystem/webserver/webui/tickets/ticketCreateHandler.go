@@ -4,6 +4,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"github.com/pkg/errors"
 	"html"
 	"net/http"
@@ -29,28 +30,38 @@ func (t TicketCreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	} else {
 		mail := r.FormValue("mail")
 		title := r.FormValue("title")
+		firstName := r.FormValue("first_name")
+		lastName := r.FormValue("last_name")
 		message := r.FormValue("message")
 		internal := r.FormValue("internal")
 
 		mail = html.EscapeString(mail)
 		title = html.EscapeString(title)
+		firstName = html.EscapeString(firstName)
+		lastName = html.EscapeString(lastName)
 		message = html.EscapeString(message)
 		internal = html.EscapeString(internal)
 
 		internalOnly, parseError := strconv.ParseBool(internal)
 
-		if parseError != nil {
+		if internal == ""  {
+			internalOnly = false
+		} else if parseError != nil{
 			t.Logger.LogError("TicketCreateHandler", parseError)
 			http.Redirect(w, r, "/ticket_create", http.StatusInternalServerError)
 			return
 		}
 
+		isUserLoggedIn := wrappers.IsAuthenticated(r.Context())
+
+		loggedInUserId := wrappers.GetUserId(r.Context())
+
 		exist, userId := t.UserContext.GetUserForEmail(mail)
 
-		initialMessage := ticket.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: internalOnly}
-
 		if !exist {
-			ticket, err := t.TicketContext.CreateNewTicket(title, ticket.Creator{Mail: mail}, initialMessage)
+			initialMessage := ticket.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
+
+			ticket, err := t.TicketContext.CreateNewTicket(title, ticket.Creator{Mail: mail, FirstName: firstName, LastName: lastName}, initialMessage)
 
 			if err != nil {
 				t.Logger.LogError("TicketCreateHandler", err)
@@ -64,13 +75,21 @@ func (t TicketCreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		if !isUserLoggedIn || loggedInUserId != userId {
+			t.Logger.LogError("TicketCreateHandler", errors.New("User with the corresponding mail address is not logged in!"))
+			http.Redirect(w, r, "/ticket_create", http.StatusBadRequest)
+			return
+		}
+
 		exist, user := t.UserContext.GetUserById(userId)
 
-		if (!exist) {
+		if !exist {
 			t.Logger.LogError("TicketCreateHandler", errors.New("User doesn´t exist."))
 			http.Redirect(w, r, "/ticket_create", http.StatusInternalServerError)
 			return
 		}
+
+		initialMessage := ticket.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: internalOnly}
 
 		ticket, err := t.TicketContext.CreateNewTicketForInternalUser(title, user, initialMessage)
 

@@ -183,6 +183,8 @@ var createTicketScript = `
     	var mail = document.getElementById("mail").value;
     	var title = document.getElementById("title").value;
 		var message = document.getElementById("message").value;
+		var first_name = document.getElementById("first_name").value;
+		var last_name = document.getElementById("last_name").value;
 		
 		if (title === "") {
 		    isValid = false;
@@ -203,6 +205,20 @@ var createTicketScript = `
 		    document.getElementById("messageNotice").innerHTML = "Message can´t be empty!\r\n";
 		} else {
 		    document.getElementById("messageNotice").innerHTML = "";
+		}
+		
+		if (first_name === "") {
+		    isValid = false;
+		    document.getElementById("firstNameNotice").innerHTML = "First name can´t be empty!\r\n";
+		} else {
+		    document.getElementById("firstNameNotice").innerHTML = "";
+		}
+		
+		if (last_name === "") {
+		    isValid = false;
+		    document.getElementById("lastNameNotice").innerHTML = "Last name can´t be empty!\r\n";
+		} else {
+		    document.getElementById("lastNameNotice").innerHTML = "";
 		}
 		
 		document.getElementById("submitTicket").disabled = !isValid;
