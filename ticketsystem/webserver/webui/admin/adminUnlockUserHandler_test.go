@@ -71,35 +71,6 @@ func TestAdminUnlockUserHandle_ServeHTTP_IncorrectData(t *testing.T) {
 }
 
 /*
-	A request with incorrect cookie should return a 400
-*/
-func TestAdminUnlockUserHandle_ServeHTTP_NoPresentCookie(t *testing.T) {
-	req, err := http.NewRequest("POST", "/unlock_user", nil)
-	req.Form = url.Values{}
-	req.Form.Add("userId", "1234")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	rr := httptest.NewRecorder()
-
-	testLogger := testhelpers.GetTestLogger()
-
-	mockedUserContext := new(mockedForTests.MockedUserContext)
-	mockedMailContext := new(mockedForTests.MockedMailContext)
-
-	testee := AdminUnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
-
-	handler := http.HandlerFunc(testee.ServeHTTP)
-
-	handler.ServeHTTP(rr, req)
-	assert.Equal(t, http.StatusBadRequest, rr.Code, "Status code 400 should be returned")
-
-	mockedUserContext.AssertExpectations(t)
-	mockedMailContext.AssertExpectations(t)
-}
-
-/*
 	A valid request should be possible.
 */
 func TestAdminUnlockUserHandle_ServeHTTP_ValidRequest(t *testing.T) {

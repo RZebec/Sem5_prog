@@ -1,10 +1,10 @@
 package admin
 
 import (
-	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"net/http"
 	"strconv"
 )
@@ -35,15 +35,9 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 			return
 		}
 
-		accessTokenCookie, err := r.Cookie(shared.AccessTokenCookieName)
+		accessToken := wrappers.GetUserToken(r.Context())
 
-		if err != nil {
-			a.Logger.LogError("AdminUnlockUserHandler", err)
-			http.Redirect(w, r, "/", http.StatusBadRequest)
-			return
-		}
-
-		unlocked, err := a.UserContext.UnlockAccount(accessTokenCookie.Value, userId)
+		unlocked, err := a.UserContext.UnlockAccount(accessToken, userId)
 
 		if err != nil {
 			a.Logger.LogError("AdminUnlockUserHandler", err)
