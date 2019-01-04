@@ -41,7 +41,7 @@ func TestTicketEditPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	testTicketInfo2 := ticket.TicketInfo{Id: 0, Title: "TicketTest2", Editor: user.GetInvalidDefaultUser(), HasEditor: false, Creator: testCreator2, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Open}
 
 	testCreator3 := ticket.Creator{Mail: "Ivan2@Test.de", FirstName: "Ivan2", LastName: "Muller"}
-	testTicketInfo3 := ticket.TicketInfo{Id: 1, Title: "TicketTest3", Editor: user.GetInvalidDefaultUser(), HasEditor: false, Creator: testCreator3, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Closed}
+	testTicketInfo3 := ticket.TicketInfo{Id: 1, Title: "TicketTest3", Editor: testEditor, HasEditor: false, Creator: testCreator3, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Processing}
 
 	testEditor4 := user.User{Mail: "Test44@Test.de", UserId: 44, FirstName: "Dieter33", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
 	testCreator4 := ticket.Creator{Mail: "Ivan3@Test.de", FirstName: "Ivan3", LastName: "Muller"}
@@ -54,7 +54,7 @@ func TestTicketEditPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 
 	allTestTickets := []ticket.TicketInfo{testTicketInfo, testTicketInfo2, testTicketInfo3, testTicketInfo4}
 	allTestUsers := []user.User{testEditor, testUser, testEditor4}
-	filteredTickets := []ticket.TicketInfo{testTicketInfo2, testTicketInfo3, testTicketInfo4}
+	filteredTickets := []ticket.TicketInfo{testTicketInfo3}
 	states := []ticket.TicketState{ticket.Open, ticket.Closed}
 
 	data := ticketEditPageData{
@@ -218,7 +218,7 @@ func TestTicketEditPageHandler_ServeHTTP_RenderTemplateError(t *testing.T) {
 	testTicketInfo2 := ticket.TicketInfo{Id: 0, Title: "TicketTest2", Editor: user.GetInvalidDefaultUser(), HasEditor: false, Creator: testCreator2, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Open}
 
 	testCreator3 := ticket.Creator{Mail: "Ivan2@Test.de", FirstName: "Ivan2", LastName: "Muller"}
-	testTicketInfo3 := ticket.TicketInfo{Id: 1, Title: "TicketTest3", Editor: user.GetInvalidDefaultUser(), HasEditor: false, Creator: testCreator3, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Closed}
+	testTicketInfo3 := ticket.TicketInfo{Id: 1, Title: "TicketTest3", Editor: testEditor, HasEditor: false, Creator: testCreator3, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Processing}
 
 	testEditor4 := user.User{Mail: "Test44@Test.de", UserId: 44, FirstName: "Dieter33", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
 	testCreator4 := ticket.Creator{Mail: "Ivan3@Test.de", FirstName: "Ivan3", LastName: "Muller"}
@@ -231,7 +231,7 @@ func TestTicketEditPageHandler_ServeHTTP_RenderTemplateError(t *testing.T) {
 
 	allTestTickets := []ticket.TicketInfo{testTicketInfo, testTicketInfo2, testTicketInfo3, testTicketInfo4}
 	allTestUsers := []user.User{testEditor, testUser, testEditor4}
-	filteredTickets := []ticket.TicketInfo{testTicketInfo2, testTicketInfo3, testTicketInfo4}
+	filteredTickets := []ticket.TicketInfo{testTicketInfo3}
 	states := []ticket.TicketState{ticket.Open, ticket.Closed}
 
 	data := ticketEditPageData{
