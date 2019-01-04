@@ -90,7 +90,7 @@ func (t TickerMergeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 
 			// Redirect to the older ticket:
-			http.Redirect(w, r, "/ticket/"+strconv.Itoa(olderTicket), http.StatusOK)
+			http.Redirect(w, r, "/ticket/"+strconv.Itoa(olderTicket), http.StatusFound)
 
 			return
 		}
