@@ -105,7 +105,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	ticketAppendHandlerWrapper.Next = ticketAppendMessageHandler
 	http.HandleFunc("/append_message", ticketAppendHandlerWrapper.ServeHTTP)
 
-	ticketMergeHandler := tickets.TickerMergeHandler{TicketContext: handlerManager.TicketContext,
+	ticketMergeHandler := tickets.TicketMergeHandler{TicketContext: handlerManager.TicketContext,
 		MailContext: handlerManager.MailContext, Logger: handlerManager.Logger}
 	ticketMergeEnforceAuthenticationWrapper:= wrappers.EnforceAuthenticationWrapper{}
 	ticketMergeEnforceAuthenticationWrapper.Next = ticketMergeHandler
@@ -113,7 +113,15 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	ticketMergeEnforceAuthenticationWrapper.UserContext = handlerManager.UserContext
 	http.HandleFunc("/merge_tickets", ticketMergeEnforceAuthenticationWrapper.ServeHTTP)
 
-	userSettingsPageHandler := userSettings.UserSettingsPageHandler{UserContext: handlerManager.UserContext, TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
+	ticketSetEditorHandler := tickets.TicketSetEditorHandler{TicketContext: handlerManager.TicketContext,
+		MailContext: handlerManager.MailContext, UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
+	setEditorWrapper := wrappers.EnforceAuthenticationWrapper{}
+	setEditorWrapper.Next = ticketSetEditorHandler
+	setEditorWrapper.Logger = handlerManager.Logger
+	setEditorWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/ticket_setEditor", setEditorWrapper.ServeHTTP)
+
+	userSettingsPageHandler := userSettings.UserSettingsPageHandler{TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
 	userSettingsPageHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
 	userSettingsPageHandlerWrapper.Next = userSettingsPageHandler
 	userSettingsPageHandlerWrapper.Logger = handlerManager.Logger
