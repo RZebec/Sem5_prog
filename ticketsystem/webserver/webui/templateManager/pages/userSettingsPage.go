@@ -15,6 +15,17 @@ var UserSettingsPage = `
 		<div class="content">
 			<div class="container">
 				<div class="main">
+					<h2>Vacation Mode</h2>
+					<form id="toggleVacationMode" method="post" name="toggleVacationMode" action="/user_toggle_vacation">
+					{{if .UserIsOnVacation }}
+						<input type="radio" name="vacationMode" id="vacationMode" value="true" checked/> Yes
+						<input type="radio" name="vacationMode" id="vacationMode" value="false"/> No
+        			{{else}}
+						<input type="radio" name="vacationMode" id="vacationMode" value="true"/> Yes
+						<input type="radio" name="vacationMode" id="vacationMode" value="false" checked/> No
+					{{end}}
+						<button type="submit" id="submitToggle" class="submit-button">Change Vacation Mode</button>
+					</form>
 					<h2>Change Password</h2>
 					<form id="form_id" method="post" name="myform" action="/user_change_password">
 						<label>Old Password:</label>

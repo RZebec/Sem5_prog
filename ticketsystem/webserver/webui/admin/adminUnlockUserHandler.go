@@ -3,6 +3,7 @@ package admin
 import (
 	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"net/http"
 	"strconv"
@@ -14,6 +15,7 @@ import (
 type AdminUnlockUserHandler struct {
 	UserContext user.UserContext
 	Logger      logging.Logger
+	MailContext	mail.MailContext
 }
 
 /*
@@ -28,7 +30,7 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		userId, idConversionError := strconv.Atoi(formId)
 
 		if idConversionError != nil {
-			a.Logger.LogError("Admin", idConversionError)
+			a.Logger.LogError("AdminUnlockUserHandler", idConversionError)
 			http.Redirect(w, r, "/", http.StatusBadRequest)
 			return
 		}
@@ -36,7 +38,7 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		accessTokenCookie, err := r.Cookie(shared.AccessTokenCookieName)
 
 		if err != nil {
-			a.Logger.LogError("Admin", err)
+			a.Logger.LogError("AdminUnlockUserHandler", err)
 			http.Redirect(w, r, "/", http.StatusBadRequest)
 			return
 		}
@@ -44,13 +46,27 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		unlocked, err := a.UserContext.UnlockAccount(accessTokenCookie.Value, userId)
 
 		if err != nil {
-			a.Logger.LogError("Admin", err)
+			a.Logger.LogError("AdminUnlockUserHandler", err)
 			http.Redirect(w, r, "/", http.StatusInternalServerError)
 			return
 		}
 
-		if unlocked {
+		exist, user := a.UserContext.GetUserById(userId)
+
+		if unlocked && exist{
+			mailSubject := mail.BuildUnlockUserNotificationMailSubject()
+			mailContent := mail.BuildUnlockUserNotificationMailContent(user.FirstName + " " + user.LastName)
+
+			err = a.MailContext.CreateNewOutgoingMail(user.Mail, mailSubject, mailContent)
+
+			if err != nil {
+				a.Logger.LogError("AdminUnlockUserHandler", err)
+				http.Redirect(w, r, "/admin", http.StatusInternalServerError)
+				return
+			}
+
 			http.Redirect(w, r, "/admin", http.StatusOK)
+			return
 		}
 	}
 }

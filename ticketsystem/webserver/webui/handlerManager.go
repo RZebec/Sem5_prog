@@ -113,7 +113,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	ticketMergeEnforceAuthenticationWrapper.UserContext = handlerManager.UserContext
 	http.HandleFunc("/merge_tickets", ticketMergeEnforceAuthenticationWrapper.ServeHTTP)
 
-	userSettingsPageHandler := userSettings.UserSettingsPageHandler{TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
+	userSettingsPageHandler := userSettings.UserSettingsPageHandler{UserContext: handlerManager.UserContext, TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
 	userSettingsPageHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
 	userSettingsPageHandlerWrapper.Next = userSettingsPageHandler
 	userSettingsPageHandlerWrapper.Logger = handlerManager.Logger
@@ -126,6 +126,13 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	changePasswordHandlerWrapper.Logger = handlerManager.Logger
 	changePasswordHandlerWrapper.UserContext = handlerManager.UserContext
 	http.HandleFunc("/user_change_password", changePasswordHandlerWrapper.ServeHTTP)
+
+	toggleVacationModeHandler := userSettings.ToggleVacationModeHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
+	toggleVacationModeHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
+	toggleVacationModeHandlerWrapper.Next = toggleVacationModeHandler
+	toggleVacationModeHandlerWrapper.Logger = handlerManager.Logger
+	toggleVacationModeHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/user_toggle_vacation", toggleVacationModeHandlerWrapper.ServeHTTP)
 
 	ticketCreatePageHandler := tickets.TicketCreatePageHandler{UserContext: handlerManager.UserContext, TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
 	ticketCreatePageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}

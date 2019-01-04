@@ -1,10 +1,12 @@
 package userSettings
 
 import (
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
-	"errors"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"net/http"
@@ -21,24 +23,39 @@ func TestUserSettingsPageHandler_ServeHTTP__ValidRequest(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+
 	testLogger := testhelpers.GetTestLogger()
 
-	mockedTemplateManager := new(templateManager.MockedTemplateManager)
+	testUser := user.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
 
-	mockedTemplateManager.On("RenderTemplate", mock.Anything, mock.Anything, mock.Anything).Return(nil)
+	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedUserContext.On("GetUserById", 5).Return(true, testUser)
+
+	data := userSettingsPageData{
+		IsChangeFailed: false,
+		UserIsOnVacation: false,
+	}
+
+	data.UserIsAuthenticated = true
+	data.UserIsAdmin = false
+	data.Active = "settings"
+
+	mockedTemplateManager := new(templateManager.MockedTemplateManager)
+	mockedTemplateManager.On("RenderTemplate", mock.Anything, mock.Anything, data).Return(nil)
 
 	rr := httptest.NewRecorder()
 
-	testee := UserSettingsPageHandler{Logger: testLogger, TemplateManager: mockedTemplateManager}
+	testee := UserSettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
 
 	mockedTemplateManager.AssertExpectations(t)
+	mockedUserContext.AssertExpectations(t)
 }
 
 /*
@@ -50,22 +67,25 @@ func TestUserSettingsPageHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+
 	testLogger := testhelpers.GetTestLogger()
 
+	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedTemplateManager := new(templateManager.MockedTemplateManager)
 
 	rr := httptest.NewRecorder()
 
-	testee := UserSettingsPageHandler{Logger: testLogger, TemplateManager: mockedTemplateManager}
+	testee := UserSettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	assert.Equal(t, 405, rr.Code, "Status code 405 should be returned")
 
 	mockedTemplateManager.AssertExpectations(t)
+	mockedUserContext.AssertExpectations(t)
 }
 
 /*
@@ -77,24 +97,39 @@ func TestUserSettingsPageHandler_ServeHTTP_ContextError(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+
 	testLogger := testhelpers.GetTestLogger()
 
-	mockedTemplateManager := new(templateManager.MockedTemplateManager)
+	testUser := user.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
 
-	mockedTemplateManager.On("RenderTemplate", mock.Anything, mock.Anything, mock.Anything).Return(errors.New("TestError"))
+	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedUserContext.On("GetUserById", 5).Return(true, testUser)
+
+	data := userSettingsPageData{
+		IsChangeFailed: false,
+		UserIsOnVacation: false,
+	}
+
+	data.UserIsAuthenticated = true
+	data.UserIsAdmin = false
+	data.Active = "settings"
+
+	mockedTemplateManager := new(templateManager.MockedTemplateManager)
+	mockedTemplateManager.On("RenderTemplate", mock.Anything, mock.Anything, data).Return(errors.New("TestError"))
 
 	rr := httptest.NewRecorder()
 
-	testee := UserSettingsPageHandler{Logger: testLogger, TemplateManager: mockedTemplateManager}
+	testee := UserSettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	assert.Equal(t, 500, rr.Code, "Status code 500 should be returned")
 
 	mockedTemplateManager.AssertExpectations(t)
+	mockedUserContext.AssertExpectations(t)
 }
 
 /*
@@ -108,22 +143,28 @@ func TestUserSettingsPageHandler_ServeHTTP_ChangePasswordFailed(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
 
 	testLogger := testhelpers.GetTestLogger()
 
+	testUser := user.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
+
+	mockedUserContext := new(mockedForTests.MockedUserContext)
+	mockedUserContext.On("GetUserById", 5).Return(true, testUser)
+
 	data := userSettingsPageData{
 		IsChangeFailed: true,
+		UserIsOnVacation: false,
 	}
 
-	data.UserIsAuthenticated = wrappers.IsAuthenticated(req.Context())
-	data.UserIsAdmin = wrappers.IsAdmin(req.Context())
+	data.UserIsAuthenticated = true
+	data.UserIsAdmin = false
 	data.Active = "settings"
 
 	mockedTemplateManager := new(templateManager.MockedTemplateManager)
-	mockedTemplateManager.On("RenderTemplate", mock.Anything, "UserSettingsPage", data).Return(nil)
+	mockedTemplateManager.On("RenderTemplate", mock.Anything, mock.Anything, data).Return(nil)
 
-	testee := UserSettingsPageHandler{Logger: testLogger, TemplateManager: mockedTemplateManager}
+	testee := UserSettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -132,4 +173,5 @@ func TestUserSettingsPageHandler_ServeHTTP_ChangePasswordFailed(t *testing.T) {
 	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
 
 	mockedTemplateManager.AssertExpectations(t)
+	mockedUserContext.AssertExpectations(t)
 }

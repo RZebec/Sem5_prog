@@ -2,6 +2,7 @@ package userSettings
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
@@ -16,6 +17,7 @@ import (
 type UserSettingsPageHandler struct {
 	Logger          logging.Logger
 	TemplateManager templateManager.TemplateContext
+	UserContext		user.UserContext
 }
 
 /*
@@ -24,6 +26,7 @@ type UserSettingsPageHandler struct {
 type userSettingsPageData struct {
 	pages.BasePageData
 	IsChangeFailed bool
+	UserIsOnVacation bool
 }
 
 /*
@@ -42,8 +45,19 @@ func (u UserSettingsPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Reques
 			isChangeFailed = false
 		}
 
+		userId := wrappers.GetUserId(r.Context())
+
+		exist, loggedInUser := u.UserContext.GetUserById(userId)
+
+		userIsOnVacation := false
+
+		if exist {
+			userIsOnVacation = loggedInUser.State == user.OnVacation
+		}
+
 		data := userSettingsPageData{
 			IsChangeFailed: isChangeFailed,
+			UserIsOnVacation: userIsOnVacation,
 		}
 
 		data.UserIsAuthenticated = wrappers.IsAuthenticated(r.Context())

@@ -15,6 +15,22 @@ func BuildAppendMessageNotificationMailContent(receiver string, sender string, c
 /*
 	Build the subject string.
  */
+func BuildUnlockUserNotificationMailSubject() string {
+	return "Your account has been unlocked."
+}
+
+/*
+	Build the content of a notification.
+*/
+func BuildUnlockUserNotificationMailContent(receiver string) string {
+	prefix := "Hello " + receiver + ",\n"
+	prefix = prefix + "Your account has been activated by the administrator."
+	return prefix
+}
+
+/*
+	Build the subject string.
+ */
 func BuildAppendMessageNotificationMailSubject(ticketId int) string {
 	stringValue := strconv.Itoa(ticketId)
 	return "A new message has been appended to your ticket with TicketId<" + stringValue + ">:"
