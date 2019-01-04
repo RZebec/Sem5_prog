@@ -80,6 +80,9 @@ func UserIsLoggedInCheck(r *http.Request, userContext user.UserContext, accessTo
 	cookie, err := r.Cookie(accessTokenCookieName)
 
 	if err != nil {
+		if err.Error() == "http: named cookie not present" {
+			return false, false, "", -1
+		}
 		logger.LogError("UserIsLoggedInCheck", err)
 		return false, false, "", -1
 	}
