@@ -32,7 +32,7 @@ func TestIndexPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	testee := IndexPageHandler{Logger: testLogger, TemplateManager: mockedTemplateManager}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	handler.ServeHTTP(rr, req)
@@ -61,7 +61,7 @@ func TestIndexPageHandler_ServeHTTP_RenderTemplateError_500Returned(t *testing.T
 	testee := IndexPageHandler{Logger: testLogger, TemplateManager: mockedTemplateManager}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	handler.ServeHTTP(rr, req)
@@ -88,7 +88,7 @@ func TestIndexPageHandler_ServeHTTP_WrongRequest(t *testing.T) {
 	testee := IndexPageHandler{Logger: testLogger, TemplateManager: mockedTemplateManager}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	handler.ServeHTTP(rr, req)

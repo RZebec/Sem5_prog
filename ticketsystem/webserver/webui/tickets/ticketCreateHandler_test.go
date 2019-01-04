@@ -56,7 +56,7 @@ func TestTicketCreateHandler_ServeHTTP_ValidRequestLoggedIn(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -113,7 +113,7 @@ func TestTicketCreateHandler_ServeHTTP_ValidRequestNotLoggedIn(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -146,7 +146,7 @@ func TestTicketCreateHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, -1)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, -1,"")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -187,7 +187,7 @@ func TestTicketCreateHandler_ServeHTTP_ParsingError(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -242,7 +242,7 @@ func TestTicketCreateHandler_ServeHTTP_InternalOnlyEmpty(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -299,7 +299,7 @@ func TestTicketCreateHandler_ServeHTTP_CreateNewTicketError500(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -343,7 +343,7 @@ func TestTicketCreateHandler_ServeHTTP_LoggedInUserTriesToCreateTicketForOtherMa
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -390,7 +390,7 @@ func TestTicketCreateHandler_ServeHTTP_UserNotFoundWithId(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -445,7 +445,7 @@ func TestTicketCreateHandler_ServeHTTP_CreateNewTicketForInternalUserError500(t 
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -489,7 +489,7 @@ func TestTicketCreateHandler_ServeHTTP_NotLoggedInUserTriesToCreateTicketForOthe
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 

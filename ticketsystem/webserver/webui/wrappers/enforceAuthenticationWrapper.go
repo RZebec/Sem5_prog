@@ -35,7 +35,7 @@ func (h EnforceAuthenticationWrapper) ServeHTTP(w http.ResponseWriter, r *http.R
 
 		helpers.SetCookie(w, shared.AccessTokenCookieName, newToken)
 
-		ctx := NewContextWithAuthenticationInfo(r.Context(), userIsLoggedIn, isAdmin, userId)
+		ctx := NewContextWithAuthenticationInfo(r.Context(), userIsLoggedIn, isAdmin, userId, newToken)
 		h.Next.ServeHTTP(w, r.WithContext(ctx))
 	} else {
 		http.Redirect(w, r, "/", 302)

@@ -10,13 +10,15 @@ import (
 const isAdminKey = "IsAdmin"
 const isAuthenticatedKey = "IsAuthenticated"
 const userIdKey = "userId"
+const userTokenKey = "userToken"
 
 /*
 	Inject the context with authentication info.
 */
-func NewContextWithAuthenticationInfo(ctx context.Context, isAuthenticated bool, isAdmin bool, userId int) context.Context {
+func NewContextWithAuthenticationInfo(ctx context.Context, isAuthenticated bool, isAdmin bool, userId int, currentToken string) context.Context {
 	ctx = context.WithValue(ctx, isAdminKey, isAdmin)
 	ctx = context.WithValue(ctx, isAuthenticatedKey, isAuthenticated)
+	ctx = context.WithValue(ctx, userTokenKey, currentToken)
 	return context.WithValue(ctx, userIdKey, userId)
 }
 
@@ -53,6 +55,18 @@ func GetUserId(ctx context.Context) int {
 		return value
 	} else {
 		return -1
+	}
+}
+
+/*
+	Get the user token.
+ */
+func GetUserToken(ctx context.Context) string {
+	value, ok := ctx.Value(userIdKey).(string)
+	if ok {
+		return value
+	} else {
+		return ""
 	}
 }
 

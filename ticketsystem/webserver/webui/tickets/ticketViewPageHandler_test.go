@@ -46,7 +46,7 @@ func TestTicketViewPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -79,7 +79,7 @@ func TestTicketViewPageHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -120,7 +120,7 @@ func TestTicketViewPageHandler_ServeHTTP_ContextError_RenderError(t *testing.T) 
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -153,7 +153,7 @@ func TestTicketViewPageHandler_ServeHTTP_IdConversionError(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -188,7 +188,7 @@ func TestTicketViewPageHandler_ServeHTTP_TicketDoesNotExist(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -230,7 +230,7 @@ func TestTicketViewPageHandler_ServeHTTP_DoNotShowInternalOnlyMessages(t *testin
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
 
 	data := ticketViewPageData{
 		TicketInfo: testTicketInfo,
@@ -284,7 +284,7 @@ func TestTicketViewPageHandler_ServeHTTP_ShowInternalOnlyMessages(t *testing.T) 
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
 
 	data := ticketViewPageData{
 		TicketInfo: testTicketInfo,

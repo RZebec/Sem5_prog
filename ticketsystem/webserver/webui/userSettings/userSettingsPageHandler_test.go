@@ -23,7 +23,7 @@ func TestUserSettingsPageHandler_ServeHTTP__ValidRequest(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
 
 	testLogger := testhelpers.GetTestLogger()
 
@@ -67,7 +67,7 @@ func TestUserSettingsPageHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
 
 	testLogger := testhelpers.GetTestLogger()
 
@@ -97,7 +97,7 @@ func TestUserSettingsPageHandler_ServeHTTP_ContextError(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
 
 	testLogger := testhelpers.GetTestLogger()
 
@@ -143,7 +143,7 @@ func TestUserSettingsPageHandler_ServeHTTP_ChangePasswordFailed(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
 
 	testLogger := testhelpers.GetTestLogger()
 

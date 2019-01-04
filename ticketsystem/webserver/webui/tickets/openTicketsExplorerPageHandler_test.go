@@ -41,7 +41,7 @@ func TestOpenTicketsExplorerPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -72,7 +72,7 @@ func TestOpenTicketsExplorerPageHandler_ServeHTTP_WrongRequestMethod(t *testing.
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -108,7 +108,7 @@ func TestOpenTicketsExplorerPageHandler_ServeHTTP_ContextError_RenderError(t *te
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()

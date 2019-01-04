@@ -45,7 +45,7 @@ func TestSetTicketStateHandler_ServeHTTP_ValidStateSet(t *testing.T) {
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("newState", "Closed")
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -87,7 +87,7 @@ func TestSetTicketStateHandler_ServeHTTP_InvalidState_InvalidRequest(t *testing.
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("newState", "perfect")
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -123,7 +123,7 @@ func TestSetTicketStateHandler_ServeHTTP_InvalidTicketId_InvalidRequest(t *testi
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", "asd")
 	req.Form.Add("newState", "perfect")
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -163,7 +163,7 @@ func TestSetTicketStateHandler_ServeHTTP_NonExistingTicket_InvalidRequest(t *tes
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("newState", "Closed")
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -210,7 +210,7 @@ func TestSetTicketStateHandler_ServeHTTP_ErrorDuringStateChange_Returns500(t *te
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("newState", "Processing")
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -257,7 +257,7 @@ func TestSetTicketStateHandler_ServeHTTP_AppendingMessageFailed_Returns500(t *te
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("newState", "open")
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -300,7 +300,7 @@ func TestSetTicketStateHandler_ServeHTTP_UnknownLoggedInUser_InvalidRequest(t *t
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("newState", "Closed")
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)

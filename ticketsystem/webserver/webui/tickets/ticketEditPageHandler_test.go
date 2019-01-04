@@ -68,7 +68,7 @@ func TestTicketEditPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
 
 	data.UserIsAdmin = false
 	data.UserIsAuthenticated = true
@@ -114,7 +114,7 @@ func TestTicketEditPageHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -146,7 +146,7 @@ func TestTicketEditPageHandler_ServeHTTP_ConversionError(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -180,7 +180,7 @@ func TestTicketEditPageHandler_ServeHTTP_TicketDoesNotExist(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -245,7 +245,7 @@ func TestTicketEditPageHandler_ServeHTTP_RenderTemplateError(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5)
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
 
 	data.UserIsAdmin = false
 	data.UserIsAuthenticated = true
