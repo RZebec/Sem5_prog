@@ -18,16 +18,6 @@ import (
 	"os"
 )
 
-func foohandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Hello")
-	w.Write([]byte("HHH"))
-}
-
-func tempHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Hello")
-	w.Write([]byte(r.URL.Path))
-}
-
 func main() {
 	logger := logging.ConsoleLogger{SetTimeStamp: true}
 	configuration := config.Configuration{}
@@ -109,8 +99,6 @@ func main() {
 	if err := http.ListenAndServeTLS(configuration.GetServiceUrl(), configuration.CertificatePath, configuration.CertificateKeyPath, nil); err != nil {
 		logger.LogError("Main", err)
 	}
-
-	//staticFileHandlers.StaticFileHandler()
 }
 
 func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mail.MailContext, ticketContext ticket.TicketContext,
