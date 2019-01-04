@@ -6,9 +6,9 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketTool/configuration"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/acknowledgementStorage"
-	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/sharing"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/confirm"
+	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
 	"fmt"
 	"os"
 )
@@ -37,56 +37,19 @@ func main() {
 	if createErr != nil {
 		panic(createErr)
 	}
-	// TODO Remove the following line: Only to enable compilation till it is used
-	fmt.Println(storage)
+
+	io := inputOutput.DefaultInputOutput{}
+	confirmator := confirm.Confirmator{}
+
+	recieve := recviever.CreateReciever(config, &io, &apiClient, storage, &confirmator)
 
 	fmt.Println("Recieve Mails")
-	mails := []mail.Mail{}
 	for true {
-		recieveMails, err := apiClient.ReceiveMails()
-		if err != nil {
-			fmt.Print("Transmission is going wrong. Retry? (n,press any key)")
-			answer := inputOutput.ReadEntry()
-			if answer == "n" {
-				break
-			}
-		} else {
-			fmt.Println("Mails are incoming")
-			mails = recieveMails
-			allOrSpecifySharing(apiClient, &mails)
+		result := recieve.Run()
+		if result == nil {
 			break
-		}
-	}
-
-}
-
-func allOrSpecifySharing(apiClient client.ApiClient, mails *[]mail.Mail) {
-	//acknowledgement.WriteAcknowledgements(sharing.GetAcknowledges(mails))
-
-	for true {
-		fmt.Println("share all Messages or specify Messages? (all/specify):")
-		answer := inputOutput.ReadEntry()
-		if answer == "all" {
-			acknowledge := sharing.ShareAllMails(*mails)
-			ackError := apiClient.AcknowledgeMails(acknowledge)
-			if ackError != nil {
-				fmt.Println("acknowlege is not posted")
-			} else {
-				//acknowledgement.DeleteAcknowledges(acknowledge)
-				break
-			}
-		} else if answer == "specify" {
-			acknowledge, newMails := sharing.ShareSingleMails(*mails)
-			mails = &newMails
-			ackError := apiClient.AcknowledgeMails(acknowledge)
-			if ackError != nil {
-				fmt.Println("acknowlege is not posted")
-			} else {
-				//acknowledgement.DeleteAcknowledges(acknowledge)
-			}
-			if len(*mails) == 0 {
-				break
-			}
+		} else {
+			fmt.Println(result)
 		}
 	}
 }
