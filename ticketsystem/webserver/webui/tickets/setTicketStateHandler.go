@@ -98,6 +98,6 @@ func (t SetTicketStateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 				return
 			}
 		}
-		http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusOK)
+		http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusFound)
 	}
 }

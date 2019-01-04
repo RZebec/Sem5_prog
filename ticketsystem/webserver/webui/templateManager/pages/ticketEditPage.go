@@ -24,9 +24,10 @@ var TicketEditPage = `
 						</select>
 						<button type="submit" id="submitMerge" class="submit-button">Merge Tickets</button>
 					</form>
-					<form id="change_state_form" method="POST" name="change_state_form" action="/ticket_state_change">
+					<form id="change_state_form" method="POST" name="change_state_form" action="/ticket_setState">
+						<input type="hidden" name="ticketId" value="{{.TicketInfo.Id}}"/>
 						<label>State:</label>
-						<select name="state" id="state">
+						<select name="newState" id="newState">
 							<option value="{{.TicketInfo.State}}" selected>{{.TicketInfo.State}}</option>
   							<option value="{{.OtherState1}}">{{.OtherState1}}</option>
 							<option value="{{.OtherState2}}">{{.OtherState2}}</option>

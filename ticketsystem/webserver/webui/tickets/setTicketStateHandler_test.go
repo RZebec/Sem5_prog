@@ -54,7 +54,7 @@ func TestSetTicketStateHandler_ServeHTTP_ValidStateSet(t *testing.T) {
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
-	assert.Equal(t, 200, resp.StatusCode, "Should return 200")
+	assert.Equal(t,  http.StatusFound, resp.StatusCode, "Should return 302")
 	assert.Equal(t, "/ticket/5", resp.Header.Get("location"))
 
 	mockedUserContext.AssertExpectations(t)
