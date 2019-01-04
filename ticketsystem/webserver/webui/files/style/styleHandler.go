@@ -72,7 +72,7 @@ var mainStyle = `
 /*
 	The CSS file for the login page.
 */
-var loginStyle = `
+var centerMain = `
     
     h2 {
         text-align: center;
@@ -96,7 +96,16 @@ var loginStyle = `
         color: black;
         border-radius: 5px;
     }
-    
+
+	select {
+		width: 100%;
+        margin-bottom: 0.75em;
+        margin-top: 0.2em;
+        border: 2px solid white;
+        color: black;
+        border-radius: 5px;
+	}
+
 	.submit-button {
     	background-color: #4caf50;
     	color: white;
@@ -106,7 +115,8 @@ var loginStyle = `
     	border: none;
     	height: 2em;
     	text-decoration: none;
-		margin-bottom: 0.75em;
+		margin-bottom: 1.25em;
+		margin-top: 1em;
 	}
     
     .submit-button:hover {
@@ -117,7 +127,7 @@ var loginStyle = `
 		color: red;
 	}`
 
-var ticketStyle = `
+var tableStyle = `
     
     h2 {
         text-align: center;
@@ -162,6 +172,49 @@ var ticketStyle = `
         background-color: rgba(76, 175, 79, 0.466);
     }`
 
+var largeMainStyle = `
+    
+    div.main {
+		text-align: left;
+        width: 75em;
+        padding: 0.5em 1.5em 0.75em;
+        border: 2px solid gray;
+        border-radius: 10px;
+        float: left;
+        margin-top: 1.5em;
+    }`
+
+var messageStyle = `
+    
+    input[type=text], input[type=password] {
+        width: 99%;
+		height: 100%;
+        border: 2px solid white;
+        color: black;
+        border-radius: 5px;
+		margin-right: 1em;
+    }
+
+	.submit-button {
+    	background-color: #4caf50;
+    	color: white;
+    	cursor: pointer;
+    	width: 99%;
+		height: 100%;
+		margin-right: 1em;
+    	outline: none;
+    	border: none;
+    	height: 2em;
+    	text-decoration: none;
+	}
+    
+    .submit-button:hover {
+        background-color: rgba(76, 175, 79, 0.466);
+    }
+
+	.error-message{
+		color: red;
+	}`
 /*
 	The handler for the style(css) files.
 */
@@ -173,9 +226,13 @@ func HandelStyle(w http.ResponseWriter, r *http.Request) {
 	switch s[3] {
 	case "main":
 		w.Write([]byte(mainStyle))
-	case "login":
-		w.Write([]byte(loginStyle))
-	case "tickets":
-		w.Write([]byte(ticketStyle))
+	case "center_main":
+		w.Write([]byte(centerMain))
+	case "table":
+		w.Write([]byte(tableStyle))
+	case "largeMainStyle":
+		w.Write([]byte(largeMainStyle))
+	case "message":
+		w.Write([]byte(messageStyle))
 	}
 }

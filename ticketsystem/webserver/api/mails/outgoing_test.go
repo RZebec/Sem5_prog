@@ -3,6 +3,7 @@ package mails
 import (
 	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"encoding/json"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
@@ -27,7 +28,7 @@ type MockedOutgoingMailContext struct {
 func getTestMails() []mail.Mail {
 	var testMails []mail.Mail
 	testMails = append(testMails, mail.Mail{Id: "testId1", Sender: "test@test.de", Receiver: "testReceiver1@test.de",
-		Subject: "testSubject1", Content: "testContent1"})
+		Subject: "Ticket<1> testSubject1", Content: "testContent1"})
 	testMails = append(testMails, mail.Mail{Id: "testId2", Sender: "test@test.de", Receiver: "testReceiver2@test.de",
 		Subject: "testSubject2", Content: "testContent2"})
 	testMails = append(testMails, mail.Mail{Id: "testId3", Sender: "test@test.de", Receiver: "testReceiver3@test.de",
@@ -65,7 +66,7 @@ func (m *MockedOutgoingMailContext) CreateNewOutgoingMail(receiver string, subje
 func TestOutgoingMailHandler_ServeHTTP_MailsReceived(t *testing.T) {
 	mockedMailContext := new(MockedOutgoingMailContext)
 	mockedMailContext.throwError = false
-	testee := OutgoingMailHandler{Logger: getTestLogger(), MailContext: mockedMailContext}
+	testee := OutgoingMailHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	req, err := http.NewRequest("GET", shared.ReceivePath, nil)
 	if err != nil {
@@ -94,7 +95,7 @@ func TestOutgoingMailHandler_ServeHTTP_MailsReceived(t *testing.T) {
 func TestOutgoingMailHandler_ServeHTTP_Error_500Returned(t *testing.T) {
 	mockedMailContext := new(MockedOutgoingMailContext)
 	mockedMailContext.throwError = true
-	testee := OutgoingMailHandler{Logger: getTestLogger(), MailContext: mockedMailContext}
+	testee := OutgoingMailHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext}
 
 	req, err := http.NewRequest("GET", shared.ReceivePath, nil)
 	if err != nil {

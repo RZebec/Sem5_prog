@@ -8,27 +8,14 @@ var TicketViewPage = `
 	{{ define "Title" }} Ticket {{ end }}
 
 	{{ define "StylesAndScripts" }}
-		<link rel="stylesheet" href="/files/style/tickets"> 
+		<link rel="stylesheet" href="/files/style/table"> 
+		<link rel="stylesheet" href="/files/style/message">
+		<script src="/files/script/message"></script>
 	{{ end }}
 	
 	{{ define "Content" }}
-		<div class="topnav">
-			<a href="/">Home</a>
-	
-			<span>OP-Ticket-System</span>
-
-			<a href="/tickets" class="active">Tickets</a>
-
-			{{if .IsUserLoggedIn}}
-				<a href="/user_logout">Logout</a>
-			{{else}}
-				<a href="/login">Login</a>
-				<a href="/register">Register</a>
-			{{end}}
-		</div>
 		<div class="content">
 			<div class="container">
-				<div class="main">
 					<table>
 						<tr>
 							<th>
@@ -46,6 +33,9 @@ var TicketViewPage = `
                             <th>
                                 Updated on
                             </th>
+							<th>
+								State
+							</th>
 							<th></th>
 						</tr>
                         <tr>
@@ -87,6 +77,9 @@ var TicketViewPage = `
 								document.getElementById("creationTime").innerHTML = creationTime;
 								document.getElementById("lastModificationTime").innerHTML = lastModificationTime;
 							</script>
+							<td>
+								{{.TicketInfo.State}}
+							</td>
 							<td>
 								<button class="view-button" onclick="location.href='ticket_edit/{{.TicketInfo.Id}}';">
 									Edit
@@ -133,7 +126,59 @@ var TicketViewPage = `
                         </tr>
 						{{end}}
 					</table>
-				</div>
+					<table>
+						<tr>
+							<th>
+								Creator
+                            </th>
+                            <th>
+                                Message
+                            </th>
+							{{if .UserIsAuthenticated}}
+							<th>
+								<label>Internal Only</label>
+							</th>
+							{{end}}
+                            <th>
+                            </th>
+						</tr>
+						<tr>
+							<form id="appendMessageForm" method="POST" name="appendMessageForm" action="/append_message">
+								<td>
+								{{if .UserIsAuthenticated}}
+                                	<input type="text" name="mail" id="mail" value="{{.UserName}}" readonly/>
+								{{else}}
+									<input type="text" name="mail" id="mail" value=""/>
+								{{end}}
+                            	</td>
+                            	<td>
+                                	<input type="text" name="messageContent" id="messageContent" value=""/>
+                            	</td>
+								{{if .UserIsAuthenticated}}
+								<td>
+									<input type="radio" name="onlyInternal" id="onlyInternal" value="true"/> Yes
+									<input type="radio" name="onlyInternal" id="onlyInternal" value="false" checked/> No
+								</td>
+								{{end}}
+                            	<td>
+									<input type="hidden" name="ticketId" value="{{.TicketInfo.Id}}"/>
+									<button type="submit" id="submitAppendMessage" class="submit-button" disabled>Submit Append Message</button>
+                            	</td>
+							</form>
+                        </tr>
+						<tr>
+							<td>
+								<span id="mailNotice" class="error-message"></span>
+							</td>
+							<td>
+								<span id="messageNotice" class="error-message"></span>
+							</td>
+							{{if .UserIsAuthenticated}}
+								<td></td>
+							{{end}}
+							<td></td>
+						</tr>
+					</table>
 			</div>
 		</div>
 	</body>

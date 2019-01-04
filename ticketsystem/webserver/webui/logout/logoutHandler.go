@@ -1,8 +1,8 @@
 package logout
 
 import (
+	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
 	"net/http"
@@ -14,7 +14,6 @@ import (
 */
 type LogoutHandler struct {
 	UserContext user.UserContext
-	Config      config.Configuration
 	Logger      logging.Logger
 }
 
@@ -25,14 +24,20 @@ func (l LogoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if strings.ToLower(r.Method) != "get" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {
-		cookie, err := r.Cookie(l.Config.AccessTokenCookieName)
+		cookie, err := r.Cookie(shared.AccessTokenCookieName)
 
-		if err == nil {
-			token := cookie.Value
-			l.UserContext.Logout(token)
-			helpers.RemoveCookie(w, r, l.Config.AccessTokenCookieName)
-			http.Redirect(w, r, "/", 302)
+		if err != nil {
+			l.Logger.LogError("Logout", err)
+			helpers.RemoveCookie(w, shared.AccessTokenCookieName)
+			http.Redirect(w, r, "/", http.StatusFound)
+			return
 		}
-		// Todo: error handling
+
+		token := cookie.Value
+		l.UserContext.Logout(token)
+		helpers.RemoveCookie(w, shared.AccessTokenCookieName)
+		http.Redirect(w, r, "/", http.StatusFound)
+
+		return
 	}
 }

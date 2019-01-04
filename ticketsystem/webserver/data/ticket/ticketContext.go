@@ -9,6 +9,7 @@ import (
 	"path"
 	"regexp"
 	"sort"
+	"strings"
 	"sync"
 	"time"
 )
@@ -20,6 +21,8 @@ type TicketContext interface {
 	CreateNewTicketForInternalUser(title string, editor user.User, initialMessage MessageEntry) (*Ticket, error)
 	CreateNewTicket(title string, creator Creator, initialMessage MessageEntry) (*Ticket, error)
 	GetTicketById(id int) (bool, *Ticket)
+	GetTicketsForEditorId(userId int) []TicketInfo
+	GetTicketsForCreatorMail(mail string) []TicketInfo
 	GetAllTicketInfo() []TicketInfo
 	AppendMessageToTicket(ticketId int, message MessageEntry) (*Ticket, error)
 	MergeTickets(firstTicketId int, secondTicketId int) (success bool, err error)
@@ -37,6 +40,38 @@ type TicketManager struct {
 	cachedTicketIds    []int
 	cachedTicketsMutex sync.RWMutex
 	ticketFolderPath   string
+}
+
+/*
+	Get the ticket for a given creator mail.
+ */
+func (t *TicketManager) GetTicketsForCreatorMail(mail string) []TicketInfo {
+	t.cachedTicketsMutex.RLock()
+	defer t.cachedTicketsMutex.RUnlock()
+
+	var ticketInfos []TicketInfo
+	for _, ticket := range t.cachedTickets {
+		if strings.ToLower(ticket.info.Creator.Mail) == strings.ToLower(mail) {
+			ticketInfos = append(ticketInfos, ticket.info.Copy())
+		}
+	}
+	return ticketInfos
+}
+
+/*
+	Get the ticket for a given editor.
+ */
+func (t *TicketManager) GetTicketsForEditorId(userId int) []TicketInfo {
+	t.cachedTicketsMutex.RLock()
+	defer t.cachedTicketsMutex.RUnlock()
+
+	var ticketInfos []TicketInfo
+	for _, ticket := range t.cachedTickets {
+		if ticket.info.HasEditor && ticket.info.Editor.UserId == userId {
+			ticketInfos = append(ticketInfos, ticket.info.Copy())
+		}
+	}
+	return ticketInfos
 }
 
 /*

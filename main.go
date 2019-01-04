@@ -13,19 +13,10 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"fmt"
+	"html/template"
 	"net/http"
 	"os"
 )
-
-func foohandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Hello")
-	w.Write([]byte("HHH"))
-}
-
-func tempHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Hello")
-	w.Write([]byte(r.URL.Path))
-}
 
 func main() {
 	logger := logging.ConsoleLogger{SetTimeStamp: true}
@@ -81,15 +72,25 @@ func main() {
 	g := ticketContext.GetAllTicketInfo()
 	fmt.Println(len(g))
 
-	http.HandleFunc(shared.SendPath, getIncomingMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
+	http.HandleFunc(shared.SendPath, getIncomingMailHandlerChain(*apiConfig, &mailContext, &ticketContext, &userContext, logger).ServeHTTP)
 	http.HandleFunc(shared.AcknowledgmentPath, getAcknowledgeMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
 	http.HandleFunc(shared.ReceivePath, getOutgoingMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
 
+	templateManager := templateManager.TemplateManager{Templates: map[string]*template.Template{}}
+
+	err = templateManager.LoadTemplates(logger)
+	if err != nil {
+		panic(err)
+	}
+
 	handlerManager := webui.HandlerManager{
-		UserContext:   &userContext,
-		TicketContext: &ticketContext,
-		Config:        configuration,
-		Logger:        logger,
+		UserContext:      &userContext,
+		TicketContext:    &ticketContext,
+		Config:           configuration,
+		Logger:           logger,
+		ApiConfiguration: apiConfig,
+		TemplateManager:  &templateManager,
+		MailContext:	  &mailContext,
 	}
 
 	templateManager.LoadTemplates(logger)
@@ -98,12 +99,12 @@ func main() {
 	if err := http.ListenAndServeTLS(configuration.GetServiceUrl(), configuration.CertificatePath, configuration.CertificateKeyPath, nil); err != nil {
 		logger.LogError("Main", err)
 	}
-
-	//staticFileHandlers.StaticFileHandler()
 }
 
-func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mail.MailContext, logger logging.Logger) http.Handler {
-	incomingMailHandler := mails.IncomingMailHandler{Logger: logger, MailContext: mailContext}
+func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mail.MailContext, ticketContext ticket.TicketContext,
+	userContext user.UserContext, logger logging.Logger) http.Handler {
+	incomingMailHandler := mails.IncomingMailHandler{Logger: logger, MailContext: mailContext, TicketContext: ticketContext,
+		UserContext: userContext, MailRepliesFilter: &mails.RepliesFilter{}}
 	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,
 		Next: &incomingMailHandler, AllowedMethod: "POST", Logger: logger}
 	return &apiAuthenticationHandler

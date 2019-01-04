@@ -8,24 +8,10 @@ var TicketExplorerPage = `
 	{{ define "Title" }} Tickets {{ end }}
 
 	{{ define "StylesAndScripts" }}
-		<link rel="stylesheet" href="/files/style/tickets"> 
+		<link rel="stylesheet" href="/files/style/table">
 	{{ end }}
 	
 	{{ define "Content" }}
-		<div class="topnav">
-			<a href="/">Home</a>
-	
-			<span>OP-Ticket-System</span>
-
-			<a href="/tickets" class="active">Tickets</a>
-
-			{{if .IsUserLoggedIn}}
-				<a href="/user_logout">Logout</a>
-			{{else}}
-				<a href="/login">Login</a>
-				<a href="/register">Register</a>
-			{{end}}
-		</div>
 		<div class="content">
 			<div class="container">
 				<div class="main">
@@ -46,9 +32,12 @@ var TicketExplorerPage = `
                             <th>
                                 Updated on
                             </th>
+							<th>
+								State
+							</th>
 							<th></th>
 						</tr>
-                        {{range .TicketInfo}}
+                        {{range .Tickets}}
                         <tr>
                             <td>
                                 {{.Title}}
@@ -88,6 +77,9 @@ var TicketExplorerPage = `
 								document.getElementById("creationTime_{{.Id}}").innerHTML = creationTime;
 								document.getElementById("lastModificationTime_{{.Id}}").innerHTML = lastModificationTime;
 							</script>
+							<td>
+								{{.State}}
+							</td>
 							<td>
 								<button class="view-button" onclick="location.href='ticket/{{.Id}}';">
 									View

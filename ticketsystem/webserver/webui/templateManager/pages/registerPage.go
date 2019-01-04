@@ -7,21 +7,11 @@ var RegisterPage = `
 	{{ define "Title" }} Register {{ end }}
 
 	{{ define "StylesAndScripts" }}
-		<link rel="stylesheet" href="/files/style/login"> 
-		<script src="/files/script/login"></script>
+		<link rel="stylesheet" href="/files/style/center_main">
+		<script src="/files/script/register"></script>
 	{{ end }}
 	
 	{{ define "Content" }}
-		<div class="topnav">
-			<a href="/">Home</a>
-
-			<a href="/tickets">Tickets</a>
-	
-			<span>OP-Ticket-System</span>
-
-			<a href="/login">Login</a>
-			<a class="active" href="/register">Register</a>
-		</div>
 		<div class="content">
 			<div class="container">
 				<div class="main">
@@ -43,7 +33,10 @@ var RegisterPage = `
 					</span>
 					</br>
         			{{end}}
+					<span id="firstNameNotice" class="error-message"></span>
+					<span id="lastNameNotice" class="error-message"></span>
 					<span id="emailNotice" class="error-message"></span>
+					<span id="passwordNotice" class="error-message"></span>
 				</div>
 			</div>
 		</div>

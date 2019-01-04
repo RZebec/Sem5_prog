@@ -1,11 +1,14 @@
 package login
 
 import (
+	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
+	"html"
 	"net/http"
 	"strconv"
 	"strings"
@@ -15,15 +18,16 @@ import (
 	Structure for the Login handler.
 */
 type LoginHandler struct {
-	UserContext user.UserContext
-	Config      config.Configuration
-	Logger      logging.Logger
+	UserContext     user.UserContext
+	Logger          logging.Logger
+	TemplateManager templateManager.TemplateContext
 }
 
 /*
 	Structure for the Login Page Data.
 */
 type loginPageData struct {
+	pages.BasePageData
 	IsLoginFailed bool
 }
 
@@ -37,6 +41,9 @@ func (l LoginHandler) ServeHTTPPostLoginData(w http.ResponseWriter, r *http.Requ
 		userName := r.FormValue("userName")
 		password := r.FormValue("password")
 
+		userName = html.EscapeString(userName)
+		password = html.EscapeString(password)
+
 		success, token, err := l.UserContext.Login(userName, password)
 
 		if err != nil {
@@ -44,7 +51,7 @@ func (l LoginHandler) ServeHTTPPostLoginData(w http.ResponseWriter, r *http.Requ
 		}
 
 		if success {
-			helpers.SetCookie(w, r, l.Config.AccessTokenCookieName, token)
+			helpers.SetCookie(w, shared.AccessTokenCookieName, token)
 			http.Redirect(w, r, "/", 302)
 		} else {
 			http.Redirect(w, r, "/login?IsLoginFailed=true", 302)
@@ -56,28 +63,38 @@ func (l LoginHandler) ServeHTTPPostLoginData(w http.ResponseWriter, r *http.Requ
 	The Login Page handler.
 */
 func (l LoginHandler) ServeHTTPGetLoginPage(w http.ResponseWriter, r *http.Request) {
+	if strings.ToLower(r.Method) != "get" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	} else {
+		// Checks if the User is already logged in and if so redirects him to the start page
+		isUserLoggedIn := wrappers.IsAuthenticated(r.Context())
+		userIsAdmin := wrappers.IsAdmin(r.Context())
 
-	// Checks if the User is already logged in and if so redirects him to the start page
-	isUserLoggedIn, _ := helpers.UserIsLoggedInCheck(r, l.UserContext, l.Config.AccessTokenCookieName, l.Logger)
+		if isUserLoggedIn {
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+			return
+		}
 
-	if isUserLoggedIn {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}
+		queryValues := r.URL.Query()
+		queryValue := queryValues.Get("IsLoginFailed")
+		isLoginFailed, parseError := strconv.ParseBool(queryValue)
 
-	queryValues := r.URL.Query()
-	isLoginFailed, parseError := strconv.ParseBool(queryValues.Get("IsLoginFailed"))
+		if parseError != nil && queryValue != "" {
+			l.Logger.LogError("Login", parseError)
+		}
 
-	if parseError != nil {
-		l.Logger.LogError("Login", parseError)
-	}
+		data := loginPageData{
+			IsLoginFailed: isLoginFailed,
+		}
+		data.UserIsAuthenticated = wrappers.IsAuthenticated(r.Context())
+		data.UserIsAdmin = userIsAdmin
+		data.Active = "login"
 
-	data := loginPageData{
-		IsLoginFailed: isLoginFailed,
-	}
+		templateRenderError := l.TemplateManager.RenderTemplate(w, "LoginPage", data)
 
-	templateRenderError := templateManager.RenderTemplate(w, "LoginPage", data)
-
-	if templateRenderError != nil {
-		l.Logger.LogError("Login", templateRenderError)
+		if templateRenderError != nil {
+			l.Logger.LogError("Login", templateRenderError)
+			http.Redirect(w, r, "/", http.StatusInternalServerError)
+		}
 	}
 }

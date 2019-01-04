@@ -10,7 +10,7 @@ import (
 	Example how to use the validator.
 */
 func ExampleValidator_Validate() {
-	val := New()
+	val := NewValidator()
 
 	pass := "Test!23?"
 	fmt.Println(val.Validate(pass))
@@ -22,7 +22,7 @@ func ExampleValidator_Validate() {
 	A password which is too short, should be invalid. Min length = 8.
 */
 func TestValidator_Validate_PasswordTooShort_Invalid(t *testing.T) {
-	val := New()
+	val := NewValidator()
 
 	// Length = 7
 	pass := "ZI(9§sl"
@@ -33,7 +33,7 @@ func TestValidator_Validate_PasswordTooShort_Invalid(t *testing.T) {
 	A password without a uppercase is invalid.
 */
 func TestValidator_Validate_NoUppercase_Invalid(t *testing.T) {
-	val := New()
+	val := NewValidator()
 
 	pass := "test45?%67&"
 	assert.False(t, val.Validate(pass), "The password should be invalid")
@@ -43,7 +43,7 @@ func TestValidator_Validate_NoUppercase_Invalid(t *testing.T) {
 A password without a lowercase is invalid.
 */
 func TestValidator_Validate_NoLowercase_Invalid(t *testing.T) {
-	val := New()
+	val := NewValidator()
 
 	pass := "KDI(/)2686DF9§9$"
 	assert.False(t, val.Validate(pass), "The password should be invalid")
@@ -53,7 +53,7 @@ func TestValidator_Validate_NoLowercase_Invalid(t *testing.T) {
 	A password without a number is invalid.
 */
 func TestValidator_Validate_NoNumber_Invalid(t *testing.T) {
-	val := New()
+	val := NewValidator()
 
 	pass := "TPO)(%/SJTOSO"
 	assert.False(t, val.Validate(pass), "The password should be invalid")
@@ -63,7 +63,7 @@ func TestValidator_Validate_NoNumber_Invalid(t *testing.T) {
 	A password without a special character is invalid.
 */
 func TestValidator_Validate_NoSpecialCharacter_Invalid(t *testing.T) {
-	val := New()
+	val := NewValidator()
 
 	pass := "LosujdOAK5796SK"
 	assert.False(t, val.Validate(pass), "The password should be invalid")

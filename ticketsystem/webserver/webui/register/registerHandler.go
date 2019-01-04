@@ -2,22 +2,22 @@ package register
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
+	"html"
 	"net/http"
 	"strconv"
-	"strings"
 )
 
 /*
 	Structure for the Register handler.
 */
 type RegisterHandler struct {
-	UserContext user.UserContext
-	Config      config.Configuration
-	Logger      logging.Logger
+	UserContext     user.UserContext
+	Logger          logging.Logger
+	TemplateManager templateManager.TemplateContext
 }
 
 /*
@@ -25,6 +25,7 @@ type RegisterHandler struct {
 */
 type registerPageData struct {
 	IsRegisteringFailed bool
+	pages.BasePageData
 }
 
 /*
@@ -32,7 +33,7 @@ type registerPageData struct {
 */
 func (l RegisterHandler) ServeHTTPPostRegisteringData(w http.ResponseWriter, r *http.Request) {
 	// TODO: Verification step for the user needs to be implemented here
-	if strings.ToLower(r.Method) != "post" {
+	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {
 		firstName := r.FormValue("first_name")
@@ -40,16 +41,22 @@ func (l RegisterHandler) ServeHTTPPostRegisteringData(w http.ResponseWriter, r *
 		userName := r.FormValue("userName")
 		password := r.FormValue("password")
 
+		firstName = html.EscapeString(firstName)
+		lastName = html.EscapeString(lastName)
+		userName = html.EscapeString(userName)
+		password = html.EscapeString(password)
+
 		success, err := l.UserContext.Register(userName, password, firstName, lastName)
 
 		if err != nil {
 			l.Logger.LogError("Register", err)
+			http.Redirect(w, r, "/register?IsRegisteringFailed=true", http.StatusSeeOther)
 		}
 
 		if success {
-			http.Redirect(w, r, "/login", 302)
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
 		} else {
-			http.Redirect(w, r, "/register?IsRegisteringFailed=true", 302)
+			http.Redirect(w, r, "/register?IsRegisteringFailed=true", http.StatusSeeOther)
 		}
 	}
 }
@@ -58,28 +65,38 @@ func (l RegisterHandler) ServeHTTPPostRegisteringData(w http.ResponseWriter, r *
 	The Register Page handler.
 */
 func (l RegisterHandler) ServeHTTPGetRegisterPage(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	} else {
+		isUserLoggedIn := wrappers.IsAuthenticated(r.Context())
+		userIsAdmin := wrappers.IsAdmin(r.Context())
 
-	// Checks if the User is already logged in and if so redirects him to the start page
-	isUserLoggedIn, _ := helpers.UserIsLoggedInCheck(r, l.UserContext, l.Config.AccessTokenCookieName, l.Logger)
+		if isUserLoggedIn {
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+		}
 
-	if isUserLoggedIn {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}
+		queryValues := r.URL.Query()
+		queryValue := queryValues.Get("IsRegisteringFailed")
+		isRegisteringFailed, err := strconv.ParseBool(queryValue)
 
-	queryValues := r.URL.Query()
-	isRegisteringFailed, err := strconv.ParseBool(queryValues.Get("IsRegisteringFailed"))
+		if err != nil && queryValue != "" {
+			l.Logger.LogError("Register", err)
+			isRegisteringFailed = false
+		}
 
-	if err != nil {
-		l.Logger.LogError("Register", err)
-	}
+		data := registerPageData{
+			IsRegisteringFailed: isRegisteringFailed,
+		}
 
-	data := registerPageData{
-		IsRegisteringFailed: isRegisteringFailed,
-	}
+		data.UserIsAuthenticated = wrappers.IsAuthenticated(r.Context())
+		data.UserIsAdmin = userIsAdmin
+		data.Active = "register"
 
-	err = templateManager.RenderTemplate(w, "RegisterPage", data)
+		err = l.TemplateManager.RenderTemplate(w, "RegisterPage", data)
 
-	if err != nil {
-		l.Logger.LogError("Register", err)
+		if err != nil {
+			l.Logger.LogError("Register", err)
+			http.Redirect(w, r, "/", http.StatusInternalServerError)
+		}
 	}
 }

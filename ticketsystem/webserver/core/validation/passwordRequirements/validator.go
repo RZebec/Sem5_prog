@@ -13,7 +13,7 @@ type Validator struct {
 /*
 	Create a new validator.
 */
-func New() *Validator {
+func NewValidator() *Validator {
 	validator := Validator{}
 	return &validator
 }

@@ -1,6 +1,10 @@
 package templateManager
 
 import (
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
+	"github.com/stretchr/testify/assert"
+	"html/template"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -8,74 +12,40 @@ import (
 )
 
 /*
-	Tests if the Page is correctly rendered.
+	Loading all templates should be possible.
 */
-func TestAccessDeniedPageRendering(t *testing.T) {
-	rr := httptest.NewRecorder()
+func TestTemplateManager_LoadTemplates(t *testing.T) {
+	testee := TemplateManager{}
 
-	mockConsoleLogger := MockConsoleLogger{}
+	err := testee.LoadTemplates(testhelpers.GetTestLogger())
 
-	LoadTemplates(mockConsoleLogger)
-	err := RenderTemplate(rr, "AccessDeniedPage", nil)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// Check the status code is what we expect.
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
-	}
-
-	// Check the response body is what we expect.
-	expected := strings.TrimSpace(accessDeniedResultPage)
-	result := strings.TrimSpace(rr.Body.String())
-	if result != expected {
-		t.Errorf("handler returned unexpected body: got %v want %v",
-			result, expected)
-	}
+	assert.Nil(t, err, "All templates should be loaded without error")
+	assert.Equal(t, 9, len(testee.Templates), "All templates should be loaded")
 }
 
 /*
-	Mock structure for the Login Page Data.
+	Rendering a template should replace the placeholders with the data.
 */
-type mockLoginPageData struct {
-	IsLoginFailed bool
-}
+func TestTemplateManager_RenderTemplate(t *testing.T) {
+	testee := TemplateManager{}
+	baseTemplate := template.New("Base")
+	err := testee.addTemplate(testPage, "TestPage", baseTemplate, testhelpers.GetTestLogger())
 
-/*
-	Tests if the Page is correctly rendered for the given data.
-*/
-func TestLoginPageRendering(t *testing.T) {
+	assert.Nil(t, err, "Template should be added without problem")
+
+	testData := testPageData{Title: "TestTitleToInsert"}
 	rr := httptest.NewRecorder()
 
-	testData := mockLoginPageData{
-		IsLoginFailed: false,
-	}
+	// Execute the test:
+	err = testee.RenderTemplate(rr, "TestPage", testData)
 
-	mockConsoleLogger := MockConsoleLogger{}
+	// Assert the result
+	assert.Nil(t, err, "Template should be added without problem")
+	resultContent := rr.Result()
 
-	LoadTemplates(mockConsoleLogger)
-	err := RenderTemplate(rr, "LoginPage", testData)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// Check the status code is what we expect.
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
-	}
-
-	// Check the response body is what we expect.
-	expected := strings.TrimSpace(loginResultPage)
-	result := strings.TrimSpace(rr.Body.String())
-	if result != expected {
-		t.Errorf("handler returned unexpected body: got %v want %v",
-			result, expected)
-	}
+	defer resultContent.Body.Close()
+	body, err := ioutil.ReadAll(resultContent.Body)
+	assert.Contains(t, string(body), "TestTitleToInsert", "Data should be set")
 }
 
 /*
@@ -88,7 +58,9 @@ func TestErrorHandling(t *testing.T) {
 
 	expectedText := "The template TestPage does not exist."
 
-	err := RenderTemplate(rr, "TestPage", nil)
+	testee := TemplateManager{map[string]*template.Template{}}
+
+	err := testee.RenderTemplate(rr, "TestPage", nil)
 
 	if err.Error() != expectedError.Error() {
 		t.Errorf("error returned unexpected text: got %v want %v",

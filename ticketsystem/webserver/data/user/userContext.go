@@ -4,10 +4,15 @@
 package user
 
 import (
+	"bytes"
+	"crypto/rand"
+	"crypto/sha512"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/validation/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/validation/passwordRequirements"
 	"encoding/json"
 	"errors"
+	"io"
 	"path"
 	"strings"
 	"sync"
@@ -39,6 +44,12 @@ type UserContext interface {
 	ChangePassword(currentUserToken string, currentUserPassword string, newPassword string) (changed bool, err error)
 	// Get all locked users:
 	GetAllLockedUsers() []User
+	// Get all active users:
+	GetAllActiveUsers() []User
+	// Check if the given mail is for a registered user.
+	GetUserForEmail(mailAddress string) (isRegisteredUser bool, userId int)
+	// Get user by its id.
+	GetUserById(userId int) (exists bool, user User)
 }
 
 /*
@@ -49,8 +60,8 @@ type storedUserData struct {
 	UserId     int
 	FirstName  string
 	LastName   string
-	StoredPass string
-	StoredSalt string
+	StoredPass []byte
+	StoredSalt []byte
 	Role       UserRole
 	State      UserState
 }
@@ -98,6 +109,39 @@ func (s *LoginSystem) Initialize(folderPath string) (err error) {
 	return
 }
 
+/*
+	Get a user by id.
+*/
+func (s *LoginSystem) GetUserById(userId int) (exists bool, user User) {
+	s.cachedUserDataMutex.RLock()
+	defer s.cachedUserDataMutex.RUnlock()
+
+	for _, userData := range s.cachedUserData {
+		if userData.UserId == userId {
+			copiedUser := User{Mail: userData.Mail, UserId: userData.UserId, FirstName: userData.FirstName,
+				LastName: userData.LastName, Role: userData.Role, State: userData.State}
+			copiedUser = copiedUser.Copy()
+			return true, copiedUser
+		}
+	}
+	return false, User{}
+}
+
+/*
+	Get a user from its mail.
+*/
+func (s *LoginSystem) GetUserForEmail(mailAddress string) (isRegisteredUser bool, userId int) {
+	s.cachedUserDataMutex.RLock()
+	defer s.cachedUserDataMutex.RUnlock()
+
+	for _, userData := range s.cachedUserData {
+		if strings.ToLower(userData.Mail) == strings.ToLower(mailAddress) {
+			return true, userData.UserId
+		}
+	}
+	return false, -1
+}
+
 // Refresh the token. The new token should be used for all following request.
 func (s *LoginSystem) RefreshToken(token string) (newToken string, err error) {
 	valid, userId, userName, userRole, err := s.SessionIsValid(token)
@@ -122,12 +166,12 @@ func (s *LoginSystem) RefreshToken(token string) (newToken string, err error) {
 */
 func (s *LoginSystem) Register(userName string, password string, firstName string, lastName string) (success bool, err error) {
 	mailValidator := mail.NewValidator()
+	passwordValidator := passwordRequirements.NewValidator()
 	if !mailValidator.Validate(userName) {
 		return false, errors.New("userName not valid")
 	}
-	if password == "" {
-		// TODO: Validator for password
-		return false, errors.New("password not valid")
+	if !passwordValidator.Validate(password) {
+		return false, errors.New("password requirements not met")
 	}
 	if firstName == "" {
 		return false, errors.New("firstName not valid")
@@ -165,7 +209,6 @@ func (s *LoginSystem) ChangePassword(currentUserToken string, currentUserPasswor
 			if valid {
 				user := User{Mail: v.Mail, UserId: v.UserId, FirstName: v.FirstName, LastName: v.LastName, Role: v.Role,
 					State: v.State}
-				//s.cachedUserDataMutex.RUnlock()
 				return s.changeUserPassword(user, newPassword)
 			}
 		}
@@ -330,6 +373,26 @@ func (s *LoginSystem) GetAllLockedUsers() []User {
 }
 
 /*
+	Get all users which are active.
+*/
+func (s *LoginSystem) GetAllActiveUsers() []User {
+	s.cachedUserDataMutex.RLock()
+	defer s.cachedUserDataMutex.RUnlock()
+
+	var lockedUsers []User
+	for _, storedUser := range s.cachedUserData {
+		if storedUser.State == Active {
+			user := User{Mail: storedUser.Mail, UserId: storedUser.UserId,
+				FirstName: storedUser.FirstName, LastName: storedUser.LastName,
+				Role: storedUser.Role, State: storedUser.State}
+			lockedUsers = append(lockedUsers, user.Copy())
+		}
+	}
+
+	return lockedUsers
+}
+
+/*
 	Unlock a account which is waiting to be unlocked. The current session needs the permission to do this.
 */
 func (s *LoginSystem) UnlockAccount(currentToken string, userIdToUnlock int) (unlocked bool, err error) {
@@ -434,14 +497,6 @@ func (s *LoginSystem) createSessionForUser(user storedUserData) (authToken strin
 }
 
 /*
-	Check if the provided password for a user is correct.
-*/
-func (s *LoginSystem) checkUserCredentials(user storedUserData, providedPassword string) (success bool) {
-	// TODO: Adjust with password salting and stuff....
-	return user.StoredPass == providedPassword
-}
-
-/*
 	Check if the user already exists (using the cache). Returns true, if the user exists, false if not.
 */
 func (s *LoginSystem) checkIfUserExistsOnCache(userName string) bool {
@@ -470,7 +525,10 @@ func (s *LoginSystem) registerNewUser(userName string, password string, firstNam
 	if err != nil {
 		return err
 	}
-	generatedLoginData := s.generateLoginData(userName, password, len(existingData)+1, firstName, lastName, role, state)
+	generatedLoginData, err := s.generateLoginData(userName, password, len(existingData)+1, firstName, lastName, role, state)
+	if err != nil {
+		return err
+	}
 	newData := append(existingData, generatedLoginData)
 	err = s.writeJsonDataToFile(s.loginDataFilePath, newData)
 	if err != nil {
@@ -483,19 +541,69 @@ func (s *LoginSystem) registerNewUser(userName string, password string, firstNam
 }
 
 /*
+	Check if the provided password for a user is correct.
+*/
+func (s *LoginSystem) checkUserCredentials(user storedUserData, providedPassword string) (success bool) {
+	// Build the combination of the provided password with the stored hash and compare it with the stored password hash:
+	comb := string(user.StoredSalt) + string(providedPassword)
+	passwordHash := sha512.New()
+	_, err := io.WriteString(passwordHash, comb)
+	if err != nil {
+		return false
+	}
+	correctComb := bytes.Equal(user.StoredPass, passwordHash.Sum(nil))
+
+	return correctComb
+}
+
+/*
 	Generates the login data.
 */
 func (s *LoginSystem) generateLoginData(userName string, password string, newId int,
-	firstName string, lastName string, role UserRole, state UserState) (userData storedUserData) {
-	// TODO: Adjust with password salting and stuff....
+	firstName string, lastName string, role UserRole, state UserState) (userData storedUserData, err error) {
+
+	// Hashing and salt generation is from: https://www.socketloop.com/tutorials/golang-securing-password-with-salt
+	// In a real life scenario we would use something like https://godoc.org/golang.org/x/crypto/bcrypt
+	// But we should only use standard packages, so we use this solution.
+
+	// Generate a salt for combination with password.
+	salt, err := generateSalt([]byte(password))
+	if err != nil {
+		return storedUserData{}, err
+	}
+	// Generate a hash for the password, but combine it with the salt.
+	passwordHash := sha512.New()
+	combination := string(salt) + string(password)
+	_, err = io.WriteString(passwordHash, combination)
+	if err != nil {
+		return storedUserData{}, err
+	}
+	// Store the hashed password together with the salt.
 	return storedUserData{Mail: userName,
-		StoredPass: password,
-		StoredSalt: "1234",
+		StoredPass: passwordHash.Sum(nil),
+		StoredSalt: salt,
 		UserId:     newId,
 		FirstName:  firstName,
 		LastName:   lastName,
 		Role:       role,
-		State:      state}
+		State:      state}, nil
+}
+
+/*
+	Generate a salt out of a password.
+*/
+func generateSalt(secret []byte) ([]byte, error) {
+	buf := make([]byte, saltSize, saltSize+sha512.Size)
+	_, err := io.ReadFull(rand.Reader, buf)
+
+	if err != nil {
+		return []byte{}, err
+	}
+
+	hash := sha512.New()
+	hash.Write(buf)
+	hash.Write(secret)
+	return hash.Sum(buf), nil
 }
 
 /*
@@ -574,8 +682,11 @@ func (s *LoginSystem) changeUserPassword(user User, newPassword string) (bool, e
 	found := false
 	for index, entry := range data {
 		if entry.UserId == user.UserId {
-			generatedLoginData := s.generateLoginData(user.Mail, newPassword, user.UserId, user.FirstName,
+			generatedLoginData, err := s.generateLoginData(user.Mail, newPassword, user.UserId, user.FirstName,
 				user.LastName, user.Role, user.State)
+			if err != nil {
+				return false, err
+			}
 			data[index] = generatedLoginData
 			found = true
 			break
@@ -593,3 +704,5 @@ func (s *LoginSystem) changeUserPassword(user User, newPassword string) (bool, e
 	s.readFileAndUpdateCache(s.loginDataFilePath)
 	return true, nil
 }
+
+const saltSize = 32

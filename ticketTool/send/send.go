@@ -42,5 +42,4 @@ func main() {
 	*/
 	send := sender.CreateSender(config, &io, &apiClient, &mailGenerator)
 	send.Run()
-
 }

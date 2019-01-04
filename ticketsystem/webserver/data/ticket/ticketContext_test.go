@@ -466,6 +466,78 @@ func TestTicketManager_GetAllOpenTickets_NoTickets_EmptyArrayReturned(t *testing
 }
 
 /*
+	Where there are tickets which where created by the given mail, they should be returned.
+ */
+func TestTicketManager_GetTicketsForCreatorMail_TicketExists_TicketInfoReturned(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	err = writeTestDataToFolder(folderPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	tickets := testee.GetTicketsForCreatorMail("test@test.de")
+	assert.Equal(t, 3, len(tickets))
+}
+
+/*
+	Where there are no tickets which where created by the given mail, an empty array should be returned.
+ */
+func TestTicketManager_GetTicketsForCreatorMail_NoTicketExists_EmptyTicketInfoReturned(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	err = writeTestDataToFolder(folderPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	tickets := testee.GetTicketsForCreatorMail("abc@temp.de")
+	assert.Equal(t, 0, len(tickets))
+}
+
+/*
+	If there are tickets with the given id as editor, they should be returned.
+ */
+func TestTicketManager_GetTicketsForEditorId_TicketExists_TicketsReturned(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	err = writeTestDataToFolder(folderPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	tickets := testee.GetTicketsForEditorId(2)
+	assert.Equal(t, 1, len(tickets))
+}
+
+/*
+	If there are no tickets with the given id as editor, a empty array should be returned.
+ */
+func TestTicketManager_GetTicketsForEditorId_NoTicketExists_NoTicketsReturned(t *testing.T) {
+	folderPath, rootPath, err := prepareTempDirectory()
+	defer os.RemoveAll(rootPath)
+	assert.Nil(t, err)
+
+	err = writeTestDataToFolder(folderPath)
+	assert.Nil(t, err)
+
+	testee := TicketManager{}
+	testee.Initialize(folderPath)
+
+	tickets := testee.GetTicketsForEditorId(9)
+	assert.Equal(t, 0, len(tickets))
+}
+
+/*
 	Getting the ticket infos when ticket exist, should return the infos for the existing tickets.
 */
 func TestTicketManager_GetAllTicketInfo_TicketsExist_TicketInfoReturned(t *testing.T) {
