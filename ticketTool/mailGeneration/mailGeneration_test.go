@@ -9,7 +9,9 @@ import (
 )
 
 func TestMailGenerator_RandomMail(t *testing.T) {
-	mailGenerator := MailGenerator{}
+	mockedIo := new(inputOutput.MockedInputOutput)
+	mockedIo.On("Print", mock.Anything)
+	mailGenerator := MailGenerator{io: mockedIo}
 	numberOfMails := 10
 	mails := mailGenerator.RandomMail(numberOfMails, 10, 50)
 	assert.True(t, len(mails) == numberOfMails, "Generator do not Generate the number of mails")
