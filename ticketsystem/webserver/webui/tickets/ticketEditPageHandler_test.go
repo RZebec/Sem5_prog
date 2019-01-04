@@ -47,7 +47,7 @@ func TestTicketEditPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	testCreator4 := ticket.Creator{Mail: "Ivan3@Test.de", FirstName: "Ivan3", LastName: "Muller"}
 	testTicketInfo4 := ticket.TicketInfo{Id: 2, Title: "TicketTest4", Editor: testEditor4, HasEditor: true, Creator: testCreator4, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Processing}
 
-	req, err := http.NewRequest("GET", "/ticket_edit/5", nil)
+	req, err := http.NewRequest("GET", "/ticket/ticket_edit/5", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -55,11 +55,13 @@ func TestTicketEditPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	allTestTickets := []ticket.TicketInfo{testTicketInfo, testTicketInfo2, testTicketInfo3, testTicketInfo4}
 	allTestUsers := []user.User{testEditor, testUser, testEditor4}
 	filteredTickets := []ticket.TicketInfo{testTicketInfo2, testTicketInfo3, testTicketInfo4}
+	states := []ticket.TicketState{ticket.Open, ticket.Closed}
 
 	data := ticketEditPageData{
 		TicketInfo: 	testTicketInfo,
 		OtherTickets:	filteredTickets,
 		Users:			allTestUsers,
+		OtherStates:	states,
 	}
 
 	// Execute the test:
@@ -103,7 +105,7 @@ func TestTicketEditPageHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 	testee := TicketEditPageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager,
 		Logger: testhelpers.GetTestLogger()}
 
-	req, err := http.NewRequest("POST", "/ticket_edit/5", nil)
+	req, err := http.NewRequest("POST", "/ticket/ticket_edit/5", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -135,7 +137,7 @@ func TestTicketEditPageHandler_ServeHTTP_ConversionError(t *testing.T) {
 	testee := TicketEditPageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager,
 		Logger: testhelpers.GetTestLogger()}
 
-	req, err := http.NewRequest("GET", "/ticket_edit/aaaa", nil)
+	req, err := http.NewRequest("GET", "/ticket/ticket_edit/aaaa", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -167,7 +169,7 @@ func TestTicketEditPageHandler_ServeHTTP_TicketDoesNotExist(t *testing.T) {
 	testee := TicketEditPageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager,
 		Logger: testhelpers.GetTestLogger()}
 
-	req, err := http.NewRequest("GET", "/ticket_edit/5", nil)
+	req, err := http.NewRequest("GET", "/ticket/ticket_edit/5", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -221,7 +223,7 @@ func TestTicketEditPageHandler_ServeHTTP_RenderTemplateError(t *testing.T) {
 	testCreator4 := ticket.Creator{Mail: "Ivan3@Test.de", FirstName: "Ivan3", LastName: "Muller"}
 	testTicketInfo4 := ticket.TicketInfo{Id: 2, Title: "TicketTest4", Editor: testEditor4, HasEditor: true, Creator: testCreator4, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Processing}
 
-	req, err := http.NewRequest("GET", "/ticket_edit/5", nil)
+	req, err := http.NewRequest("GET", "/ticket/ticket_edit/5", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -229,11 +231,13 @@ func TestTicketEditPageHandler_ServeHTTP_RenderTemplateError(t *testing.T) {
 	allTestTickets := []ticket.TicketInfo{testTicketInfo, testTicketInfo2, testTicketInfo3, testTicketInfo4}
 	allTestUsers := []user.User{testEditor, testUser, testEditor4}
 	filteredTickets := []ticket.TicketInfo{testTicketInfo2, testTicketInfo3, testTicketInfo4}
+	states := []ticket.TicketState{ticket.Open, ticket.Closed}
 
 	data := ticketEditPageData{
 		TicketInfo: 	testTicketInfo,
 		OtherTickets:	filteredTickets,
 		Users:			allTestUsers,
+		OtherStates:	states,
 	}
 
 	// Execute the test:

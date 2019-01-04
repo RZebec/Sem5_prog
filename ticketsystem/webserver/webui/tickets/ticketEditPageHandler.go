@@ -31,6 +31,8 @@ type ticketEditPageData struct {
 	TicketInfo 		ticket.TicketInfo
 	OtherTickets	[]ticket.TicketInfo
 	Users			[]user.User
+	OtherState1		ticket.TicketState
+	OtherState2		ticket.TicketState
 	pages.BasePageData
 }
 
@@ -43,7 +45,7 @@ func (t TicketEditPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	} else {
 		URLPath := strings.Split(r.URL.Path, "/")
 
-		urlValue := html.EscapeString(URLPath[2])
+		urlValue := html.EscapeString(URLPath[3])
 
 		ticketId, idConversionError := strconv.Atoi(urlValue)
 
@@ -69,15 +71,19 @@ func (t TicketEditPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 		otherTickets = filterOutTicket(ticketInfo.Id, otherTickets)
 
+		otherStates := getOtherTicketStates(ticketInfo.State)
+
 		data := ticketEditPageData{
 			TicketInfo: 	ticketInfo,
 			OtherTickets:	otherTickets,
 			Users:			users,
+			OtherState1:	otherStates[0],
+			OtherState2:	otherStates[1],
 		}
-
+		
 		data.UserIsAdmin = wrappers.IsAdmin(r.Context())
 		data.UserIsAuthenticated = wrappers.IsAuthenticated(r.Context())
-		data.Active = "ticket_edit"
+		data.Active = ""
 
 		templateRenderError := t.TemplateManager.RenderTemplate(w, "TicketEditPage", data)
 
@@ -92,6 +98,16 @@ func filterOutTicket(ticketIdToFilter int, tickets []ticket.TicketInfo) (result 
 	for _, t := range tickets {
 		if t.Id != ticketIdToFilter {
 			result = append(result, t)
+		}
+	}
+	return
+}
+
+func getOtherTicketStates(ticketState ticket.TicketState) (result []ticket.TicketState) {
+	states := []ticket.TicketState{ticket.Open, ticket.Closed, ticket.Processing}
+	for _, state := range states {
+		if state != ticketState {
+			result = append(result, state)
 		}
 	}
 	return

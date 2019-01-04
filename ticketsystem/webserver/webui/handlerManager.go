@@ -140,4 +140,11 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	ticketCreateHandlerWrapper.Logger = handlerManager.Logger
 	ticketCreateHandlerWrapper.UserContext = handlerManager.UserContext
 	http.HandleFunc("/create_ticket", ticketCreateHandlerWrapper.ServeHTTP)
+
+	ticketEditPageHandler := tickets.TicketEditPageHandler{UserContext: handlerManager.UserContext, TicketContext: handlerManager.TicketContext, Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
+	ticketEditPageHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
+	ticketEditPageHandlerWrapper.Next = ticketEditPageHandler
+	ticketEditPageHandlerWrapper.Logger = handlerManager.Logger
+	ticketEditPageHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/ticket/ticket_edit/", ticketEditPageHandlerWrapper.ServeHTTP)
 }
