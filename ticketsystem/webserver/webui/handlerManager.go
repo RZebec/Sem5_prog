@@ -95,6 +95,14 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	ticketViewPageHandlerWrapper.UserContext = handlerManager.UserContext
 	http.HandleFunc("/ticket/", ticketViewPageHandlerWrapper.ServeHTTP)
 
+	ticketAppendMessageHandler := tickets.TicketAppendMessageHandler{TicketContext: handlerManager.TicketContext,
+		UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
+	ticketAppendHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
+	ticketAppendHandlerWrapper.UserContext = handlerManager.UserContext
+	ticketAppendHandlerWrapper.Logger = handlerManager.Logger
+	ticketAppendHandlerWrapper.Next = ticketAppendMessageHandler
+	http.HandleFunc("/append_message", ticketAppendHandlerWrapper.ServeHTTP)
+
 	userSettingsPageHandler := userSettings.UserSettingsPageHandler{TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
 	userSettingsPageHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
 	userSettingsPageHandlerWrapper.Next = userSettingsPageHandler
