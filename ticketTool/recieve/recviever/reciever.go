@@ -38,6 +38,9 @@ func (r *Reciever) Run() error {
 		}
 	} else {
 		r.io.Print(strconv.Itoa(len(recieveMails)) + " Mails are coming from Server")
+		for _, receivedMail := range recieveMails{
+			r.io.Print("Receiver: " + receivedMail.Receiver + " Subject: " + receivedMail.Subject)
+		}
 		acknowledges := r.confirmator.GetAllAcknowledges(recieveMails) //create Acknowledges from Mails
 		err := r.storage.AppendAcknowledgements(acknowledges)          //store these Acknowledges
 		if err != nil {
