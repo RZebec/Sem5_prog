@@ -135,7 +135,7 @@ func (t TicketAppendMessageHandler) handlerForNonAuthenticatedUser(w http.Respon
 
 	tickedExists, existingTicket := t.TicketContext.GetTicketById(ticketId)
 	if !tickedExists {
-		t.Logger.LogError("TicketAppendMessageHandler", errors.New("invalid ticketData id. ticketData does not exist."))
+		t.Logger.LogError("TicketAppendMessageHandler", errors.New("invalid ticketData id. ticketData does not exist"))
 		http.Redirect(w, r, "/", http.StatusBadRequest)
 		return
 	}

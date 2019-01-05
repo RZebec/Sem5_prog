@@ -59,7 +59,7 @@ func (t TicketEditPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		ticketExist, editableTicket := t.TicketContext.GetTicketById(ticketId)
 
 		if !ticketExist {
-			t.Logger.LogError("TicketEditPageHandler", errors.New("Ticket doesn´t exist."))
+			t.Logger.LogError("TicketEditPageHandler", errors.New("ticket doesn´t exist"))
 			http.Redirect(w, r, "/", http.StatusNotFound)
 			return
 		}

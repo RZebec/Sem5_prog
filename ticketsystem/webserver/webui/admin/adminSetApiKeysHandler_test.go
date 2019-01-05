@@ -117,7 +117,7 @@ func TestAdminSetApiKeysHandler_ServeHTTP_ChangeOutgoing_ContextReturnError_500R
 
 	mockedApiContext := new(mockedForTests.MockedApiConfiguration)
 	mockedApiContext.On("ChangeIncomingMailApiKey", mock.Anything).Return(nil)
-	mockedApiContext.On("ChangeOutgoingMailApiKey", mock.Anything).Return(errors.New("Testerror"))
+	mockedApiContext.On("ChangeOutgoingMailApiKey", mock.Anything).Return(errors.New("TestError"))
 
 	testee := SetApiKeysHandler{ApiConfiguration: mockedApiContext, Logger: testLogger}
 
