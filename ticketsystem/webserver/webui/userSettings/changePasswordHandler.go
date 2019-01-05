@@ -36,13 +36,13 @@ func (c ChangePasswordHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 		if err != nil {
 			c.Logger.LogError("ChangePasswordHandler", err)
-			http.Redirect(w, r, "/user_settings?IsChangeFailed=true", 302)
+			http.Redirect(w, r, "/user_settings?IsChangeFailed=yes", 302)
 		}
 
 		if isChanged {
-			http.Redirect(w, r, "/user_settings", 302)
+			http.Redirect(w, r, "/user_settings?IsChangeFailed=no", 302)
 		} else {
-			http.Redirect(w, r, "/user_settings?IsChangeFailed=true", 302)
+			http.Redirect(w, r, "/user_settings?IsChangeFailed=yes", 302)
 		}
 	}
 }

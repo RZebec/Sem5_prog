@@ -9,6 +9,7 @@ var TicketExplorerPage = `
 
 	{{ define "StylesAndScripts" }}
 		<link rel="stylesheet" href="/files/style/table">
+		<script src="/files/script/tableSort"></script>
 	{{ end }}
 	
 	{{ define "Content" }}
