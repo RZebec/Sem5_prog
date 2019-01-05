@@ -205,13 +205,13 @@ func (t *MailManager) readExistingMailData() error {
 					}
 				}
 				if !ignoreFile {
-					mail, err := t.readMailFromFile(path.Join(t.mailFolderPath, fileInfo.Name()))
+					mailFromFile, err := t.readMailFromFile(path.Join(t.mailFolderPath, fileInfo.Name()))
 					if err != nil {
 						t.logger.LogInfo("MailManager", "Could not decode data from mail file. Going to ignore it. See error below:")
 						t.logger.LogError("MailManager", err)
 						continue
 					}
-					t.unSentMails = append(t.unSentMails, *mail)
+					t.unSentMails = append(t.unSentMails, *mailFromFile)
 				} else {
 					t.logger.LogInfo("MailManager", "Not loading mail file "+fileInfo.Name()+" since it is waiting for acknowledgement")
 				}

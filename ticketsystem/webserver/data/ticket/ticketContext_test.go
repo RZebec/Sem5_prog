@@ -71,9 +71,9 @@ func ExampleTicketManager_CreateNewTicketForInternalUser() {
 	testee := TicketManager{}
 	testee.Initialize(folderPath)
 
-	user := user.User{Mail: "test1234@web.de", FirstName: "Alex", LastName: "Wagner"}
-	initialMessage := MessageEntry{Id: 1, CreatorMail: user.Mail, Content: "This is a test", OnlyInternal: false}
-	newTicket, err := testee.CreateNewTicketForInternalUser("Example_TestTitle", user, initialMessage)
+	createdUser := user.User{Mail: "test1234@web.de", FirstName: "Alex", LastName: "Wagner"}
+	initialMessage := MessageEntry{Id: 1, CreatorMail: createdUser.Mail, Content: "This is a test", OnlyInternal: false}
+	newTicket, err := testee.CreateNewTicketForInternalUser("Example_TestTitle", createdUser, initialMessage)
 
 	fmt.Println(err)
 	fmt.Println(newTicket.Info().Title)
@@ -594,9 +594,9 @@ func TestTicketManager_CreateNewTicketsForInternalUser_ConcurrentAccess_AllCreat
 		go func(number int) {
 			defer waitGroup.Done()
 			id := strconv.Itoa(number)
-			user := user.User{Mail: id + "@web.de", UserId: number, FirstName: "firstName" + id, LastName: "lastName" + id}
-			initialMessage := MessageEntry{Id: 45, CreatorMail: user.Mail, Content: "This is a test" + id, OnlyInternal: false}
-			testee.CreateNewTicketForInternalUser("newTestTitle"+id, user, initialMessage)
+			createdUser := user.User{Mail: id + "@web.de", UserId: number, FirstName: "firstName" + id, LastName: "lastName" + id}
+			initialMessage := MessageEntry{Id: 45, CreatorMail: createdUser.Mail, Content: "This is a test" + id, OnlyInternal: false}
+			testee.CreateNewTicketForInternalUser("newTestTitle"+id, createdUser, initialMessage)
 
 		}(i)
 	}
@@ -707,9 +707,9 @@ func TestTicketManager_CreateNewTicketForInternalUser_TicketCreated(t *testing.T
 	testee := TicketManager{}
 	testee.Initialize(folderPath)
 
-	user := user.User{Mail: "test1234@web.de", FirstName: "Alex", LastName: "Wagner"}
-	initialMessage := MessageEntry{Id: 1, CreatorMail: user.Mail, Content: "This is a test", OnlyInternal: false}
-	newTicket, err := testee.CreateNewTicketForInternalUser("newTestTitle", user, initialMessage)
+	createdUser := user.User{Mail: "test1234@web.de", FirstName: "Alex", LastName: "Wagner"}
+	initialMessage := MessageEntry{Id: 1, CreatorMail: createdUser.Mail, Content: "This is a test", OnlyInternal: false}
+	newTicket, err := testee.CreateNewTicketForInternalUser("newTestTitle", createdUser, initialMessage)
 
 	exists, createdTicket := testee.GetTicketById(newTicket.info.Id)
 	assert.True(t, exists, "the ticket should be created")

@@ -67,7 +67,7 @@ func (t TicketCreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if !isUserLoggedIn && !exist {
 			initialMessage := ticket.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
 
-			ticket, err := t.TicketContext.CreateNewTicket(title, ticket.Creator{Mail: mail, FirstName: firstName, LastName: lastName}, initialMessage)
+			createdTicket, err := t.TicketContext.CreateNewTicket(title, ticket.Creator{Mail: mail, FirstName: firstName, LastName: lastName}, initialMessage)
 
 			if err != nil {
 				t.Logger.LogError("TicketCreateHandler", err)
@@ -75,13 +75,13 @@ func (t TicketCreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			ticketId := strconv.Itoa(ticket.Info().Id)
+			ticketId := strconv.Itoa(createdTicket.Info().Id)
 
 			http.Redirect(w, r, "/ticket/" + ticketId, 302)
 			return
 		}
 
-		exist, user := t.UserContext.GetUserById(userId)
+		exist, existingUser := t.UserContext.GetUserById(userId)
 
 		if !exist {
 			t.Logger.LogError("TicketCreateHandler", errors.New("User doesn´t exist."))
@@ -91,7 +91,7 @@ func (t TicketCreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		initialMessage := ticket.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: internalOnly}
 
-		ticket, err := t.TicketContext.CreateNewTicketForInternalUser(title, user, initialMessage)
+		createdTicket, err := t.TicketContext.CreateNewTicketForInternalUser(title, existingUser, initialMessage)
 
 		if err != nil {
 			t.Logger.LogError("TicketCreateHandler", err)
@@ -99,7 +99,7 @@ func (t TicketCreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		ticketId := strconv.Itoa(ticket.Info().Id)
+		ticketId := strconv.Itoa(createdTicket.Info().Id)
 
 		http.Redirect(w, r, "/ticket/" + ticketId, 302)
 	}

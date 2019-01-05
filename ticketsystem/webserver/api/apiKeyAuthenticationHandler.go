@@ -35,7 +35,6 @@ func (h *ApiKeyAuthenticationHandler) ServeHTTP(w http.ResponseWriter, req *http
 				h.Logger.LogInfo("ApiKeyAuthenticationHandler", "Wrong Api Key -> 401")
 				return
 			}
-			break
 		}
 	}
 	w.WriteHeader(401)

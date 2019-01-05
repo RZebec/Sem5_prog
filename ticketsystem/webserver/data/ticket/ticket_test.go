@@ -22,11 +22,11 @@ func TestTicket_Copy(t *testing.T) {
 
 	origTicket := Ticket{info: origTicketInfo, messages: origMessages}
 
-	copy := origTicket.Copy()
+	copied := origTicket.Copy()
 
 	// Change the copy
-	copy.info.Title = "changed"
-	copy.messages[0].Content = "changed"
+	copied.info.Title = "changed"
+	copied.messages[0].Content = "changed"
 
 	// Ensure that the original ticket has not been changed:
 	assert.Equal(t, "OrigTitle", origTicket.Info().Title, "The original info should not be changed")

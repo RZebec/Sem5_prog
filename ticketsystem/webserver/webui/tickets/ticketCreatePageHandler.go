@@ -50,14 +50,14 @@ func (t TicketCreatePageHandler) ServeHTTP(w http.ResponseWriter, r *http.Reques
 		if isUserLoggedIn {
 			userId := wrappers.GetUserId(r.Context())
 
-			userExist, user := t.UserContext.GetUserById(userId)
+			userExist, existingUser := t.UserContext.GetUserById(userId)
 
 			if userExist {
 				data = ticketCreatePageData{
-					UserName: user.Mail,
+					UserName: existingUser.Mail,
 					IsUserLoggedIn:	isUserLoggedIn,
-					FirstName: user.FirstName,
-					LastName: user.LastName,
+					FirstName: existingUser.FirstName,
+					LastName: existingUser.LastName,
 				}
 			} else {
 				t.Logger.LogError("TicketCreatePageHandler", errors.New("User ID couldn´t be referenced back to a user!"))
