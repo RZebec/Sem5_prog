@@ -80,8 +80,8 @@ func (t TicketViewPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 		data := ticketViewPageData{
 			TicketInfo: ticketInfo,
-			Messages:	messages,
-			UserName:	mail,
+			Messages:   messages,
+			UserName:   mail,
 		}
 
 		data.UserIsAdmin = wrappers.IsAdmin(r.Context())

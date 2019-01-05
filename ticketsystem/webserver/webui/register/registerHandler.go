@@ -11,8 +11,8 @@ import (
 	Structure for the User Register handler.
 */
 type UserRegisterHandler struct {
-	UserContext     userData.UserContext
-	Logger          logging.Logger
+	UserContext userData.UserContext
+	Logger      logging.Logger
 }
 
 /*
@@ -41,10 +41,10 @@ func (l UserRegisterHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		if success {
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
-			l.Logger.LogInfo("UserRegisterHandler","User registered" )
+			l.Logger.LogInfo("UserRegisterHandler", "User registered")
 		} else {
 			http.Redirect(w, r, "/register?IsRegisteringFailed=true", http.StatusSeeOther)
-			l.Logger.LogInfo("UserRegisterHandler","User registration failed" )
+			l.Logger.LogInfo("UserRegisterHandler", "User registration failed")
 		}
 	}
 }

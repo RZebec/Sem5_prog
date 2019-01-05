@@ -44,7 +44,7 @@ type TicketManager struct {
 
 /*
 	Get the ticket for a given creator mail.
- */
+*/
 func (t *TicketManager) GetTicketsForCreatorMail(mail string) []TicketInfo {
 	t.cachedTicketsMutex.RLock()
 	defer t.cachedTicketsMutex.RUnlock()
@@ -60,7 +60,7 @@ func (t *TicketManager) GetTicketsForCreatorMail(mail string) []TicketInfo {
 
 /*
 	Get the ticket for a given editor.
- */
+*/
 func (t *TicketManager) GetTicketsForEditorId(userId int) []TicketInfo {
 	t.cachedTicketsMutex.RLock()
 	defer t.cachedTicketsMutex.RUnlock()
@@ -391,7 +391,7 @@ func (t *TicketManager) readExistingTickets() error {
 */
 func remove(s []int, i int) []int {
 	var newArray []int
-	for _, value := range s{
+	for _, value := range s {
 		if value != i {
 			newArray = append(newArray, value)
 		}

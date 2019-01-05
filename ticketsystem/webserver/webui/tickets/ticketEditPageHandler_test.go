@@ -30,7 +30,7 @@ func TestTicketEditPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	testEditor := userData.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
 
 	testCreator := ticketData.Creator{Mail: "Test@Test.de", FirstName: "Max", LastName: "Muller"}
-	testTicketInfo := ticketData.TicketInfo{Id: 5, Title: "TicketTest", Editor: testEditor, HasEditor: true, Creator: testCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State:  ticketData.Processing}
+	testTicketInfo := ticketData.TicketInfo{Id: 5, Title: "TicketTest", Editor: testEditor, HasEditor: true, Creator: testCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
 	testMessages := []ticketData.MessageEntry{{Id: 0, CreatorMail: "test@test.de", Content: "TestContent2", OnlyInternal: false}}
 
 	testTicket := ticketData.CreateTestTicket(testTicketInfo, testMessages)
@@ -58,18 +58,18 @@ func TestTicketEditPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	states := []ticketData.TicketState{ticketData.Open, ticketData.Closed}
 
 	data := ticketEditPageData{
-		TicketInfo: 	testTicketInfo,
-		OtherTickets:	filteredTickets,
-		Users:			allTestUsers,
-		OtherState1:	states[0],
-		OtherState2:	states[1],
+		TicketInfo:                 testTicketInfo,
+		OtherTickets:               filteredTickets,
+		Users:                      allTestUsers,
+		OtherState1:                states[0],
+		OtherState2:                states[1],
 		ShowTicketSpecificControls: true,
 	}
 
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	data.UserIsAdmin = false
 	data.UserIsAuthenticated = true
@@ -78,10 +78,9 @@ func TestTicketEditPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	mockedTicketContext.On("GetTicketById", 5).Return(true, testTicket)
 	mockedTicketContext.On("GetAllTicketInfo").Return(allTestTickets)
 
-	mockedUserContext.On( "GetAllActiveUsers").Return(allTestUsers)
+	mockedUserContext.On("GetAllActiveUsers").Return(allTestUsers)
 
 	mockedTemplateManager.On("RenderTemplate", mock.Anything, "TicketEditPage", data).Return(nil)
-
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -115,7 +114,7 @@ func TestTicketEditPageHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -147,7 +146,7 @@ func TestTicketEditPageHandler_ServeHTTP_ConversionError(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -181,7 +180,7 @@ func TestTicketEditPageHandler_ServeHTTP_TicketDoesNotExist(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -208,7 +207,7 @@ func TestTicketEditPageHandler_ServeHTTP_RenderTemplateError(t *testing.T) {
 	testEditor := userData.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
 
 	testCreator := ticketData.Creator{Mail: "Test@Test.de", FirstName: "Max", LastName: "Muller"}
-	testTicketInfo := ticketData.TicketInfo{Id: 5, Title: "TicketTest", Editor: testEditor, HasEditor: true, Creator: testCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State:  ticketData.Processing}
+	testTicketInfo := ticketData.TicketInfo{Id: 5, Title: "TicketTest", Editor: testEditor, HasEditor: true, Creator: testCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
 	testMessages := []ticketData.MessageEntry{{Id: 0, CreatorMail: "test@test.de", Content: "TestContent2", OnlyInternal: false}}
 
 	testTicket := ticketData.CreateTestTicket(testTicketInfo, testMessages)
@@ -236,18 +235,18 @@ func TestTicketEditPageHandler_ServeHTTP_RenderTemplateError(t *testing.T) {
 	states := []ticketData.TicketState{ticketData.Open, ticketData.Closed}
 
 	data := ticketEditPageData{
-		TicketInfo: 	testTicketInfo,
-		OtherTickets:	filteredTickets,
-		Users:			allTestUsers,
-		OtherState1:	states[0],
-		OtherState2:	states[1],
+		TicketInfo:                 testTicketInfo,
+		OtherTickets:               filteredTickets,
+		Users:                      allTestUsers,
+		OtherState1:                states[0],
+		OtherState2:                states[1],
 		ShowTicketSpecificControls: true,
 	}
 
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	data.UserIsAdmin = false
 	data.UserIsAuthenticated = true
@@ -256,10 +255,9 @@ func TestTicketEditPageHandler_ServeHTTP_RenderTemplateError(t *testing.T) {
 	mockedTicketContext.On("GetTicketById", 5).Return(true, testTicket)
 	mockedTicketContext.On("GetAllTicketInfo").Return(allTestTickets)
 
-	mockedUserContext.On( "GetAllActiveUsers").Return(allTestUsers)
+	mockedUserContext.On("GetAllActiveUsers").Return(allTestUsers)
 
 	mockedTemplateManager.On("RenderTemplate", mock.Anything, "TicketEditPage", data).Return(errors.New("TestError"))
-
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 

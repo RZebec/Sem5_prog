@@ -145,7 +145,7 @@ func TestAdminPageHandler_ServeHTTP_FailedChange(t *testing.T) {
 		Users:              lockedUsers,
 		IncomingMailApiKey: "1234",
 		OutgoingMailApiKey: "4321",
-		IsChangeFailed:		"yes",
+		IsChangeFailed:     "yes",
 	}
 	data.UserIsAdmin = true
 	data.UserIsAuthenticated = true
@@ -170,7 +170,7 @@ func TestAdminPageHandler_ServeHTTP_FailedChange(t *testing.T) {
 	testee := PageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager, ApiContext: mockedApiContext}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, true, 1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, true, 1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
 

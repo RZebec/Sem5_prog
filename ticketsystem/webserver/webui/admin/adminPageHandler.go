@@ -28,7 +28,7 @@ type adminPageData struct {
 	Users              []userData.User
 	IncomingMailApiKey string
 	OutgoingMailApiKey string
-	IsChangeFailed string
+	IsChangeFailed     string
 	pages.BasePageData
 }
 
@@ -61,7 +61,7 @@ func (a PageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			Users:              users,
 			IncomingMailApiKey: incomingMailApiKey,
 			OutgoingMailApiKey: outgoingMailApiKey,
-			IsChangeFailed:		isChangeFailed,
+			IsChangeFailed:     isChangeFailed,
 		}
 		data.UserIsAdmin = wrappers.IsAdmin(r.Context())
 		data.UserIsAuthenticated = wrappers.IsAuthenticated(r.Context())

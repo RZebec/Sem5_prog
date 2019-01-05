@@ -39,7 +39,7 @@ func TestUserRegisterHandler_ServeHTTP_ValidRequest_RedirectedToLoginPage(t *tes
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	assert.Equal(t, 303, rr.Code, "Status code 303 should be returned")
@@ -73,7 +73,7 @@ func TestUserRegisterHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	assert.Equal(t, http.StatusMethodNotAllowed, rr.Code, "Status code 405 should be returned")
@@ -107,7 +107,7 @@ func TestUserRegisterHandler_ServeHTTP_UnsuccessfulRegistering_RedirectedToSameP
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	rr.Result()
@@ -144,7 +144,7 @@ func TestUserRegisterHandler_ServeHTTP_ContextReturnError_RedirectedToSamePageWi
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	rr.Result()

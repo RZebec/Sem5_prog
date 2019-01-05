@@ -53,7 +53,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_ValidRequest(t *
 	req.Form.Add("messageContent", testMessageContent)
 	req.Form.Add("onlyInternal", strconv.FormatBool(onlyInternal))
 	// Add authentication info:
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, userId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, userId, "")
 
 	// Execute the test and assert the result
 	handler.ServeHTTP(rr, req.WithContext(ctx))
@@ -111,7 +111,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_ContextReturnsEr
 	req.Form.Add("messageContent", testMessageContent)
 	req.Form.Add("onlyInternal", strconv.FormatBool(onlyInternal))
 	// Add authentication info:
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, userId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, userId, "")
 
 	// Execute the test and assert the result
 	handler.ServeHTTP(rr, req.WithContext(ctx))
@@ -155,7 +155,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_TicketDoesNotExi
 	req.Form.Add("messageContent", testMessageContent)
 	req.Form.Add("onlyInternal", strconv.FormatBool(onlyInternal))
 	// Add authentication info:
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, userId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, userId, "")
 
 	// Execute the test and assert the result
 	handler.ServeHTTP(rr, req.WithContext(ctx))
@@ -197,7 +197,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_InvalidTicketId_
 	req.Form.Add("messageContent", testMessageContent)
 	req.Form.Add("onlyInternal", strconv.FormatBool(onlyInternal))
 	// Add authentication info:
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, userId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, userId, "")
 
 	// Execute the test and assert the result
 	handler.ServeHTTP(rr, req.WithContext(ctx))
@@ -245,7 +245,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_UserDoesNotExist
 	req.Form.Add("messageContent", testMessageContent)
 	req.Form.Add("onlyInternal", strconv.FormatBool(onlyInternal))
 	// Add authentication info:
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, userId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, userId, "")
 
 	// Execute the test and assert the result
 	handler.ServeHTTP(rr, req.WithContext(ctx))
@@ -292,7 +292,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_EmptyContent_Inv
 	req.Form.Add("messageContent", "")
 	req.Form.Add("onlyInternal", strconv.FormatBool(onlyInternal))
 	// Add authentication info:
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, userId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, userId, "")
 
 	// Execute the test and assert the result
 	handler.ServeHTTP(rr, req.WithContext(ctx))
@@ -338,7 +338,7 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_InvalidOnlyInter
 	req.Form.Add("messageContent", "TestContent")
 	req.Form.Add("onlyInternal", "test")
 	// Add authentication info:
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, userId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, userId, "")
 
 	// Execute the test and assert the result
 	handler.ServeHTTP(rr, req.WithContext(ctx))

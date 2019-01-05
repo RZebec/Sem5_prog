@@ -47,7 +47,7 @@ func (a UnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		exist, existingUser := a.UserContext.GetUserById(userId)
 
-		if unlocked && exist{
+		if unlocked && exist {
 			mailSubject := mailData.BuildUnlockUserNotificationMailSubject()
 			mailContent := mailData.BuildUnlockUserNotificationMailContent(existingUser.FirstName + " " + existingUser.LastName)
 
@@ -59,7 +59,7 @@ func (a UnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			a.Logger.LogInfo("UnlockUserHandler","User unlocked. UserId: " + formId)
+			a.Logger.LogInfo("UnlockUserHandler", "User unlocked. UserId: "+formId)
 			http.Redirect(w, r, "/admin", http.StatusFound)
 			return
 		}

@@ -36,7 +36,7 @@ func TestPageHandler_ServeHTTP_UserNotLoggedIn(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -67,7 +67,7 @@ func TestPageHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	assert.Equal(t, 405, rr.Code, "Status code 405 should be returned")
@@ -99,7 +99,7 @@ func TestPageHandler_ServeHTTP_ContextError(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -127,7 +127,7 @@ func TestPageHandler_ServeHTTP_UserAlreadyLoggedIn(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()

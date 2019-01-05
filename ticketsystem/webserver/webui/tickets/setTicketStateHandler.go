@@ -99,6 +99,6 @@ func (t SetTicketStateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 			}
 		}
 		http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusFound)
-		t.Logger.LogInfo("SetTicketStateHandler","State for ticket " + rawTicketId + " set to " + newState.String())
+		t.Logger.LogInfo("SetTicketStateHandler", "State for ticket "+rawTicketId+" set to "+newState.String())
 	}
 }

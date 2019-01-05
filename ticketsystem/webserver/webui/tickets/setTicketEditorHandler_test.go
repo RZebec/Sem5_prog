@@ -49,7 +49,7 @@ func TestTicketSetEditorHandler_ServeHTTP_SetEditor_ValidRequest(t *testing.T) {
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("editorUserId", strconv.Itoa(editorUserId))
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -102,7 +102,7 @@ func TestTicketSetEditorHandler_ServeHTTP_RemoveEditor_ValidRequest(t *testing.T
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("editorUserId", strconv.Itoa(editorUserId))
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -143,7 +143,7 @@ func TestTicketSetEditorHandler_ServeHTTP_UnknownEditorId_InvalidRequest(t *test
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("editorUserId", strconv.Itoa(editorUserId))
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -185,7 +185,7 @@ func TestTicketSetEditorHandler_ServeHTTP_UnknownLoggedInUser_invalidRequest(t *
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("editorUserId", strconv.Itoa(editorUserId))
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -228,7 +228,7 @@ func TestTicketSetEditorHandler_ServeHTTP_SetEditorFails_Returns500(t *testing.T
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("editorUserId", strconv.Itoa(editorUserId))
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -276,7 +276,7 @@ func TestTicketSetEditorHandler_ServeHTTP_AppendMessageFailed_500Returned(t *tes
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("editorUserId", strconv.Itoa(editorUserId))
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -327,7 +327,7 @@ func TestTicketSetEditorHandler_ServeHTTP_TicketStateChangedFailed_Returns500(t 
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("editorUserId", strconv.Itoa(editorUserId))
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -381,7 +381,7 @@ func TestTicketSetEditorHandler_ServeHTTP_TicketStateChangedHistoryWriteFailed_R
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("editorUserId", strconv.Itoa(editorUserId))
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -433,7 +433,7 @@ func TestTicketSetEditorHandler_ServeHTTP_NotificationFailed_Returns500(t *testi
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("editorUserId", strconv.Itoa(editorUserId))
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -479,7 +479,7 @@ func TestTicketSetEditorHandler_ServeHTTP_RemoveEditorFails_Returns500(t *testin
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("editorUserId", strconv.Itoa(editorUserId))
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -524,7 +524,7 @@ func TestTicketSetEditorHandler_ServeHTTP_RemoveEditorFails_InvalidRequest(t *te
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("editorUserId", strconv.Itoa(editorUserId))
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -572,7 +572,7 @@ func TestTicketSetEditorHandler_ServeHTTP_RemoveEditorFails_500Returned(t *testi
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("editorUserId", strconv.Itoa(editorUserId))
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -623,7 +623,7 @@ func TestTicketSetEditorHandler_ServeHTTP_StateChangeFails_500Returned(t *testin
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("editorUserId", strconv.Itoa(editorUserId))
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -677,7 +677,7 @@ func TestTicketSetEditorHandler_ServeHTTP_StateChangeHistoryFails_500Returned(t 
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("editorUserId", strconv.Itoa(editorUserId))
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -729,7 +729,7 @@ func TestTicketSetEditorHandler_ServeHTTP_NotificationFailed_500Returned(t *test
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("editorUserId", strconv.Itoa(editorUserId))
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -762,7 +762,7 @@ func TestTicketSetEditorHandler_ServeHTTP_InvalidTicketId_InvalidRequest(t *test
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", "asd")
 	req.Form.Add("editorUserId", strconv.Itoa(editorUserId))
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -801,7 +801,7 @@ func TestTicketSetEditorHandler_ServeHTTP_InvalidUserId_InvalidRequest(t *testin
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("editorUserId", "sfda")
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -841,7 +841,7 @@ func TestTicketSetEditorHandler_ServeHTTP_NonExistingTicket_InvalidRequest(t *te
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("editorUserId", "sfda")
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)

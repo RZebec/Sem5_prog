@@ -140,7 +140,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 
 	ticketMergeHandler := tickets.TicketMergeHandler{TicketContext: handlerManager.TicketContext, UserContext: handlerManager.UserContext,
 		MailContext: handlerManager.MailContext, Logger: handlerManager.Logger}
-	ticketMergeEnforceAuthenticationWrapper:= wrappers.EnforceAuthenticationWrapper{}
+	ticketMergeEnforceAuthenticationWrapper := wrappers.EnforceAuthenticationWrapper{}
 	ticketMergeEnforceAuthenticationWrapper.Next = ticketMergeHandler
 	ticketMergeEnforceAuthenticationWrapper.Logger = handlerManager.Logger
 	ticketMergeEnforceAuthenticationWrapper.UserContext = handlerManager.UserContext

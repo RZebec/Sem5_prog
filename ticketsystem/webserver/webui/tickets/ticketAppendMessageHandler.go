@@ -116,8 +116,8 @@ func (t TicketAppendMessageHandler) handlerForAuthenticatedUser(w http.ResponseW
 	}
 
 	http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusFound)
-	t.Logger.LogInfo("TicketAppendMessageHandler","User " + strconv.Itoa(authenticatedUser.UserId) +
-		" appended a message to ticket " + rawTicketId)
+	t.Logger.LogInfo("TicketAppendMessageHandler", "User "+strconv.Itoa(authenticatedUser.UserId)+
+		" appended a message to ticket "+rawTicketId)
 }
 
 /*
@@ -196,5 +196,5 @@ func (t TicketAppendMessageHandler) handlerForNonAuthenticatedUser(w http.Respon
 	}
 
 	http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusFound)
-	t.Logger.LogInfo("TicketAppendMessageHandler", rawMail + " appended a message to ticket " + rawTicketId)
+	t.Logger.LogInfo("TicketAppendMessageHandler", rawMail+" appended a message to ticket "+rawTicketId)
 }

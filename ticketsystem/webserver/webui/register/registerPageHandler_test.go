@@ -33,7 +33,7 @@ func TestPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
@@ -60,7 +60,7 @@ func TestPageHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	assert.Equal(t, 405, rr.Code, "Status code 405 should be returned")
@@ -89,7 +89,7 @@ func TestPageHandler_ServeHTTP_ContextError(t *testing.T) {
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	assert.Equal(t, 500, rr.Code, "Status code 500 should be returned")
@@ -126,7 +126,7 @@ func TestPageHandler_ServeHTTP_RegisteringFailed(t *testing.T) {
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
@@ -156,7 +156,7 @@ func TestPageHandler_ServeHTTP_UserAlreadyLoggedIn_Redirect(t *testing.T) {
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	assert.Equal(t, http.StatusSeeOther, rr.Code, "Status code 303 should be returned")

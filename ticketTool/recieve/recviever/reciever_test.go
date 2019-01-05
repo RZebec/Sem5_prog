@@ -55,7 +55,7 @@ func Test_AcknowledgeAll(t *testing.T) {
 	mockedIO.On("Print", strconv.Itoa(len(testMails))+" Mails are coming from Server").Once()
 	// Each mail should be printed
 	for _, testMail := range testMails {
-		mockedIO.On("Print","Receiver: " + testMail.Receiver + " Subject: " + testMail.Subject).Once()
+		mockedIO.On("Print", "Receiver: "+testMail.Receiver+" Subject: "+testMail.Subject).Once()
 	}
 	mockedConfirm.On("GetAllAcknowledges", testMails).Return(testAcknowledges)
 	mockedStorage.On("AppendAcknowledgements", testAcknowledges).Return(nil)
@@ -93,7 +93,7 @@ func Test_AcknowledgeSpecify(t *testing.T) {
 	mockedConfirm.On("GetAllAcknowledges", testMails).Return(testAcknowledges)
 	// Each mail should be printed
 	for _, testMail := range testMails {
-		mockedIO.On("Print","Receiver: " + testMail.Receiver + " Subject: " + testMail.Subject).Once()
+		mockedIO.On("Print", "Receiver: "+testMail.Receiver+" Subject: "+testMail.Subject).Once()
 	}
 	mockedStorage.On("AppendAcknowledgements", testAcknowledges).Return(nil)
 	mockedIO.On("Print", "Save Acknowledges...")
@@ -130,7 +130,7 @@ func Test_AcknowledgeStop(t *testing.T) {
 	mockedIO.On("Print", strconv.Itoa(len(getTestMails()))+" Mails are coming from Server")
 	// Each mail should be printed
 	for _, testMail := range getTestMails() {
-		mockedIO.On("Print","Receiver: " + testMail.Receiver + " Subject: " + testMail.Subject).Once()
+		mockedIO.On("Print", "Receiver: "+testMail.Receiver+" Subject: "+testMail.Subject).Once()
 	}
 	mockedConfirm.On("GetAllAcknowledges", getTestMails()).Return(getTestAcknowledges())
 	mockedStorage.On("AppendAcknowledgements", getTestAcknowledges()).Return(nil)

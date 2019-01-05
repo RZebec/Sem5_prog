@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func getTestMails() []mailData.Mail{
+func getTestMails() []mailData.Mail {
 	var testMails []mailData.Mail
 	testMails = append(testMails, mailData.Mail{Id: "testId1", Sender: "test@test.de", Receiver: "testReceiver1@test.de",
 		Subject: "testSubject1", Content: "testContent1"})
@@ -57,8 +57,6 @@ func TestSender_SendRandomMails(t *testing.T) {
 	mockedMailGenerator.On("RandomMail", 5, 10, 50).Return(testMails)
 
 	mockedApiClient.On("SendMails", testMails).Return(nil)
-
-
 
 	testee := CreateSender(config, mockedIO, mockedApiClient, mockedMailGenerator)
 	testee.Run()

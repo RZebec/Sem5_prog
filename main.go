@@ -39,7 +39,6 @@ func main() {
 	mailContext := mailData.MailManager{}
 	err = mailContext.Initialize(configuration.MailDataFolderPath, configuration.SendingMailAddress, logger)
 
-
 	userContext := userData.LoginSystem{}
 	err = userContext.Initialize(configuration.LoginDataFolderPath)
 	if err != nil {
@@ -48,7 +47,6 @@ func main() {
 
 	ticketContext := ticketData.TicketManager{}
 	ticketContext.Initialize(configuration.TicketDataFolderPath)
-
 
 	http.HandleFunc(shared.SendPath, getIncomingMailHandlerChain(*apiConfig, &mailContext, &ticketContext, &userContext, logger).ServeHTTP)
 	http.HandleFunc(shared.AcknowledgmentPath, getAcknowledgeMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
@@ -68,7 +66,7 @@ func main() {
 		Logger:           logger,
 		ApiConfiguration: apiConfig,
 		TemplateManager:  &templateMan,
-		MailContext:	  &mailContext,
+		MailContext:      &mailContext,
 	}
 
 	templateMan.LoadTemplates(logger)

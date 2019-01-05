@@ -467,7 +467,7 @@ func TestTicketManager_GetAllOpenTickets_NoTickets_EmptyArrayReturned(t *testing
 
 /*
 	Where there are tickets which where created by the given mail, they should be returned.
- */
+*/
 func TestTicketManager_GetTicketsForCreatorMail_TicketExists_TicketInfoReturned(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
 	defer os.RemoveAll(rootPath)
@@ -485,7 +485,7 @@ func TestTicketManager_GetTicketsForCreatorMail_TicketExists_TicketInfoReturned(
 
 /*
 	Where there are no tickets which where created by the given mail, an empty array should be returned.
- */
+*/
 func TestTicketManager_GetTicketsForCreatorMail_NoTicketExists_EmptyTicketInfoReturned(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
 	defer os.RemoveAll(rootPath)
@@ -503,7 +503,7 @@ func TestTicketManager_GetTicketsForCreatorMail_NoTicketExists_EmptyTicketInfoRe
 
 /*
 	If there are tickets with the given id as editor, they should be returned.
- */
+*/
 func TestTicketManager_GetTicketsForEditorId_TicketExists_TicketsReturned(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
 	defer os.RemoveAll(rootPath)
@@ -521,7 +521,7 @@ func TestTicketManager_GetTicketsForEditorId_TicketExists_TicketsReturned(t *tes
 
 /*
 	If there are no tickets with the given id as editor, a empty array should be returned.
- */
+*/
 func TestTicketManager_GetTicketsForEditorId_NoTicketExists_NoTicketsReturned(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
 	defer os.RemoveAll(rootPath)

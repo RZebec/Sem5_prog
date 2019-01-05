@@ -94,7 +94,7 @@ func TestAdminUnlockUserHandle_ServeHTTP_ValidRequest(t *testing.T) {
 	mockedUserContext.On("UnlockAccount", mock.Anything, mock.Anything).Return(true, nil)
 	mockedUserContext.On("GetUserById", 1234).Return(true, testUser)
 
-	mailSubject :=  mailData.BuildUnlockUserNotificationMailSubject()
+	mailSubject := mailData.BuildUnlockUserNotificationMailSubject()
 	mailContent := mailData.BuildUnlockUserNotificationMailContent(testUser.FirstName + " " + testUser.LastName)
 
 	mockedMailContext := new(mockedForTests.MockedMailContext)
@@ -168,7 +168,7 @@ func TestAdminUnlockUserHandle_ServeHTTP_UnlockAccount_OutgoingMailCreationError
 	mockedUserContext.On("UnlockAccount", mock.Anything, mock.Anything).Return(true, nil)
 	mockedUserContext.On("GetUserById", 1234).Return(true, testUser)
 
-	mailSubject :=  mailData.BuildUnlockUserNotificationMailSubject()
+	mailSubject := mailData.BuildUnlockUserNotificationMailSubject()
 	mailContent := mailData.BuildUnlockUserNotificationMailContent(testUser.FirstName + " " + testUser.LastName)
 
 	mockedMailContext := new(mockedForTests.MockedMailContext)

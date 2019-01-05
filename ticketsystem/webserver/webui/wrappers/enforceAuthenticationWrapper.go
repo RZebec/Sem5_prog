@@ -24,7 +24,7 @@ type EnforceAuthenticationWrapper struct {
 */
 func (h EnforceAuthenticationWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	userIsLoggedIn, isAdmin, token, userId:= UserIsLoggedInCheck(r, h.UserContext, shared.AccessTokenCookieName, h.Logger)
+	userIsLoggedIn, isAdmin, token, userId := UserIsLoggedInCheck(r, h.UserContext, shared.AccessTokenCookieName, h.Logger)
 
 	if userIsLoggedIn {
 		newToken, err := h.UserContext.RefreshToken(token)

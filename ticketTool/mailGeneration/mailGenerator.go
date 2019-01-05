@@ -19,7 +19,7 @@ var senders = []string{"test1@gmx.de", "Oberheld.asdf@web.de", "horstChristianAn
 
 /*
 	A interface for the mail generation.
- */
+*/
 type MailGeneration interface {
 	RandomMail(n int, subjectLength int, contentLength int) []mailData.Mail
 	ExplicitMail() []mailData.Mail
@@ -27,7 +27,7 @@ type MailGeneration interface {
 
 /*
 	A mail generator.
- */
+*/
 type MailGenerator struct {
 	io inputOutput.InputOutput
 }
@@ -58,7 +58,7 @@ func (m *MailGenerator) RandomMail(n int, subjectLength int, contentLength int) 
 
 /*
 	Get two random mail addresses.
- */
+*/
 func generateTwoMailAdresses_FromRandomPool() (string, string) {
 	for true {
 		adressOne := senders[rand.Intn(len(senders))]

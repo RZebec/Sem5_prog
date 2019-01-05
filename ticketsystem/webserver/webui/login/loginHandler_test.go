@@ -15,7 +15,7 @@ import (
 
 /*
 	A Valid Login Process should be possible.
- */
+*/
 func TestUserLoginHandler_ServeHTTP_LoginSuccessful(t *testing.T) {
 	userName := "TestUser"
 	password := "TestPassword"
@@ -39,7 +39,7 @@ func TestUserLoginHandler_ServeHTTP_LoginSuccessful(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, true, 1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, true, 1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -57,7 +57,7 @@ func TestUserLoginHandler_ServeHTTP_LoginSuccessful(t *testing.T) {
 
 /*
 	A failed login should return the same page with an error message.
- */
+*/
 func TestUserLoginHandler_ServeHTTP_LoginFailed(t *testing.T) {
 	userName := "TestUser"
 	password := "TestPassword"
@@ -80,7 +80,7 @@ func TestUserLoginHandler_ServeHTTP_LoginFailed(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, true, 1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, true, 1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()

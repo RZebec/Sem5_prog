@@ -28,7 +28,6 @@ type activeTicketsExplorerPageData struct {
 	pages.BasePageData
 }
 
-
 /*
 	The active Ticket Explorer Page handler.
 */

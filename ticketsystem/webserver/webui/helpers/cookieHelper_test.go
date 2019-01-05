@@ -8,7 +8,7 @@ import (
 
 /*
 	Checks if the Cookie is being set.
- */
+*/
 func TestSetCookie(t *testing.T) {
 	// Create a new HTTP Recorder (implements http.ResponseWriter)
 	recorder := httptest.NewRecorder()
@@ -37,7 +37,7 @@ func TestSetCookie(t *testing.T) {
 
 /*
 	Checks if the Cookie is being removed (Set to empty string).
- */
+*/
 func TestRemoveCookie(t *testing.T) {
 	// Create a new HTTP Recorder (implements http.ResponseWriter)
 	recorder := httptest.NewRecorder()

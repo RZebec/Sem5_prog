@@ -51,7 +51,7 @@ func TestTickerMergeHandler_ServeHTTP_TicketsMerged(t *testing.T) {
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 	// Execute the test:
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -80,7 +80,7 @@ func TestTickerMergeHandler_ServeHTTP_InvalidFirstTicketId_InvalidRequest(t *tes
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
 	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
-		TicketContext: mockedTicketContext, UserContext:mockedUserContext}
+		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
 
 	req, err := http.NewRequest("POST", "/test", nil)
 	assert.Nil(t, err)
@@ -92,7 +92,7 @@ func TestTickerMergeHandler_ServeHTTP_InvalidFirstTicketId_InvalidRequest(t *tes
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	// Execute the test:
 	handler.ServeHTTP(rr, req.WithContext(ctx))
@@ -116,7 +116,7 @@ func TestTickerMergeHandler_ServeHTTP_InvalidSecondTicketId_InvalidRequest(t *te
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
 	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
-		TicketContext: mockedTicketContext, UserContext:mockedUserContext}
+		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
 
 	req, err := http.NewRequest("POST", "/test", nil)
 	assert.Nil(t, err)
@@ -128,7 +128,7 @@ func TestTickerMergeHandler_ServeHTTP_InvalidSecondTicketId_InvalidRequest(t *te
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	// Execute the test:
 	handler.ServeHTTP(rr, req.WithContext(ctx))
@@ -157,7 +157,7 @@ func TestTickerMergeHandler_ServeHTTP_FirstTicketDoesNotExist_InvalidRequest(t *
 	mockedTicketContext.On("GetTicketById", firstTicketId).Return(false, &ticketData.Ticket{})
 
 	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
-		TicketContext: mockedTicketContext, UserContext:mockedUserContext}
+		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
 
 	req, err := http.NewRequest("POST", "/test", nil)
 	assert.Nil(t, err)
@@ -169,7 +169,7 @@ func TestTickerMergeHandler_ServeHTTP_FirstTicketDoesNotExist_InvalidRequest(t *
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	// Execute the test:
 	handler.ServeHTTP(rr, req.WithContext(ctx))
@@ -199,7 +199,7 @@ func TestTickerMergeHandler_ServeHTTP_SecondTicketDoesNotExist_InvalidRequest(t 
 	mockedTicketContext.On("GetTicketById", secondTicketId).Return(false, &ticketData.Ticket{})
 
 	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
-		TicketContext: mockedTicketContext, UserContext:mockedUserContext}
+		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
 
 	req, err := http.NewRequest("POST", "/test", nil)
 	assert.Nil(t, err)
@@ -211,7 +211,7 @@ func TestTickerMergeHandler_ServeHTTP_SecondTicketDoesNotExist_InvalidRequest(t 
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	// Execute the test:
 	handler.ServeHTTP(rr, req.WithContext(ctx))
@@ -243,7 +243,7 @@ func TestTickerMergeHandler_ServeHTTP_ContextReturnsError_Returns500(t *testing.
 		Return(false, errors.New("TestError"))
 
 	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
-		TicketContext: mockedTicketContext, UserContext:mockedUserContext}
+		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
 
 	req, err := http.NewRequest("POST", "/test", nil)
 	assert.Nil(t, err)
@@ -255,7 +255,7 @@ func TestTickerMergeHandler_ServeHTTP_ContextReturnsError_Returns500(t *testing.
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	// Execute the test:
 	handler.ServeHTTP(rr, req.WithContext(ctx))
@@ -289,7 +289,7 @@ func TestTickerMergeHandler_ServeHTTP_FirstMailNotSent_Returns500(t *testing.T) 
 		Return(errors.New("TestError"))
 
 	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
-		TicketContext: mockedTicketContext, UserContext:mockedUserContext}
+		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
 
 	req, err := http.NewRequest("POST", "/test", nil)
 	assert.Nil(t, err)
@@ -301,7 +301,7 @@ func TestTickerMergeHandler_ServeHTTP_FirstMailNotSent_Returns500(t *testing.T) 
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	// Execute the test:
 	handler.ServeHTTP(rr, req.WithContext(ctx))
@@ -339,7 +339,7 @@ func TestTickerMergeHandler_ServeHTTP_SecondMailNotSent_Returns500(t *testing.T)
 		Return(errors.New("TestError")).Once()
 
 	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
-		TicketContext: mockedTicketContext, UserContext:mockedUserContext}
+		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
 
 	req, err := http.NewRequest("POST", "/test", nil)
 	assert.Nil(t, err)
@@ -351,7 +351,7 @@ func TestTickerMergeHandler_ServeHTTP_SecondMailNotSent_Returns500(t *testing.T)
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	// Execute the test:
 	handler.ServeHTTP(rr, req.WithContext(ctx))
@@ -378,7 +378,7 @@ func TestTickerMergeHandler_ServeHTTP_InvalidRequestMethod(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
 	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
-		TicketContext: mockedTicketContext, UserContext:mockedUserContext}
+		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
 
 	req, err := http.NewRequest("GET", "/test", nil)
 	assert.Nil(t, err)
@@ -390,7 +390,7 @@ func TestTickerMergeHandler_ServeHTTP_InvalidRequestMethod(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	// Execute the test:
 	handler.ServeHTTP(rr, req.WithContext(ctx))
@@ -438,7 +438,7 @@ func TestTickerMergeHandler_ServeHTTP_InvalidLoggedInUser_InvalidRequest(t *test
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 	// Execute the test:
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -488,7 +488,7 @@ func TestTickerMergeHandler_ServeHTTP_ErrorDuringMessageAppending_Returns500(t *
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 	// Execute the test:
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 

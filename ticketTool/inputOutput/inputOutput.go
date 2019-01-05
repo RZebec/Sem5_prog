@@ -9,7 +9,7 @@ import (
 
 /*
 	Interface for the input and output.
- */
+*/
 type InputOutput interface {
 	ReadEntry() string
 	Print(text string)
@@ -17,7 +17,7 @@ type InputOutput interface {
 
 /*
 	Struct for the default input and output implementation.
- */
+*/
 type DefaultInputOutput struct {
 }
 

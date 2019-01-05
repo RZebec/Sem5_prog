@@ -2,7 +2,7 @@ package templateManager
 
 /*
 	Data for the test page
- */
+*/
 type testPageData struct {
 	Title string
 }

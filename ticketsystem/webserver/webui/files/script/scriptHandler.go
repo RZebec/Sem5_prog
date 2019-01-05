@@ -292,8 +292,6 @@ var messageAppendScript = `
     	}
 	};`
 
-
-
 /*
 	The handler for the script(Javascript) files.
 */

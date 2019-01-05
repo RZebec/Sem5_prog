@@ -15,7 +15,7 @@ import (
 
 /*
 	A ticketData merge handler.
- */
+*/
 type TicketMergeHandler struct {
 	Logger        logging.Logger
 	TicketContext ticketData.TicketContext

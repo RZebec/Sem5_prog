@@ -28,11 +28,11 @@ type TicketEditPageHandler struct {
 	Structure for the Ticket Edit Page Data.
 */
 type ticketEditPageData struct {
-	TicketInfo   ticketData.TicketInfo
-	OtherTickets []ticketData.TicketInfo
-	Users        []userData.User
-	OtherState1  ticketData.TicketState
-	OtherState2  ticketData.TicketState
+	TicketInfo                 ticketData.TicketInfo
+	OtherTickets               []ticketData.TicketInfo
+	Users                      []userData.User
+	OtherState1                ticketData.TicketState
+	OtherState2                ticketData.TicketState
 	ShowTicketSpecificControls bool
 	pages.BasePageData
 }
@@ -75,13 +75,13 @@ func (t TicketEditPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		otherStates := getOtherTicketStates(ticketInfo.State)
 
 		data := ticketEditPageData{
-			TicketInfo: 	ticketInfo,
-			OtherTickets:	otherTickets,
-			Users:			users,
-			OtherState1:	otherStates[0],
-			OtherState2:	otherStates[1],
+			TicketInfo:   ticketInfo,
+			OtherTickets: otherTickets,
+			Users:        users,
+			OtherState1:  otherStates[0],
+			OtherState2:  otherStates[1],
 		}
-		
+
 		data.UserIsAdmin = wrappers.IsAdmin(r.Context())
 		data.UserIsAuthenticated = wrappers.IsAuthenticated(r.Context())
 		data.Active = ""

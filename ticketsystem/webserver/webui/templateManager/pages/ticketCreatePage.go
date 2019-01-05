@@ -51,4 +51,3 @@ var TicketCreatePage = `
 			</div>
 		</div>
 	{{ end }}`
-

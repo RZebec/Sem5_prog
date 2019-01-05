@@ -41,7 +41,7 @@ func (a SetApiKeysHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				a.Logger.LogError("SetApiKeysHandler", err)
 				return
 			}
-			a.Logger.LogInfo("SetApiKeysHandler","Api Keys changed")
+			a.Logger.LogInfo("SetApiKeysHandler", "Api Keys changed")
 			http.Redirect(w, r, "/admin?IsChangeFailed=no", http.StatusFound)
 		} else {
 			http.Redirect(w, r, "/admin?IsChangeFailed=yes", http.StatusBadRequest)

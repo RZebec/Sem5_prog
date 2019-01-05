@@ -4,7 +4,7 @@ type TicketState int
 
 /*
 	The ticketData states.
- */
+*/
 const (
 	Open TicketState = 1 + iota
 	Processing
@@ -13,8 +13,8 @@ const (
 
 /*
 	The states as strings.
- */
-var states = [...]string {
+*/
+var states = [...]string{
 	"Open",
 	"Processing",
 	"Closed",
@@ -22,7 +22,7 @@ var states = [...]string {
 
 /*
 	For the string representation.
- */
+*/
 func (state TicketState) String() string {
-	return states[state -1]
+	return states[state-1]
 }

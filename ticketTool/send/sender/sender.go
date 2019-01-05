@@ -11,7 +11,7 @@ import (
 
 /*
 	A Sender to send mails.
- */
+*/
 type Sender struct {
 	io            inputOutput.InputOutput
 	sendConfig    configuration.Configuration
@@ -21,7 +21,7 @@ type Sender struct {
 
 /*
 	Create a sender.
- */
+*/
 func CreateSender(config configuration.Configuration, io inputOutput.InputOutput,
 	apiClient client.Client, mailGen mailGeneration.MailGeneration) Sender {
 

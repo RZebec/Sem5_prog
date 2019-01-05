@@ -48,7 +48,7 @@ func IsAuthenticated(ctx context.Context) bool {
 
 /*
 	Get the userData Id.
- */
+*/
 func GetUserId(ctx context.Context) int {
 	value, ok := ctx.Value(userIdKey).(int)
 	if ok {
@@ -60,7 +60,7 @@ func GetUserId(ctx context.Context) int {
 
 /*
 	Get the userData token.
- */
+*/
 func GetUserToken(ctx context.Context) string {
 	value, ok := ctx.Value(userTokenKey).(string)
 	if ok {

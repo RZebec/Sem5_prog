@@ -25,7 +25,7 @@ type SettingsPageHandler struct {
 */
 type userSettingsPageData struct {
 	pages.BasePageData
-	IsChangeFailed string
+	IsChangeFailed   string
 	UserIsOnVacation bool
 }
 
@@ -60,7 +60,7 @@ func (u SettingsPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		data := userSettingsPageData{
-			IsChangeFailed: isChangeFailed,
+			IsChangeFailed:   isChangeFailed,
 			UserIsOnVacation: userIsOnVacation,
 		}
 

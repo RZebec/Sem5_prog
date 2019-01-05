@@ -43,7 +43,6 @@ func TestClosedTicketsExplorerPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	expectedPageData.UserIsAuthenticated = userIsAuthenticated
 	expectedPageData.Active = "closed_tickets"
 
-
 	mockedTicketContext.On("GetAllTicketInfo").Return(testTickets)
 	mockedTemplateManager.On("RenderTemplate", mock.Anything, "TicketExplorerPage", expectedPageData).Return(nil)
 
@@ -55,7 +54,7 @@ func TestClosedTicketsExplorerPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), userIsAuthenticated, userIsAdmin, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), userIsAuthenticated, userIsAdmin, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -86,7 +85,7 @@ func TestClosedTicketsExplorerPageHandler_ServeHTTP_WrongRequestMethod(t *testin
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -122,7 +121,7 @@ func TestClosedTicketsExplorerPageHandler_ServeHTTP_ContextError_RenderError(t *
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()

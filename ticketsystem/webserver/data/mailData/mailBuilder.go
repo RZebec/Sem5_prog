@@ -14,7 +14,7 @@ func BuildAppendMessageNotificationMailContent(receiver string, sender string, c
 
 /*
 	Build the subject string.
- */
+*/
 func BuildUnlockUserNotificationMailSubject() string {
 	return "Your account has been unlocked."
 }
@@ -30,7 +30,7 @@ func BuildUnlockUserNotificationMailContent(receiver string) string {
 
 /*
 	Build the subject string.
- */
+*/
 func BuildAppendMessageNotificationMailSubject(ticketId int) string {
 	stringValue := strconv.Itoa(ticketId)
 	return "A new message has been appended to your ticketData with TicketId<" + stringValue + ">:"
@@ -38,7 +38,7 @@ func BuildAppendMessageNotificationMailSubject(ticketId int) string {
 
 /*
 	Build the subject string.
- */
+*/
 func BuildTicketMergeNotificationMailSubject(ticketId int, newTicketId int) string {
 	stringValue := strconv.Itoa(ticketId)
 	newTicketIdValue := strconv.Itoa(newTicketId)
@@ -58,7 +58,7 @@ func BuildTicketMergeNotificationMailContent(receiver string, firstTicketId int,
 
 /*
 	Build the subject string.
- */
+*/
 func BuildTicketEditorChangedNotificationMailSubject(ticketId int) string {
 	stringValue := strconv.Itoa(ticketId)
 	return "Your ticketData with TicketId<" + stringValue + "> has been changed. A new editor has been set."

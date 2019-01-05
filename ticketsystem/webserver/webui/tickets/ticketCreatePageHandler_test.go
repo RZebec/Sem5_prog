@@ -34,13 +34,13 @@ func TestTicketCreatePageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	data := ticketCreatePageData{
-		UserName: testUser.Mail,
-		IsUserLoggedIn:	true,
-		FirstName: "Dieter",
-		LastName: "Dietrich",
+		UserName:       testUser.Mail,
+		IsUserLoggedIn: true,
+		FirstName:      "Dieter",
+		LastName:       "Dietrich",
 	}
 
 	data.UserIsAdmin = false
@@ -80,7 +80,7 @@ func TestTicketCreatePageHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -110,13 +110,13 @@ func TestTicketCreatePageHandler_ServeHTTP_ContextError_RenderError(t *testing.T
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	data := ticketCreatePageData{
-		UserName: testUser.Mail,
-		IsUserLoggedIn:	true,
-		FirstName: "Dieter",
-		LastName: "Dietrich",
+		UserName:       testUser.Mail,
+		IsUserLoggedIn: true,
+		FirstName:      "Dieter",
+		LastName:       "Dietrich",
 	}
 
 	data.UserIsAdmin = false
@@ -156,7 +156,7 @@ func TestTicketCreatePageHandler_ServeHTTP_UserDoesNotExist(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	mockedUserContext.On("GetUserById", 5).Return(false, *new(userData.User))
 

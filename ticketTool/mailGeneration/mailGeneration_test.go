@@ -10,7 +10,7 @@ import (
 
 /*
 	The given number of mails should be generated.
- */
+*/
 func TestMailGenerator_RandomMail(t *testing.T) {
 	mockedIo := new(inputOutput.MockedInputOutput)
 	mockedIo.On("Print", mock.Anything)
@@ -22,7 +22,7 @@ func TestMailGenerator_RandomMail(t *testing.T) {
 
 /*
 	The generated text should have the given length.
- */
+*/
 func TestRandomText(t *testing.T) {
 	numberOfChars := 19
 	assert.Equal(t, numberOfChars, len(randomText(numberOfChars)))
@@ -30,7 +30,7 @@ func TestRandomText(t *testing.T) {
 
 /*
 	Random generation of mail addresses should work.
- */
+*/
 func TestGenerateMailAddresses(t *testing.T) {
 	a, b := generateTwoMailAdresses_FromRandomPool()
 	assert.True(t, a != b, "Adresses should be not the same")
@@ -52,7 +52,7 @@ func TestGenerateMailAddresses(t *testing.T) {
 
 /*
 	A explicit mail should be generated.
- */
+*/
 func TestMailGenerator_ExplicitMail(t *testing.T) {
 	mockedIO := new(inputOutput.MockedInputOutput)
 

@@ -18,18 +18,18 @@ import (
 
 /*
 	Get test tickets with different states.
- */
-func getTestTickets() []ticketData.TicketInfo{
+*/
+func getTestTickets() []ticketData.TicketInfo {
 	testEditor := userData.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
 	testCreator := ticketData.Creator{Mail: "Test@Test.de", FirstName: "Max", LastName: "Muller"}
 	var ticketInfos []ticketData.TicketInfo
-	ticketInfos = append(ticketInfos, ticketData.TicketInfo {Id: 1, Title: "TicketTest", Editor: testEditor, HasEditor: true, Creator: testCreator,
+	ticketInfos = append(ticketInfos, ticketData.TicketInfo{Id: 1, Title: "TicketTest", Editor: testEditor, HasEditor: true, Creator: testCreator,
 		CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Open})
-	ticketInfos = append(ticketInfos, ticketData.TicketInfo {Id: 1, Title: "TicketTest", Editor: testEditor, HasEditor: true, Creator: testCreator,
+	ticketInfos = append(ticketInfos, ticketData.TicketInfo{Id: 1, Title: "TicketTest", Editor: testEditor, HasEditor: true, Creator: testCreator,
 		CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing})
-	ticketInfos = append(ticketInfos, ticketData.TicketInfo {Id: 1, Title: "TicketTest", Editor: testEditor, HasEditor: true, Creator: testCreator,
+	ticketInfos = append(ticketInfos, ticketData.TicketInfo{Id: 1, Title: "TicketTest", Editor: testEditor, HasEditor: true, Creator: testCreator,
 		CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing})
-	ticketInfos = append(ticketInfos, ticketData.TicketInfo {Id: 1, Title: "TicketTest", Editor: testEditor, HasEditor: true, Creator: testCreator,
+	ticketInfos = append(ticketInfos, ticketData.TicketInfo{Id: 1, Title: "TicketTest", Editor: testEditor, HasEditor: true, Creator: testCreator,
 		CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Closed})
 
 	return ticketInfos
@@ -62,7 +62,6 @@ func TestActiveTicketsExplorerPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	expectedPageData.UserIsAuthenticated = userIsAuthenticated
 	expectedPageData.Active = "active_tickets"
 
-
 	mockedTicketContext.On("GetAllTicketInfo").Return(testTickets)
 	mockedTemplateManager.On("RenderTemplate", mock.Anything, "TicketExplorerPage", expectedPageData).Return(nil)
 
@@ -74,7 +73,7 @@ func TestActiveTicketsExplorerPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), userIsAuthenticated, userIsAdmin, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), userIsAuthenticated, userIsAdmin, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -105,7 +104,7 @@ func TestActiveTicketsExplorerPageHandler_ServeHTTP_WrongRequestMethod(t *testin
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -141,7 +140,7 @@ func TestActiveTicketsExplorerPageHandler_ServeHTTP_ContextError_RenderError(t *
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()

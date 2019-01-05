@@ -37,7 +37,6 @@ func TestTicketViewPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	mockedTicketContext.On("GetTicketById", 5).Return(true, testTicket)
 	mockedTemplateManager.On("RenderTemplate", mock.Anything, "TicketViewPage", mock.Anything).Return(nil)
 
-
 	req, err := http.NewRequest("GET", "/ticketData/5", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -46,7 +45,7 @@ func TestTicketViewPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -79,7 +78,7 @@ func TestTicketViewPageHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -120,7 +119,7 @@ func TestTicketViewPageHandler_ServeHTTP_ContextError_RenderError(t *testing.T) 
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -153,7 +152,7 @@ func TestTicketViewPageHandler_ServeHTTP_IdConversionError(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -188,7 +187,7 @@ func TestTicketViewPageHandler_ServeHTTP_TicketDoesNotExist(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
@@ -230,11 +229,11 @@ func TestTicketViewPageHandler_ServeHTTP_DoNotShowInternalOnlyMessages(t *testin
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 
 	data := ticketViewPageData{
 		TicketInfo: testTicketInfo,
-		Messages:	externalTestMessages,
+		Messages:   externalTestMessages,
 	}
 
 	data.UserIsAdmin = false
@@ -243,7 +242,6 @@ func TestTicketViewPageHandler_ServeHTTP_DoNotShowInternalOnlyMessages(t *testin
 
 	mockedTicketContext.On("GetTicketById", 5).Return(true, testTicket)
 	mockedTemplateManager.On("RenderTemplate", mock.Anything, "TicketViewPage", data).Return(nil)
-
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -284,12 +282,12 @@ func TestTicketViewPageHandler_ServeHTTP_ShowInternalOnlyMessages(t *testing.T) 
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	data := ticketViewPageData{
 		TicketInfo: testTicketInfo,
-		Messages:	testMessages,
-		UserName:	testEditor.Mail,
+		Messages:   testMessages,
+		UserName:   testEditor.Mail,
 	}
 
 	data.UserIsAdmin = false
