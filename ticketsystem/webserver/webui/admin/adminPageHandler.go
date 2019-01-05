@@ -14,7 +14,7 @@ import (
 /*
 	Structure for the Admin handler.
 */
-type AdminPageHandler struct {
+type PageHandler struct {
 	UserContext     userData.UserContext
 	Logger          logging.Logger
 	TemplateManager templateManager.TemplateContext
@@ -35,7 +35,7 @@ type adminPageData struct {
 /*
 	The Admin Page handler.
 */
-func (a AdminPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (a PageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {
@@ -70,7 +70,7 @@ func (a AdminPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		templateRenderError := a.TemplateManager.RenderTemplate(w, "AdminPage", data)
 
 		if templateRenderError != nil {
-			a.Logger.LogError("Admin", templateRenderError)
+			a.Logger.LogError("AdminPageHandler", templateRenderError)
 			http.Redirect(w, r, "/", http.StatusInternalServerError)
 		}
 	}

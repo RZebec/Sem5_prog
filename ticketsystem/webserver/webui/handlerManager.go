@@ -39,32 +39,51 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	indexPageAuthenticationInfoWrapper.Next = indexPageHandler
 	indexPageAuthenticationInfoWrapper.Logger = handlerManager.Logger
 	indexPageAuthenticationInfoWrapper.UserContext = handlerManager.UserContext
-
 	http.HandleFunc("/", indexPageAuthenticationInfoWrapper.ServeHTTP)
 
-	registerHandler := register.RegisterHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
-	http.HandleFunc("/register", registerHandler.ServeHTTPGetRegisterPage)
-	http.HandleFunc("/user_register", registerHandler.ServeHTTPPostRegisteringData)
+	registerPageHandler := register.PageHandler{Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
+	registerPageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
+	registerPageHandlerWrapper.Next = registerPageHandler
+	registerPageHandlerWrapper.Logger = handlerManager.Logger
+	registerPageHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/register", registerPageHandlerWrapper.ServeHTTP)
 
-	loginHandler := login.LoginHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
-	http.HandleFunc("/login", loginHandler.ServeHTTPGetLoginPage)
-	http.HandleFunc("/user_login", loginHandler.ServeHTTPPostLoginData)
+	userRegisterHandler := register.UserRegisterHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
+	userRegisterHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
+	userRegisterHandlerWrapper.Next = userRegisterHandler
+	userRegisterHandlerWrapper.Logger = handlerManager.Logger
+	userRegisterHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/user_register", userRegisterHandlerWrapper.ServeHTTP)
+
+	loginPageHandler := login.PageHandler{TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
+	loginPageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
+	loginPageHandlerWrapper.Next = loginPageHandler
+	loginPageHandlerWrapper.Logger = handlerManager.Logger
+	loginPageHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/login", loginPageHandlerWrapper.ServeHTTP)
+
+	userLoginHandler := login.UserLoginHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
+	userLoginHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
+	userLoginHandlerWrapper.Next = userLoginHandler
+	userLoginHandlerWrapper.Logger = handlerManager.Logger
+	userLoginHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/user_login", userLoginHandlerWrapper.ServeHTTP)
 
 	logoutHandler := logout.LogoutHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
 	logoutWrapper := wrappers.EnforceAuthenticationWrapper{Next: logoutHandler, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/user_logout", logoutWrapper.ServeHTTP)
 
-	adminPageHandler := admin.AdminPageHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager, ApiContext: handlerManager.ApiConfiguration}
+	adminPageHandler := admin.PageHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager, ApiContext: handlerManager.ApiConfiguration}
 	adminPageWrapper := wrappers.AdminWrapper{Next: adminPageHandler, UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
 	adminPageAuthenticationWrapper := wrappers.EnforceAuthenticationWrapper{Next: adminPageWrapper, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/admin", adminPageAuthenticationWrapper.ServeHTTP)
 
-	adminSetApiKeysHandler := admin.AdminSetApiKeysHandler{Logger: handlerManager.Logger, ApiConfiguration: handlerManager.ApiConfiguration}
+	adminSetApiKeysHandler := admin.SetApiKeysHandler{Logger: handlerManager.Logger, ApiConfiguration: handlerManager.ApiConfiguration}
 	adminSetApiKeysWrapper := wrappers.AdminWrapper{Next: adminSetApiKeysHandler, UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
 	adminSetApiKeysAuthenticationWrapper := wrappers.EnforceAuthenticationWrapper{Next: adminSetApiKeysWrapper, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/set_api_keys", adminSetApiKeysAuthenticationWrapper.ServeHTTP)
 
-	adminUnlockUserHandler := admin.AdminUnlockUserHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger, MailContext: handlerManager.MailContext}
+	adminUnlockUserHandler := admin.UnlockUserHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger, MailContext: handlerManager.MailContext}
 	adminUnlockUserWrapper := wrappers.AdminWrapper{Next: adminUnlockUserHandler, UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
 	adminUnlockUserAuthenticationWrapper := wrappers.EnforceAuthenticationWrapper{Next: adminUnlockUserWrapper, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/unlock_user", adminUnlockUserAuthenticationWrapper.ServeHTTP)
