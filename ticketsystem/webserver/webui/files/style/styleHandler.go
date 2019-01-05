@@ -136,8 +136,10 @@ var tableStyle = `
 	table {
 		text-align: left;
     	border-collapse: collapse;
-    	width: 95em;
-		margin: 0.5em 1.5em 0.75em 1.5em;
+    	width: 95%;
+		margin: 0.5em 0.5em 0.75em 0.5em;
+		cellspacing="0";
+		cellpadding="0";
 	}
 
 	table td, table th {

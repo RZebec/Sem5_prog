@@ -277,6 +277,11 @@ var messageAppendScript = `
     	}
 	};`
 
+//TODO: Sort skript kann hier rein
+var tableSortScript = `
+	
+	`
+
 
 /*
 	The handler for the script(Javascript) files.
@@ -299,5 +304,7 @@ func HandelScript(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(createTicketScript))
 	case "message":
 		w.Write([]byte(messageAppendScript))
+	case "tableSort":
+		w.Write([]byte(tableSortScript))
 	}
 }

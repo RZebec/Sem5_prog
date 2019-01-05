@@ -9,12 +9,12 @@ var TicketExplorerPage = `
 
 	{{ define "StylesAndScripts" }}
 		<link rel="stylesheet" href="/files/style/table">
+		<script src="/files/script/tableSort"></script>
 	{{ end }}
 	
 	{{ define "Content" }}
 		<div class="content">
-			<div class="container">
-				<div class="main">
+				<div class="container">
 					<table>
 						<tr>
 							<th>
@@ -95,7 +95,6 @@ var TicketExplorerPage = `
 						{{end}}
 					</table>
 				</div>
-			</div>
 		</div>
 	</body>
 

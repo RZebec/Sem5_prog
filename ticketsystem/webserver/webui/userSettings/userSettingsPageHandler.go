@@ -6,8 +6,8 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
+	"html"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -25,7 +25,7 @@ type UserSettingsPageHandler struct {
 */
 type userSettingsPageData struct {
 	pages.BasePageData
-	IsChangeFailed bool
+	IsChangeFailed string
 	UserIsOnVacation bool
 }
 
@@ -38,11 +38,15 @@ func (u UserSettingsPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	} else {
 		queryValues := r.URL.Query()
 		queryValue := queryValues.Get("IsChangeFailed")
-		isChangeFailed, parseError := strconv.ParseBool(queryValue)
 
-		if parseError != nil && queryValue != ""{
-			u.Logger.LogError("UserSettingsPageHandler", parseError)
-			isChangeFailed = false
+		queryValue = html.EscapeString(queryValue)
+
+		isChangeFailed := queryValue
+
+		if queryValue == "yes" || queryValue == "no" {
+			isChangeFailed = queryValue
+		} else {
+			isChangeFailed = "NotSet"
 		}
 
 		userId := wrappers.GetUserId(r.Context())

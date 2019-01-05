@@ -36,12 +36,19 @@ var UserSettingsPage = `
 						<input type="password" name="new_repeat_password" id="new_repeat_password" />
 						<button type="submit" id="submitChange" class="submit-button" disabled>Change Password</button>
 					</form>
-					{{if .IsChangeFailed }}
+					{{if eq .IsChangeFailed "yes" }}
 					<span class="error-message">
 							Password Change Failed!
 					</span>
 					</br>
-        			{{end}}
+					{{end}}
+					{{if eq .IsChangeFailed "no" }}
+					<span>
+							Password Change Successful!
+					</span>
+					</br>
+					{{end}}
+        			
 					<span id="passwordNotice" class="error-message"></span>
 					<span id="passwordNotTheSameNotice" class="error-message"></span>
 					<span id="oldPasswordNotice" class="error-message"></span>

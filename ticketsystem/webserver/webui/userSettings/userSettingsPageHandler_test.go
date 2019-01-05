@@ -33,7 +33,7 @@ func TestUserSettingsPageHandler_ServeHTTP__ValidRequest(t *testing.T) {
 	mockedUserContext.On("GetUserById", 5).Return(true, testUser)
 
 	data := userSettingsPageData{
-		IsChangeFailed: false,
+		IsChangeFailed: "NotSet",
 		UserIsOnVacation: false,
 	}
 
@@ -107,7 +107,7 @@ func TestUserSettingsPageHandler_ServeHTTP_ContextError(t *testing.T) {
 	mockedUserContext.On("GetUserById", 5).Return(true, testUser)
 
 	data := userSettingsPageData{
-		IsChangeFailed: false,
+		IsChangeFailed: "NotSet",
 		UserIsOnVacation: false,
 	}
 
@@ -136,7 +136,7 @@ func TestUserSettingsPageHandler_ServeHTTP_ContextError(t *testing.T) {
 	Page should be returned with valid query parameter set.
 */
 func TestUserSettingsPageHandler_ServeHTTP_ChangePasswordFailed(t *testing.T) {
-	req, err := http.NewRequest("GET", "/user_settings?IsChangeFailed=true", nil)
+	req, err := http.NewRequest("GET", "/user_settings?IsChangeFailed=yes", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -153,7 +153,7 @@ func TestUserSettingsPageHandler_ServeHTTP_ChangePasswordFailed(t *testing.T) {
 	mockedUserContext.On("GetUserById", 5).Return(true, testUser)
 
 	data := userSettingsPageData{
-		IsChangeFailed: true,
+		IsChangeFailed: "yes",
 		UserIsOnVacation: false,
 	}
 
