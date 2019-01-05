@@ -136,7 +136,7 @@ var tableStyle = `
 	table {
 		text-align: left;
     	border-collapse: collapse;
-    	width: 95%;
+    	width: 100%;
 		margin: 0.5em 0.5em 0.75em 0.5em;
 		cellspacing="0";
 		cellpadding="0";
@@ -178,7 +178,7 @@ var largeMainStyle = `
     
     div.main {
 		text-align: left;
-        width: 75em;
+		width: 40em;
         padding: 0.5em 1.5em 0.75em;
         border: 2px solid gray;
         border-radius: 10px;

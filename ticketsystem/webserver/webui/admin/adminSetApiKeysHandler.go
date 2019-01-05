@@ -31,20 +31,20 @@ func (a AdminSetApiKeysHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		if len(incomingMailApiKey) >= 128 && len(outgoingMailApiKey) >= 128 {
 			err := a.ApiConfiguration.ChangeIncomingMailApiKey(incomingMailApiKey)
 			if err != nil {
-				http.Redirect(w, r, "/admin", http.StatusInternalServerError)
+				http.Redirect(w, r, "/admin?IsChangeFailed=yes", http.StatusInternalServerError)
 				a.Logger.LogError("AdminSetApiKeysHandler", err)
 				return
 			}
 			err = a.ApiConfiguration.ChangeOutgoingMailApiKey(outgoingMailApiKey)
 			if err != nil {
-				http.Redirect(w, r, "/admin", http.StatusInternalServerError)
+				http.Redirect(w, r, "/admin?IsChangeFailed=yes", http.StatusInternalServerError)
 				a.Logger.LogError("AdminSetApiKeysHandler", err)
 				return
 			}
 			a.Logger.LogInfo("AdminSetApiKeysHandler","Api Key has been changed")
-			http.Redirect(w, r, "/admin", http.StatusFound)
+			http.Redirect(w, r, "/admin?IsChangeFailed=no", http.StatusFound)
 		} else {
-			http.Redirect(w, r, "/admin", http.StatusBadRequest)
+			http.Redirect(w, r, "/admin?IsChangeFailed=yes", http.StatusBadRequest)
 		}
 	}
 }
