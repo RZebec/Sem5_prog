@@ -56,5 +56,8 @@ func (v ToggleVacationModeHandler) ServeHTTP(w http.ResponseWriter, r *http.Requ
 		}
 
 		http.Redirect(w, r, "/user_settings", 302)
+		userId := wrappers.GetUserId(r.Context())
+		v.Logger.LogInfo("ToggleVacationModeHandler", "User with id: " + strconv.Itoa(userId) +
+			" vacation mode has been set to " + strconv.FormatBool(vacation))
 	}
 }

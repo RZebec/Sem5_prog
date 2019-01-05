@@ -59,6 +59,7 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 				return
 			}
 
+			a.Logger.LogInfo("AdminUnlockUserHandler","User unlocked. UserId: " + formId)
 			http.Redirect(w, r, "/admin", http.StatusFound)
 			return
 		}

@@ -41,6 +41,7 @@ func (c ChangePasswordHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 		if isChanged {
 			http.Redirect(w, r, "/user_settings?IsChangeFailed=no", 302)
+			c.Logger.LogInfo("ChangePasswordHandler", "A password has been changed")
 		} else {
 			http.Redirect(w, r, "/user_settings?IsChangeFailed=yes", 302)
 		}

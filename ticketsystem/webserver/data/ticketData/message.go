@@ -3,7 +3,7 @@ package ticketData
 import "time"
 
 /*
-	A entry in a ticketData.
+	A entry in a ticket
 */
 type MessageEntry struct {
 	Id           int

@@ -7,7 +7,7 @@ import (
 )
 
 /*
-	Test the conversion of a userData to creator.
+	Test the conversion of a user to creator.
 */
 func TestConvertToCreator(t *testing.T) {
 	testUser := userData.User{UserId: 1, Mail: "test@test.de", FirstName: "Alex", LastName: "Müller"}

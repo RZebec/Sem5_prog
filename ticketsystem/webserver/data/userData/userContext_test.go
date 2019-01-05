@@ -149,7 +149,7 @@ func TestLoginSystem_Initialize_DataFileAlreadyExists_DataIsLoaded(t *testing.T)
 }
 
 /*
-	A userData should be able to change his own password.
+	A user should be able to change his own password.
 */
 func TestLoginSystem_ChangePassword_PasswordChanged(t *testing.T) {
 	testee := LoginSystem{}
@@ -168,7 +168,7 @@ func TestLoginSystem_ChangePassword_PasswordChanged(t *testing.T) {
 	userName := "testUser4@test.de"
 	userPassword := "asdSsdsdf!1osp"
 	newPassword := "Test1234!"
-	// The userData should be logged in
+	// The user should be logged in
 	success, token, err := testee.Login(userName, userPassword)
 	assert.True(t, success, "User should not logged in")
 	assert.NotEmpty(t, token, "The token should not be empty")
@@ -179,7 +179,7 @@ func TestLoginSystem_ChangePassword_PasswordChanged(t *testing.T) {
 }
 
 /*
-	A userData should be able to change his own password.
+	A user should be able to change his own password.
 */
 func TestLoginSystem_ChangePassword_InvalidPassword_PasswordNotChanged(t *testing.T) {
 	testee := LoginSystem{}
@@ -198,7 +198,7 @@ func TestLoginSystem_ChangePassword_InvalidPassword_PasswordNotChanged(t *testin
 	userName := "testUser4@test.de"
 	oldPassword := "asdSsdsdf!1osp"
 	newPassword := "Testwew1234!"
-	// The userData should be logged in
+	// The user should be logged in
 	success, token, err := testee.Login(userName, oldPassword)
 	assert.True(t, success, "User should be logged in")
 	assert.NotEmpty(t, token, "The token should not be empty")
@@ -206,7 +206,7 @@ func TestLoginSystem_ChangePassword_InvalidPassword_PasswordNotChanged(t *testin
 	// Use a wrong password
 	changed, err := testee.ChangePassword(token, oldPassword+"545", newPassword)
 	assert.False(t, changed, "The password should not be changed")
-	assert.Equal(t, "userData password could not be changed", err.Error())
+	assert.Equal(t, "user password could not be changed", err.Error())
 }
 
 /*
@@ -241,7 +241,7 @@ func TestLoginSystem_Login_CorrectLoginData_LoggedIn(t *testing.T) {
 		}
 	}
 	unlocked, err := testee.UnlockAccount(token, createdUserId)
-	assert.True(t, unlocked, "userData should be unlocked")
+	assert.True(t, unlocked, "user should be unlocked")
 
 	success, token, err = testee.Login(userName, password)
 
@@ -304,7 +304,7 @@ func TestLoginSystem_Login_IncorrectLoginData_NotLoggedIn(t *testing.T) {
 	assert.True(t, success, "User should be registered")
 	assert.Nil(t, err)
 
-	// The userData should not be logged in
+	// The user should not be logged in
 	success, token, err := testee.Login(userName, "test123")
 	assert.False(t, success, "User should not be logged in")
 	assert.Equal(t, "", token, "The token should be empty")
@@ -316,7 +316,7 @@ func TestLoginSystem_Login_IncorrectLoginData_NotLoggedIn(t *testing.T) {
 }
 
 /*
-	Logout from a existing session, should logout the userData and remove the session.
+	Logout from a existing session, should logout the user and remove the session.
 */
 func TestLoginSystem_Logout_SessionExists_UserLoggedOut(t *testing.T) {
 	testee := LoginSystem{}
@@ -371,7 +371,7 @@ func TestLoginSystem_RefreshToken_UnknownToken_ErrorReturned(t *testing.T) {
 }
 
 /*
-	Register a userData when no previous data was stored, should be possible.
+	Register a user when no previous data was stored, should be possible.
 */
 func TestLoginSystem_Register_NoDataWasStored_UserIsRegistered(t *testing.T) {
 	testee := LoginSystem{}
@@ -386,7 +386,7 @@ func TestLoginSystem_Register_NoDataWasStored_UserIsRegistered(t *testing.T) {
 	assert.Nil(t, err)
 
 	success, err := testee.Register("testUser1@web.de", "T24=23!sds", "max", "muster")
-	assert.True(t, success, "userData should be registered")
+	assert.True(t, success, "user should be registered")
 	assert.Nil(t, err)
 
 	writtenData, err := getDataFromFile(testee.loginDataFilePath)
@@ -401,7 +401,7 @@ func TestLoginSystem_Register_NoDataWasStored_UserIsRegistered(t *testing.T) {
 }
 
 /*
-	Register a userData when no previous data was stored, should be possible.
+	Register a user when no previous data was stored, should be possible.
 */
 func TestLoginSystem_Register_NoDataWasStored_DefaultAccountIsCreated(t *testing.T) {
 	testee := LoginSystem{}
@@ -481,7 +481,7 @@ func TestLoginSystem_SessionIsValid_SessionTimedOut(t *testing.T) {
 	It should be possible to register multiple users in a concurrent way.
 */
 func TestLoginSystem_Register_ConcurrentAccess_AllRegistered(t *testing.T) {
-	// 250 concurrent userData registrations are not expected, but his test is to
+	// 250 concurrent user registrations are not expected, but his test is to
 	// ensure that the system is able to handle that.
 	numberOfRegistrations := 250
 	testee := LoginSystem{}
@@ -526,7 +526,7 @@ func TestLoginSystem_Register_ConcurrentAccess_AllRegistered(t *testing.T) {
 }
 
 /*
-	Register a userData with an invalid username should not be possible.
+	Register a user with an invalid username should not be possible.
 */
 func TestLoginSystem_Register_InvalidUsername_NotSuccessful(t *testing.T) {
 	testee := LoginSystem{}
@@ -546,7 +546,7 @@ func TestLoginSystem_Register_InvalidUsername_NotSuccessful(t *testing.T) {
 }
 
 /*
-	Register a userData with an invalid password should not be possible.
+	Register a user with an invalid password should not be possible.
 */
 func TestLoginSystem_Register_InvalidPassword_NotSuccessful(t *testing.T) {
 	testee := LoginSystem{}
@@ -566,7 +566,7 @@ func TestLoginSystem_Register_InvalidPassword_NotSuccessful(t *testing.T) {
 }
 
 /*
-	Register a userData with an invalid first name should not be possible.
+	Register a user with an invalid first name should not be possible.
 */
 func TestLoginSystem_Register_InvalidFirstName_NotSuccessful(t *testing.T) {
 	testee := LoginSystem{}
@@ -586,7 +586,7 @@ func TestLoginSystem_Register_InvalidFirstName_NotSuccessful(t *testing.T) {
 }
 
 /*
-	Register a userData with a invalid last name should not be possible.
+	Register a user with a invalid last name should not be possible.
 */
 func TestLoginSystem_Register_InvalidLastName_NotSuccessful(t *testing.T) {
 	testee := LoginSystem{}
@@ -606,7 +606,7 @@ func TestLoginSystem_Register_InvalidLastName_NotSuccessful(t *testing.T) {
 }
 
 /*
-	Register multiple users with the same userData name should not be possible..
+	Register multiple users with the same user name should not be possible..
 */
 func TestLoginSystem_Register_UserNameAlreadyTaken(t *testing.T) {
 	testee := LoginSystem{}
@@ -631,7 +631,7 @@ func TestLoginSystem_Register_UserNameAlreadyTaken(t *testing.T) {
 	success, err = testee.Register(userName, password, firstName, lastName)
 	assert.False(t, success, "register operation should not be successful")
 	assert.NotNil(t, err)
-	assert.Equal(t, "userData with this name already exists", err.Error())
+	assert.Equal(t, "user with this name already exists", err.Error())
 }
 
 /*
@@ -645,7 +645,7 @@ func TestLoginSystem_UnlockAccount_AccountUnlocked(t *testing.T) {
 	err = testee.Initialize(folderPath)
 	assert.Nil(t, err)
 
-	// Register a userData. The userData should then be in the state of "WaitingToBeUnlocked".
+	// Register a user. The user should then be in the state of "WaitingToBeUnlocked".
 	userName := "testUser@gmx.de"
 	password := "secT?1asdret"
 	firstName := "max"
@@ -666,7 +666,7 @@ func TestLoginSystem_UnlockAccount_AccountUnlocked(t *testing.T) {
 	assert.True(t, success, "User should be registered")
 	assert.Nil(t, err)
 
-	// Login with the admin and unlock the userData:
+	// Login with the admin and unlock the user:
 	success, token, err := testee.Login("Admin@Admin.de", "ChangeMe2018!")
 	assert.True(t, success, "Admin should be logged in")
 
@@ -674,7 +674,7 @@ func TestLoginSystem_UnlockAccount_AccountUnlocked(t *testing.T) {
 	assert.Nil(t, err)
 	assert.True(t, unlocked, "User account should be unlocked")
 
-	// Validate that the userData is unlocked:
+	// Validate that the user is unlocked:
 	found = false
 	for _, entry := range testee.cachedUserData {
 		if entry.Mail == userName {
@@ -720,8 +720,8 @@ func TestLoginSystem_GetAllLockedUsers(t *testing.T) {
 			secondUserIsReturned = true
 		}
 	}
-	assert.True(t, firstUserIsReturned, "The first created userData should be returned")
-	assert.True(t, secondUserIsReturned, "The second created userData should be returned")
+	assert.True(t, firstUserIsReturned, "The first created user should be returned")
+	assert.True(t, secondUserIsReturned, "The second created user should be returned")
 }
 
 /*
@@ -746,7 +746,7 @@ func TestLoginSystem_GetAllActiveUsers(t *testing.T) {
 }
 
 /**
-Trying to unlock a account with a userData witch is not a admin should fail.
+Trying to unlock a account with a user witch is not a admin should fail.
 */
 func TestLoginSystem_UnlockAccount_NoAdminRole(t *testing.T) {
 	testee := LoginSystem{}
@@ -760,7 +760,7 @@ func TestLoginSystem_UnlockAccount_NoAdminRole(t *testing.T) {
 
 	err = testee.Initialize(folderPath)
 
-	// Register a userData. The userData should then be in the state of "WaitingToBeUnlocked".
+	// Register a user. The user should then be in the state of "WaitingToBeUnlocked".
 	userName := "NewlyCreatedTestUser@test.de"
 	password := "Pasd081!asd"
 	firstName := "max"
@@ -781,7 +781,7 @@ func TestLoginSystem_UnlockAccount_NoAdminRole(t *testing.T) {
 	assert.True(t, success, "User should be registered")
 	assert.Nil(t, err)
 
-	// Log in with a userData which is no admin:
+	// Log in with a user which is no admin:
 	success, token, err := testee.Login("testUser@test.de", "testPasswort756!")
 	assert.True(t, success, "User should be logged in")
 
@@ -791,7 +791,7 @@ func TestLoginSystem_UnlockAccount_NoAdminRole(t *testing.T) {
 	assert.False(t, unlocked, "User account should not be unlocked")
 	assert.Equal(t, "current session has no permission to unlock accounts", err.Error())
 
-	// Assert that the userData is not unlocked:
+	// Assert that the user is not unlocked:
 	found = false
 	for _, entry := range testee.cachedUserData {
 		if entry.UserId == createdUserId {
@@ -819,7 +819,7 @@ func TestLoginSystem_UnlockAccount_AccountInWrongState(t *testing.T) {
 
 	err = testee.Initialize(folderPath)
 
-	// Assert that the target userData is already unlocked and set to active:
+	// Assert that the target user is already unlocked and set to active:
 	found := false
 	createdUserId := -1
 	for _, entry := range testee.cachedUserData {
@@ -867,7 +867,7 @@ func TestLoginSystem_UnlockAccount_UnknownAccount(t *testing.T) {
 	unlocked, err := testee.UnlockAccount(token, 9999)
 	assert.NotNil(t, err)
 	assert.False(t, unlocked, "User account should not be unlocked")
-	assert.Equal(t, "userData to unlock not found", err.Error())
+	assert.Equal(t, "user to unlock not found", err.Error())
 }
 
 /*
@@ -993,7 +993,7 @@ func TestLoginSystem_DisableVacationMode_WrongState(t *testing.T) {
 
 	err = testee.Initialize(folderPath)
 
-	// Login and validate that the userData is not in vacation mode:
+	// Login and validate that the user is not in vacation mode:
 	success, token, err := testee.Login("testUser5@test.de", "Tzqweq23Aws!")
 	assert.True(t, success, "User should be logged in")
 
@@ -1014,7 +1014,7 @@ func TestLoginSystem_DisableVacationMode_WrongState(t *testing.T) {
 }
 
 /*
-	Getting a existing userData should be possible.
+	Getting a existing user should be possible.
 */
 func TestLoginSystem_GetUserById(t *testing.T) {
 	testee := LoginSystem{}
@@ -1034,7 +1034,7 @@ func TestLoginSystem_GetUserById(t *testing.T) {
 }
 
 /*
-	Getting a non existing userData should return false.
+	Getting a non existing user should return false.
 */
 func TestLoginSystem_GetUserById_UserIdDoesNotExist(t *testing.T) {
 	testee := LoginSystem{}
@@ -1050,11 +1050,11 @@ func TestLoginSystem_GetUserById_UserIdDoesNotExist(t *testing.T) {
 
 	exists, user := testee.GetUserById(9999)
 	assert.False(t, exists, "User should not exist")
-	assert.Equal(t, "", user.Mail, "Correct userData should be returned")
+	assert.Equal(t, "", user.Mail, "Correct user should be returned")
 }
 
 /*
-	Getting a existing userData should be possible.
+	Getting a existing user should be possible.
 */
 func TestLoginSystem_GetUserForEmail(t *testing.T) {
 	testee := LoginSystem{}
@@ -1070,11 +1070,11 @@ func TestLoginSystem_GetUserForEmail(t *testing.T) {
 
 	exists, userId := testee.GetUserForEmail("testUser5@test.de")
 	assert.True(t, exists, "User should exist")
-	assert.Equal(t, 1, userId, "Correct userData id should be returned")
+	assert.Equal(t, 1, userId, "Correct user id should be returned")
 }
 
 /*
-	Getting a non existing userData should return false.
+	Getting a non existing user should return false.
 */
 func TestLoginSystem_GetUserForEmail_UserIdDoesNotExist(t *testing.T) {
 	testee := LoginSystem{}
@@ -1090,7 +1090,7 @@ func TestLoginSystem_GetUserForEmail_UserIdDoesNotExist(t *testing.T) {
 
 	exists, userId := testee.GetUserForEmail("test1254799@ere.de")
 	assert.False(t, exists, "User should not exist")
-	assert.Equal(t, -1, userId, "Correct userData id should be returned")
+	assert.Equal(t, -1, userId, "Correct user id should be returned")
 }
 
 /*

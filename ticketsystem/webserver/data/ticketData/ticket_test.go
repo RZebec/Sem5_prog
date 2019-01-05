@@ -8,7 +8,7 @@ import (
 )
 
 /*
-	A copied ticketData should not be able to change the original ticketData.
+	A copied ticket should not be able to change the original ticket.
 */
 func TestTicket_Copy(t *testing.T) {
 	refTimestamp := time.Now()
@@ -28,7 +28,7 @@ func TestTicket_Copy(t *testing.T) {
 	copied.info.Title = "changed"
 	copied.messages[0].Content = "changed"
 
-	// Ensure that the original ticketData has not been changed:
+	// Ensure that the original ticket has not been changed:
 	assert.Equal(t, "OrigTitle", origTicket.Info().Title, "The original info should not be changed")
 	assert.Equal(t, "This is a test", origTicket.Messages()[0].Content,
 		"The original info should not be changed")

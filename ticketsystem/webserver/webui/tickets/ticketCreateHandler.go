@@ -102,5 +102,6 @@ func (t TicketCreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		ticketId := strconv.Itoa(createdTicket.Info().Id)
 
 		http.Redirect(w, r, "/ticketData/" + ticketId, 302)
+		t.Logger.LogInfo("TicketCreateHandler", "New ticket with id " + ticketId + "created")
 	}
 }

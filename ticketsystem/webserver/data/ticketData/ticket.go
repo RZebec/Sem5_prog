@@ -21,7 +21,7 @@ type Ticket struct {
 }
 
 /*
-	The struct represents the stored ticketData data.
+	The struct represents the stored ticket data.
 */
 type storedTicket struct {
 	Info     TicketInfo
@@ -29,7 +29,7 @@ type storedTicket struct {
 }
 
 /*
-	Copy a ticketData.
+	Copy a ticket.
 */
 func (t *Ticket) Copy() *Ticket {
 	copiedMessages := *new([]MessageEntry)
@@ -40,14 +40,14 @@ func (t *Ticket) Copy() *Ticket {
 }
 
 /*
-	Transforms the ticketData data to a store-able data type.
+	Transforms the ticket data to a store-able data type.
 */
 func (t *Ticket) transformToPersistenceData() storedTicket {
 	return storedTicket{Info: t.info, Messages: t.messages}
 }
 
 /*
-	Loads the data from a store-able data type into the ticketData.
+	Loads the data from a store-able data type into the ticket.
 */
 func (t *Ticket) loadDataFromPersistenceData(storedData storedTicket) {
 	t.info = storedData.Info
@@ -55,7 +55,7 @@ func (t *Ticket) loadDataFromPersistenceData(storedData storedTicket) {
 }
 
 /*
-	Get the ticketData info.
+	Get the ticket info.
 */
 func (t *Ticket) Info() TicketInfo {
 	t.accessMutex.RLock()
@@ -64,7 +64,7 @@ func (t *Ticket) Info() TicketInfo {
 }
 
 /*
-	Get the ticketData entries.
+	Get the ticket entries.
 */
 func (t *Ticket) Messages() []MessageEntry {
 	t.accessMutex.RLock()
@@ -73,7 +73,7 @@ func (t *Ticket) Messages() []MessageEntry {
 }
 
 /*
-	Initialize a ticketData from a given file path.
+	Initialize a ticket from a given file path.
 */
 func initializeFromFile(filePath string) (*Ticket, error) {
 	if filePath == "" {
@@ -108,7 +108,7 @@ func initializeFromFile(filePath string) (*Ticket, error) {
 }
 
 /*
-	Create a new empty ticketData, with a given id.
+	Create a new empty ticket, with a given id.
 */
 func createNewEmptyTicket(folderPath string, id int) (*Ticket, error) {
 	if folderPath == "" {
@@ -133,11 +133,11 @@ func createNewEmptyTicket(folderPath string, id int) (*Ticket, error) {
 		return nil, errors.Wrap(err, "could not check if path already exists")
 	}
 	if alreadyExists {
-		return nil, errors.New("file for this ticketData id already exists")
+		return nil, errors.New("file for this ticket id already exists")
 	}
 	err = helpers.CreateFileIfNotExists(filePath)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not create file for ticketData")
+		return nil, errors.Wrap(err, "could not create file for ticket")
 	}
 
 	ticket := new(Ticket)
@@ -155,7 +155,7 @@ func createNewEmptyTicket(folderPath string, id int) (*Ticket, error) {
 }
 
 /*
-	Persist the ticketData.
+	Persist the ticket.
 */
 func (t *Ticket) persist() error {
 	if t.filePath == "" {
@@ -165,7 +165,7 @@ func (t *Ticket) persist() error {
 	defer t.accessMutex.Unlock()
 	jsonData, err := json.MarshalIndent(t.transformToPersistenceData(), "", "    ")
 	if err != nil {
-		return errors.Wrap(err, "could not save ticketData to file")
+		return errors.Wrap(err, "could not save ticket to file")
 	}
 	return helpers.WriteDataToFile(t.filePath, jsonData)
 }

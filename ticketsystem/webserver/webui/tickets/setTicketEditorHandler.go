@@ -122,6 +122,7 @@ func (t TicketSetEditorHandler) handleRemoveEditorRequest(w http.ResponseWriter,
 		return
 	}
 	http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusFound)
+	t.Logger.LogInfo("TicketSetEditorHandler","Editor removed from ticket: " + rawTicketId)
 }
 
 /*
@@ -192,4 +193,5 @@ func (t TicketSetEditorHandler) handleChangeEditorRequest(w http.ResponseWriter,
 		return
 	}
 	http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusFound)
+	t.Logger.LogInfo("TicketSetEditorHandler","Editor set for ticket: " + rawTicketId + ". New editorId: " + strconv.Itoa(existingUser.UserId))
 }

@@ -53,8 +53,10 @@ func (l LoginHandler) ServeHTTPPostLoginData(w http.ResponseWriter, r *http.Requ
 		if success {
 			helpers.SetCookie(w, shared.AccessTokenCookieName, token)
 			http.Redirect(w, r, "/", 302)
+			l.Logger.LogInfo("LoginHandler","User logged in" )
 		} else {
 			http.Redirect(w, r, "/login?IsLoginFailed=true", 302)
+			l.Logger.LogInfo("LoginHandler","Login failed" )
 		}
 	}
 }

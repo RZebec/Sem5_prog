@@ -8,7 +8,7 @@ import (
 )
 
 /*
-	A copy of a ticketData should not be able to change the original ticketData.
+	A copy of a ticket should not be able to change the original ticket.
 */
 func TestTicketInfo_Copy(t *testing.T) {
 	refTimestamp := time.Now()
@@ -29,7 +29,7 @@ func TestTicketInfo_Copy(t *testing.T) {
 	copiedTicket.LastModificationTime = time.Now()
 	copiedTicket.State = Closed
 
-	// Assert that the original ticketData info has not been changed:
+	// Assert that the original ticket info has not been changed:
 	assert.Equal(t, "Müller", origTicketInfo.Creator.LastName, "Original creator name should not be changed")
 	assert.Equal(t, "Hans", origTicketInfo.Editor.FirstName, "Original editor name should not be changed")
 	assert.Equal(t, true, origTicketInfo.HasEditor, "Original has editor flag should not be changed")

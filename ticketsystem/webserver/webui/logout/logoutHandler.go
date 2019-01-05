@@ -37,6 +37,7 @@ func (l LogoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		l.UserContext.Logout(token)
 		helpers.RemoveCookie(w, shared.AccessTokenCookieName)
 		http.Redirect(w, r, "/", http.StatusFound)
+		l.Logger.LogInfo("LogoutHandler","User logged out" )
 
 		return
 	}

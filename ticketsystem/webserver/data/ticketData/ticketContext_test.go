@@ -18,7 +18,7 @@ import (
 )
 
 /*
-	Example for the initialization of the ticketData manager.
+	Example for the initialization of the ticket manager.
 */
 func ExampleTicketManager_Initialize() {
 	// Just to clean up after the example:
@@ -31,7 +31,7 @@ func ExampleTicketManager_Initialize() {
 }
 
 /*
-	Example to get a ticketData by its id.
+	Example to get a ticket by its id.
 */
 func ExampleTicketManager_GetTicketById() {
 	ticketContext := TicketManager{}
@@ -46,7 +46,7 @@ func ExampleTicketManager_GetTicketById() {
 }
 
 /*
-	Example to get all ticketData infos.
+	Example to get all ticket infos.
 */
 func ExampleTicketManager_GetAllTicketInfo() {
 	ticketContext := TicketManager{}
@@ -61,7 +61,7 @@ func ExampleTicketManager_GetAllTicketInfo() {
 }
 
 /*
-	Example to create a new ticketData for an internal userData.
+	Example to create a new ticket for an internal userData.
 */
 func ExampleTicketManager_CreateNewTicketForInternalUser() {
 	// Preparation for example:
@@ -83,7 +83,7 @@ func ExampleTicketManager_CreateNewTicketForInternalUser() {
 }
 
 /*
-	Example to create a new ticketData.
+	Example to create a new ticket.
 */
 func ExampleTicketManager_CreateNewTicket() {
 	// Preparation for example:
@@ -105,7 +105,7 @@ func ExampleTicketManager_CreateNewTicket() {
 }
 
 /*
-	Example to append a new message to a ticketData.
+	Example to append a new message to a ticket.
 */
 func ExampleTicketManager_AppendMessageToTicket() {
 	ticketContext := TicketManager{}
@@ -145,7 +145,7 @@ func TestTicketManager_SetEditor_NoPreviousEditor_EditorIsSet(t *testing.T) {
 	testee := TicketManager{}
 	testee.Initialize(folderPath)
 
-	// Ensure, that the ticketData has no editor set:
+	// Ensure, that the ticket has no editor set:
 	_, testTicket := testee.GetTicketById(2)
 	testEditor := userData.User{Mail: "test@test", UserId: 2, FirstName: "first", LastName: "last", Role: userData.RegisteredUser, State: userData.Active}
 	assert.False(t, testTicket.info.HasEditor, "No editor should be set")
@@ -153,7 +153,7 @@ func TestTicketManager_SetEditor_NoPreviousEditor_EditorIsSet(t *testing.T) {
 	// Set the editor:
 	testee.SetEditor(testEditor, testTicket.info.Id)
 
-	// Assert that the ticketData has been updated:
+	// Assert that the ticket has been updated:
 	_, updatedTicket := testee.GetTicketById(testTicket.info.Id)
 	assert.True(t, updatedTicket.info.HasEditor, "Editor should be set")
 	assert.Equal(t, 2, updatedTicket.info.Editor.UserId, "Editor should be set")
@@ -179,7 +179,7 @@ func TestTicketManager_SetEditor_PreviousEditorSet_EditorIsUpdated(t *testing.T)
 	testee := TicketManager{}
 	testee.Initialize(folderPath)
 
-	// Ensure, that the ticketData has a editor set:
+	// Ensure, that the ticket has a editor set:
 	_, testTicket := testee.GetTicketById(3)
 	testEditor := userData.User{Mail: "test@test", UserId: 2, FirstName: "first", LastName: "last", Role: userData.RegisteredUser, State: userData.Active}
 	assert.True(t, testTicket.info.HasEditor, "Editor should be set")
@@ -188,7 +188,7 @@ func TestTicketManager_SetEditor_PreviousEditorSet_EditorIsUpdated(t *testing.T)
 	_, err = testee.SetEditor(testEditor, testTicket.info.Id)
 	assert.Nil(t, err)
 
-	// Assert that the ticketData has been updated:
+	// Assert that the ticket has been updated:
 	_, updatedTicket := testee.GetTicketById(testTicket.info.Id)
 	assert.True(t, updatedTicket.info.HasEditor, "Editor should be set")
 	assert.Equal(t, 2, updatedTicket.info.Editor.UserId, "Editor should be set")
@@ -200,7 +200,7 @@ func TestTicketManager_SetEditor_PreviousEditorSet_EditorIsUpdated(t *testing.T)
 }
 
 /*
-	Removing a editor from a ticketData should set the invalid default editor.
+	Removing a editor from a ticket should set the invalid default editor.
 */
 func TestTicketManager_RemoveEditor(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -214,7 +214,7 @@ func TestTicketManager_RemoveEditor(t *testing.T) {
 	testee := TicketManager{}
 	testee.Initialize(folderPath)
 
-	// Ensure, that the ticketData has a editor set:
+	// Ensure, that the ticket has a editor set:
 	_, testTicket := testee.GetTicketById(3)
 	assert.True(t, testTicket.info.HasEditor, "Editor should be set")
 
@@ -222,7 +222,7 @@ func TestTicketManager_RemoveEditor(t *testing.T) {
 	err = testee.RemoveEditor(testTicket.info.Id)
 	assert.Nil(t, err)
 
-	// Assert that the ticketData has been updated:
+	// Assert that the ticket has been updated:
 	_, updatedTicket := testee.GetTicketById(testTicket.info.Id)
 	assert.False(t, updatedTicket.info.HasEditor, "Editor should not be set")
 	assert.Equal(t, userData.GetInvalidDefaultUser(), updatedTicket.info.Editor, "Editor should be set to invalid id 0")
@@ -234,7 +234,7 @@ func TestTicketManager_RemoveEditor(t *testing.T) {
 }
 
 /*
-	Removing a editor from a non existing ticketData should return a error.
+	Removing a editor from a non existing ticket should return a error.
 */
 func TestTicketManager_RemoveEditor_TicketDoesNotExist(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -250,12 +250,12 @@ func TestTicketManager_RemoveEditor_TicketDoesNotExist(t *testing.T) {
 
 	// Remove the editor:
 	err = testee.RemoveEditor(9999)
-	assert.Equal(t, "ticketData does not exist", err.Error())
+	assert.Equal(t, "ticket does not exist", err.Error())
 }
 
 /*
-	A ticketData can be merged with another ticketData. The messages from the newer tickets will be attached to the older ticketData.
-	The newer ticketData will be deleted.
+	A ticket can be merged with another ticket. The messages from the newer tickets will be attached to the older ticket.
+	The newer ticket will be deleted.
 */
 func TestTicketManager_MergeTickets_TicketsAreMerged(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -293,9 +293,9 @@ func TestTicketManager_MergeTickets_TicketsAreMerged(t *testing.T) {
 
 	// Assert that the messages have been merged:
 	assert.Equal(t, len(firstTicket.messages)+len(secondTicket.messages), len(mergedTicket.messages),
-		"Merged ticketData should contain all messages")
+		"Merged ticket should contain all messages")
 
-	// All messages from the first ticketData should be merged:
+	// All messages from the first ticket should be merged:
 	for _, message := range firstTicket.messages {
 		found := false
 		for _, mergedMessage := range mergedTicket.messages {
@@ -304,9 +304,9 @@ func TestTicketManager_MergeTickets_TicketsAreMerged(t *testing.T) {
 				break
 			}
 		}
-		assert.True(t, found, "Messages from the first ticketData should be merged")
+		assert.True(t, found, "Messages from the first ticket should be merged")
 	}
-	// All messages from the second ticketData should be merged:
+	// All messages from the second ticket should be merged:
 	for _, message := range secondTicket.messages {
 		found := false
 		for _, mergedMessage := range mergedTicket.messages {
@@ -315,18 +315,18 @@ func TestTicketManager_MergeTickets_TicketsAreMerged(t *testing.T) {
 				break
 			}
 		}
-		assert.True(t, found, "Messages from the second ticketData should be merged")
+		assert.True(t, found, "Messages from the second ticket should be merged")
 	}
 	secondTicketFileExists, err := helpers.FilePathExists(secondTicket.filePath)
-	assert.False(t, secondTicketFileExists, "The file for the second ticketData should be deleted")
+	assert.False(t, secondTicketFileExists, "The file for the second ticket should be deleted")
 	assert.Nil(t, err)
 
 	cached, _ := testee.GetTicketById(secondTicket.info.Id)
-	assert.False(t, cached, "The second ticketData should be removed from the cache")
+	assert.False(t, cached, "The second ticket should be removed from the cache")
 }
 
 /*
-	Merging a non existing ticketData should not be possible. A error should be returned.
+	Merging a non existing ticket should not be possible. A error should be returned.
 */
 func TestTicketManager_MergeTickets_TicketDoesNotExist(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -341,16 +341,16 @@ func TestTicketManager_MergeTickets_TicketDoesNotExist(t *testing.T) {
 	testee.Initialize(folderPath)
 
 	success, err := testee.MergeTickets(9999, 1)
-	assert.False(t, success, "Merging a non existing ticketData should not be possible")
-	assert.Equal(t, "ticketData not found", err.Error())
+	assert.False(t, success, "Merging a non existing ticket should not be possible")
+	assert.Equal(t, "ticket not found", err.Error())
 
 	success, err = testee.MergeTickets(1, 9999)
-	assert.False(t, success, "Merging a non existing ticketData should not be possible")
-	assert.Equal(t, "ticketData not found", err.Error())
+	assert.False(t, success, "Merging a non existing ticket should not be possible")
+	assert.Equal(t, "ticket not found", err.Error())
 }
 
 /*
-	Merging a ticketData without a editor should not be possible. A error should be returned.
+	Merging a ticket without a editor should not be possible. A error should be returned.
 */
 func TestTicketManager_MergeTickets_NoEditorSet(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -365,12 +365,12 @@ func TestTicketManager_MergeTickets_NoEditorSet(t *testing.T) {
 	testee.Initialize(folderPath)
 
 	success, err := testee.MergeTickets(1, 2)
-	assert.False(t, success, "Merging a ticketData without editor should not be possible")
-	assert.Equal(t, "can not merge ticketData if there is no editor", err.Error())
+	assert.False(t, success, "Merging a ticket without editor should not be possible")
+	assert.Equal(t, "can not merge ticket if there is no editor", err.Error())
 
 	success, err = testee.MergeTickets(2, 1)
-	assert.False(t, success, "Merging a ticketData without editor should not be possible")
-	assert.Equal(t, "can not merge ticketData if there is no editor", err.Error())
+	assert.False(t, success, "Merging a ticket without editor should not be possible")
+	assert.Equal(t, "can not merge ticket if there is no editor", err.Error())
 }
 
 /*
@@ -413,12 +413,12 @@ func TestTicketManager_MergeTickets_MergeTicketWithItself(t *testing.T) {
 	testee.Initialize(folderPath)
 
 	success, err := testee.MergeTickets(1, 1)
-	assert.False(t, success, "Merging a ticketData with itself should not be possible")
-	assert.Equal(t, "can not merge a ticketData with itself", err.Error())
+	assert.False(t, success, "Merging a ticket with itself should not be possible")
+	assert.Equal(t, "can not merge a ticket with itself", err.Error())
 }
 
 /*
-	Getting the ticketData infos when no tickets exists, should return a empty array.
+	Getting the ticket infos when no tickets exists, should return a empty array.
 */
 func TestTicketManager_GetAllTicketInfo_NoTickets_EmptyArrayReturned(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -433,7 +433,7 @@ func TestTicketManager_GetAllTicketInfo_NoTickets_EmptyArrayReturned(t *testing.
 }
 
 /*
-	Getting the open ticketData infos when ticketData exist, should return the infos for the open tickets.
+	Getting the open ticket infos when ticket exist, should return the infos for the open tickets.
 */
 func TestTicketManager_GetAllOpenTickets_TicketsExist_TicketInfoReturned(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -451,7 +451,7 @@ func TestTicketManager_GetAllOpenTickets_TicketsExist_TicketInfoReturned(t *test
 }
 
 /*
-	Getting the ticketData infos for open tickets when no tickets exists, should return a empty array.
+	Getting the ticket infos for open tickets when no tickets exists, should return a empty array.
 */
 func TestTicketManager_GetAllOpenTickets_NoTickets_EmptyArrayReturned(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -556,7 +556,7 @@ func TestTicketManager_GetAllTicketInfo_TicketsExist_TicketInfoReturned(t *testi
 
 	// Assert, that the correct data is returned:
 	for _, v := range tickets {
-		// Compare ticketData 4:
+		// Compare ticket 4:
 		if v.Id == 4 {
 			assert.Equal(t, "TestTitle4", v.Title)
 			assert.Equal(t, "peter@test.de", v.Editor.Mail)
@@ -603,8 +603,8 @@ func TestTicketManager_CreateNewTicketsForInternalUser_ConcurrentAccess_AllCreat
 	waitGroup.Wait()
 	tickets := testee.GetAllTicketInfo()
 
-	assert.Equal(t, numberOfCreatedTickets, len(tickets), "all ticketData info should be cached")
-	// Check if ticketData data is correct
+	assert.Equal(t, numberOfCreatedTickets, len(tickets), "all ticket info should be cached")
+	// Check if ticket data is correct
 	for i := 0; i < numberOfCreatedTickets; i++ {
 		id := strconv.Itoa(i)
 		expectedCreator := Creator{Mail: id + "@web.de", FirstName: "firstName" + id, LastName: "lastName" + id}
@@ -618,7 +618,7 @@ func TestTicketManager_CreateNewTicketsForInternalUser_ConcurrentAccess_AllCreat
 			}
 		}
 
-		assert.True(t, found, "ticketData has not been found")
+		assert.True(t, found, "ticket has not been found")
 	}
 }
 
@@ -650,8 +650,8 @@ func TestTicketManager_CreateNewTickets_ConcurrentAccess_AllCreated(t *testing.T
 	waitGroup.Wait()
 	tickets := testee.GetAllTicketInfo()
 
-	assert.Equal(t, numberOfCreatedTickets, len(tickets), "all ticketData info should be cached")
-	// Check if ticketData data is correct
+	assert.Equal(t, numberOfCreatedTickets, len(tickets), "all ticket info should be cached")
+	// Check if ticket data is correct
 	for i := 0; i < numberOfCreatedTickets; i++ {
 		id := strconv.Itoa(i)
 		expectedCreator := Creator{Mail: id + "@web.de", FirstName: "Alex" + id, LastName: "Wagner" + id}
@@ -665,12 +665,12 @@ func TestTicketManager_CreateNewTickets_ConcurrentAccess_AllCreated(t *testing.T
 			}
 		}
 
-		assert.True(t, found, "ticketData has not been found")
+		assert.True(t, found, "ticket has not been found")
 	}
 }
 
 /*
-	Creating a ticketData should really create it.
+	Creating a ticket should really create it.
 */
 func TestTicketManager_CreateNewTicket_TicketCreated(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -685,11 +685,11 @@ func TestTicketManager_CreateNewTicket_TicketCreated(t *testing.T) {
 	newTicket, err := testee.CreateNewTicket("newTestTitle", creator, initialMessage)
 
 	exists, createdTicket := testee.GetTicketById(newTicket.info.Id)
-	assert.True(t, exists, "the ticketData should be created")
+	assert.True(t, exists, "the ticket should be created")
 
 	// Validate that the file is created:
 	exists, _ = helpers.FilePathExists(createdTicket.filePath)
-	assert.True(t, exists, "the ticketData file should be created")
+	assert.True(t, exists, "the ticket file should be created")
 
 	storedTicket, err := readTicketFromFile(createdTicket.filePath)
 
@@ -697,7 +697,7 @@ func TestTicketManager_CreateNewTicket_TicketCreated(t *testing.T) {
 }
 
 /*
-	Creating a ticketData for a internal userData should really create the ticketData.
+	Creating a ticket for a internal userData should really create the ticket.
 */
 func TestTicketManager_CreateNewTicketForInternalUser_TicketCreated(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -712,11 +712,11 @@ func TestTicketManager_CreateNewTicketForInternalUser_TicketCreated(t *testing.T
 	newTicket, err := testee.CreateNewTicketForInternalUser("newTestTitle", createdUser, initialMessage)
 
 	exists, createdTicket := testee.GetTicketById(newTicket.info.Id)
-	assert.True(t, exists, "the ticketData should be created")
+	assert.True(t, exists, "the ticket should be created")
 
 	// Validate that the file is created:
 	exists, _ = helpers.FilePathExists(createdTicket.filePath)
-	assert.True(t, exists, "the ticketData file should be created")
+	assert.True(t, exists, "the ticket file should be created")
 
 	storedTicket, err := readTicketFromFile(createdTicket.filePath)
 
@@ -724,7 +724,7 @@ func TestTicketManager_CreateNewTicketForInternalUser_TicketCreated(t *testing.T
 }
 
 /*
-	Initializing the ticketData manager with existing tickets, should load the ticketData.
+	Initializing the ticket manager with existing tickets, should load the ticket.
 */
 func TestTicketManager_Initialize_TicketsExist_TicketsAreLoaded(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -742,7 +742,7 @@ func TestTicketManager_Initialize_TicketsExist_TicketsAreLoaded(t *testing.T) {
 }
 
 /*
-	Initializing the ticketData manager when no ticketData exist, should initialize without problems.
+	Initializing the ticket manager when no ticket exist, should initialize without problems.
 */
 func TestTicketManager_Initialize_NoTicketsExist_Initialized(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -757,7 +757,7 @@ func TestTicketManager_Initialize_NoTicketsExist_Initialized(t *testing.T) {
 }
 
 /*
-	Initializing the ticketData manager with a invalid path, should return an error.
+	Initializing the ticket manager with a invalid path, should return an error.
 */
 func TestTicketManager_Initialize_InvalidFolderPath(t *testing.T) {
 	testee := TicketManager{}
@@ -766,7 +766,7 @@ func TestTicketManager_Initialize_InvalidFolderPath(t *testing.T) {
 }
 
 /*
-	Appending a message to a ticketData should append the message to the ticketData.
+	Appending a message to a ticket should append the message to the ticket.
 */
 func TestTicketManager_AppendMessageToTicket_MessageAppended(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -796,7 +796,7 @@ func TestTicketManager_AppendMessageToTicket_MessageAppended(t *testing.T) {
 }
 
 /*
-	Appending a message to a non existing ticketData should return a error.
+	Appending a message to a non existing ticket should return a error.
 */
 func TestTicketManager_AppendMessageToTicket_TicketDoesNotExist_ErrorReturned(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -809,12 +809,12 @@ func TestTicketManager_AppendMessageToTicket_TicketDoesNotExist_ErrorReturned(t 
 	message := MessageEntry{Id: 9999, CreatorMail: "max@muster.de", CreationTime: time.Now(),
 		Content: "This is a appended message", OnlyInternal: false}
 	_, err = testee.AppendMessageToTicket(999, message)
-	assert.Equal(t, "ticketData does not exist", err.Error())
+	assert.Equal(t, "ticket does not exist", err.Error())
 
 }
 
 /*
-	Setting the state of the ticketData should change the state in memory and in the persisted ticketData.
+	Setting the state of the ticket should change the state in memory and in the persisted ticket.
 */
 func TestTicketManager_SetTicketState_StateUpdated(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -828,7 +828,7 @@ func TestTicketManager_SetTicketState_StateUpdated(t *testing.T) {
 	testee := TicketManager{}
 	testee.Initialize(folderPath)
 
-	// Ensure, that the ticketData has state open set:
+	// Ensure, that the ticket has state open set:
 	_, testTicket := testee.GetTicketById(2)
 	assert.Equal(t, Open, testTicket.info.State, "State should be set to open")
 
@@ -836,7 +836,7 @@ func TestTicketManager_SetTicketState_StateUpdated(t *testing.T) {
 	_, err = testee.SetTicketState(2, Closed)
 	assert.Nil(t, err)
 
-	// Assert that the ticketData has been updated:
+	// Assert that the ticket has been updated:
 	_, updatedTicket := testee.GetTicketById(testTicket.info.Id)
 	assert.Equal(t, Closed, updatedTicket.info.State, "State should now be set to closed")
 
@@ -846,7 +846,7 @@ func TestTicketManager_SetTicketState_StateUpdated(t *testing.T) {
 }
 
 /*
-	Setting the state of a non existing ticketData should return a error..
+	Setting the state of a non existing ticket should return a error..
 */
 func TestTicketManager_SetTicketState_TicketDoesNotExist(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()
@@ -862,7 +862,7 @@ func TestTicketManager_SetTicketState_TicketDoesNotExist(t *testing.T) {
 
 	// Update the state:
 	_, err = testee.SetTicketState(9999, Closed)
-	assert.Equal(t, "ticketData does not exist", err.Error())
+	assert.Equal(t, "ticket does not exist", err.Error())
 }
 
 /*
@@ -870,7 +870,7 @@ func TestTicketManager_SetTicketState_TicketDoesNotExist(t *testing.T) {
 */
 func writeTestDataToFolder(folderPath string) error {
 	sampleData := []byte(firstTestTicket)
-	// First ticketData: id 1
+	// First ticket: id 1
 	sampleDataPath := path.Join(folderPath, "1.json")
 	os.MkdirAll(filepath.Dir(sampleDataPath), 0644)
 	err := ioutil.WriteFile(sampleDataPath, sampleData, 0644)
@@ -878,7 +878,7 @@ func writeTestDataToFolder(folderPath string) error {
 		return errors.Wrap(err, "could not write test data file")
 	}
 
-	// Second ticketData: id 2
+	// Second ticket: id 2
 	sampleData = []byte(secondTestTicket)
 	sampleDataPath = path.Join(folderPath, "2.json")
 	os.MkdirAll(filepath.Dir(sampleDataPath), 0644)
@@ -887,7 +887,7 @@ func writeTestDataToFolder(folderPath string) error {
 		return errors.Wrap(err, "could not write test data file")
 	}
 
-	// Third ticketData: id 3
+	// Third ticket: id 3
 	sampleData = []byte(thirdTestTicket)
 	sampleDataPath = path.Join(folderPath, "3.json")
 	os.MkdirAll(filepath.Dir(sampleDataPath), 0644)
@@ -896,7 +896,7 @@ func writeTestDataToFolder(folderPath string) error {
 		return errors.Wrap(err, "could not write test data file")
 	}
 
-	// Fourth ticketData: id 4
+	// Fourth ticket: id 4
 	sampleData = []byte(fourthTestTicket)
 	sampleDataPath = path.Join(folderPath, "4.json")
 	os.MkdirAll(filepath.Dir(sampleDataPath), 0644)
@@ -923,7 +923,7 @@ func prepareTempDirectory() (string, string, error) {
 }
 
 /*
-	Read a ticketData from a given file.
+	Read a ticket from a given file.
 */
 func readTicketFromFile(filePath string) (*Ticket, error) {
 	ticket, err := initializeFromFile(filePath)
@@ -934,14 +934,14 @@ func readTicketFromFile(filePath string) (*Ticket, error) {
 }
 
 /*
-	Asserting a ticketData.
+	Asserting a ticket.
 */
 func assertTicket(t *testing.T, expected *Ticket, actual *Ticket) {
 	// Id is set, so this can not be compared:
 	// FilePath can not be compared
 	// Creation- and LastModificationTime can not be compared
 
-	// Compare ticketData info
+	// Compare ticket info
 	assert.Equal(t, expected.info.Title, actual.info.Title, "the title should be stored")
 	assert.Equal(t, expected.info.Editor, actual.info.Editor, "the editor should be stored")
 	assert.Equal(t, expected.info.HasEditor, actual.info.HasEditor, "the hasEditor field should be stored")

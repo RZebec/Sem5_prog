@@ -55,8 +55,10 @@ func (l RegisterHandler) ServeHTTPPostRegisteringData(w http.ResponseWriter, r *
 
 		if success {
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			l.Logger.LogInfo("RegisterHandler","User registered" )
 		} else {
 			http.Redirect(w, r, "/register?IsRegisteringFailed=true", http.StatusSeeOther)
+			l.Logger.LogInfo("RegisterHandler","User registration failed" )
 		}
 	}
 }

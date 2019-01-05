@@ -12,7 +12,7 @@ type Creator struct {
 }
 
 /*
-	Convert a userData to a creator.
+	Convert a user to a creator.
 */
 func ConvertToCreator(user userData.User) Creator {
 	return Creator{Mail: user.Mail, FirstName: user.FirstName, LastName: user.LastName}

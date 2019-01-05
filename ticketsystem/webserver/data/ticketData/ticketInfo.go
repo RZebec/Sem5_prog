@@ -6,7 +6,7 @@ import (
 )
 
 /*
-	Containing only general information about a ticketData.
+	Containing only general information about a ticket.
 */
 type TicketInfo struct {
 	Id                   int
