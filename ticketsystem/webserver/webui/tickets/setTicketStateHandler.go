@@ -90,7 +90,7 @@ func (t SetTicketStateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 			}
 			// Build message for history:
 			messageEntry := ticketData.MessageEntry{CreatorMail: authenticatedUser.Mail, OnlyInternal: false,
-				Content: "Set new state: " + ticketData.Processing.String(), CreationTime: time.Now()}
+				Content: "Set new state: " + newState.String(), CreationTime: time.Now()}
 			_, err = t.TicketContext.AppendMessageToTicket(ticketId, messageEntry)
 			if err != nil {
 				t.Logger.LogError("SetTicketStateHandler", err)

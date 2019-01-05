@@ -390,8 +390,13 @@ func (t *TicketManager) readExistingTickets() error {
 	Remove an int from an int array.
 */
 func remove(s []int, i int) []int {
-	s[len(s)-1], s[i] = s[i], s[len(s)-1]
-	return s[:len(s)-1]
+	var newArray []int
+	for _, value := range s{
+		if value != i {
+			newArray = append(newArray, value)
+		}
+	}
+	return newArray
 }
 
 /*
