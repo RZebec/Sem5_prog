@@ -185,9 +185,9 @@ func TestApiClient_ReceiveMails_MailsReturned(t *testing.T) {
 		jsonData, err := json.Marshal(testMails)
 		if err != nil {
 			rw.WriteHeader(500)
+			return
 		}
 		rw.Write(jsonData)
-		rw.WriteHeader(200)
 	}))
 	// Close the server when test finishes
 	defer server.Close()
@@ -214,7 +214,7 @@ func TestApiClient_ReceiveMails_MailsReturned(t *testing.T) {
 /*
 	Sending acknowledgments to the api should work.
 */
-func TestApiClient_AcknowledgeMails_ReurnsOk(t *testing.T) {
+func TestApiClient_AcknowledgeMails_ReturnsOk(t *testing.T) {
 	testAcks := getTestAcknowledgements()
 
 	// The handler function will assert the payload and is passed to the testserver:
