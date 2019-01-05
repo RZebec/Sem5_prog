@@ -127,6 +127,9 @@ var centerMain = `
 		color: red;
 	}`
 
+/*
+	The table CSS file.
+*/
 var tableStyle = `
     
     h2 {
@@ -174,6 +177,9 @@ var tableStyle = `
         background-color: rgba(76, 175, 79, 0.466);
     }`
 
+/*
+	The large main CSS file.
+*/
 var largeMainStyle = `
     
     div.main {
@@ -186,6 +192,9 @@ var largeMainStyle = `
         margin-top: 1.5em;
     }`
 
+/*
+	The message CSS file.
+*/
 var messageStyle = `
     
     input[type=text], input[type=password] {
@@ -217,6 +226,7 @@ var messageStyle = `
 	.error-message{
 		color: red;
 	}`
+
 /*
 	The handler for the style(css) files.
 */

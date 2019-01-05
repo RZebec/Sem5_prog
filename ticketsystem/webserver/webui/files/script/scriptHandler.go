@@ -47,6 +47,9 @@ var loginScript = `
     	}
 	};`
 
+/*
+	The Javascript file for the register system.
+*/
 var registerScript = `
 
 	function validate() {
@@ -109,6 +112,9 @@ var registerScript = `
     	}
 	};`
 
+/*
+	The Javascript file for the set api key system.
+*/
 var apiKeyScript = `
 
 	function validate() {
@@ -128,6 +134,9 @@ var apiKeyScript = `
     	}
 	};`
 
+/*
+	The Javascript file for the user settings system.
+*/
 var userSettingsScript = `
 
 	function validate() {
@@ -175,6 +184,9 @@ var userSettingsScript = `
     	}
 	};`
 
+/*
+	The Javascript file for the create ticket system.
+*/
 var createTicketScript = `
 
 	function validate() {
@@ -238,6 +250,9 @@ var createTicketScript = `
     	}
 	};`
 
+/*
+	The Javascript file for the message append system.
+*/
 var messageAppendScript = `
 
 	function validate() {
