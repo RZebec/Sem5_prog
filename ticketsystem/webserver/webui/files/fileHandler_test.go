@@ -18,7 +18,7 @@ func TestFilesHandler_Script(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	filesHandler := FilesHandler{}
+	filesHandler := FileHandler{}
 
 	// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
 	rr := httptest.NewRecorder()
@@ -53,7 +53,7 @@ func TestFilesHandler_Style(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	filesHandler := FilesHandler{}
+	filesHandler := FileHandler{}
 
 	// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
 	rr := httptest.NewRecorder()

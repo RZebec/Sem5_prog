@@ -31,7 +31,7 @@ type HandlerManager struct {
 
 func (handlerManager *HandlerManager) RegisterHandlers() {
 
-	filesHandler := files.FilesHandler{}
+	filesHandler := files.FileHandler{}
 	http.HandleFunc("/files/", filesHandler.ServeHTTP)
 
 	indexPageHandler := index.IndexPageHandler{Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
