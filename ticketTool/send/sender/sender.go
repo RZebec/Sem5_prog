@@ -9,6 +9,9 @@ import (
 	"strconv"
 )
 
+/*
+	A Sender to send mails.
+ */
 type Sender struct {
 	io            inputOutput.InputOutput
 	sendConfig    configuration.Configuration
@@ -16,6 +19,9 @@ type Sender struct {
 	mailGenerator mailGeneration.MailGeneration
 }
 
+/*
+	Create a sender.
+ */
 func CreateSender(config configuration.Configuration, io inputOutput.InputOutput,
 	apiClient client.Client, mailGen mailGeneration.MailGeneration) Sender {
 
@@ -24,10 +30,10 @@ func CreateSender(config configuration.Configuration, io inputOutput.InputOutput
 }
 
 /*
-query if you write an explicit mail or let generate a number of mails.
-If you write a explicit Mail you can decide the subject, the content and who is sender
-If you write a random Mail you can decide how many Mails you wanna transmit.
-The SubjectLength and Contentlength is Hardcoded with, SL=10,CL=50
+	Query if you write an explicit mail or let generate a number of mails.
+	If you write a explicit Mail you can decide the subject, the content and who is sender
+	If you write a random Mail you can decide how many Mails you wanna transmit.
+	The SubjectLength and Contentlength is Hardcoded with, SL=10,CL=50
 */
 func (s *Sender) Run() {
 	s.io.Print("write explicit mail or random mails ? (e/r):")
@@ -57,8 +63,8 @@ func (s *Sender) Run() {
 }
 
 /*
-this is the little function which need your Mails and send this to the Server
-if while transmition occured a failure, it is handeled here
+	This is the little function which need your Mails and send this to the Server
+	if while transmition occured a failure, it is handeled here
 */
 func (s *Sender) httpRequest(eMails []mailData.Mail) {
 	s.io.Print("Start HTTPS-Request")
@@ -69,7 +75,7 @@ func (s *Sender) httpRequest(eMails []mailData.Mail) {
 }
 
 /*
-that you can only entry Numbers, the entry must be validate
+	That you can only entry Numbers, the entry must be validate
 */
 func (s *Sender) entryNumberOfRandomMails() (int, error) {
 	s.io.Print("Entry number of Random Mails: ")

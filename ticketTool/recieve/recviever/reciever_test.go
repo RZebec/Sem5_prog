@@ -49,7 +49,7 @@ func Test_AcknowledgeAll(t *testing.T) {
 	mockedIO := new(inputOutput.MockedInputOutput)
 	mockedApiClient := new(client.MockedClient)
 	mockedConfirm := new(confirm.MockedConfirm)
-	mockedStorage := new(acknowledgementStorage.MockedAcknowledementStorage)
+	mockedStorage := new(acknowledgementStorage.MockedAcknowledgementStorage)
 
 	mockedApiClient.On("ReceiveMails").Return(testMails, nil)
 	mockedIO.On("Print", strconv.Itoa(len(testMails))+" Mails are coming from Server")
@@ -82,7 +82,7 @@ func Test_AcknowledgeSpecify(t *testing.T) {
 	mockedIO := new(inputOutput.MockedInputOutput)
 	mockedApiClient := new(client.MockedClient)
 	mockedConfirm := new(confirm.MockedConfirm)
-	mockedStorage := new(acknowledgementStorage.MockedAcknowledementStorage)
+	mockedStorage := new(acknowledgementStorage.MockedAcknowledgementStorage)
 
 	mockedApiClient.On("ReceiveMails").Return(testMails, nil)
 	mockedIO.On("Print", strconv.Itoa(len(testMails))+" Mails are coming from Server")
@@ -116,7 +116,7 @@ func Test_AcknowledgeStop(t *testing.T) {
 	mockedIO := new(inputOutput.MockedInputOutput)
 	mockedApiClient := new(client.MockedClient)
 	mockedConfirm := new(confirm.MockedConfirm)
-	mockedStorage := new(acknowledgementStorage.MockedAcknowledementStorage)
+	mockedStorage := new(acknowledgementStorage.MockedAcknowledgementStorage)
 
 	mockedApiClient.On("ReceiveMails").Return(getTestMails(), nil)
 	mockedIO.On("Print", strconv.Itoa(len(getTestMails()))+" Mails are coming from Server")
@@ -146,7 +146,7 @@ func TestRecieveMailsError(t *testing.T) {
 	mockedIO := new(inputOutput.MockedInputOutput)
 	mockedApiClient := new(client.MockedClient)
 	mockedConfirm := new(confirm.MockedConfirm)
-	mockedStorage := new(acknowledgementStorage.MockedAcknowledementStorage)
+	mockedStorage := new(acknowledgementStorage.MockedAcknowledgementStorage)
 
 	mockedApiClient.On("ReceiveMails").Return(testMails, errors.New(""))
 	mockedIO.On("Print", "Transmission is going wrong. Retry? (n,press any key)")

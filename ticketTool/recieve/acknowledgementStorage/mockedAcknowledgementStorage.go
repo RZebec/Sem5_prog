@@ -5,31 +5,43 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-type MockedAcknowledementStorage struct {
+/*
+	A mocked acknowledgement storage.
+ */
+type MockedAcknowledgementStorage struct {
 	mock.Mock
 }
 
-func (m *MockedAcknowledementStorage)AppendAcknowledgements(acknowledge []mailData.Acknowledgment)error{
+/*
+	A mocked function.
+ */
+func (m *MockedAcknowledgementStorage)AppendAcknowledgements(acknowledge []mailData.Acknowledgment)error{
 	args:=m.Called(acknowledge)
 	return args.Error(0)
 }
 
-func (m *MockedAcknowledementStorage) DeleteAcknowledges(delete []mailData.Acknowledgment) error {
+/*
+	A mocked function.
+ */
+func (m *MockedAcknowledgementStorage) DeleteAcknowledges(delete []mailData.Acknowledgment) error {
 	args:=m.Called(delete)
 	return args.Error(0)
 }
 
-func (m *MockedAcknowledementStorage) ReadAcknowledgements() ([]mailData.Acknowledgment, error) {
+func (m *MockedAcknowledgementStorage) ReadAcknowledgements() ([]mailData.Acknowledgment, error) {
 	args:=m.Called()
 	return args.Get(0).([]mailData.Acknowledgment),args.Error(1)
 }
 
-func (m *MockedAcknowledementStorage) readDataFromFile() error{
+func (m *MockedAcknowledgementStorage) readDataFromFile() error{
 	args:=m.Called()
 	return args.Error(0)
 }
 
-func (m *MockedAcknowledementStorage) writeDataToFile() error {
+/*
+	A mocked function.
+ */
+func (m *MockedAcknowledgementStorage) writeDataToFile() error {
 	args:=m.Called()
 	return args.Error(0)
 }

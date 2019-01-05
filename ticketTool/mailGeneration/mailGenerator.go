@@ -17,24 +17,30 @@ var senders = []string{"test1@gmx.de", "Oberheld.asdf@web.de", "horstChristianAn
 	"ad.du@ff.de", "kakhaufen@lang.de", "abcbnm.defg@hij.de", "blabla@bla.de", "laborGrube@saft.de",
 	"orange@blau.de", "hohlfruchtigerSaft@haze.de"}
 
+/*
+	A interface for the mail generation.
+ */
 type MailGeneration interface {
 	RandomMail(n int, subjectLength int, contentLength int) []mailData.Mail
 	ExplicitMail() []mailData.Mail
 }
 
+/*
+	A mail generator.
+ */
 type MailGenerator struct {
 	io inputOutput.InputOutput
 }
 
 /*
-create Generator
+	Create Generator
 */
 func CreateMailGenerator(io inputOutput.InputOutput) MailGenerator {
 	return MailGenerator{io: io}
 }
 
 /*
-create Random Mails by number Of Mails n, subjectLength and contentlength
+	Create Random Mails by number Of Mails n, subjectLength and contentlength
 */
 func (m *MailGenerator) RandomMail(n int, subjectLength int, contentLength int) []mailData.Mail {
 	mails := make([]mailData.Mail, n)
@@ -50,7 +56,9 @@ func (m *MailGenerator) RandomMail(n int, subjectLength int, contentLength int) 
 	return mails
 }
 
-//get send and recieve mailadress back
+/*
+	Get two random mail addresses.
+ */
 func generateTwoMailAdresses_FromRandomPool() (string, string) {
 	for true {
 		adressOne := senders[rand.Intn(len(senders))]
