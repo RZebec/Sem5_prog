@@ -47,7 +47,7 @@ func (l LoginHandler) ServeHTTPPostLoginData(w http.ResponseWriter, r *http.Requ
 		success, token, err := l.UserContext.Login(userName, password)
 
 		if err != nil {
-			l.Logger.LogError("Login", err)
+			l.Logger.LogError("LoginHandler", err)
 		}
 
 		if success {
@@ -82,7 +82,7 @@ func (l LoginHandler) ServeHTTPGetLoginPage(w http.ResponseWriter, r *http.Reque
 		isLoginFailed, parseError := strconv.ParseBool(queryValue)
 
 		if parseError != nil && queryValue != "" {
-			l.Logger.LogError("Login", parseError)
+			l.Logger.LogError("LoginHandler", parseError)
 		}
 
 		data := loginPageData{
