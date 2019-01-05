@@ -13,8 +13,7 @@ var TicketExplorerPage = `
 	
 	{{ define "Content" }}
 		<div class="content">
-			<div class="container">
-				<div class="main">
+				<div class="container">
 					<table>
 						<tr>
 							<th>
@@ -95,7 +94,6 @@ var TicketExplorerPage = `
 						{{end}}
 					</table>
 				</div>
-			</div>
 		</div>
 	</body>
 
