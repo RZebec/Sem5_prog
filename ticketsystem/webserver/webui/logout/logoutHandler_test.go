@@ -11,7 +11,7 @@ import (
 )
 
 /*
-	Logout of a logged in userData should be possible.
+	Logout of a logged in user should be possible.
 */
 func TestLogoutHandler_ServeHTTP_UserWasLoggedIn(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
@@ -44,7 +44,7 @@ func TestLogoutHandler_ServeHTTP_UserWasLoggedIn(t *testing.T) {
 }
 
 /*
-	Logout without a logged in userData should be possible.
+	Logout without a logged in user should be possible.
 */
 func TestLogoutHandler_ServeHTTP_UserWasNotLoggedIn(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)

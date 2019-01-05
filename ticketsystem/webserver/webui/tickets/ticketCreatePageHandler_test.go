@@ -15,7 +15,7 @@ import (
 )
 
 /*
-	A Valid Http Request for logged In userData.
+	A Valid Http Request for logged In user.
 */
 func TestTicketCreatePageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
@@ -139,7 +139,7 @@ func TestTicketCreatePageHandler_ServeHTTP_ContextError_RenderError(t *testing.T
 }
 
 /*
-	If the logged in userData doesn´t exist it should result in a 500.
+	If the logged in user doesn´t exist it should result in a 500.
 */
 func TestTicketCreatePageHandler_ServeHTTP_UserDoesNotExist(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)

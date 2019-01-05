@@ -42,7 +42,7 @@ func getTestHandlerWithMockedData() IncomingMailHandler {
 }
 
 /*
-	Handling a mail to a existing ticketData should be able.
+	Handling a mail to a existing ticket should be able.
 */
 func TestIncomingMailHandler_handleExistingTicketMail(t *testing.T) {
 	testee := getTestHandlerWithMockedData()
@@ -62,14 +62,14 @@ func TestIncomingMailHandler_handleExistingTicketMail(t *testing.T) {
 
 	mockedTicketContext.AssertExpectations(t)
 	// Assert that the parameter has been correctly set:
-	assert.Equal(t, ticketId, mockedTicketContext.Calls[0].Arguments[0], "The correct ticketData id should be provided")
+	assert.Equal(t, ticketId, mockedTicketContext.Calls[0].Arguments[0], "The correct ticket id should be provided")
 
 	assertMessageEntryIgnoringTime(t, testee.buildMessageEntry(testMail),
 		mockedTicketContext.Calls[0].Arguments[1].(ticketData.MessageEntry))
 }
 
 /*
-	Handling a mail from a registered userData should be possible.
+	Handling a mail from a registered user should be possible.
 */
 func TestIncomingMailHandler_handleNewTicketMail_RegisteredUser(t *testing.T) {
 	testee := getTestHandlerWithMockedData()
@@ -100,7 +100,7 @@ func TestIncomingMailHandler_handleNewTicketMail_RegisteredUser(t *testing.T) {
 }
 
 /*
-	Handling a mail from a sender which is no registered userData should be able.
+	Handling a mail from a sender which is no registered user should be able.
 */
 func TestIncomingMailHandler_handleNewTicketMail_SenderIsNoUser(t *testing.T) {
 	testee := getTestHandlerWithMockedData()
@@ -130,7 +130,7 @@ func TestIncomingMailHandler_handleNewTicketMail_SenderIsNoUser(t *testing.T) {
 }
 
 /*
-	Handling a mail from a userData which is registered, should be possible.
+	Handling a mail from a user which is registered, should be possible.
 */
 func TestIncomingMailHandler_handleIncomingMails_SenderIsAUser(t *testing.T) {
 	testee := getTestHandlerWithMockedData()
@@ -162,7 +162,7 @@ func TestIncomingMailHandler_handleIncomingMails_SenderIsAUser(t *testing.T) {
 }
 
 /*
-	Handling a mail for when the sender is no userData, should be possible.
+	Handling a mail for when the sender is no user, should be possible.
 */
 func TestIncomingMailHandler_handleIncomingMails_SenderIsNoUser(t *testing.T) {
 	testee := getTestHandlerWithMockedData()
@@ -193,7 +193,7 @@ func TestIncomingMailHandler_handleIncomingMails_SenderIsNoUser(t *testing.T) {
 }
 
 /*
-	A incoming mail for a existing ticketData should notify the creator of the ticketData.
+	A incoming mail for a existing ticket should notify the creator of the ticket.
 */
 func TestIncomingMailHandler_handleIncomingMails_TicketExists_MailSent(t *testing.T) {
 	testee := getTestHandlerWithMockedData()
@@ -208,7 +208,7 @@ func TestIncomingMailHandler_handleIncomingMails_TicketExists_MailSent(t *testin
 		Return(&existingTicket, nil)
 
 	mockedMailContext := new(mockedForTests.MockedMailContext)
-	expectedSubject := "New Entry for your ticketData: " + html.EscapeString(testMail.Subject)
+	expectedSubject := "New Entry for your ticket: " + html.EscapeString(testMail.Subject)
 	expectedMailContent := mailData.BuildAppendMessageNotificationMailContent(existingTicket.Info().Creator.Mail, testMail.Sender, testMail.Content)
 
 	mockedMailContext.On("CreateNewOutgoingMail", "", expectedSubject, expectedMailContent).Return(nil)
@@ -295,7 +295,7 @@ func TestIncomingMailHandler_ServeHTTP_MailFiltered(t *testing.T) {
 }
 
 /*
-	Assert a MessageEntry ignoring the autonatically set timestamp.
+	Assert a MessageEntry ignoring the automatically set timestamp.
 */
 func assertMessageEntryIgnoringTime(t *testing.T, expected ticketData.MessageEntry, actual ticketData.MessageEntry) {
 	assert.Equal(t, expected.Content, actual.Content, "Content should be equal")

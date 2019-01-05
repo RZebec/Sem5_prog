@@ -46,7 +46,7 @@ func (t ClosedTicketsExplorerPageHandler) ServeHTTP(w http.ResponseWriter, r *ht
 		}
 
 		sort.Slice(tickets, func(i, j int) bool {
-			return tickets[i].CreationTime.Before(tickets[j].CreationTime)
+			return tickets[i].CreationTime.After(tickets[j].CreationTime)
 		})
 
 		data := closedTicketsExplorerPageData{

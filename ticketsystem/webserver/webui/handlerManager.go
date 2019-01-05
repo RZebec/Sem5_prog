@@ -128,7 +128,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	ticketViewPageHandlerWrapper.Next = ticketViewPageHandler
 	ticketViewPageHandlerWrapper.Logger = handlerManager.Logger
 	ticketViewPageHandlerWrapper.UserContext = handlerManager.UserContext
-	http.HandleFunc("/ticketData/", ticketViewPageHandlerWrapper.ServeHTTP)
+	http.HandleFunc("/ticket/", ticketViewPageHandlerWrapper.ServeHTTP)
 
 	ticketAppendMessageHandler := tickets.TicketAppendMessageHandler{TicketContext: handlerManager.TicketContext,
 		UserContext: handlerManager.UserContext, MailContext: handlerManager.MailContext, Logger: handlerManager.Logger}
@@ -202,5 +202,5 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	ticketEditPageHandlerWrapper.Next = ticketEditPageHandler
 	ticketEditPageHandlerWrapper.Logger = handlerManager.Logger
 	ticketEditPageHandlerWrapper.UserContext = handlerManager.UserContext
-	http.HandleFunc("/ticketData/ticket_edit/", ticketEditPageHandlerWrapper.ServeHTTP)
+	http.HandleFunc("/ticket/ticket_edit/", ticketEditPageHandlerWrapper.ServeHTTP)
 }

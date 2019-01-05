@@ -60,7 +60,7 @@ func (t TicketCreatePageHandler) ServeHTTP(w http.ResponseWriter, r *http.Reques
 					LastName:       existingUser.LastName,
 				}
 			} else {
-				t.Logger.LogError("TicketCreatePageHandler", errors.New("User ID couldn´t be referenced back to a userData!"))
+				t.Logger.LogError("TicketCreatePageHandler", errors.New("User ID couldn´t be referenced back to a user!"))
 				http.Redirect(w, r, "/", http.StatusInternalServerError)
 				return
 			}

@@ -7,7 +7,7 @@ import (
 )
 
 /*
-	A mocked ticketData context.
+	A mocked ticket context.
 */
 type MockedTicketContext struct {
 	mock.Mock

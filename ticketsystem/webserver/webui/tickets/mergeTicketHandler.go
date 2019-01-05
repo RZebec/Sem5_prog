@@ -14,7 +14,7 @@ import (
 )
 
 /*
-	A ticketData merge handler.
+	A ticket merge handler.
 */
 type TicketMergeHandler struct {
 	Logger        logging.Logger
@@ -48,14 +48,14 @@ func (t TicketMergeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		firstTicketExists, firstTicket := t.TicketContext.GetTicketById(firstTicketId)
 		if !firstTicketExists {
-			t.Logger.LogError("TicketMergeHandler", errors.New("ticketData does not exist. id: "+rawFirstTickedId))
+			t.Logger.LogError("TicketMergeHandler", errors.New("ticket does not exist. id: "+rawFirstTickedId))
 			http.Redirect(w, r, "/", http.StatusBadRequest)
 			return
 		}
 
 		secondTicketExists, secondTicket := t.TicketContext.GetTicketById(secondTicketId)
 		if !secondTicketExists {
-			t.Logger.LogError("TicketMergeHandler", errors.New("ticketData does not exist. id: "+rawSecondTickedId))
+			t.Logger.LogError("TicketMergeHandler", errors.New("ticket does not exist. id: "+rawSecondTickedId))
 			http.Redirect(w, r, "/", http.StatusBadRequest)
 			return
 
@@ -74,7 +74,7 @@ func (t TicketMergeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				olderTicket = secondTicketId
 			}
 
-			// Notify creator of first ticketData:
+			// Notify creator of first ticket:
 			firstMailSubject := mailData.BuildTicketMergeNotificationMailSubject(firstTicket.Info().Id, olderTicket)
 			firstMailContent := mailData.BuildTicketMergeNotificationMailContent(firstTicket.Info().Creator.Mail,
 				firstTicketId, secondTicketId)
@@ -84,7 +84,7 @@ func (t TicketMergeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				http.Redirect(w, r, "/ticket/"+strconv.Itoa(olderTicket), http.StatusInternalServerError)
 				return
 			}
-			// Notify creator of second ticketData:
+			// Notify creator of second ticket:
 			secondMailSubject := mailData.BuildTicketMergeNotificationMailSubject(secondTicket.Info().Id, olderTicket)
 			secondMailContent := mailData.BuildTicketMergeNotificationMailContent(secondTicket.Info().Creator.Mail,
 				firstTicketId, secondTicketId)
@@ -113,7 +113,7 @@ func (t TicketMergeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			// Redirect to the older ticketData:
+			// Redirect to the older ticket:
 			http.Redirect(w, r, "/ticket/"+strconv.Itoa(olderTicket), http.StatusFound)
 
 			return

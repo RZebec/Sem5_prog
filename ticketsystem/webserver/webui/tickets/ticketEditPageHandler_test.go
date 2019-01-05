@@ -160,7 +160,7 @@ func TestTicketEditPageHandler_ServeHTTP_ConversionError(t *testing.T) {
 }
 
 /*
-	If the ticketData doesnt exist it should return a 404.
+	If the ticket doesnt exist it should return a 404.
 */
 func TestTicketEditPageHandler_ServeHTTP_TicketDoesNotExist(t *testing.T) {
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)

@@ -3,7 +3,7 @@ package ticketData
 type TicketState int
 
 /*
-	The ticketData states.
+	The ticket states.
 */
 const (
 	Open TicketState = 1 + iota

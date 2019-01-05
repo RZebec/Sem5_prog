@@ -23,7 +23,7 @@ func NewContextWithAuthenticationInfo(ctx context.Context, isAuthenticated bool,
 }
 
 /*
-	Return true, if the userData is a admin.
+	Return true, if the user is a admin.
 */
 func IsAdmin(ctx context.Context) bool {
 	value, ok := ctx.Value(isAdminKey).(bool)
@@ -35,7 +35,7 @@ func IsAdmin(ctx context.Context) bool {
 }
 
 /*
-	Returns true if the userData is authenticated.
+	Returns true if the user is authenticated.
 */
 func IsAuthenticated(ctx context.Context) bool {
 	value, ok := ctx.Value(isAuthenticatedKey).(bool)
@@ -47,7 +47,7 @@ func IsAuthenticated(ctx context.Context) bool {
 }
 
 /*
-	Get the userData Id.
+	Get the user Id.
 */
 func GetUserId(ctx context.Context) int {
 	value, ok := ctx.Value(userIdKey).(int)
@@ -59,7 +59,7 @@ func GetUserId(ctx context.Context) int {
 }
 
 /*
-	Get the userData token.
+	Get the user token.
 */
 func GetUserToken(ctx context.Context) string {
 	value, ok := ctx.Value(userTokenKey).(string)
@@ -71,7 +71,7 @@ func GetUserToken(ctx context.Context) string {
 }
 
 /*
-	Function used to check if a userData is logged in and if the session of the aforementioned userData is valid.
+	Function used to check if a user is logged in and if the session of the aforementioned user is valid.
 */
 func UserIsLoggedInCheck(r *http.Request, userContext userData.UserContext, accessTokenCookieName string, logger logging.Logger) (isUserLoggedIn bool, isAdmin bool, accessTokenValue string, userId int) {
 	userIsLoggedIn := false

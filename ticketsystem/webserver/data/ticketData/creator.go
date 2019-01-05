@@ -3,7 +3,7 @@ package ticketData
 import "de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 
 /*
-	Represents the creator of a ticketData.
+	Represents the creator of a ticket.
 */
 type Creator struct {
 	Mail      string

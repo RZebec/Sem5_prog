@@ -11,7 +11,7 @@ import (
 )
 
 /*
-	A ticketData, containing all information.
+	A ticket, containing all information.
 */
 type Ticket struct {
 	info        TicketInfo

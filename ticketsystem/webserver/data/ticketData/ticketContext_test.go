@@ -538,7 +538,7 @@ func TestTicketManager_GetTicketsForEditorId_NoTicketExists_NoTicketsReturned(t 
 }
 
 /*
-	Getting the ticketData infos when ticketData exist, should return the infos for the existing tickets.
+	Getting the ticket infos when ticket exist, should return the infos for the existing tickets.
 */
 func TestTicketManager_GetAllTicketInfo_TicketsExist_TicketInfoReturned(t *testing.T) {
 	folderPath, rootPath, err := prepareTempDirectory()

@@ -16,7 +16,7 @@ import (
 )
 
 /*
-	A handler to append messages to a ticketData.
+	A handler to append messages to a ticket.
 */
 type TicketAppendMessageHandler struct {
 	UserContext   userData.UserContext
@@ -26,7 +26,7 @@ type TicketAppendMessageHandler struct {
 }
 
 /*
-	Append a message to a ticketData
+	Append a message to a ticket
 */
 func (t TicketAppendMessageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if strings.ToLower(r.Method) != "post" {
@@ -44,31 +44,31 @@ func (t TicketAppendMessageHandler) ServeHTTP(w http.ResponseWriter, r *http.Req
 }
 
 /*
-	Handle message append for authenticated userData.
+	Handle message append for authenticated user.
 */
 func (t TicketAppendMessageHandler) handlerForAuthenticatedUser(w http.ResponseWriter, r *http.Request) {
-	// Handle ticketData id:
+	// Handle ticket id:
 	rawTicketId := r.FormValue("ticketId")
 	ticketId, err := strconv.Atoi(rawTicketId)
 	if err != nil {
-		t.Logger.LogError("TicketAppendMessageHandler", errors.New("invalid ticketData id"))
+		t.Logger.LogError("TicketAppendMessageHandler", errors.New("invalid ticket id"))
 		http.Redirect(w, r, "/", http.StatusBadRequest)
 		return
 	}
 
 	tickedExists, existingTicket := t.TicketContext.GetTicketById(ticketId)
 	if !tickedExists {
-		t.Logger.LogError("TicketAppendMessageHandler", errors.New("invalid ticketData id, ticketData does not exist"))
+		t.Logger.LogError("TicketAppendMessageHandler", errors.New("invalid ticket id, ticket does not exist"))
 		http.Redirect(w, r, "/", http.StatusBadRequest)
 		return
 	}
 
-	// Handle userData:
+	// Handle user:
 	userId := wrappers.GetUserId(r.Context())
 	userExists, authenticatedUser := t.UserContext.GetUserById(userId)
 	if !userExists {
-		t.Logger.LogError("TicketAppendMessageHandler", errors.New("userData should exist"))
-		http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusBadRequest)
+		t.Logger.LogError("TicketAppendMessageHandler", errors.New("user should exist"))
+		http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusBadRequest)
 		return
 	}
 
@@ -77,7 +77,7 @@ func (t TicketAppendMessageHandler) handlerForAuthenticatedUser(w http.ResponseW
 	content = html.EscapeString(content)
 	if len(content) == 0 {
 		t.Logger.LogError("TicketAppendMessageHandler", errors.New("message content to append is empty"))
-		http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusBadRequest)
+		http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusBadRequest)
 		return
 	}
 
@@ -86,56 +86,58 @@ func (t TicketAppendMessageHandler) handlerForAuthenticatedUser(w http.ResponseW
 	onlyInternal, err := strconv.ParseBool(rawOnlyInternal)
 	if err != nil {
 		t.Logger.LogError("TicketAppendMessageHandler", err)
-		http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusBadRequest)
+		http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusBadRequest)
 		return
 	}
 
-	// Append message to ticketData:
+	// Append message to ticket:
 	messageEntry := ticketData.MessageEntry{CreatorMail: authenticatedUser.Mail, OnlyInternal: onlyInternal,
 		Content: content, CreationTime: time.Now()}
 
 	_, err = t.TicketContext.AppendMessageToTicket(ticketId, messageEntry)
 	if err != nil {
 		t.Logger.LogError("TicketAppendMessageHandler", err)
-		http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusInternalServerError)
+		http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusInternalServerError)
 		return
 	}
 
-	// Notify the creator:
-	sender := strings.ToLower(authenticatedUser.Mail)
-	receiver := strings.ToLower(existingTicket.Info().Creator.Mail)
-	if sender != receiver {
-		subject := mailContext.BuildAppendMessageNotificationMailSubject(ticketId)
-		mailContent := mailContext.BuildAppendMessageNotificationMailContent(receiver, sender, content)
-		err = t.MailContext.CreateNewOutgoingMail(existingTicket.Info().Creator.Mail, subject, mailContent)
-		if err != nil {
-			t.Logger.LogError("TicketAppendMessageHandler", err)
-			http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusInternalServerError)
-			return
+	if !onlyInternal {
+		// Notify the creator:
+		sender := strings.ToLower(authenticatedUser.Mail)
+		receiver := strings.ToLower(existingTicket.Info().Creator.Mail)
+		if sender != receiver {
+			subject := mailContext.BuildAppendMessageNotificationMailSubject(ticketId)
+			mailContent := mailContext.BuildAppendMessageNotificationMailContent(receiver, sender, content)
+			err = t.MailContext.CreateNewOutgoingMail(existingTicket.Info().Creator.Mail, subject, mailContent)
+			if err != nil {
+				t.Logger.LogError("TicketAppendMessageHandler", err)
+				http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusInternalServerError)
+				return
+			}
 		}
 	}
 
-	http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusFound)
+	http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusFound)
 	t.Logger.LogInfo("TicketAppendMessageHandler", "User "+strconv.Itoa(authenticatedUser.UserId)+
 		" appended a message to ticket "+rawTicketId)
 }
 
 /*
-	Handle message for non authenticated userData.
+	Handle message for non authenticated user.
 */
 func (t TicketAppendMessageHandler) handlerForNonAuthenticatedUser(w http.ResponseWriter, r *http.Request) {
-	// Handle ticketData id:
+	// Handle ticket id:
 	rawTicketId := r.FormValue("ticketId")
 	ticketId, err := strconv.Atoi(rawTicketId)
 	if err != nil {
-		t.Logger.LogError("TicketAppendMessageHandler", errors.New("invalid ticketData id"))
+		t.Logger.LogError("TicketAppendMessageHandler", errors.New("invalid ticket id"))
 		http.Redirect(w, r, "/", http.StatusBadRequest)
 		return
 	}
 
 	tickedExists, existingTicket := t.TicketContext.GetTicketById(ticketId)
 	if !tickedExists {
-		t.Logger.LogError("TicketAppendMessageHandler", errors.New("invalid ticketData id. ticketData does not exist"))
+		t.Logger.LogError("TicketAppendMessageHandler", errors.New("invalid ticket id. ticket does not exist"))
 		http.Redirect(w, r, "/", http.StatusBadRequest)
 		return
 	}
@@ -149,14 +151,14 @@ func (t TicketAppendMessageHandler) handlerForNonAuthenticatedUser(w http.Respon
 
 	if !mailIsValid {
 		t.Logger.LogError("TicketAppendMessageHandler", errors.New("mail is invalid"))
-		http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusBadRequest)
+		http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusBadRequest)
 		return
 	}
 
-	// It should not be possible to append a message for a userData which is registered, if the current userData is not logged in.
+	// It should not be possible to append a message for a user which is registered, if the current user is not logged in.
 	userExists, _ := t.UserContext.GetUserForEmail(rawMail)
 	if userExists {
-		t.Logger.LogError("TicketAppendMessageHandler", errors.New("userData is registered but not logged in"))
+		t.Logger.LogError("TicketAppendMessageHandler", errors.New("user is registered but not logged in"))
 		http.Redirect(w, r, "/login", http.StatusFound)
 		return
 	}
@@ -166,7 +168,7 @@ func (t TicketAppendMessageHandler) handlerForNonAuthenticatedUser(w http.Respon
 	content = html.EscapeString(content)
 	if len(content) == 0 {
 		t.Logger.LogError("TicketAppendMessageHandler", errors.New("message content to append is empty"))
-		http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusBadRequest)
+		http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusBadRequest)
 		return
 	}
 
@@ -177,7 +179,7 @@ func (t TicketAppendMessageHandler) handlerForNonAuthenticatedUser(w http.Respon
 	_, err = t.TicketContext.AppendMessageToTicket(ticketId, messageEntry)
 	if err != nil {
 		t.Logger.LogError("TicketAppendMessageHandler", err)
-		http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusInternalServerError)
+		http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusInternalServerError)
 		return
 	}
 
@@ -190,11 +192,11 @@ func (t TicketAppendMessageHandler) handlerForNonAuthenticatedUser(w http.Respon
 		err = t.MailContext.CreateNewOutgoingMail(existingTicket.Info().Creator.Mail, subject, mailContent)
 		if err != nil {
 			t.Logger.LogError("TicketAppendMessageHandler", err)
-			http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusInternalServerError)
+			http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusInternalServerError)
 			return
 		}
 	}
 
-	http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusFound)
+	http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusFound)
 	t.Logger.LogInfo("TicketAppendMessageHandler", rawMail+" appended a message to ticket "+rawTicketId)
 }

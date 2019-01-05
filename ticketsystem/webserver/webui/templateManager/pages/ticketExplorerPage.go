@@ -87,7 +87,7 @@ var TicketExplorerPage = `
 								{{.State}}
 							</td>
 							<td>
-								<button class="view-button" onclick="location.href='ticketData/{{.Id}}';">
+								<button class="view-button" onclick="location.href='ticket/{{.Id}}';">
 									View
 								</button>
 							</td>

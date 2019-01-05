@@ -16,7 +16,7 @@ var TicketEditPage = `
 					<h2>Ticket Edit</h2>
 					{{ if .ShowTicketSpecificControls }}
 						<form id="merge_form" method="POST" name="merge_form" action="/merge_tickets">
-						<label>Merge ticketData with:</label>
+						<label>Merge ticket with:</label>
 						<input type="hidden" name="firstTicketId" id="firstTicketId" value="{{.TicketInfo.Id}}"/>
 						<select name="secondTicketId" id="secondTicketId">
 						{{range .OtherTickets}}	

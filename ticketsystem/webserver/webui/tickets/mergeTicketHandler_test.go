@@ -71,7 +71,7 @@ func TestTickerMergeHandler_ServeHTTP_TicketsMerged(t *testing.T) {
 }
 
 /*
-	Invalid ticketData id should result in a invalid request.
+	Invalid ticket id should result in a invalid request.
 */
 func TestTickerMergeHandler_ServeHTTP_InvalidFirstTicketId_InvalidRequest(t *testing.T) {
 	loggedInUserId := 9
@@ -107,7 +107,7 @@ func TestTickerMergeHandler_ServeHTTP_InvalidFirstTicketId_InvalidRequest(t *tes
 }
 
 /*
-	Invalid ticketData id should result in a invalid request.
+	Invalid ticket id should result in a invalid request.
 */
 func TestTickerMergeHandler_ServeHTTP_InvalidSecondTicketId_InvalidRequest(t *testing.T) {
 	loggedInUserId := 9
@@ -143,7 +143,7 @@ func TestTickerMergeHandler_ServeHTTP_InvalidSecondTicketId_InvalidRequest(t *te
 }
 
 /*
-	A id of a non existing ticketData should result in a invalid request.
+	A id of a non existing ticket should result in a invalid request.
 */
 func TestTickerMergeHandler_ServeHTTP_FirstTicketDoesNotExist_InvalidRequest(t *testing.T) {
 	loggedInUserId := 9
@@ -184,7 +184,7 @@ func TestTickerMergeHandler_ServeHTTP_FirstTicketDoesNotExist_InvalidRequest(t *
 }
 
 /*
-	A id of a non existing ticketData should result in a invalid request.
+	A id of a non existing ticket should result in a invalid request.
 */
 func TestTickerMergeHandler_ServeHTTP_SecondTicketDoesNotExist_InvalidRequest(t *testing.T) {
 	loggedInUserId := 9

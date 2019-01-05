@@ -6,7 +6,7 @@ import (
 )
 
 /*
-	A mocked userData context.
+	A mocked user context.
 */
 type MockedUserContext struct {
 	mock.Mock

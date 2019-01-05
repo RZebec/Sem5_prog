@@ -19,7 +19,7 @@ type UnlockUserHandler struct {
 }
 
 /*
-	The Unlock userData handler.
+	The Unlock user handler.
 */
 func (a UnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {

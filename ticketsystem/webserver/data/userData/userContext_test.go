@@ -25,7 +25,7 @@ func ExampleLoginSystem_Initialize() {
 }
 
 /*
-	Example for the registration of a userData.
+	Example for the registration of a user.
 */
 func ExampleLoginSystem_Register() {
 	loginSystem := LoginSystem{}
@@ -979,7 +979,7 @@ func TestLoginSystem_DisableVacationMode_Disabled(t *testing.T) {
 }
 
 /*
-	Disabling the vacation mode while the userData is not in the vacation mode, should return a error message.
+	Disabling the vacation mode while the user is not in the vacation mode, should return a error message.
 */
 func TestLoginSystem_DisableVacationMode_WrongState(t *testing.T) {
 	testee := LoginSystem{}
@@ -1030,7 +1030,7 @@ func TestLoginSystem_GetUserById(t *testing.T) {
 
 	exists, user := testee.GetUserById(1)
 	assert.True(t, exists, "User should exist")
-	assert.Equal(t, "testUser5@test.de", user.Mail, "Correct userData should be returned")
+	assert.Equal(t, "testUser5@test.de", user.Mail, "Correct user should be returned")
 }
 
 /*

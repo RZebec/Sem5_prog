@@ -16,7 +16,7 @@ import (
 )
 
 /*
-	A Valid Http Request for logged In userData.
+	A Valid Http Request for logged In user.
 */
 func TestTicketCreateHandler_ServeHTTP_ValidRequestLoggedIn(t *testing.T) {
 	mail := "test@test.com"
@@ -71,7 +71,7 @@ func TestTicketCreateHandler_ServeHTTP_ValidRequestLoggedIn(t *testing.T) {
 }
 
 /*
-	A Valid Http Request for not logged In userData.
+	A Valid Http Request for not logged In user.
 */
 func TestTicketCreateHandler_ServeHTTP_ValidRequestNotLoggedIn(t *testing.T) {
 	mail := "test@test.com"
@@ -314,7 +314,7 @@ func TestTicketCreateHandler_ServeHTTP_CreateNewTicketError500(t *testing.T) {
 }
 
 /*
-	If a userData tries to create a ticket for another userData it should result in a 400.
+	If a user tries to create a ticket for another user it should result in a 400.
 */
 func TestTicketCreateHandler_ServeHTTP_LoggedInUserTriesToCreateTicketForOtherMail(t *testing.T) {
 	mail := "test2@test.com"
@@ -405,7 +405,7 @@ func TestTicketCreateHandler_ServeHTTP_UserNotFoundWithId(t *testing.T) {
 }
 
 /*
-	A Valid Http Request for logged In userData.
+	A Valid Http Request for logged In user.
 */
 func TestTicketCreateHandler_ServeHTTP_CreateNewTicketForInternalUserError500(t *testing.T) {
 	mail := "test@test.com"
@@ -460,7 +460,7 @@ func TestTicketCreateHandler_ServeHTTP_CreateNewTicketForInternalUserError500(t 
 }
 
 /*
-	If a not logged in userData tries to create a ticket for another userData it should result in a 400.
+	If a not logged in user tries to create a ticket for another user it should result in a 400.
 */
 func TestTicketCreateHandler_ServeHTTP_NotLoggedInUserTriesToCreateTicketForOtherMail(t *testing.T) {
 	mail := "test2@test.com"

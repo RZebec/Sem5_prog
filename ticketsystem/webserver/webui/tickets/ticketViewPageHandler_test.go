@@ -37,7 +37,7 @@ func TestTicketViewPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	mockedTicketContext.On("GetTicketById", 5).Return(true, testTicket)
 	mockedTemplateManager.On("RenderTemplate", mock.Anything, "TicketViewPage", mock.Anything).Return(nil)
 
-	req, err := http.NewRequest("GET", "/ticketData/5", nil)
+	req, err := http.NewRequest("GET", "/ticket/5", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
