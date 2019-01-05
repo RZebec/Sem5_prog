@@ -78,6 +78,9 @@ func main() {
 	}
 }
 
+/*
+	Get the api handler chain for incoming mails:
+ */
 func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mailData.MailContext, ticketContext ticketData.TicketContext,
 	userContext userData.UserContext, logger logging.Logger) http.Handler {
 	incomingMailHandler := mails.IncomingMailHandler{Logger: logger, MailContext: mailContext, TicketContext: ticketContext,
@@ -87,6 +90,9 @@ func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext 
 	return &apiAuthenticationHandler
 }
 
+/*
+	Get the api handler chain for acknowledgment of mails:
+ */
 func getAcknowledgeMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mailData.MailContext, logger logging.Logger) http.Handler {
 	incomingMailHandler := mails.AcknowledgeMailHandler{Logger: logger, MailContext: mailContext}
 	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,
@@ -94,6 +100,9 @@ func getAcknowledgeMailHandlerChain(apiConfig config.ApiConfiguration, mailConte
 	return &apiAuthenticationHandler
 }
 
+/*
+	Get the api handler chain for outgoing mails:
+ */
 func getOutgoingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mailData.MailContext, logger logging.Logger) http.Handler {
 	outgoingMailHandler := mails.OutgoingMailHandler{Logger: logger, MailContext: mailContext}
 	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetOutgoingMailApiKey,

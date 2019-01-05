@@ -31,9 +31,11 @@ type HandlerManager struct {
 
 func (handlerManager *HandlerManager) RegisterHandlers() {
 
+	// Handling files:
 	filesHandler := files.FileHandler{}
 	http.HandleFunc("/files/", filesHandler.ServeHTTP)
 
+	// Index page:
 	indexPageHandler := index.PageHandler{Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
 	indexPageAuthenticationInfoWrapper := wrappers.AddAuthenticationInfoWrapper{}
 	indexPageAuthenticationInfoWrapper.Next = indexPageHandler
@@ -41,6 +43,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	indexPageAuthenticationInfoWrapper.UserContext = handlerManager.UserContext
 	http.HandleFunc("/", indexPageAuthenticationInfoWrapper.ServeHTTP)
 
+	// Registration:
 	registerPageHandler := register.PageHandler{Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
 	registerPageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
 	registerPageHandlerWrapper.Next = registerPageHandler
@@ -55,6 +58,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	userRegisterHandlerWrapper.UserContext = handlerManager.UserContext
 	http.HandleFunc("/user_register", userRegisterHandlerWrapper.ServeHTTP)
 
+	// Login and Logout:
 	loginPageHandler := login.PageHandler{TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
 	loginPageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
 	loginPageHandlerWrapper.Next = loginPageHandler
@@ -73,6 +77,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	logoutWrapper := wrappers.EnforceAuthenticationWrapper{Next: logoutHandler, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/user_logout", logoutWrapper.ServeHTTP)
 
+	// Administration:
 	adminPageHandler := admin.PageHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager, ApiContext: handlerManager.ApiConfiguration}
 	adminPageWrapper := wrappers.AdminWrapper{Next: adminPageHandler, UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
 	adminPageAuthenticationWrapper := wrappers.EnforceAuthenticationWrapper{Next: adminPageWrapper, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
@@ -88,6 +93,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	adminUnlockUserAuthenticationWrapper := wrappers.EnforceAuthenticationWrapper{Next: adminUnlockUserWrapper, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/unlock_user", adminUnlockUserAuthenticationWrapper.ServeHTTP)
 
+	// Tickets
 	allTicketExplorerPageHandler := tickets.AllTicketsExplorerPageHandler{TicketContext: handlerManager.TicketContext, TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
 	allTicketExplorerPageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
 	allTicketExplorerPageHandlerWrapper.Next = allTicketExplorerPageHandler
@@ -169,20 +175,6 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	userSettingsPageHandlerWrapper.UserContext = handlerManager.UserContext
 	http.HandleFunc("/user_settings", userSettingsPageHandlerWrapper.ServeHTTP)
 
-	changePasswordHandler := userSettings.ChangePasswordHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
-	changePasswordHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
-	changePasswordHandlerWrapper.Next = changePasswordHandler
-	changePasswordHandlerWrapper.Logger = handlerManager.Logger
-	changePasswordHandlerWrapper.UserContext = handlerManager.UserContext
-	http.HandleFunc("/user_change_password", changePasswordHandlerWrapper.ServeHTTP)
-
-	toggleVacationModeHandler := userSettings.ToggleVacationModeHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
-	toggleVacationModeHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
-	toggleVacationModeHandlerWrapper.Next = toggleVacationModeHandler
-	toggleVacationModeHandlerWrapper.Logger = handlerManager.Logger
-	toggleVacationModeHandlerWrapper.UserContext = handlerManager.UserContext
-	http.HandleFunc("/user_toggle_vacation", toggleVacationModeHandlerWrapper.ServeHTTP)
-
 	ticketCreatePageHandler := tickets.TicketCreatePageHandler{UserContext: handlerManager.UserContext, TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
 	ticketCreatePageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
 	ticketCreatePageHandlerWrapper.Next = ticketCreatePageHandler
@@ -203,4 +195,19 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	ticketEditPageHandlerWrapper.Logger = handlerManager.Logger
 	ticketEditPageHandlerWrapper.UserContext = handlerManager.UserContext
 	http.HandleFunc("/ticket/ticket_edit/", ticketEditPageHandlerWrapper.ServeHTTP)
+
+	// User settings:
+	changePasswordHandler := userSettings.ChangePasswordHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
+	changePasswordHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
+	changePasswordHandlerWrapper.Next = changePasswordHandler
+	changePasswordHandlerWrapper.Logger = handlerManager.Logger
+	changePasswordHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/user_change_password", changePasswordHandlerWrapper.ServeHTTP)
+
+	toggleVacationModeHandler := userSettings.ToggleVacationModeHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
+	toggleVacationModeHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
+	toggleVacationModeHandlerWrapper.Next = toggleVacationModeHandler
+	toggleVacationModeHandlerWrapper.Logger = handlerManager.Logger
+	toggleVacationModeHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/user_toggle_vacation", toggleVacationModeHandlerWrapper.ServeHTTP)
 }
