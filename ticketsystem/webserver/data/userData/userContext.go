@@ -261,6 +261,8 @@ func (s *LoginSystem) Login(userName string, password string) (success bool, aut
 			if valid {
 				var token, err = s.createSessionForUser(v)
 				return true, token, err
+			} else {
+				return false, "", nil
 			}
 		}
 	}
