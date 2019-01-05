@@ -71,7 +71,7 @@ func TestTicketViewPageHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 	testee := TicketViewPageHandler{TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager, UserContext: mockedUserContext,
 		Logger: testhelpers.GetTestLogger()}
 
-	req, err := http.NewRequest("POST", "/ticketData/5", nil)
+	req, err := http.NewRequest("POST", "/ticket/5", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -112,7 +112,7 @@ func TestTicketViewPageHandler_ServeHTTP_ContextError_RenderError(t *testing.T) 
 	mockedTicketContext.On("GetTicketById", 5).Return(true, testTicket)
 	mockedTemplateManager.On("RenderTemplate", mock.Anything, "TicketViewPage", mock.Anything).Return(errors.New("TestError"))
 
-	req, err := http.NewRequest("GET", "/ticketData/5", nil)
+	req, err := http.NewRequest("GET", "/ticket/5", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -145,7 +145,7 @@ func TestTicketViewPageHandler_ServeHTTP_IdConversionError(t *testing.T) {
 	testee := TicketViewPageHandler{TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager, UserContext: mockedUserContext,
 		Logger: testhelpers.GetTestLogger()}
 
-	req, err := http.NewRequest("GET", "/ticketData/asdh", nil)
+	req, err := http.NewRequest("GET", "/ticket/asdh", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -180,7 +180,7 @@ func TestTicketViewPageHandler_ServeHTTP_TicketDoesNotExist(t *testing.T) {
 
 	mockedTicketContext.On("GetTicketById", 5).Return(false, new(ticketData.Ticket))
 
-	req, err := http.NewRequest("GET", "/ticketData/5", nil)
+	req, err := http.NewRequest("GET", "/ticket/5", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -222,7 +222,7 @@ func TestTicketViewPageHandler_ServeHTTP_DoNotShowInternalOnlyMessages(t *testin
 
 	externalTestMessages := []ticketData.MessageEntry{{Id: 1, CreatorMail: "test1@test.de", Content: "TestContent1", OnlyInternal: false}}
 
-	req, err := http.NewRequest("GET", "/ticketData/5", nil)
+	req, err := http.NewRequest("GET", "/ticket/5", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -276,7 +276,7 @@ func TestTicketViewPageHandler_ServeHTTP_ShowInternalOnlyMessages(t *testing.T) 
 
 	testTicket := ticketData.CreateTestTicket(testTicketInfo, testMessages)
 
-	req, err := http.NewRequest("GET", "/ticketData/5", nil)
+	req, err := http.NewRequest("GET", "/ticket/5", nil)
 	if err != nil {
 		t.Fatal(err)
 	}

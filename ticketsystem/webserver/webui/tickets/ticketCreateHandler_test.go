@@ -64,7 +64,7 @@ func TestTicketCreateHandler_ServeHTTP_ValidRequestLoggedIn(t *testing.T) {
 
 	newLocation := resp.Header.Get("location")
 	assert.Equal(t, 302, resp.StatusCode, "Should return status code 302")
-	assert.Equal(t, "/ticketData/26", newLocation, "Should be redirected to \"/ticketData/26\"")
+	assert.Equal(t, "/ticket/26", newLocation, "Should be redirected to \"/ticket/26\"")
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
@@ -121,7 +121,7 @@ func TestTicketCreateHandler_ServeHTTP_ValidRequestNotLoggedIn(t *testing.T) {
 
 	newLocation := resp.Header.Get("location")
 	assert.Equal(t, 302, resp.StatusCode, "Should return status code 302")
-	assert.Equal(t, "/ticketData/26", newLocation, "Should be redirected to \"/ticketData/26\"")
+	assert.Equal(t, "/ticket/26", newLocation, "Should be redirected to \"/ticket/26\"")
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
@@ -250,7 +250,7 @@ func TestTicketCreateHandler_ServeHTTP_InternalOnlyEmpty(t *testing.T) {
 
 	newLocation := resp.Header.Get("location")
 	assert.Equal(t, 302, resp.StatusCode, "Should return status code 302")
-	assert.Equal(t, "/ticketData/26", newLocation, "Should be redirected to \"/ticketData/26\"")
+	assert.Equal(t, "/ticket/26", newLocation, "Should be redirected to \"/ticket/26\"")
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
@@ -314,7 +314,7 @@ func TestTicketCreateHandler_ServeHTTP_CreateNewTicketError500(t *testing.T) {
 }
 
 /*
-	If a userData tries to create a ticketData for another userData it should result in a 400.
+	If a userData tries to create a ticket for another userData it should result in a 400.
 */
 func TestTicketCreateHandler_ServeHTTP_LoggedInUserTriesToCreateTicketForOtherMail(t *testing.T) {
 	mail := "test2@test.com"
@@ -460,7 +460,7 @@ func TestTicketCreateHandler_ServeHTTP_CreateNewTicketForInternalUserError500(t 
 }
 
 /*
-	If a not logged in userData tries to create a ticketData for another userData it should result in a 400.
+	If a not logged in userData tries to create a ticket for another userData it should result in a 400.
 */
 func TestTicketCreateHandler_ServeHTTP_NotLoggedInUserTriesToCreateTicketForOtherMail(t *testing.T) {
 	mail := "test2@test.com"
