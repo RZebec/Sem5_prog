@@ -39,12 +39,21 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	indexPageAuthenticationInfoWrapper.Next = indexPageHandler
 	indexPageAuthenticationInfoWrapper.Logger = handlerManager.Logger
 	indexPageAuthenticationInfoWrapper.UserContext = handlerManager.UserContext
-
 	http.HandleFunc("/", indexPageAuthenticationInfoWrapper.ServeHTTP)
 
-	registerHandler := register.RegisterHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
-	http.HandleFunc("/register", registerHandler.ServeHTTPGetRegisterPage)
-	http.HandleFunc("/user_register", registerHandler.ServeHTTPPostRegisteringData)
+	registerPageHandler := register.PageHandler{Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
+	registerPageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
+	registerPageHandlerWrapper.Next = registerPageHandler
+	registerPageHandlerWrapper.Logger = handlerManager.Logger
+	registerPageHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/register", registerPageHandlerWrapper.ServeHTTP)
+
+	userRegisterHandler := register.UserRegisterHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
+	userRegisterHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
+	userRegisterHandlerWrapper.Next = userRegisterHandler
+	userRegisterHandlerWrapper.Logger = handlerManager.Logger
+	userRegisterHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/user_register", userRegisterHandlerWrapper.ServeHTTP)
 
 	loginPageHandler := login.PageHandler{TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
 	loginPageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
