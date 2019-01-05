@@ -76,6 +76,13 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	allTicketExplorerPageHandlerWrapper.UserContext = handlerManager.UserContext
 	http.HandleFunc("/all_tickets", allTicketExplorerPageHandlerWrapper.ServeHTTP)
 
+	activeTicketExplorerPageHandler := tickets.ActiveTicketsExplorerPageHandler{TicketContext: handlerManager.TicketContext, TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
+	activeTicketExplorerPageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
+	activeTicketExplorerPageHandlerWrapper.Next = activeTicketExplorerPageHandler
+	activeTicketExplorerPageHandlerWrapper.Logger = handlerManager.Logger
+	activeTicketExplorerPageHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/active_tickets", activeTicketExplorerPageHandlerWrapper.ServeHTTP)
+
 	openTicketExplorerPageHandler := tickets.OpenTicketsExplorerPageHandler{TicketContext: handlerManager.TicketContext, TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
 	openTicketExplorerPageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
 	openTicketExplorerPageHandlerWrapper.Next = openTicketExplorerPageHandler
