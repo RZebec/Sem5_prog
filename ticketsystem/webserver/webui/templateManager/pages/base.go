@@ -30,6 +30,8 @@ var Base = `
 
 			<a {{if eq .Active "open_tickets" }}class="active"{{end}} href="/open_tickets">Open Tickets</a>
 
+			<a {{if eq .Active "active_tickets" }}class="active"{{end}} href="/active_tickets">Active Tickets</a>
+
 			<a {{if eq .Active "ticket_create" }}class="active"{{end}} href="/ticket_create">Create Ticket</a>
 	
 			<span>OP Ticket System</span>
