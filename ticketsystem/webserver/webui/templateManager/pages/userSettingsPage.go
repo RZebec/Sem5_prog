@@ -18,11 +18,11 @@ var UserSettingsPage = `
 					<h2>Vacation Mode</h2>
 					<form id="toggleVacationMode" method="post" name="toggleVacationMode" action="/user_toggle_vacation">
 					{{if .UserIsOnVacation }}
-						<input type="radio" name="vacationMode" id="vacationMode" value="true" checked/> Yes
-						<input type="radio" name="vacationMode" id="vacationMode" value="false"/> No
+						<label>Your user is currently in Vacation Mode</label>
+						<input type="hidden" name="vacationMode" id="vacationMode" value="false"/>
         			{{else}}
-						<input type="radio" name="vacationMode" id="vacationMode" value="true"/> Yes
-						<input type="radio" name="vacationMode" id="vacationMode" value="false" checked/> No
+						<label>Your user is currently not in Vacation Mode</label>
+						<input type="hidden" name="vacationMode" id="vacationMode" value="true"/>
 					{{end}}
 						<button type="submit" id="submitToggle" class="submit-button">Change Vacation Mode</button>
 					</form>
