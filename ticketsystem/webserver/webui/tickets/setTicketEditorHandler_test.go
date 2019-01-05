@@ -90,7 +90,7 @@ func TestTicketSetEditorHandler_ServeHTTP_RemoveEditor_ValidRequest(t *testing.T
 	// The editor should be set:
 	mockedTicketContext.On("RemoveEditor", ticketId).Return(nil)
 	// The state of the ticketData should be changed:
-	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Processing).Return(&ticketData.Ticket{}, nil)
+	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Open).Return(&ticketData.Ticket{}, nil)
 
 	testee := TicketSetEditorHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -610,7 +610,7 @@ func TestTicketSetEditorHandler_ServeHTTP_StateChangeFails_500Returned(t *testin
 	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).
 		Return(&ticketData.Ticket{}, nil)
 	// Changing the state should fail:
-	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Processing).
+	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Open).
 		Return(&ticketData.Ticket{}, errors.New("TestEditor"))
 
 	testee := TicketSetEditorHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
@@ -661,7 +661,7 @@ func TestTicketSetEditorHandler_ServeHTTP_StateChangeHistoryFails_500Returned(t 
 	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).
 		Return(&ticketData.Ticket{}, nil).Once()
 	// Changing the state should work:
-	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Processing).
+	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Open).
 		Return(&ticketData.Ticket{}, nil)
 	// Appending the second message should fail:
 	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).
@@ -713,7 +713,7 @@ func TestTicketSetEditorHandler_ServeHTTP_NotificationFailed_500Returned(t *test
 	// The editor should be set:
 	mockedTicketContext.On("RemoveEditor", ticketId).Return(nil)
 	// The state of the ticketData should be changed:
-	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Processing).Return(&ticketData.Ticket{}, nil)
+	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Open).Return(&ticketData.Ticket{}, nil)
 
 	// A notification mail should fail:
 	mockedMailContext.On("CreateNewOutgoingMail", mock.Anything, mock.Anything, mock.Anything).

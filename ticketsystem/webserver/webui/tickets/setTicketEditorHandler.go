@@ -93,8 +93,8 @@ func (t TicketSetEditorHandler) handleRemoveEditorRequest(w http.ResponseWriter,
 		return
 	}
 	// Change the state if if it was not set to processing and save the change in the history:
-	if existingTicket.Info().State != ticketData.Processing {
-		_, err = t.TicketContext.SetTicketState(ticketId, ticketData.Processing)
+	if existingTicket.Info().State != ticketData.Open {
+		_, err = t.TicketContext.SetTicketState(ticketId, ticketData.Open)
 		if err != nil {
 			t.Logger.LogError("TicketSetEditorHandler", err)
 			http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusInternalServerError)
@@ -102,7 +102,7 @@ func (t TicketSetEditorHandler) handleRemoveEditorRequest(w http.ResponseWriter,
 		}
 		// Build message for history:
 		messageEntry := ticketData.MessageEntry{CreatorMail: authenticatedUser.Mail, OnlyInternal: false,
-			Content: "Set new state: " + ticketData.Processing.String(), CreationTime: time.Now()}
+			Content: "Set new state: " + ticketData.Open.String(), CreationTime: time.Now()}
 		_, err = t.TicketContext.AppendMessageToTicket(ticketId, messageEntry)
 		if err != nil {
 			t.Logger.LogError("TicketSetEditorHandler", err)
