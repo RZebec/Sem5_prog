@@ -12,9 +12,9 @@ import (
 mails for Random Mail generator
 */
 var senders = []string{"test1@gmx.de", "Oberheld.asdf@web.de", "horstChristianAnderson@zip.org", "css@asd.com", "ad.du@ff.de",
-	"kaka@lang.de", "abc.defg@hij.de", "blabla@bla.de", "labor@saft.de", "orange@blau.de", "hohlfruch@haze.de", "test2@gmx.de",
+	"test@lang.de", "abc.defg@hij.de", "blabla@bla.de", "labor@saft.de", "orange@blau.de", "hohlfruch@haze.de", "test2@gmx.de",
 	"SuperOberheld.asdf@web.de", "FranzhorstChristianAnderson@zip.org", "Terrorist@asd.com",
-	"ad.du@ff.de", "kakhaufen@lang.de", "abcbnm.defg@hij.de", "blabla@bla.de", "laborGrube@saft.de",
+	"ad.du@ff.de", "Müller@lang.de", "abcbnm.defg@hij.de", "blabla@bla.de", "laborGrube@saft.de",
 	"orange@blau.de", "hohlfruchtigerSaft@haze.de"}
 
 /*
