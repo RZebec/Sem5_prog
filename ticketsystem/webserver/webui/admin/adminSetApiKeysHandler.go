@@ -41,7 +41,7 @@ func (a AdminSetApiKeysHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 				a.Logger.LogError("AdminSetApiKeysHandler", err)
 				return
 			}
-			http.Redirect(w, r, "/admin", 200)
+			http.Redirect(w, r, "/admin", http.StatusFound)
 		} else {
 			http.Redirect(w, r, "/admin", http.StatusBadRequest)
 		}

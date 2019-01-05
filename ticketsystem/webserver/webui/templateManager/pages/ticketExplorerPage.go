@@ -18,6 +18,9 @@ var TicketExplorerPage = `
 					<table>
 						<tr>
 							<th>
+								ID
+                            </th>
+							<th>
 								Title
                             </th>
                             <th>
@@ -39,13 +42,16 @@ var TicketExplorerPage = `
 						</tr>
                         {{range .Tickets}}
                         <tr>
+							<td>
+                                {{.Id}}
+                            </td>
                             <td>
                                 {{.Title}}
                             </td>
                             <td>
                                 {{if .HasEditor}}
                                     {{.Editor.LastName}},&nbsp;
-                                    {{.Editor.FirstName}}&nbsp;
+                                    {{.Editor.FirstName}},&nbsp;
                                     {{.Editor.Mail}}
                                 {{else}}
                                     Ticket has no editor
@@ -53,7 +59,7 @@ var TicketExplorerPage = `
                             </td>
                             <td>
                                 {{.Creator.LastName}},&nbsp;
-                                {{.Creator.FirstName}}&nbsp;
+                                {{.Creator.FirstName}},&nbsp;
                                 {{.Creator.Mail}}
                             </td>
                             <td id="creationTime_{{.Id}}">

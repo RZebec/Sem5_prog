@@ -19,6 +19,9 @@ var TicketViewPage = `
 					<table>
 						<tr>
 							<th>
+								ID
+                            </th>
+							<th>
 								Title
                             </th>
                             <th>
@@ -39,13 +42,16 @@ var TicketViewPage = `
 							<th></th>
 						</tr>
                         <tr>
+							<td>
+                                {{.TicketInfo.Id}}
+                            </td>
                             <td>
                                 {{.TicketInfo.Title}}
                             </td>
                             <td>
                                 {{if .TicketInfo.HasEditor}}
                                     {{.TicketInfo.Editor.LastName}},&nbsp;
-                                    {{.TicketInfo.Editor.FirstName}}&nbsp;
+                                    {{.TicketInfo.Editor.FirstName}},&nbsp;
                                     {{.TicketInfo.Editor.Mail}}
                                 {{else}}
                                     Ticket has no editor
@@ -53,7 +59,7 @@ var TicketViewPage = `
                             </td>
                             <td>
                                 {{.TicketInfo.Creator.LastName}},&nbsp;
-                                {{.TicketInfo.Creator.FirstName}}&nbsp;
+                                {{.TicketInfo.Creator.FirstName}},&nbsp;
                                 {{.TicketInfo.Creator.Mail}}
                             </td>
                             <td id="creationTime">

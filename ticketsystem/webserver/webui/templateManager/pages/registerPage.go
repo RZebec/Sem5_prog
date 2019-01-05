@@ -21,7 +21,7 @@ var RegisterPage = `
 						<input type="text" name="first_name" id="first_name" />
 						<label>Last Name:</label>
 						<input type="text" name="last_name" id="last_name" />
-						<label>Username:</label>
+						<label>Mail:</label>
 						<input type="text" name="userName" id="userName" />
 						<label>Password:</label>
 						<input type="password" name="password" id="password" />

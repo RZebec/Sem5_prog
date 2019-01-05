@@ -91,7 +91,7 @@ func TestAdminSetApiKeysHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
 	handler.ServeHTTP(rr, req)
-	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
+	assert.Equal(t, http.StatusFound, rr.Code, "Status code 302 should be returned")
 
 	mockedApiContext.AssertExpectations(t)
 }

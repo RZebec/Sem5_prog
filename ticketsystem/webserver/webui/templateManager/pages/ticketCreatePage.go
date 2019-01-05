@@ -20,18 +20,18 @@ var TicketCreatePage = `
 							<label>Mail Address:</label>
 							<input type="text" name="mail" id="mail" value="{{.UserName}}" readonly/>
 							<label>First Name:</label>
-							<input type="text" name="mail" id="first_name" value="{{.FirstName}}" readonly/>
-							<label>Last Names:</label>
-							<input type="text" name="mail" id="last_name" value="{{.LastName}}" readonly/>
+							<input type="text" name="first_name" id="first_name" value="{{.FirstName}}" readonly/>
+							<label>Last Name:</label>
+							<input type="text" name="last_name" id="last_name" value="{{.LastName}}" readonly/>
 						{{else}}
 							<label>Mail Address:</label>
 							<input type="text" name="mail" id="mail"/>
 							<label>First Name:</label>
-							<input type="text" name="mail" id="first_name"/>
-							<label>Last Names:</label>
-							<input type="text" name="mail" id="last_name"/>
+							<input type="text" name="first_name" id="first_name"/>
+							<label>Last Name:</label>
+							<input type="text" name="last_name" id="last_name"/>
 						{{end}}
-						<label>Title:</label>
+						<label>Ticket Title:</label>
 						<input type="text" name="title" id="title"/>
 						<label>Initial Message:</label>
 						<input type="text" name="message" id="message"/>

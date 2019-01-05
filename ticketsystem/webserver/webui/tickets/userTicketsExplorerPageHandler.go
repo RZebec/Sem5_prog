@@ -7,6 +7,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"net/http"
+	"sort"
 	"strings"
 )
 
@@ -36,6 +37,10 @@ func (t UserTicketsExplorerPageHandler) ServeHTTP(w http.ResponseWriter, r *http
 	} else {
 		userId := wrappers.GetUserId(r.Context())
 		tickets := t.TicketContext.GetTicketsForEditorId(userId)
+
+		sort.Slice(tickets, func(i, j int) bool {
+			return tickets[i].CreationTime.Before(tickets[j].CreationTime)
+		})
 
 		data := userTicketsExplorerPageData{
 			Tickets: tickets,
