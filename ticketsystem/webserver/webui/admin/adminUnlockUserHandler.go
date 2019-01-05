@@ -45,13 +45,13 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 			return
 		}
 
-		exist, user := a.UserContext.GetUserById(userId)
+		exist, existingUser := a.UserContext.GetUserById(userId)
 
 		if unlocked && exist{
 			mailSubject := mail.BuildUnlockUserNotificationMailSubject()
-			mailContent := mail.BuildUnlockUserNotificationMailContent(user.FirstName + " " + user.LastName)
+			mailContent := mail.BuildUnlockUserNotificationMailContent(existingUser.FirstName + " " + existingUser.LastName)
 
-			err = a.MailContext.CreateNewOutgoingMail(user.Mail, mailSubject, mailContent)
+			err = a.MailContext.CreateNewOutgoingMail(existingUser.Mail, mailSubject, mailContent)
 
 			if err != nil {
 				a.Logger.LogError("AdminUnlockUserHandler", err)

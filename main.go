@@ -38,9 +38,7 @@ func main() {
 
 	mailContext := mail.MailManager{}
 	err = mailContext.Initialize(configuration.MailDataFolderPath, configuration.SendingMailAddress, logger)
-	mailContext.CreateNewOutgoingMail("test1@test1.de", "testSubject1", "TestContent1")
-	mailContext.CreateNewOutgoingMail("test2@test2.de", "testSubject2", "TestContent2")
-	mailContext.CreateNewOutgoingMail("test3@test2.de", "testSubject3", "TestContent2")
+
 
 	userContext := user.LoginSystem{}
 	err = userContext.Initialize(configuration.LoginDataFolderPath)
@@ -51,23 +49,6 @@ func main() {
 	ticketContext := ticket.TicketManager{}
 	ticketContext.Initialize(configuration.TicketDataFolderPath)
 
-	ticketa, err := ticketContext.CreateNewTicket("TestTitle", ticket.Creator{Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
-		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent1", OnlyInternal: false})
-	fmt.Println(ticketa)
-	ticketa, err = ticketContext.CreateNewTicket("TestTitle2", ticket.Creator{Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
-		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent2", OnlyInternal: false})
-
-	ticketg, err := ticketContext.CreateNewTicketForInternalUser("TestTitle", user.User{UserId: 1, Mail: "test@test.de", FirstName: "Max", LastName: "Mustermann"},
-		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent", OnlyInternal: false})
-	fmt.Println(ticketg)
-
-	ticketg, err = ticketContext.CreateNewTicketForInternalUser("TestTitle", user.User{UserId: 2, Mail: "peter@test.de", FirstName: "Peter", LastName: "Test"},
-		ticket.MessageEntry{Id: 0, CreatorMail: "test@test.de", Content: "TestContent", OnlyInternal: true})
-	fmt.Println(ticketg)
-
-	exists, ticket := ticketContext.GetTicketById(2)
-	fmt.Println(exists)
-	fmt.Println(ticket)
 
 	g := ticketContext.GetAllTicketInfo()
 	fmt.Println(len(g))
@@ -76,9 +57,9 @@ func main() {
 	http.HandleFunc(shared.AcknowledgmentPath, getAcknowledgeMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
 	http.HandleFunc(shared.ReceivePath, getOutgoingMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
 
-	templateManager := templateManager.TemplateManager{Templates: map[string]*template.Template{}}
+	templateMan := templateManager.TemplateManager{Templates: map[string]*template.Template{}}
 
-	err = templateManager.LoadTemplates(logger)
+	err = templateMan.LoadTemplates(logger)
 	if err != nil {
 		panic(err)
 	}
@@ -89,11 +70,11 @@ func main() {
 		Config:           configuration,
 		Logger:           logger,
 		ApiConfiguration: apiConfig,
-		TemplateManager:  &templateManager,
+		TemplateManager:  &templateMan,
 		MailContext:	  &mailContext,
 	}
 
-	templateManager.LoadTemplates(logger)
+	templateMan.LoadTemplates(logger)
 	handlerManager.RegisterHandlers()
 
 	if err := http.ListenAndServeTLS(configuration.GetServiceUrl(), configuration.CertificatePath, configuration.CertificateKeyPath, nil); err != nil {

@@ -10,13 +10,13 @@ import (
 */
 func TestMessageEntry_Copy(t *testing.T) {
 	originalMessage := MessageEntry{Id: 1, CreatorMail: "test@test.de", Content: "This is a test", OnlyInternal: false}
-	copy := originalMessage.Copy()
+	copied := originalMessage.Copy()
 
 	// Change the copy:
-	copy.Id = 200
-	copy.Content = "changed text"
-	copy.CreatorMail = "changed@changed.de"
-	copy.OnlyInternal = true
+	copied.Id = 200
+	copied.Content = "changed text"
+	copied.CreatorMail = "changed@changed.de"
+	copied.OnlyInternal = true
 
 	// Ensure, that the original message has not been changed
 	assert.Equal(t, 1, originalMessage.Id, "Original id should not be changed")

@@ -39,13 +39,13 @@ create Random Mails by number Of Mails n, subjectLength and contentlength
 func (m *MailGenerator) RandomMail(n int, subjectLength int, contentLength int) []mail.Mail {
 	mails := make([]mail.Mail, n)
 	for i := 0; i < n; i++ {
-		mail := mail.Mail{}
-		mail.Subject = randomText(subjectLength)
-		m.io.Print("Subject " + strconv.Itoa(i) + ": " + mail.Subject)
-		mail.Content = randomText(contentLength)
-		mail.Sender, mail.Receiver = generateTwoMailAdresses_FromRandomPool()
-		mail.SentTime = time.Now().Unix()
-		mails[i] = mail
+		generatedMail := mail.Mail{}
+		generatedMail.Subject = randomText(subjectLength)
+		m.io.Print("Subject " + strconv.Itoa(i) + ": " + generatedMail.Subject)
+		generatedMail.Content = randomText(contentLength)
+		generatedMail.Sender, generatedMail.Receiver = generateTwoMailAdresses_FromRandomPool()
+		generatedMail.SentTime = time.Now().Unix()
+		mails[i] = generatedMail
 	}
 	return mails
 }

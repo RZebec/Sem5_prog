@@ -55,7 +55,7 @@ func (t TicketViewPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 			return
 		}
 
-		ticketExist, ticket := t.TicketContext.GetTicketById(ticketId)
+		ticketExist, existingTicket := t.TicketContext.GetTicketById(ticketId)
 
 		if !ticketExist {
 			t.Logger.LogError("TicketViewPageHandler", errors.New("Ticket doesn´t exist!"))
@@ -63,16 +63,16 @@ func (t TicketViewPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 			return
 		}
 
-		ticketInfo := ticket.Info()
-		messages := ticket.Messages()
+		ticketInfo := existingTicket.Info()
+		messages := existingTicket.Messages()
 		mail := ""
 
 		if isUserLoggedIn {
 			userId := wrappers.GetUserId(r.Context())
-			exists, user := t.UserContext.GetUserById(userId)
+			exists, existingUser := t.UserContext.GetUserById(userId)
 
 			if exists {
-				mail = user.Mail
+				mail = existingUser.Mail
 			}
 		} else {
 			messages = filterOutInternalOnlyMessages(messages)
