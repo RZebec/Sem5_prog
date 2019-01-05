@@ -6,6 +6,9 @@ import (
 	"testing"
 )
 
+/*
+	The Buffer Pool should buffer the given values.
+ */
 func TestBufferPool(t *testing.T) {
 	var size int = 4
 
