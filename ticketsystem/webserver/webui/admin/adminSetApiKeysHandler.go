@@ -10,7 +10,7 @@ import (
 /*
 	Structure for the Login handler.
 */
-type AdminSetApiKeysHandler struct {
+type SetApiKeysHandler struct {
 	ApiConfiguration config.ApiContext
 	Logger           logging.Logger
 }
@@ -18,7 +18,7 @@ type AdminSetApiKeysHandler struct {
 /*
 	The Api key post handler.
 */
-func (a AdminSetApiKeysHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (a SetApiKeysHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {
@@ -32,16 +32,16 @@ func (a AdminSetApiKeysHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 			err := a.ApiConfiguration.ChangeIncomingMailApiKey(incomingMailApiKey)
 			if err != nil {
 				http.Redirect(w, r, "/admin?IsChangeFailed=yes", http.StatusInternalServerError)
-				a.Logger.LogError("AdminSetApiKeysHandler", err)
+				a.Logger.LogError("SetApiKeysHandler", err)
 				return
 			}
 			err = a.ApiConfiguration.ChangeOutgoingMailApiKey(outgoingMailApiKey)
 			if err != nil {
 				http.Redirect(w, r, "/admin?IsChangeFailed=yes", http.StatusInternalServerError)
-				a.Logger.LogError("AdminSetApiKeysHandler", err)
+				a.Logger.LogError("SetApiKeysHandler", err)
 				return
 			}
-			a.Logger.LogInfo("AdminSetApiKeysHandler","Api Keys changed")
+			a.Logger.LogInfo("SetApiKeysHandler","Api Keys changed")
 			http.Redirect(w, r, "/admin?IsChangeFailed=no", http.StatusFound)
 		} else {
 			http.Redirect(w, r, "/admin?IsChangeFailed=yes", http.StatusBadRequest)

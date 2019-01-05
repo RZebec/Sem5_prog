@@ -12,7 +12,7 @@ import (
 /*
 	Structure for the Login handler.
 */
-type AdminUnlockUserHandler struct {
+type UnlockUserHandler struct {
 	UserContext userData.UserContext
 	Logger      logging.Logger
 	MailContext mailData.MailContext
@@ -21,7 +21,7 @@ type AdminUnlockUserHandler struct {
 /*
 	The Unlock userData handler.
 */
-func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (a UnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {
@@ -30,7 +30,7 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		userId, idConversionError := strconv.Atoi(formId)
 
 		if idConversionError != nil {
-			a.Logger.LogError("AdminUnlockUserHandler", idConversionError)
+			a.Logger.LogError("UnlockUserHandler", idConversionError)
 			http.Redirect(w, r, "/", http.StatusBadRequest)
 			return
 		}
@@ -40,7 +40,7 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		unlocked, err := a.UserContext.UnlockAccount(accessToken, userId)
 
 		if err != nil {
-			a.Logger.LogError("AdminUnlockUserHandler", err)
+			a.Logger.LogError("UnlockUserHandler", err)
 			http.Redirect(w, r, "/", http.StatusInternalServerError)
 			return
 		}
@@ -54,12 +54,12 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 			err = a.MailContext.CreateNewOutgoingMail(existingUser.Mail, mailSubject, mailContent)
 
 			if err != nil {
-				a.Logger.LogError("AdminUnlockUserHandler", err)
+				a.Logger.LogError("UnlockUserHandler", err)
 				http.Redirect(w, r, "/admin", http.StatusInternalServerError)
 				return
 			}
 
-			a.Logger.LogInfo("AdminUnlockUserHandler","User unlocked. UserId: " + formId)
+			a.Logger.LogInfo("UnlockUserHandler","User unlocked. UserId: " + formId)
 			http.Redirect(w, r, "/admin", http.StatusFound)
 			return
 		}

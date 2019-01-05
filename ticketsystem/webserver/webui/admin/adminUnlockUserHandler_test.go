@@ -31,7 +31,7 @@ func TestAdminUnlockUserHandlerWrongRequestMethod_ServeHTTP(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 
-	testee := AdminUnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
+	testee := UnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -60,7 +60,7 @@ func TestAdminUnlockUserHandle_ServeHTTP_IncorrectData(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 
-	testee := AdminUnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
+	testee := UnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -100,7 +100,7 @@ func TestAdminUnlockUserHandle_ServeHTTP_ValidRequest(t *testing.T) {
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedMailContext.On("CreateNewOutgoingMail", testUser.Mail, mailSubject, mailContent).Return(nil)
 
-	testee := AdminUnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
+	testee := UnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -133,7 +133,7 @@ func TestAdminUnlockUserHandle_ServeHTTP_UnlockAccount_ContextReturnError_500Ret
 	mockedUserContext.On("UnlockAccount", mock.Anything, mock.Anything).Return(false, errors.New("TestError"))
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 
-	testee := AdminUnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
+	testee := UnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -174,7 +174,7 @@ func TestAdminUnlockUserHandle_ServeHTTP_UnlockAccount_OutgoingMailCreationError
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedMailContext.On("CreateNewOutgoingMail", testUser.Mail, mailSubject, mailContent).Return(errors.New("TestError"))
 
-	testee := AdminUnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
+	testee := UnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
