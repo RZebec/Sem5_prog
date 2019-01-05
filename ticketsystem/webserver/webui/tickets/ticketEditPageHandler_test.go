@@ -41,7 +41,7 @@ func TestTicketEditPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	testTicketInfo2 := ticketData.TicketInfo{Id: 0, Title: "TicketTest2", Editor: userData.GetInvalidDefaultUser(), HasEditor: false, Creator: testCreator2, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Open}
 
 	testCreator3 := ticketData.Creator{Mail: "Ivan2@Test.de", FirstName: "Ivan2", LastName: "Muller"}
-	testTicketInfo3 := ticketData.TicketInfo{Id: 1, Title: "TicketTest3", Editor: testEditor, HasEditor: false, Creator: testCreator3, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
+	testTicketInfo3 := ticketData.TicketInfo{Id: 1, Title: "TicketTest3", Editor: testEditor, HasEditor: true, Creator: testCreator3, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
 
 	testEditor4 := userData.User{Mail: "Test44@Test.de", UserId: 44, FirstName: "Dieter33", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
 	testCreator4 := ticketData.Creator{Mail: "Ivan3@Test.de", FirstName: "Ivan3", LastName: "Muller"}
@@ -218,7 +218,7 @@ func TestTicketEditPageHandler_ServeHTTP_RenderTemplateError(t *testing.T) {
 	testTicketInfo2 := ticketData.TicketInfo{Id: 0, Title: "TicketTest2", Editor: userData.GetInvalidDefaultUser(), HasEditor: false, Creator: testCreator2, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Open}
 
 	testCreator3 := ticketData.Creator{Mail: "Ivan2@Test.de", FirstName: "Ivan2", LastName: "Muller"}
-	testTicketInfo3 := ticketData.TicketInfo{Id: 1, Title: "TicketTest3", Editor: testEditor, HasEditor: false, Creator: testCreator3, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
+	testTicketInfo3 := ticketData.TicketInfo{Id: 1, Title: "TicketTest3", Editor: testEditor, HasEditor: true, Creator: testCreator3, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
 
 	testEditor4 := userData.User{Mail: "Test44@Test.de", UserId: 44, FirstName: "Dieter33", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
 	testCreator4 := ticketData.Creator{Mail: "Ivan3@Test.de", FirstName: "Ivan3", LastName: "Muller"}

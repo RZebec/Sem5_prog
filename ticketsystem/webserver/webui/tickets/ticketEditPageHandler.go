@@ -96,7 +96,7 @@ func (t TicketEditPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 func filterOutTicket(ticketInfo ticketData.TicketInfo, tickets []ticketData.TicketInfo) (result []ticketData.TicketInfo) {
 	for _, t := range tickets {
-		if t.Id != ticketInfo.Id && t.Editor == ticketInfo.Editor {
+		if t.Id != ticketInfo.Id && t.Editor == ticketInfo.Editor && t.HasEditor {
 			result = append(result, t)
 		}
 	}

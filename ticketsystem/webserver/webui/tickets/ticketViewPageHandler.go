@@ -86,7 +86,7 @@ func (t TicketViewPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 		data.UserIsAdmin = wrappers.IsAdmin(r.Context())
 		data.UserIsAuthenticated = wrappers.IsAuthenticated(r.Context())
-		data.Active = "ticket_view"
+		data.Active = "all_tickets"
 
 		templateRenderError := t.TemplateManager.RenderTemplate(w, "TicketViewPage", data)
 

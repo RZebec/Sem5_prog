@@ -35,11 +35,11 @@ var Base = `
 			<span>OP Ticket System</span>
 
 			{{if .UserIsAuthenticated}}
-				{{if .UserIsAdmin}}
-					<a {{if eq .Active "admin" }}class="active"{{end}} href="/admin">Admin</a>
-				{{end}}
 				<a {{if eq .Active "user_tickets" }}class="active"{{end}} href="/user_tickets">My Tickets</a>
-				<a {{if eq .Active "settings" }}class="active"{{end}} href="/user_settings">Settings</a>
+				{{if .UserIsAdmin}}
+					<a {{if eq .Active "admin" }}class="active"{{end}} href="/admin">Server Settings</a>
+				{{end}}
+				<a {{if eq .Active "settings" }}class="active"{{end}} href="/user_settings">My Settings</a>
 				<a href="/user_logout">Logout</a>
 			{{else}}
 				<a {{if eq .Active "login" }}class="active"{{end}} href="/login">Login</a>

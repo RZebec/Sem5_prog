@@ -239,7 +239,7 @@ func TestTicketViewPageHandler_ServeHTTP_DoNotShowInternalOnlyMessages(t *testin
 
 	data.UserIsAdmin = false
 	data.UserIsAuthenticated = false
-	data.Active = "ticket_view"
+	data.Active = "all_tickets"
 
 	mockedTicketContext.On("GetTicketById", 5).Return(true, testTicket)
 	mockedTemplateManager.On("RenderTemplate", mock.Anything, "TicketViewPage", data).Return(nil)
@@ -294,7 +294,7 @@ func TestTicketViewPageHandler_ServeHTTP_ShowInternalOnlyMessages(t *testing.T) 
 
 	data.UserIsAdmin = false
 	data.UserIsAuthenticated = true
-	data.Active = "ticket_view"
+	data.Active = "all_tickets"
 
 	mockedTicketContext.On("GetTicketById", 5).Return(true, testTicket)
 	mockedTemplateManager.On("RenderTemplate", mock.Anything, "TicketViewPage", data).Return(nil)
