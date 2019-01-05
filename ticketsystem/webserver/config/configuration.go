@@ -32,7 +32,7 @@ func (c *Configuration) RegisterFlags() {
 	flag.StringVar(&c.BaseUrl, "baseUrl", "localhost", "the base url")
 	flag.IntVar(&c.Port, "port", 9000, "the port to use")
 	flag.StringVar(&c.LoginDataFolderPath, "loginDataFolderPath", "data/login", "path to the folder to store the login data")
-	flag.StringVar(&c.TicketDataFolderPath, "ticketDataFolderPath", "data/tickets", "path to the folder to store the ticket data")
+	flag.StringVar(&c.TicketDataFolderPath, "ticketDataFolderPath", "data/tickets", "path to the folder to store the ticketData data")
 	flag.StringVar(&c.MailDataFolderPath, "mailDataFolderPath", "data/mails", "path to the folder to store the mail data")
 	flag.StringVar(&c.CertificateKeyPath, "certificateKeyPath", "key.pem", "path to the certificate key file")
 	flag.StringVar(&c.CertificatePath, "certificatePath", "cert.pem", "path to the certificate")

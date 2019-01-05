@@ -3,9 +3,9 @@ package webui
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/admin"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/files"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/index"
@@ -20,13 +20,13 @@ import (
 )
 
 type HandlerManager struct {
-	UserContext      user.UserContext
-	TicketContext    ticket.TicketContext
+	UserContext      userData.UserContext
+	TicketContext    ticketData.TicketContext
 	Config           config.Configuration
 	Logger           logging.Logger
 	ApiConfiguration config.ApiContext
 	TemplateManager  templateManager.TemplateContext
-	MailContext 	 mail.MailContext
+	MailContext      mailData.MailContext
 }
 
 func (handlerManager *HandlerManager) RegisterHandlers() {
@@ -95,7 +95,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	ticketViewPageHandlerWrapper.Next = ticketViewPageHandler
 	ticketViewPageHandlerWrapper.Logger = handlerManager.Logger
 	ticketViewPageHandlerWrapper.UserContext = handlerManager.UserContext
-	http.HandleFunc("/ticket/", ticketViewPageHandlerWrapper.ServeHTTP)
+	http.HandleFunc("/ticketData/", ticketViewPageHandlerWrapper.ServeHTTP)
 
 	ticketAppendMessageHandler := tickets.TicketAppendMessageHandler{TicketContext: handlerManager.TicketContext,
 		UserContext: handlerManager.UserContext, MailContext: handlerManager.MailContext, Logger: handlerManager.Logger}
@@ -169,5 +169,5 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	ticketEditPageHandlerWrapper.Next = ticketEditPageHandler
 	ticketEditPageHandlerWrapper.Logger = handlerManager.Logger
 	ticketEditPageHandlerWrapper.UserContext = handlerManager.UserContext
-	http.HandleFunc("/ticket/ticket_edit/", ticketEditPageHandlerWrapper.ServeHTTP)
+	http.HandleFunc("/ticketData/ticket_edit/", ticketEditPageHandlerWrapper.ServeHTTP)
 }

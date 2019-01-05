@@ -3,7 +3,7 @@ package wrappers
 import (
 	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -25,7 +25,7 @@ func TestEnforceAuthenticationInfoWrapper_ServeHTTP_UserIsAuthenticatedAndAdmin(
 	// Mock the context:
 	mockedUserContext.On("RefreshToken", mock.Anything).Return("tete", nil)
 	mockedUserContext.On("SessionIsValid", mock.Anything).Return(true, 2,
-		"testName", user.Admin, nil)
+		"testName", userData.Admin, nil)
 
 	req, err := http.NewRequest("GET", shared.ReceivePath, nil)
 	if err != nil {
@@ -42,15 +42,15 @@ func TestEnforceAuthenticationInfoWrapper_ServeHTTP_UserIsAuthenticatedAndAdmin(
 	assert.True(t, nextHandler.HasBeenCalled, "The next handler should be called")
 	isAdmin := IsAdmin(nextHandler.Request.Context())
 	isAuthenticated := IsAuthenticated(nextHandler.Request.Context())
-	assert.True(t, isAdmin, "The next handler should get the info that the user is a admin")
-	assert.True(t, isAuthenticated, "The next handler should get the info that the user is authenticated")
+	assert.True(t, isAdmin, "The next handler should get the info that the userData is a admin")
+	assert.True(t, isAuthenticated, "The next handler should get the info that the userData is authenticated")
 
 	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
 	mockedUserContext.AssertExpectations(t)
 }
 
 /*
-	Combination if user is authenticated but no admin should work.
+	Combination if userData is authenticated but no admin should work.
 */
 func TestEnforceAuthenticationInfoWrapper_ServeHTTP_UserIsAuthenticatedAndNoAdmin(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
@@ -62,7 +62,7 @@ func TestEnforceAuthenticationInfoWrapper_ServeHTTP_UserIsAuthenticatedAndNoAdmi
 	// Mock the context:
 	mockedUserContext.On("RefreshToken", mock.Anything).Return("tete", nil)
 	mockedUserContext.On("SessionIsValid", mock.Anything).Return(true, 2,
-		"testName", user.RegisteredUser, nil)
+		"testName", userData.RegisteredUser, nil)
 
 	req, err := http.NewRequest("GET", shared.ReceivePath, nil)
 	if err != nil {
@@ -79,16 +79,16 @@ func TestEnforceAuthenticationInfoWrapper_ServeHTTP_UserIsAuthenticatedAndNoAdmi
 	assert.True(t, nextHandler.HasBeenCalled, "The next handler should be called")
 	isAdmin := IsAdmin(nextHandler.Request.Context())
 	isAuthenticated := IsAuthenticated(nextHandler.Request.Context())
-	// The user is no admin:
-	assert.False(t, isAdmin, "The next handler should get the info that the user is a no admin")
-	assert.True(t, isAuthenticated, "The next handler should get the info that the user is authenticated")
+	// The userData is no admin:
+	assert.False(t, isAdmin, "The next handler should get the info that the userData is a no admin")
+	assert.True(t, isAuthenticated, "The next handler should get the info that the userData is authenticated")
 
 	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
 	mockedUserContext.AssertExpectations(t)
 }
 
 /*
-	A user which is not authenticated.
+	A userData which is not authenticated.
 */
 func TestEnforceAuthenticationInfoWrapper_ServeHTTP_NotAuthenticated(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
@@ -99,7 +99,7 @@ func TestEnforceAuthenticationInfoWrapper_ServeHTTP_NotAuthenticated(t *testing.
 
 	// Mock the context:
 	mockedUserContext.On("SessionIsValid", mock.Anything).Return(false, -1,
-		"", user.RegisteredUser, nil)
+		"", userData.RegisteredUser, nil)
 
 	req, err := http.NewRequest("GET", shared.ReceivePath, nil)
 	if err != nil {
@@ -119,7 +119,7 @@ func TestEnforceAuthenticationInfoWrapper_ServeHTTP_NotAuthenticated(t *testing.
 }
 
 /*
-	A missing cookie should result in a non-authenticated user.
+	A missing cookie should result in a non-authenticated userData.
 */
 func TestEnforceAuthenticationInfoWrapper_ServeHTTP_NotCookieSet(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)

@@ -280,7 +280,7 @@ func TestRegisterHandler_ServeHTTPGetRegisterPage_RegisteringFailed(t *testing.T
 
 /*
 	The User should be redirected to the index page if he is already logged in.
-	The User should log out before registering a new user.
+	The User should log out before registering a new userData.
 */
 func TestRegisterHandler_ServeHTTPGetRegisterPage_UserAlreadyLoggedIn_Redirect(t *testing.T) {
 	req, err := http.NewRequest("GET", "/register", nil)

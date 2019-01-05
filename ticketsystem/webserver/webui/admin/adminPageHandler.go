@@ -3,7 +3,7 @@ package admin
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
@@ -14,7 +14,7 @@ import (
 	Structure for the Admin handler.
 */
 type AdminPageHandler struct {
-	UserContext     user.UserContext
+	UserContext     userData.UserContext
 	Logger          logging.Logger
 	TemplateManager templateManager.TemplateContext
 	ApiContext      config.ApiContext
@@ -24,7 +24,7 @@ type AdminPageHandler struct {
 	Structure for the Admin Page Data.
 */
 type adminPageData struct {
-	Users              []user.User
+	Users              []userData.User
 	IncomingMailApiKey string
 	OutgoingMailApiKey string
 	pages.BasePageData

@@ -1,7 +1,7 @@
 /*
 	The session package handles the users and the session.
 */
-package user
+package userData
 
 import (
 	"bytes"
@@ -20,19 +20,19 @@ import (
 )
 
 /*
-	The user context provides functions to keep a session alive or to check if the session is valid and to register,
-	login or logout at user.
+	The userData context provides functions to keep a session alive or to check if the session is valid and to register,
+	login or logout at userData.
 */
 type UserContext interface {
-	// Check if the current session is valid. Also returns the user of the session.
+	// Check if the current session is valid. Also returns the userData of the session.
 	SessionIsValid(token string) (isValid bool, userId int, userName string, role UserRole, err error)
 	// Refresh the token. The new token should be used for all following request.
 	RefreshToken(token string) (newToken string, err error)
-	// Login a user.
+	// Login a userData.
 	Login(userName string, password string) (success bool, authToken string, err error)
-	// Register a new user.
+	// Register a new userData.
 	Register(userName string, password string, firstName string, lastName string) (success bool, err error)
-	// Logout a user.
+	// Logout a userData.
 	Logout(authToken string)
 	// Set a account to vacation mode. Only possible for the currently logged-in account.
 	EnableVacationMode(token string) (err error)
@@ -40,15 +40,15 @@ type UserContext interface {
 	DisableVacationMode(token string) (err error)
 	// Unlock a account which is waiting to be unlocked. The current session needs the permission to do this.
 	UnlockAccount(currentUserToken string, userIdToUnlock int) (unlocked bool, err error)
-	// Changing the password of a user should be possible, but only for the user himself.
+	// Changing the password of a userData should be possible, but only for the userData himself.
 	ChangePassword(currentUserToken string, currentUserPassword string, newPassword string) (changed bool, err error)
 	// Get all locked users:
 	GetAllLockedUsers() []User
 	// Get all active users:
 	GetAllActiveUsers() []User
-	// Check if the given mail is for a registered user.
+	// Check if the given mail is for a registered userData.
 	GetUserForEmail(mailAddress string) (isRegisteredUser bool, userId int)
-	// Get user by its id.
+	// Get userData by its id.
 	GetUserById(userId int) (exists bool, user User)
 }
 
@@ -78,7 +78,7 @@ type inMemorySession struct {
 }
 
 /*
-	The LoginSystem contains all parts to handle the access to user and session data.
+	The LoginSystem contains all parts to handle the access to userData and session data.
 */
 type LoginSystem struct {
 	fileAccessMutex      sync.Mutex
@@ -110,7 +110,7 @@ func (s *LoginSystem) Initialize(folderPath string) (err error) {
 }
 
 /*
-	Get a user by id.
+	Get a userData by id.
 */
 func (s *LoginSystem) GetUserById(userId int) (exists bool, user User) {
 	s.cachedUserDataMutex.RLock()
@@ -128,7 +128,7 @@ func (s *LoginSystem) GetUserById(userId int) (exists bool, user User) {
 }
 
 /*
-	Get a user from its mail.
+	Get a userData from its mail.
 */
 func (s *LoginSystem) GetUserForEmail(mailAddress string) (isRegisteredUser bool, userId int) {
 	s.cachedUserDataMutex.RLock()
@@ -162,7 +162,7 @@ func (s *LoginSystem) RefreshToken(token string) (newToken string, err error) {
 }
 
 /*
-	Register a new user.
+	Register a new userData.
 */
 func (s *LoginSystem) Register(userName string, password string, firstName string, lastName string) (success bool, err error) {
 	mailValidator := mail.NewValidator()
@@ -179,20 +179,20 @@ func (s *LoginSystem) Register(userName string, password string, firstName strin
 	if lastName == "" {
 		return false, errors.New("lastName not valid")
 	}
-	// Check if user already exists. There can not be multiple users with the same username:
+	// Check if userData already exists. There can not be multiple users with the same username:
 	if s.checkIfUserExistsOnCache(userName) {
-		return false, errors.New("user with this name already exists")
+		return false, errors.New("userData with this name already exists")
 	}
-	// Register the new user:
+	// Register the new userData:
 	er := s.registerNewUser(userName, password, firstName, lastName, RegisteredUser, WaitingToBeUnlocked)
 	if er != nil {
-		return false, errors.New("could not create new user. reason: " + er.Error())
+		return false, errors.New("could not create new userData. reason: " + er.Error())
 	}
 	return true, nil
 }
 
 /*
-	Change the password for the user of the given session.
+	Change the password for the userData of the given session.
 */
 func (s *LoginSystem) ChangePassword(currentUserToken string, currentUserPassword string, newPassword string) (changed bool, err error) {
 	isValid, userId, userName, _, err := s.SessionIsValid(currentUserToken)
@@ -213,11 +213,11 @@ func (s *LoginSystem) ChangePassword(currentUserToken string, currentUserPasswor
 			}
 		}
 	}
-	return false, errors.New("user password could not be changed")
+	return false, errors.New("userData password could not be changed")
 }
 
 /*
-	Logout a user.
+	Logout a userData.
 */
 func (s *LoginSystem) Logout(authToken string) {
 	s.currentSessionsMutex.Lock()
@@ -225,7 +225,7 @@ func (s *LoginSystem) Logout(authToken string) {
 	delete(s.currentSessions, authToken)
 }
 
-// Check if the current session is valid. Also returns the user of the session.
+// Check if the current session is valid. Also returns the userData of the session.
 func (s *LoginSystem) SessionIsValid(token string) (isValid bool, userId int, userName string, userRole UserRole, err error) {
 	s.currentSessionsMutex.RLock()
 
@@ -246,7 +246,7 @@ func (s *LoginSystem) SessionIsValid(token string) (isValid bool, userId int, us
 }
 
 /*
-	Login in a user.
+	Login in a userData.
 */
 func (s *LoginSystem) Login(userName string, password string) (success bool, authToken string, err error) {
 	s.cachedUserDataMutex.RLock()
@@ -255,7 +255,7 @@ func (s *LoginSystem) Login(userName string, password string) (success bool, aut
 	for _, v := range s.cachedUserData {
 		if strings.ToLower(v.Mail) == strings.ToLower(userName) {
 			if v.State == WaitingToBeUnlocked {
-				return false, "", errors.New("user is still waiting to be unlocked")
+				return false, "", errors.New("userData is still waiting to be unlocked")
 			}
 			valid := s.checkUserCredentials(v, password)
 			if valid {
@@ -265,7 +265,7 @@ func (s *LoginSystem) Login(userName string, password string) (success bool, aut
 		}
 	}
 
-	return false, "", errors.New("user not found")
+	return false, "", errors.New("userData not found")
 }
 
 /*
@@ -303,7 +303,7 @@ func (s *LoginSystem) DisableVacationMode(token string) (err error) {
 			return err
 		}
 	} else {
-		return errors.New("user not found")
+		return errors.New("userData not found")
 	}
 
 	s.readFileAndUpdateCache(s.loginDataFilePath)
@@ -345,7 +345,7 @@ func (s *LoginSystem) EnableVacationMode(token string) (err error) {
 			return err
 		}
 	} else {
-		return errors.New("user not found")
+		return errors.New("userData not found")
 	}
 
 	s.readFileAndUpdateCache(s.loginDataFilePath)
@@ -433,7 +433,7 @@ func (s *LoginSystem) UnlockAccount(currentToken string, userIdToUnlock int) (un
 			return false, err
 		}
 	} else {
-		return false, errors.New("user to unlock not found")
+		return false, errors.New("userData to unlock not found")
 	}
 
 	s.readFileAndUpdateCache(s.loginDataFilePath)
@@ -441,7 +441,7 @@ func (s *LoginSystem) UnlockAccount(currentToken string, userIdToUnlock int) (un
 }
 
 /*
-	Initialize the files for the user system.
+	Initialize the files for the userData system.
 */
 func (s *LoginSystem) initializeFiles(folderPath string) (err error) {
 	s.setDefaultValues()
@@ -480,7 +480,7 @@ func (s *LoginSystem) initializeFiles(folderPath string) (err error) {
 }
 
 /*
-	Create a session for a user. Returns the token or an error.
+	Create a session for a userData. Returns the token or an error.
 */
 func (s *LoginSystem) createSessionForUser(user storedUserData) (authToken string, err error) {
 	s.currentSessionsMutex.Lock()
@@ -497,7 +497,7 @@ func (s *LoginSystem) createSessionForUser(user storedUserData) (authToken strin
 }
 
 /*
-	Check if the user already exists (using the cache). Returns true, if the user exists, false if not.
+	Check if the userData already exists (using the cache). Returns true, if the userData exists, false if not.
 */
 func (s *LoginSystem) checkIfUserExistsOnCache(userName string) bool {
 	// We want to read from the cache => get a read lock:
@@ -516,7 +516,7 @@ func (s *LoginSystem) checkIfUserExistsOnCache(userName string) bool {
 }
 
 /*
-	Register a new user.
+	Register a new userData.
 */
 func (s *LoginSystem) registerNewUser(userName string, password string, firstName string, lastName string, role UserRole, state UserState) (err error) {
 	s.fileAccessMutex.Lock()
@@ -541,7 +541,7 @@ func (s *LoginSystem) registerNewUser(userName string, password string, firstNam
 }
 
 /*
-	Check if the provided password for a user is correct.
+	Check if the provided password for a userData is correct.
 */
 func (s *LoginSystem) checkUserCredentials(user storedUserData, providedPassword string) (success bool) {
 	// Build the combination of the provided password with the stored hash and compare it with the stored password hash:
@@ -654,7 +654,7 @@ func (s *LoginSystem) readFileAndUpdateCache(filePath string) (err error) {
 }
 
 /*
-	Check if the user for the given id has the admin role.
+	Check if the userData for the given id has the admin role.
 */
 func (s *LoginSystem) checkIfUserIsInAdminRole(userId int) (isAdmin bool) {
 	s.cachedUserDataMutex.RLock()
@@ -698,7 +698,7 @@ func (s *LoginSystem) changeUserPassword(user User, newPassword string) (bool, e
 			return false, err
 		}
 	} else {
-		return false, errors.New("user to unlock not found")
+		return false, errors.New("userData to unlock not found")
 	}
 
 	s.readFileAndUpdateCache(s.loginDataFilePath)

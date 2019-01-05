@@ -2,8 +2,8 @@ package admin
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"net/http"
 	"strconv"
@@ -13,13 +13,13 @@ import (
 	Structure for the Login handler.
 */
 type AdminUnlockUserHandler struct {
-	UserContext user.UserContext
+	UserContext userData.UserContext
 	Logger      logging.Logger
-	MailContext	mail.MailContext
+	MailContext mailData.MailContext
 }
 
 /*
-	The Unlock user handler.
+	The Unlock userData handler.
 */
 func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
@@ -48,8 +48,8 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		exist, existingUser := a.UserContext.GetUserById(userId)
 
 		if unlocked && exist{
-			mailSubject := mail.BuildUnlockUserNotificationMailSubject()
-			mailContent := mail.BuildUnlockUserNotificationMailContent(existingUser.FirstName + " " + existingUser.LastName)
+			mailSubject := mailData.BuildUnlockUserNotificationMailSubject()
+			mailContent := mailData.BuildUnlockUserNotificationMailContent(existingUser.FirstName + " " + existingUser.LastName)
 
 			err = a.MailContext.CreateNewOutgoingMail(existingUser.Mail, mailSubject, mailContent)
 

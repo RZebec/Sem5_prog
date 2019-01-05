@@ -6,7 +6,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/acknowledgementStorage"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/confirm"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"fmt"
 	"strconv"
 )
@@ -65,7 +65,7 @@ func (r *Reciever) Run() error {
 /*
 you can select between one specify confirm or if you want all confirm
 */
-func (r *Reciever) allOrSpecifyConfirm(allAcknowledges *[]mail.Acknowledgment) {
+func (r *Reciever) allOrSpecifyConfirm(allAcknowledges *[]mailData.Acknowledgment) {
 	for true {
 		r.io.Print("send all Acknowledges or specify Acknowledges to Server. Or stop reciever (all/specify/stop):")
 		answer := r.io.ReadEntry()

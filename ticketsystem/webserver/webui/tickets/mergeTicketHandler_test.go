@@ -2,7 +2,7 @@ package tickets
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
@@ -26,8 +26,8 @@ func TestTickerMergeHandler_ServeHTTP_TicketsMerged(t *testing.T) {
 
 	mockedMailContext.On("CreateNewOutgoingMail", mock.Anything, mock.Anything, mock.Anything).
 		Return(nil)
-	mockedTicketContext.On("GetTicketById", firstTicketId).Return(true, &ticket.Ticket{})
-	mockedTicketContext.On("GetTicketById", secondTicketId).Return(true, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", firstTicketId).Return(true, &ticketData.Ticket{})
+	mockedTicketContext.On("GetTicketById", secondTicketId).Return(true, &ticketData.Ticket{})
 	mockedTicketContext.On("MergeTickets", firstTicketId, secondTicketId).Return(true, nil)
 
 	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
@@ -49,14 +49,14 @@ func TestTickerMergeHandler_ServeHTTP_TicketsMerged(t *testing.T) {
 
 	resp := rr.Result()
 	assert.Equal(t, http.StatusFound, resp.StatusCode, "Should return 302")
-	assert.Equal(t, "/ticket/4", resp.Header.Get("location"))
+	assert.Equal(t, "/ticketData/4", resp.Header.Get("location"))
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedMailContext.AssertExpectations(t)
 }
 
 /*
-	Invalid ticket id should result in a invalid request.
+	Invalid ticketData id should result in a invalid request.
 */
 func TestTickerMergeHandler_ServeHTTP_InvalidFirstTicketId_InvalidRequest(t *testing.T) {
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
@@ -88,7 +88,7 @@ func TestTickerMergeHandler_ServeHTTP_InvalidFirstTicketId_InvalidRequest(t *tes
 }
 
 /*
-	Invalid ticket id should result in a invalid request.
+	Invalid ticketData id should result in a invalid request.
 */
 func TestTickerMergeHandler_ServeHTTP_InvalidSecondTicketId_InvalidRequest(t *testing.T) {
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
@@ -120,7 +120,7 @@ func TestTickerMergeHandler_ServeHTTP_InvalidSecondTicketId_InvalidRequest(t *te
 }
 
 /*
-	A id of a non existing ticket should result in a invalid request.
+	A id of a non existing ticketData should result in a invalid request.
 */
 func TestTickerMergeHandler_ServeHTTP_FirstTicketDoesNotExist_InvalidRequest(t *testing.T) {
 	firstTicketId := 22
@@ -129,7 +129,7 @@ func TestTickerMergeHandler_ServeHTTP_FirstTicketDoesNotExist_InvalidRequest(t *
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 
-	mockedTicketContext.On("GetTicketById", firstTicketId).Return(false, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", firstTicketId).Return(false, &ticketData.Ticket{})
 
 	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext}
@@ -157,7 +157,7 @@ func TestTickerMergeHandler_ServeHTTP_FirstTicketDoesNotExist_InvalidRequest(t *
 }
 
 /*
-	A id of a non existing ticket should result in a invalid request.
+	A id of a non existing ticketData should result in a invalid request.
 */
 func TestTickerMergeHandler_ServeHTTP_SecondTicketDoesNotExist_InvalidRequest(t *testing.T) {
 	firstTicketId := 22
@@ -166,8 +166,8 @@ func TestTickerMergeHandler_ServeHTTP_SecondTicketDoesNotExist_InvalidRequest(t 
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 
-	mockedTicketContext.On("GetTicketById", firstTicketId).Return(true, &ticket.Ticket{})
-	mockedTicketContext.On("GetTicketById", secondTicketId).Return(false, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", firstTicketId).Return(true, &ticketData.Ticket{})
+	mockedTicketContext.On("GetTicketById", secondTicketId).Return(false, &ticketData.Ticket{})
 
 	testee := TicketMergeHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext}
@@ -204,8 +204,8 @@ func TestTickerMergeHandler_ServeHTTP_ContextReturnsError_Returns500(t *testing.
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 
-	mockedTicketContext.On("GetTicketById", firstTicketId).Return(true, &ticket.Ticket{})
-	mockedTicketContext.On("GetTicketById", secondTicketId).Return(true, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", firstTicketId).Return(true, &ticketData.Ticket{})
+	mockedTicketContext.On("GetTicketById", secondTicketId).Return(true, &ticketData.Ticket{})
 	mockedTicketContext.On("MergeTickets", firstTicketId, secondTicketId).
 		Return(false, errors.New("TestError"))
 
@@ -244,8 +244,8 @@ func TestTickerMergeHandler_ServeHTTP_FirstMailNotSent_Returns500(t *testing.T) 
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 
-	mockedTicketContext.On("GetTicketById", firstTicketId).Return(true, &ticket.Ticket{})
-	mockedTicketContext.On("GetTicketById", secondTicketId).Return(true, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", firstTicketId).Return(true, &ticketData.Ticket{})
+	mockedTicketContext.On("GetTicketById", secondTicketId).Return(true, &ticketData.Ticket{})
 	mockedTicketContext.On("MergeTickets", firstTicketId, secondTicketId).
 		Return(true, nil)
 	mockedMailContext.On("CreateNewOutgoingMail", mock.Anything, mock.Anything, mock.Anything).
@@ -270,7 +270,7 @@ func TestTickerMergeHandler_ServeHTTP_FirstMailNotSent_Returns500(t *testing.T) 
 
 	resp := rr.Result()
 	assert.Equal(t, 500, resp.StatusCode, "Should return 500")
-	assert.Equal(t, "/ticket/4", resp.Header.Get("location"))
+	assert.Equal(t, "/ticketData/4", resp.Header.Get("location"))
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedMailContext.AssertExpectations(t)
@@ -286,8 +286,8 @@ func TestTickerMergeHandler_ServeHTTP_SecondMailNotSent_Returns500(t *testing.T)
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 
-	mockedTicketContext.On("GetTicketById", firstTicketId).Return(true, &ticket.Ticket{})
-	mockedTicketContext.On("GetTicketById", secondTicketId).Return(true, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", firstTicketId).Return(true, &ticketData.Ticket{})
+	mockedTicketContext.On("GetTicketById", secondTicketId).Return(true, &ticketData.Ticket{})
 	mockedTicketContext.On("MergeTickets", firstTicketId, secondTicketId).
 		Return(true, nil)
 	// First mail is successfull:
@@ -316,7 +316,7 @@ func TestTickerMergeHandler_ServeHTTP_SecondMailNotSent_Returns500(t *testing.T)
 
 	resp := rr.Result()
 	assert.Equal(t, 500, resp.StatusCode, "Should return 500")
-	assert.Equal(t, "/ticket/4", resp.Header.Get("location"))
+	assert.Equal(t, "/ticketData/4", resp.Header.Get("location"))
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedMailContext.AssertExpectations(t)

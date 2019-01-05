@@ -2,7 +2,7 @@ package mails
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -13,7 +13,7 @@ import (
 */
 type OutgoingMailHandler struct {
 	Logger      logging.Logger
-	MailContext mail.MailContext
+	MailContext mailData.MailContext
 }
 
 /*

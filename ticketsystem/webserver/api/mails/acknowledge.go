@@ -2,7 +2,7 @@ package mails
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -13,7 +13,7 @@ import (
 */
 type AcknowledgeMailHandler struct {
 	Logger      logging.Logger
-	MailContext mail.MailContext
+	MailContext mailData.MailContext
 }
 
 /*
@@ -21,7 +21,7 @@ type AcknowledgeMailHandler struct {
 */
 func (h *AcknowledgeMailHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
-	var data []mail.Acknowledgment
+	var data []mailData.Acknowledgment
 	err := decoder.Decode(&data)
 	if err != nil {
 		h.Logger.LogError("AcknowledgeMailHandler", err)

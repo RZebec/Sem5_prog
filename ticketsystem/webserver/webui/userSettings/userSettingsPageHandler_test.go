@@ -2,7 +2,7 @@ package userSettings
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
@@ -27,7 +27,7 @@ func TestUserSettingsPageHandler_ServeHTTP__ValidRequest(t *testing.T) {
 
 	testLogger := testhelpers.GetTestLogger()
 
-	testUser := user.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
+	testUser := userData.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedUserContext.On("GetUserById", 5).Return(true, testUser)
@@ -101,7 +101,7 @@ func TestUserSettingsPageHandler_ServeHTTP_ContextError(t *testing.T) {
 
 	testLogger := testhelpers.GetTestLogger()
 
-	testUser := user.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
+	testUser := userData.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedUserContext.On("GetUserById", 5).Return(true, testUser)
@@ -147,7 +147,7 @@ func TestUserSettingsPageHandler_ServeHTTP_ChangePasswordFailed(t *testing.T) {
 
 	testLogger := testhelpers.GetTestLogger()
 
-	testUser := user.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
+	testUser := userData.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedUserContext.On("GetUserById", 5).Return(true, testUser)

@@ -5,7 +5,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketTool/configuration"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/mailGeneration"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"strconv"
 )
 
@@ -31,7 +31,7 @@ The SubjectLength and Contentlength is Hardcoded with, SL=10,CL=50
 */
 func (s *Sender) Run() {
 	s.io.Print("write explicit mail or random mails ? (e/r):")
-	var eMails []mail.Mail
+	var eMails []mailData.Mail
 	for true {
 		answer := s.io.ReadEntry()
 		if answer == "e" {
@@ -60,7 +60,7 @@ func (s *Sender) Run() {
 this is the little function which need your Mails and send this to the Server
 if while transmition occured a failure, it is handeled here
 */
-func (s *Sender) httpRequest(eMails []mail.Mail) {
+func (s *Sender) httpRequest(eMails []mailData.Mail) {
 	s.io.Print("Start HTTPS-Request")
 	err := s.apiClient.SendMails(eMails)
 	if err != nil {

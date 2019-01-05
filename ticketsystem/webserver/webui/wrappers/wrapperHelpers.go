@@ -3,7 +3,7 @@ package wrappers
 import (
 	"context"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"net/http"
 )
 
@@ -23,7 +23,7 @@ func NewContextWithAuthenticationInfo(ctx context.Context, isAuthenticated bool,
 }
 
 /*
-	Return true, if the user is a admin.
+	Return true, if the userData is a admin.
 */
 func IsAdmin(ctx context.Context) bool {
 	value, ok := ctx.Value(isAdminKey).(bool)
@@ -35,7 +35,7 @@ func IsAdmin(ctx context.Context) bool {
 }
 
 /*
-	Returns true if the user is authenticated.
+	Returns true if the userData is authenticated.
 */
 func IsAuthenticated(ctx context.Context) bool {
 	value, ok := ctx.Value(isAuthenticatedKey).(bool)
@@ -47,7 +47,7 @@ func IsAuthenticated(ctx context.Context) bool {
 }
 
 /*
-	Get the user Id.
+	Get the userData Id.
  */
 func GetUserId(ctx context.Context) int {
 	value, ok := ctx.Value(userIdKey).(int)
@@ -59,7 +59,7 @@ func GetUserId(ctx context.Context) int {
 }
 
 /*
-	Get the user token.
+	Get the userData token.
  */
 func GetUserToken(ctx context.Context) string {
 	value, ok := ctx.Value(userTokenKey).(string)
@@ -71,9 +71,9 @@ func GetUserToken(ctx context.Context) string {
 }
 
 /*
-	Function used to check if a user is logged in and if the session of the aforementioned user is valid.
+	Function used to check if a userData is logged in and if the session of the aforementioned userData is valid.
 */
-func UserIsLoggedInCheck(r *http.Request, userContext user.UserContext, accessTokenCookieName string, logger logging.Logger) (isUserLoggedIn bool, isAdmin bool, accessTokenValue string, userId int) {
+func UserIsLoggedInCheck(r *http.Request, userContext userData.UserContext, accessTokenCookieName string, logger logging.Logger) (isUserLoggedIn bool, isAdmin bool, accessTokenValue string, userId int) {
 	userIsLoggedIn := false
 	token := ""
 
@@ -90,5 +90,5 @@ func UserIsLoggedInCheck(r *http.Request, userContext user.UserContext, accessTo
 	token = cookie.Value
 	userIsLoggedIn, userId, _, role, err := userContext.SessionIsValid(token)
 
-	return userIsLoggedIn, role == user.Admin, token, userId
+	return userIsLoggedIn, role == userData.Admin, token, userId
 }

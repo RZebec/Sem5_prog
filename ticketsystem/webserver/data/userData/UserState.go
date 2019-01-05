@@ -1,4 +1,4 @@
-package user
+package userData
 
 type UserState int
 

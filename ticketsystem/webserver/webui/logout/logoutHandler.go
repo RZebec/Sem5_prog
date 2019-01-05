@@ -3,7 +3,7 @@ package logout
 import (
 	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
 	"net/http"
 	"strings"
@@ -13,7 +13,7 @@ import (
 	Structure for the Logout handler.
 */
 type LogoutHandler struct {
-	UserContext user.UserContext
+	UserContext userData.UserContext
 	Logger      logging.Logger
 }
 

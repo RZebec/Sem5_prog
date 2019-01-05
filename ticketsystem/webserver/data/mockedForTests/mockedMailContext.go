@@ -1,7 +1,7 @@
 package mockedForTests
 
 import (
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -15,15 +15,15 @@ type MockedMailContext struct {
 /*
 	Mocked function.
 */
-func (m *MockedMailContext) GetUnsentMails() ([]mail.Mail, error) {
+func (m *MockedMailContext) GetUnsentMails() ([]mailData.Mail, error) {
 	args := m.Called()
-	return args.Get(0).([]mail.Mail), args.Error(1)
+	return args.Get(0).([]mailData.Mail), args.Error(1)
 }
 
 /*
 	Mocked function.
 */
-func (m *MockedMailContext) AcknowledgeMails(acknowledgments []mail.Acknowledgment) error {
+func (m *MockedMailContext) AcknowledgeMails(acknowledgments []mailData.Acknowledgment) error {
 	args := m.Called(acknowledgments)
 	return args.Error(0)
 }

@@ -1,18 +1,18 @@
-package ticket
+package ticketData
 
 import (
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
 )
 
 /*
-	A copy of a ticket should not be able to change the original ticket.
+	A copy of a ticketData should not be able to change the original ticketData.
 */
 func TestTicketInfo_Copy(t *testing.T) {
 	refTimestamp := time.Now()
-	origUser := user.User{Mail: "test@test.de", UserId: 23, FirstName: "Hans", LastName: "Müller"}
+	origUser := userData.User{Mail: "test@test.de", UserId: 23, FirstName: "Hans", LastName: "Müller"}
 	creator := Creator{Mail: origUser.Mail, FirstName: origUser.FirstName, LastName: origUser.LastName}
 	origTicketInfo := TicketInfo{Id: 5, Title: "OrigTitle", HasEditor: true,
 		CreationTime: refTimestamp, LastModificationTime: refTimestamp,
@@ -29,7 +29,7 @@ func TestTicketInfo_Copy(t *testing.T) {
 	copiedTicket.LastModificationTime = time.Now()
 	copiedTicket.State = Closed
 
-	// Assert that the original ticket info has not been changed:
+	// Assert that the original ticketData info has not been changed:
 	assert.Equal(t, "Müller", origTicketInfo.Creator.LastName, "Original creator name should not be changed")
 	assert.Equal(t, "Hans", origTicketInfo.Editor.FirstName, "Original editor name should not be changed")
 	assert.Equal(t, true, origTicketInfo.HasEditor, "Original has editor flag should not be changed")

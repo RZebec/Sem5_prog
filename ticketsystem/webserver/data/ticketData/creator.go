@@ -1,9 +1,9 @@
-package ticket
+package ticketData
 
-import "de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+import "de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 
 /*
-	Represents the creator of a ticket.
+	Represents the creator of a ticketData.
 */
 type Creator struct {
 	Mail      string
@@ -12,9 +12,9 @@ type Creator struct {
 }
 
 /*
-	Convert a user to a creator.
+	Convert a userData to a creator.
 */
-func ConvertToCreator(user user.User) Creator {
+func ConvertToCreator(user userData.User) Creator {
 	return Creator{Mail: user.Mail, FirstName: user.FirstName, LastName: user.LastName}
 }
 

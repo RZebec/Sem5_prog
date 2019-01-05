@@ -1,4 +1,4 @@
-package mail
+package mailData
 
 /*
 	A acknowledgement for a mail.

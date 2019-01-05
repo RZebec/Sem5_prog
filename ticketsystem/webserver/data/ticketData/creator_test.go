@@ -1,16 +1,16 @@
-package ticket
+package ticketData
 
 import (
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 /*
-	Test the conversion of a user to creator.
+	Test the conversion of a userData to creator.
 */
 func TestConvertToCreator(t *testing.T) {
-	testUser := user.User{UserId: 1, Mail: "test@test.de", FirstName: "Alex", LastName: "Müller"}
+	testUser := userData.User{UserId: 1, Mail: "test@test.de", FirstName: "Alex", LastName: "Müller"}
 	creator := ConvertToCreator(testUser)
 
 	assert.Equal(t, testUser.Mail, creator.Mail)

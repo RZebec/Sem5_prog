@@ -2,8 +2,8 @@ package tickets
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"errors"
@@ -16,7 +16,7 @@ import (
 )
 
 /*
-	A Valid Http Request for logged In user.
+	A Valid Http Request for logged In userData.
 */
 func TestTicketCreateHandler_ServeHTTP_ValidRequestLoggedIn(t *testing.T) {
 	mail := "test@test.com"
@@ -31,14 +31,14 @@ func TestTicketCreateHandler_ServeHTTP_ValidRequestLoggedIn(t *testing.T) {
 	req.Form.Add("message", message)
 	req.Form.Add("internal", internal)
 
-	testUser := user.User{Mail: mail, UserId: 5, FirstName: "Max", LastName: "Muller", Role: user.RegisteredUser, State: user.Active}
-	testMessage := ticket.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
+	testUser := userData.User{Mail: mail, UserId: 5, FirstName: "Max", LastName: "Muller", Role: userData.RegisteredUser, State: userData.Active}
+	testMessage := ticketData.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
 
-	testTicketCreator := ticket.Creator{Mail: mail, FirstName: "Max", LastName: "Muller"}
+	testTicketCreator := ticketData.Creator{Mail: mail, FirstName: "Max", LastName: "Muller"}
 
-	testTicketInfo := ticket.TicketInfo{Id: 26, Title: title, Editor: testUser, HasEditor: true, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Processing}
+	testTicketInfo := ticketData.TicketInfo{Id: 26, Title: title, Editor: testUser, HasEditor: true, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
 
-	createdTicket := ticket.CreateTestTicket(testTicketInfo, []ticket.MessageEntry{testMessage})
+	createdTicket := ticketData.CreateTestTicket(testTicketInfo, []ticketData.MessageEntry{testMessage})
 
 	if err != nil {
 		t.Fatal(err)
@@ -64,14 +64,14 @@ func TestTicketCreateHandler_ServeHTTP_ValidRequestLoggedIn(t *testing.T) {
 
 	newLocation := resp.Header.Get("location")
 	assert.Equal(t, 302, resp.StatusCode, "Should return status code 302")
-	assert.Equal(t, "/ticket/26", newLocation, "Should be redirected to \"/ticket/26\"")
+	assert.Equal(t, "/ticketData/26", newLocation, "Should be redirected to \"/ticketData/26\"")
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
 }
 
 /*
-	A Valid Http Request for not logged In user.
+	A Valid Http Request for not logged In userData.
 */
 func TestTicketCreateHandler_ServeHTTP_ValidRequestNotLoggedIn(t *testing.T) {
 	mail := "test@test.com"
@@ -90,13 +90,13 @@ func TestTicketCreateHandler_ServeHTTP_ValidRequestNotLoggedIn(t *testing.T) {
 	req.Form.Add("first_name", firstName)
 	req.Form.Add("last_name", lastName)
 
-	testMessage := ticket.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
+	testMessage := ticketData.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
 
-	testTicketCreator := ticket.Creator{Mail: mail, FirstName: firstName, LastName: lastName}
+	testTicketCreator := ticketData.Creator{Mail: mail, FirstName: firstName, LastName: lastName}
 
-	testTicketInfo := ticket.TicketInfo{Id: 26, Title: title, Editor: user.GetInvalidDefaultUser(), HasEditor: false, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Processing}
+	testTicketInfo := ticketData.TicketInfo{Id: 26, Title: title, Editor: userData.GetInvalidDefaultUser(), HasEditor: false, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
 
-	createdTicket := ticket.CreateTestTicket(testTicketInfo, []ticket.MessageEntry{testMessage})
+	createdTicket := ticketData.CreateTestTicket(testTicketInfo, []ticketData.MessageEntry{testMessage})
 
 	if err != nil {
 		t.Fatal(err)
@@ -121,7 +121,7 @@ func TestTicketCreateHandler_ServeHTTP_ValidRequestNotLoggedIn(t *testing.T) {
 
 	newLocation := resp.Header.Get("location")
 	assert.Equal(t, 302, resp.StatusCode, "Should return status code 302")
-	assert.Equal(t, "/ticket/26", newLocation, "Should be redirected to \"/ticket/26\"")
+	assert.Equal(t, "/ticketData/26", newLocation, "Should be redirected to \"/ticketData/26\"")
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
@@ -217,14 +217,14 @@ func TestTicketCreateHandler_ServeHTTP_InternalOnlyEmpty(t *testing.T) {
 	req.Form.Add("message", message)
 	req.Form.Add("internal", internal)
 
-	testUser := user.User{Mail: mail, UserId: 5, FirstName: "Max", LastName: "Muller", Role: user.RegisteredUser, State: user.Active}
-	testMessage := ticket.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
+	testUser := userData.User{Mail: mail, UserId: 5, FirstName: "Max", LastName: "Muller", Role: userData.RegisteredUser, State: userData.Active}
+	testMessage := ticketData.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
 
-	testTicketCreator := ticket.Creator{Mail: mail, FirstName: "Max", LastName: "Muller"}
+	testTicketCreator := ticketData.Creator{Mail: mail, FirstName: "Max", LastName: "Muller"}
 
-	testTicketInfo := ticket.TicketInfo{Id: 26, Title: title, Editor: testUser, HasEditor: true, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Processing}
+	testTicketInfo := ticketData.TicketInfo{Id: 26, Title: title, Editor: testUser, HasEditor: true, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
 
-	createdTicket := ticket.CreateTestTicket(testTicketInfo, []ticket.MessageEntry{testMessage})
+	createdTicket := ticketData.CreateTestTicket(testTicketInfo, []ticketData.MessageEntry{testMessage})
 
 	if err != nil {
 		t.Fatal(err)
@@ -250,7 +250,7 @@ func TestTicketCreateHandler_ServeHTTP_InternalOnlyEmpty(t *testing.T) {
 
 	newLocation := resp.Header.Get("location")
 	assert.Equal(t, 302, resp.StatusCode, "Should return status code 302")
-	assert.Equal(t, "/ticket/26", newLocation, "Should be redirected to \"/ticket/26\"")
+	assert.Equal(t, "/ticketData/26", newLocation, "Should be redirected to \"/ticketData/26\"")
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedUserContext.AssertExpectations(t)
@@ -276,13 +276,13 @@ func TestTicketCreateHandler_ServeHTTP_CreateNewTicketError500(t *testing.T) {
 	req.Form.Add("first_name", firstName)
 	req.Form.Add("last_name", lastName)
 
-	testMessage := ticket.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
+	testMessage := ticketData.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
 
-	testTicketCreator := ticket.Creator{Mail: mail, FirstName: firstName, LastName: lastName}
+	testTicketCreator := ticketData.Creator{Mail: mail, FirstName: firstName, LastName: lastName}
 
-	testTicketInfo := ticket.TicketInfo{Id: 26, Title: title, Editor: user.GetInvalidDefaultUser(), HasEditor: false, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Processing}
+	testTicketInfo := ticketData.TicketInfo{Id: 26, Title: title, Editor: userData.GetInvalidDefaultUser(), HasEditor: false, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
 
-	createdTicket := ticket.CreateTestTicket(testTicketInfo, []ticket.MessageEntry{testMessage})
+	createdTicket := ticketData.CreateTestTicket(testTicketInfo, []ticketData.MessageEntry{testMessage})
 
 	if err != nil {
 		t.Fatal(err)
@@ -314,7 +314,7 @@ func TestTicketCreateHandler_ServeHTTP_CreateNewTicketError500(t *testing.T) {
 }
 
 /*
-	If a user tries to create a ticket for another user it should result in a 400.
+	If a userData tries to create a ticketData for another userData it should result in a 400.
 */
 func TestTicketCreateHandler_ServeHTTP_LoggedInUserTriesToCreateTicketForOtherMail(t *testing.T) {
 	mail := "test2@test.com"
@@ -373,7 +373,7 @@ func TestTicketCreateHandler_ServeHTTP_UserNotFoundWithId(t *testing.T) {
 	req.Form.Add("message", message)
 	req.Form.Add("internal", internal)
 
-	testUser := user.User{Mail: mail, UserId: 5, FirstName: "Max", LastName: "Muller", Role: user.RegisteredUser, State: user.Active}
+	testUser := userData.User{Mail: mail, UserId: 5, FirstName: "Max", LastName: "Muller", Role: userData.RegisteredUser, State: userData.Active}
 
 	if err != nil {
 		t.Fatal(err)
@@ -384,7 +384,7 @@ func TestTicketCreateHandler_ServeHTTP_UserNotFoundWithId(t *testing.T) {
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedUserContext.On("GetUserForEmail", mail).Return(true, testUser.UserId)
-	mockedUserContext.On("GetUserById", testUser.UserId).Return(false, *new(user.User))
+	mockedUserContext.On("GetUserById", testUser.UserId).Return(false, *new(userData.User))
 
 	testee := TicketCreateHandler{TicketContext: mockedTicketContext, UserContext: mockedUserContext, Logger: testLogger}
 
@@ -405,7 +405,7 @@ func TestTicketCreateHandler_ServeHTTP_UserNotFoundWithId(t *testing.T) {
 }
 
 /*
-	A Valid Http Request for logged In user.
+	A Valid Http Request for logged In userData.
 */
 func TestTicketCreateHandler_ServeHTTP_CreateNewTicketForInternalUserError500(t *testing.T) {
 	mail := "test@test.com"
@@ -420,14 +420,14 @@ func TestTicketCreateHandler_ServeHTTP_CreateNewTicketForInternalUserError500(t 
 	req.Form.Add("message", message)
 	req.Form.Add("internal", internal)
 
-	testUser := user.User{Mail: mail, UserId: 5, FirstName: "Max", LastName: "Muller", Role: user.RegisteredUser, State: user.Active}
-	testMessage := ticket.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
+	testUser := userData.User{Mail: mail, UserId: 5, FirstName: "Max", LastName: "Muller", Role: userData.RegisteredUser, State: userData.Active}
+	testMessage := ticketData.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
 
-	testTicketCreator := ticket.Creator{Mail: mail, FirstName: "Max", LastName: "Muller"}
+	testTicketCreator := ticketData.Creator{Mail: mail, FirstName: "Max", LastName: "Muller"}
 
-	testTicketInfo := ticket.TicketInfo{Id: 26, Title: title, Editor: testUser, HasEditor: true, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Processing}
+	testTicketInfo := ticketData.TicketInfo{Id: 26, Title: title, Editor: testUser, HasEditor: true, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
 
-	createdTicket := ticket.CreateTestTicket(testTicketInfo, []ticket.MessageEntry{testMessage})
+	createdTicket := ticketData.CreateTestTicket(testTicketInfo, []ticketData.MessageEntry{testMessage})
 
 	if err != nil {
 		t.Fatal(err)
@@ -460,7 +460,7 @@ func TestTicketCreateHandler_ServeHTTP_CreateNewTicketForInternalUserError500(t 
 }
 
 /*
-	If a not logged in user tries to create a ticket for another user it should result in a 400.
+	If a not logged in userData tries to create a ticketData for another userData it should result in a 400.
 */
 func TestTicketCreateHandler_ServeHTTP_NotLoggedInUserTriesToCreateTicketForOtherMail(t *testing.T) {
 	mail := "test2@test.com"

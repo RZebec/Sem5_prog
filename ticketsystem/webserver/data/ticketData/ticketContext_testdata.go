@@ -1,4 +1,4 @@
-package ticket
+package ticketData
 
 const firstTestTicket = `{
 "Info": {

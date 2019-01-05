@@ -2,7 +2,7 @@ package userSettings
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
@@ -17,7 +17,7 @@ import (
 type UserSettingsPageHandler struct {
 	Logger          logging.Logger
 	TemplateManager templateManager.TemplateContext
-	UserContext		user.UserContext
+	UserContext     userData.UserContext
 }
 
 /*
@@ -52,7 +52,7 @@ func (u UserSettingsPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Reques
 		userIsOnVacation := false
 
 		if exist {
-			userIsOnVacation = loggedInUser.State == user.OnVacation
+			userIsOnVacation = loggedInUser.State == userData.OnVacation
 		}
 
 		data := userSettingsPageData{

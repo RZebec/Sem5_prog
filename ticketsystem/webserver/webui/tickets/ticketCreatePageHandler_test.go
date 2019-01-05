@@ -2,7 +2,7 @@ package tickets
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
@@ -15,7 +15,7 @@ import (
 )
 
 /*
-	A Valid Http Request for logged In user.
+	A Valid Http Request for logged In userData.
 */
 func TestTicketCreatePageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
@@ -24,7 +24,7 @@ func TestTicketCreatePageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	testee := TicketCreatePageHandler{UserContext: mockedUserContext, TemplateManager: mockedTemplateManager,
 		Logger: testhelpers.GetTestLogger()}
 
-	testUser := user.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
+	testUser := userData.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
 
 	req, err := http.NewRequest("GET", "/ticket_create", nil)
 	if err != nil {
@@ -100,7 +100,7 @@ func TestTicketCreatePageHandler_ServeHTTP_ContextError_RenderError(t *testing.T
 	testee := TicketCreatePageHandler{UserContext: mockedUserContext, TemplateManager: mockedTemplateManager,
 		Logger: testhelpers.GetTestLogger()}
 
-	testUser := user.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
+	testUser := userData.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
 
 	req, err := http.NewRequest("GET", "/ticket_create", nil)
 	if err != nil {
@@ -139,7 +139,7 @@ func TestTicketCreatePageHandler_ServeHTTP_ContextError_RenderError(t *testing.T
 }
 
 /*
-	If the logged in user doesn´t exist it should result in a 500.
+	If the logged in userData doesn´t exist it should result in a 500.
 */
 func TestTicketCreatePageHandler_ServeHTTP_UserDoesNotExist(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
@@ -158,7 +158,7 @@ func TestTicketCreatePageHandler_ServeHTTP_UserDoesNotExist(t *testing.T) {
 	handler := http.HandlerFunc(testee.ServeHTTP)
 	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
 
-	mockedUserContext.On("GetUserById", 5).Return(false, *new(user.User))
+	mockedUserContext.On("GetUserById", 5).Return(false, *new(userData.User))
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 

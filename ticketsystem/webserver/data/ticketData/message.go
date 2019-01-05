@@ -1,9 +1,9 @@
-package ticket
+package ticketData
 
 import "time"
 
 /*
-	A entry in a ticket.
+	A entry in a ticketData.
 */
 type MessageEntry struct {
 	Id           int

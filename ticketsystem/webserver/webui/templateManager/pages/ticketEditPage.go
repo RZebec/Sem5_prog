@@ -15,7 +15,7 @@ var TicketEditPage = `
 				<div class="main">
 					<h2>Ticket Edit</h2>
 					<form id="merge_form" method="POST" name="merge_form" action="/merge_tickets">
-						<label>Merge ticket with:</label>
+						<label>Merge ticketData with:</label>
 						<input type="hidden" name="firstTicketId" value="{{.TicketInfo.Id}}"/>
 						<select name="secondTicketId" id="secondTicketId">
 						{{range .OtherTickets}}	

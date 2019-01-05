@@ -3,7 +3,7 @@ package wrappers
 import (
 	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
 	"net/http"
 )
@@ -13,7 +13,7 @@ import (
 */
 type AddAuthenticationInfoWrapper struct {
 	Next        HttpHandler
-	UserContext user.UserContext
+	UserContext userData.UserContext
 	Logger      logging.Logger
 }
 

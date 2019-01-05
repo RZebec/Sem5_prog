@@ -1,4 +1,4 @@
-package mail
+package mailData
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"

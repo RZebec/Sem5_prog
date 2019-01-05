@@ -2,9 +2,9 @@ package tickets
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"github.com/pkg/errors"
 	"net/http"
@@ -14,29 +14,29 @@ import (
 )
 
 /*
-	A handler to change the state of a ticket.
+	A handler to change the state of a ticketData.
 */
 type SetTicketStateHandler struct {
 	Logger        logging.Logger
-	TicketContext ticket.TicketContext
-	MailContext   mail.MailContext
-	UserContext   user.UserContext
+	TicketContext ticketData.TicketContext
+	MailContext   mailData.MailContext
+	UserContext   userData.UserContext
 }
 
 /*
 	Resolve the state from a string.
 */
-func (t *SetTicketStateHandler) ResolveState(state string) (valid bool, ticketState ticket.TicketState) {
-	if strings.ToLower(state) == strings.ToLower(ticket.Open.String()) {
-		return true, ticket.Open
+func (t *SetTicketStateHandler) ResolveState(state string) (valid bool, ticketState ticketData.TicketState) {
+	if strings.ToLower(state) == strings.ToLower(ticketData.Open.String()) {
+		return true, ticketData.Open
 	}
-	if strings.ToLower(state) == strings.ToLower(ticket.Processing.String()) {
-		return true, ticket.Processing
+	if strings.ToLower(state) == strings.ToLower(ticketData.Processing.String()) {
+		return true, ticketData.Processing
 	}
-	if strings.ToLower(state) == strings.ToLower(ticket.Closed.String()) {
-		return true, ticket.Closed
+	if strings.ToLower(state) == strings.ToLower(ticketData.Closed.String()) {
+		return true, ticketData.Closed
 	}
-	return false, ticket.Open
+	return false, ticketData.Open
 }
 
 /*
@@ -48,7 +48,7 @@ func (t SetTicketStateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	} else {
 		rawTicketId := r.FormValue("ticketId")
 
-		// Check ticket:
+		// Check ticketData:
 		ticketId, err := strconv.Atoi(rawTicketId)
 		if err != nil {
 			t.Logger.LogError("SetTicketStateHandler", err)
@@ -58,17 +58,17 @@ func (t SetTicketStateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 		ticketExists, existingTicket := t.TicketContext.GetTicketById(ticketId)
 		if !ticketExists {
-			t.Logger.LogError("SetTicketStateHandler", errors.New("ticket does not exist. id: "+rawTicketId))
+			t.Logger.LogError("SetTicketStateHandler", errors.New("ticketData does not exist. id: "+rawTicketId))
 			http.Redirect(w, r, "/", http.StatusBadRequest)
 			return
 		}
 
-		// Extract the user who makes the change:
+		// Extract the userData who makes the change:
 		loggedInUserId := wrappers.GetUserId(r.Context())
 		userExists, authenticatedUser := t.UserContext.GetUserById(loggedInUserId)
 		if !userExists {
-			t.Logger.LogError("SetTicketStateHandler", errors.New("user should exist"))
-			http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusBadRequest)
+			t.Logger.LogError("SetTicketStateHandler", errors.New("userData should exist"))
+			http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusBadRequest)
 			return
 		}
 
@@ -76,7 +76,7 @@ func (t SetTicketStateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		stateIsValid, newState := t.ResolveState(rawState)
 		if !stateIsValid {
 			t.Logger.LogError("SetTicketStateHandler", errors.New("state is not valid"))
-			http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusBadRequest)
+			http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusBadRequest)
 			return
 		}
 
@@ -85,19 +85,19 @@ func (t SetTicketStateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 			_, err = t.TicketContext.SetTicketState(ticketId, newState)
 			if err != nil {
 				t.Logger.LogError("SetTicketStateHandler", err)
-				http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusInternalServerError)
+				http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusInternalServerError)
 				return
 			}
 			// Build message for history:
-			messageEntry := ticket.MessageEntry{CreatorMail: authenticatedUser.Mail, OnlyInternal: false,
-				Content: "Set new state: " + ticket.Processing.String(), CreationTime: time.Now()}
+			messageEntry := ticketData.MessageEntry{CreatorMail: authenticatedUser.Mail, OnlyInternal: false,
+				Content: "Set new state: " + ticketData.Processing.String(), CreationTime: time.Now()}
 			_, err = t.TicketContext.AppendMessageToTicket(ticketId, messageEntry)
 			if err != nil {
 				t.Logger.LogError("SetTicketStateHandler", err)
-				http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusInternalServerError)
+				http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusInternalServerError)
 				return
 			}
 		}
-		http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusFound)
+		http.Redirect(w, r, "/ticketData/"+rawTicketId, http.StatusFound)
 	}
 }

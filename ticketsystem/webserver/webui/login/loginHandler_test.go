@@ -119,7 +119,7 @@ func TestLoginHandler_ServeHTTPGetLoginPage_ContextError(t *testing.T) {
 }
 
 /*
-	A already logged in user should be redirected to the index page.
+	A already logged in userData should be redirected to the index page.
 */
 func TestLoginHandler_ServeHTTPGetLoginPage_UserAlreadyLoggedIn(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)

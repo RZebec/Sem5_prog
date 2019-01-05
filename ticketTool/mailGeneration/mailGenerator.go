@@ -2,7 +2,7 @@ package mailGeneration
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"math/rand"
 	"strconv"
 	"time"
@@ -18,8 +18,8 @@ var senders = []string{"test1@gmx.de", "Oberheld.asdf@web.de", "horstChristianAn
 	"orange@blau.de", "hohlfruchtigerSaft@haze.de"}
 
 type MailGeneration interface {
-	RandomMail(n int, subjectLength int, contentLength int) []mail.Mail
-	ExplicitMail() []mail.Mail
+	RandomMail(n int, subjectLength int, contentLength int) []mailData.Mail
+	ExplicitMail() []mailData.Mail
 }
 
 type MailGenerator struct {
@@ -36,10 +36,10 @@ func CreateMailGenerator(io inputOutput.InputOutput) MailGenerator {
 /*
 create Random Mails by number Of Mails n, subjectLength and contentlength
 */
-func (m *MailGenerator) RandomMail(n int, subjectLength int, contentLength int) []mail.Mail {
-	mails := make([]mail.Mail, n)
+func (m *MailGenerator) RandomMail(n int, subjectLength int, contentLength int) []mailData.Mail {
+	mails := make([]mailData.Mail, n)
 	for i := 0; i < n; i++ {
-		generatedMail := mail.Mail{}
+		generatedMail := mailData.Mail{}
 		generatedMail.Subject = randomText(subjectLength)
 		m.io.Print("Subject " + strconv.Itoa(i) + ": " + generatedMail.Subject)
 		generatedMail.Content = randomText(contentLength)
@@ -66,8 +66,8 @@ func generateTwoMailAdresses_FromRandomPool() (string, string) {
 /*
 create a Mail on your own and get back a List with one entry
 */
-func (m *MailGenerator) ExplicitMail() []mail.Mail {
-	email := mail.Mail{}
+func (m *MailGenerator) ExplicitMail() []mailData.Mail {
+	email := mailData.Mail{}
 	m.io.Print("Entry subject: ")
 	email.Subject = m.io.ReadEntry()
 	m.io.Print("Entry text: ")
@@ -77,7 +77,7 @@ func (m *MailGenerator) ExplicitMail() []mail.Mail {
 	email.Sender = m.io.ReadEntry()
 	email.SentTime = time.Now().Unix()
 
-	mails := make([]mail.Mail, 1)
+	mails := make([]mailData.Mail, 1)
 	mails[0] = email
 	return mails
 }

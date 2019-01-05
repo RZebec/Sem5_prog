@@ -1,4 +1,4 @@
-package mail
+package mailData
 
 import "strconv"
 
@@ -7,7 +7,7 @@ import "strconv"
 */
 func BuildAppendMessageNotificationMailContent(receiver string, sender string, content string) string {
 	prefix := "Hello " + receiver + ",\n"
-	prefix = prefix + sender + " added a message to your ticket.\n"
+	prefix = prefix + sender + " added a message to your ticketData.\n"
 	prefix = prefix + "Content of the message: \n"
 	return prefix + content
 }
@@ -33,7 +33,7 @@ func BuildUnlockUserNotificationMailContent(receiver string) string {
  */
 func BuildAppendMessageNotificationMailSubject(ticketId int) string {
 	stringValue := strconv.Itoa(ticketId)
-	return "A new message has been appended to your ticket with TicketId<" + stringValue + ">:"
+	return "A new message has been appended to your ticketData with TicketId<" + stringValue + ">:"
 }
 
 /*
@@ -42,7 +42,7 @@ func BuildAppendMessageNotificationMailSubject(ticketId int) string {
 func BuildTicketMergeNotificationMailSubject(ticketId int, newTicketId int) string {
 	stringValue := strconv.Itoa(ticketId)
 	newTicketIdValue := strconv.Itoa(newTicketId)
-	return "Your ticket with TicketId<" + stringValue + "> has been merged. New Ticket: TicketId<" + newTicketIdValue + ">"
+	return "Your ticketData with TicketId<" + stringValue + "> has been merged. New Ticket: TicketId<" + newTicketIdValue + ">"
 }
 
 /*
@@ -61,7 +61,7 @@ func BuildTicketMergeNotificationMailContent(receiver string, firstTicketId int,
  */
 func BuildTicketEditorChangedNotificationMailSubject(ticketId int) string {
 	stringValue := strconv.Itoa(ticketId)
-	return "Your ticket with TicketId<" + stringValue + "> has been changed. A new editor has been set."
+	return "Your ticketData with TicketId<" + stringValue + "> has been changed. A new editor has been set."
 }
 
 /*

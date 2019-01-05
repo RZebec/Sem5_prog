@@ -1,8 +1,8 @@
-package ticket
+package ticketData
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"github.com/pkg/errors"
 	"io/ioutil"
 	"os"
@@ -15,10 +15,10 @@ import (
 )
 
 /*
-	Interface for the ticket context.
+	Interface for the ticketData context.
 */
 type TicketContext interface {
-	CreateNewTicketForInternalUser(title string, editor user.User, initialMessage MessageEntry) (*Ticket, error)
+	CreateNewTicketForInternalUser(title string, editor userData.User, initialMessage MessageEntry) (*Ticket, error)
 	CreateNewTicket(title string, creator Creator, initialMessage MessageEntry) (*Ticket, error)
 	GetTicketById(id int) (bool, *Ticket)
 	GetTicketsForEditorId(userId int) []TicketInfo
@@ -26,14 +26,14 @@ type TicketContext interface {
 	GetAllTicketInfo() []TicketInfo
 	AppendMessageToTicket(ticketId int, message MessageEntry) (*Ticket, error)
 	MergeTickets(firstTicketId int, secondTicketId int) (success bool, err error)
-	SetEditor(editor user.User, ticketId int) (*Ticket, error)
+	SetEditor(editor userData.User, ticketId int) (*Ticket, error)
 	SetTicketState(ticketId int, newState TicketState) (*Ticket, error)
 	RemoveEditor(ticketId int) error
 	GetAllOpenTickets() []TicketInfo
 }
 
 /*
-	The ticket manager handles the access to the tickets.
+	The ticketData manager handles the access to the tickets.
 */
 type TicketManager struct {
 	cachedTickets      map[int]Ticket
@@ -43,7 +43,7 @@ type TicketManager struct {
 }
 
 /*
-	Get the ticket for a given creator mail.
+	Get the ticketData for a given creator mail.
  */
 func (t *TicketManager) GetTicketsForCreatorMail(mail string) []TicketInfo {
 	t.cachedTicketsMutex.RLock()
@@ -59,7 +59,7 @@ func (t *TicketManager) GetTicketsForCreatorMail(mail string) []TicketInfo {
 }
 
 /*
-	Get the ticket for a given editor.
+	Get the ticketData for a given editor.
  */
 func (t *TicketManager) GetTicketsForEditorId(userId int) []TicketInfo {
 	t.cachedTicketsMutex.RLock()
@@ -91,7 +91,7 @@ func (t *TicketManager) GetAllOpenTickets() []TicketInfo {
 }
 
 /*
-	Set the state of a ticket.
+	Set the state of a ticketData.
 */
 func (t *TicketManager) SetTicketState(ticketId int, newState TicketState) (*Ticket, error) {
 	exists, ticket := t.GetTicketById(ticketId)
@@ -100,7 +100,7 @@ func (t *TicketManager) SetTicketState(ticketId int, newState TicketState) (*Tic
 		ticket.info.LastModificationTime = time.Now()
 		err := ticket.persist()
 		if err != nil {
-			return nil, errors.Wrap(err, "could not change state of the ticket")
+			return nil, errors.Wrap(err, "could not change state of the ticketData")
 		}
 
 		t.cachedTicketsMutex.Lock()
@@ -109,12 +109,12 @@ func (t *TicketManager) SetTicketState(ticketId int, newState TicketState) (*Tic
 
 		return ticket.Copy(), nil
 	} else {
-		return nil, errors.New("ticket does not exist")
+		return nil, errors.New("ticketData does not exist")
 	}
 }
 
 /*
-	Append a message to a ticket.
+	Append a message to a ticketData.
 */
 func (t *TicketManager) AppendMessageToTicket(ticketId int, message MessageEntry) (*Ticket, error) {
 	exists, ticket := t.GetTicketById(ticketId)
@@ -127,7 +127,7 @@ func (t *TicketManager) AppendMessageToTicket(ticketId int, message MessageEntry
 		ticket.info.LastModificationTime = time.Now()
 		err := ticket.persist()
 		if err != nil {
-			return nil, errors.Wrap(err, "could not append message to ticket")
+			return nil, errors.Wrap(err, "could not append message to ticketData")
 		}
 
 		t.cachedTicketsMutex.Lock()
@@ -136,23 +136,23 @@ func (t *TicketManager) AppendMessageToTicket(ticketId int, message MessageEntry
 
 		return ticket.Copy(), nil
 	} else {
-		return nil, errors.New("ticket does not exist")
+		return nil, errors.New("ticketData does not exist")
 	}
 }
 
 /*
-	Remove the editor of a ticket.
+	Remove the editor of a ticketData.
 */
 func (t *TicketManager) RemoveEditor(ticketId int) error {
 	exists, ticket := t.GetTicketById(ticketId)
 	if exists {
-		ticket.info.Editor = user.GetInvalidDefaultUser()
+		ticket.info.Editor = userData.GetInvalidDefaultUser()
 		ticket.info.HasEditor = false
 
 		ticket.info.LastModificationTime = time.Now()
 		err := ticket.persist()
 		if err != nil {
-			return errors.Wrap(err, "could not remove editor of ticket")
+			return errors.Wrap(err, "could not remove editor of ticketData")
 		}
 
 		t.cachedTicketsMutex.Lock()
@@ -161,14 +161,14 @@ func (t *TicketManager) RemoveEditor(ticketId int) error {
 
 		return nil
 	} else {
-		return errors.New("ticket does not exist")
+		return errors.New("ticketData does not exist")
 	}
 }
 
 /*
-	Set the editor of a ticket.
+	Set the editor of a ticketData.
 */
-func (t *TicketManager) SetEditor(editor user.User, ticketId int) (*Ticket, error) {
+func (t *TicketManager) SetEditor(editor userData.User, ticketId int) (*Ticket, error) {
 	exists, ticket := t.GetTicketById(ticketId)
 	if exists {
 		ticket.info.Editor = editor
@@ -177,7 +177,7 @@ func (t *TicketManager) SetEditor(editor user.User, ticketId int) (*Ticket, erro
 		ticket.info.LastModificationTime = time.Now()
 		err := ticket.persist()
 		if err != nil {
-			return nil, errors.Wrap(err, "could not set editor of ticket")
+			return nil, errors.Wrap(err, "could not set editor of ticketData")
 		}
 
 		t.cachedTicketsMutex.Lock()
@@ -186,12 +186,12 @@ func (t *TicketManager) SetEditor(editor user.User, ticketId int) (*Ticket, erro
 
 		return ticket.Copy(), nil
 	} else {
-		return nil, errors.New("ticket does not exist")
+		return nil, errors.New("ticketData does not exist")
 	}
 }
 
 /*
-	Get all existing ticket information.
+	Get all existing ticketData information.
 */
 func (t *TicketManager) GetAllTicketInfo() []TicketInfo {
 	t.cachedTicketsMutex.RLock()
@@ -205,7 +205,7 @@ func (t *TicketManager) GetAllTicketInfo() []TicketInfo {
 }
 
 /*
-	Get a ticket by its id. Returns false if the ticket does not exist.
+	Get a ticketData by its id. Returns false if the ticketData does not exist.
 */
 func (t *TicketManager) GetTicketById(id int) (bool, *Ticket) {
 	value, ok := t.cachedTickets[id]
@@ -217,17 +217,17 @@ func (t *TicketManager) GetTicketById(id int) (bool, *Ticket) {
 
 func (t *TicketManager) MergeTickets(firstTicketId int, secondTicketId int) (success bool, err error) {
 	if firstTicketId == secondTicketId {
-		return false, errors.New("can not merge a ticket with itself")
+		return false, errors.New("can not merge a ticketData with itself")
 	}
 
 	firstTicket, firstTicketFound := t.cachedTickets[firstTicketId]
 	secondTicket, secondTicketFound := t.cachedTickets[secondTicketId]
 	if !firstTicketFound || !secondTicketFound {
-		return false, errors.New("ticket not found")
+		return false, errors.New("ticketData not found")
 	}
 
 	if !firstTicket.info.HasEditor || !secondTicket.info.HasEditor {
-		return false, errors.New("can not merge ticket if there is no editor")
+		return false, errors.New("can not merge ticketData if there is no editor")
 	}
 
 	if firstTicket.info.Editor.UserId != secondTicket.info.Editor.UserId {
@@ -259,7 +259,7 @@ func (t *TicketManager) MergeTickets(firstTicketId int, secondTicketId int) (suc
 	olderTicket.persist()
 	t.cachedTickets[olderTicket.info.Id] = olderTicket
 
-	// Remove the newer ticket:
+	// Remove the newer ticketData:
 	t.cachedTicketIds = remove(t.cachedTicketIds, newerTicket.info.Id)
 	filePathToDelete := newerTicket.filePath
 	delete(t.cachedTickets, newerTicket.info.Id)
@@ -273,18 +273,18 @@ func (t *TicketManager) MergeTickets(firstTicketId int, secondTicketId int) (suc
 }
 
 /*
-	Initialize the TicketManager with the given folder path. The folder is used to load and store the ticket data.
+	Initialize the TicketManager with the given folder path. The folder is used to load and store the ticketData data.
 */
 func (t *TicketManager) Initialize(folderPath string) error {
 	if folderPath == "" {
-		return errors.New("path to ticket data storage can not be a empty string.")
+		return errors.New("path to ticketData data storage can not be a empty string.")
 	}
 	t.cachedTickets = make(map[int]Ticket)
 	t.cachedTicketIds = []int{}
 	t.ticketFolderPath = folderPath
 	folderExists, err := helpers.FilePathExists(folderPath)
 	if err != nil {
-		return errors.Wrap(err, "could not check if folder for ticket exists.")
+		return errors.Wrap(err, "could not check if folder for ticketData exists.")
 	}
 	if !folderExists {
 		err = helpers.CreateFolderPath(folderPath)
@@ -298,9 +298,9 @@ func (t *TicketManager) Initialize(folderPath string) error {
 }
 
 /*
-	Create a new ticket for a internal user. The
+	Create a new ticketData for a internal userData. The
 */
-func (t *TicketManager) CreateNewTicketForInternalUser(title string, editor user.User, initialMessage MessageEntry) (*Ticket, error) {
+func (t *TicketManager) CreateNewTicketForInternalUser(title string, editor userData.User, initialMessage MessageEntry) (*Ticket, error) {
 	t.cachedTicketsMutex.Lock()
 	defer t.cachedTicketsMutex.Unlock()
 
@@ -309,7 +309,7 @@ func (t *TicketManager) CreateNewTicketForInternalUser(title string, editor user
 
 	newTicket, err := createNewEmptyTicket(t.ticketFolderPath, newId)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not create ticket")
+		return nil, errors.Wrap(err, "could not create ticketData")
 	}
 	newTicket.info.Id = newId
 	newTicket.info.Creator = ConvertToCreator(editor)
@@ -329,7 +329,7 @@ func (t *TicketManager) CreateNewTicketForInternalUser(title string, editor user
 }
 
 /*
-	Create a new ticket.
+	Create a new ticketData.
 */
 func (t *TicketManager) CreateNewTicket(title string, creator Creator, initialMessage MessageEntry) (*Ticket, error) {
 
@@ -340,7 +340,7 @@ func (t *TicketManager) CreateNewTicket(title string, creator Creator, initialMe
 
 	newTicket, err := createNewEmptyTicket(t.ticketFolderPath, newId)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not create ticket")
+		return nil, errors.Wrap(err, "could not create ticketData")
 	}
 	newTicket.info.Id = newId
 	newTicket.info.Creator = creator

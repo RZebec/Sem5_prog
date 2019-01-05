@@ -128,7 +128,7 @@ func TestConfiguration_RegisterAndBindFlags(t *testing.T) {
 	assert.Equal(t, 9000, config.Port, "default value for port should be set")
 	assert.Equal(t, "key.pem", config.CertificateKeyPath, "default value for certificate key file should be set")
 	assert.Equal(t, "cert.pem", config.CertificatePath, "default value for certificate should be set")
-	assert.Equal(t, "data/tickets", config.TicketDataFolderPath, "default value for ticket data path should be set")
+	assert.Equal(t, "data/tickets", config.TicketDataFolderPath, "default value for ticketData data path should be set")
 	assert.Equal(t, "data/login", config.LoginDataFolderPath, "default value for login data path should be set")
 
 	assert.Equal(t, "localhost:9000", config.GetServiceUrl(), "url and port should be concatenated")

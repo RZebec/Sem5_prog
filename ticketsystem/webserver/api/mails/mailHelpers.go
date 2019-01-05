@@ -24,7 +24,7 @@ func newMailIdExtractor() *mailIdExtractor {
 }
 
 /*
-	Get the ticket id from a string.
+	Get the ticketData id from a string.
 */
 func (m *mailIdExtractor) getTicketId(text string) (bool, int) {
 	hasId := m.regex.MatchString(text)

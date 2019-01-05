@@ -1,7 +1,7 @@
 package confirm
 
 import (
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"github.com/stretchr/testify/assert"
 	"strconv"
 	"testing"
@@ -9,7 +9,7 @@ import (
 )
 
 func TestGetAllAcknowledges(t *testing.T) {
-	mails := []mail.Mail{
+	mails := []mailData.Mail{
 		{Id: "123", Sender: "abc@gmx.de", Receiver: "defg@web.de", Subject: "testSubject0", Content: "Test", SentTime: time.Now().Unix()},
 		{Id: "456", Sender: "abc@gmx.de", Receiver: "defg@web.de", Subject: "testSubject1", Content: "Test", SentTime: time.Now().Unix()},
 		{Id: "789", Sender: "abc@gmx.de", Receiver: "defg@web.de", Subject: "testSubject2", Content: "Test", SentTime: time.Now().Unix()}}
@@ -28,7 +28,7 @@ func TestGetAllAcknowledges(t *testing.T) {
 }
 
 func TestGetSingleAcknowledges(t *testing.T) {
-	mails := []mail.Mail{
+	mails := []mailData.Mail{
 		{Id: "123", Sender: "abc@gmx.de", Receiver: "defg@web.de", Subject: "testSubject0", Content: "Test", SentTime: time.Now().Unix()},
 		{Id: "456", Sender: "abc@gmx.de", Receiver: "defg@web.de", Subject: "testSubject1", Content: "Test", SentTime: time.Now().Unix()},
 		{Id: "789", Sender: "abc@gmx.de", Receiver: "defg@web.de", Subject: "testSubject2", Content: "Test", SentTime: time.Now().Unix()}}
@@ -56,7 +56,7 @@ func TestGetSingleAcknowledges(t *testing.T) {
 }
 
 func TestDeleteFromArray(t *testing.T) {
-	mails := []mail.Mail{
+	mails := []mailData.Mail{
 		{Id: "123", Sender: "abc@gmx.de", Receiver: "defg@web.de", Subject: "testSubject0", Content: "Test", SentTime: time.Now().Unix()},
 		{Id: "456", Sender: "abc@gmx.de", Receiver: "defg@web.de", Subject: "testSubject1", Content: "Test", SentTime: time.Now().Unix()},
 		{Id: "789", Sender: "abc@gmx.de", Receiver: "defg@web.de", Subject: "testSubject2", Content: "Test", SentTime: time.Now().Unix()}}

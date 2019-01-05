@@ -2,9 +2,9 @@ package mails
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"encoding/json"
 	"github.com/pkg/errors"
 	"html"
@@ -19,9 +19,9 @@ import (
 */
 type IncomingMailHandler struct {
 	Logger            logging.Logger
-	MailContext       mail.MailContext
-	TicketContext     ticket.TicketContext
-	UserContext       user.UserContext
+	MailContext       mailData.MailContext
+	TicketContext     ticketData.TicketContext
+	UserContext       userData.UserContext
 	MailRepliesFilter AutomaticRepliesFilter
 }
 
@@ -30,7 +30,7 @@ type IncomingMailHandler struct {
 */
 func (h *IncomingMailHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
-	var data []mail.Mail
+	var data []mailData.Mail
 	err := decoder.Decode(&data)
 	if err != nil {
 		h.Logger.LogError("IncomingMailHandler", err)
@@ -48,9 +48,9 @@ func (h *IncomingMailHandler) ServeHTTP(w http.ResponseWriter, req *http.Request
 }
 
 /*
-	Handle the mail for a existing ticket.
+	Handle the mail for a existing ticketData.
 */
-func (h *IncomingMailHandler) handleExistingTicketMail(ticketId int, incomingMail mail.Mail) error {
+func (h *IncomingMailHandler) handleExistingTicketMail(ticketId int, incomingMail mailData.Mail) error {
 	_, err := h.TicketContext.AppendMessageToTicket(ticketId, h.buildMessageEntry(incomingMail))
 	if err != nil {
 		return err
@@ -61,8 +61,8 @@ func (h *IncomingMailHandler) handleExistingTicketMail(ticketId int, incomingMai
 /*
 	Build a message entry.
 */
-func (h *IncomingMailHandler) buildMessageEntry(incomingMail mail.Mail) ticket.MessageEntry {
-	messageEntry := ticket.MessageEntry{}
+func (h *IncomingMailHandler) buildMessageEntry(incomingMail mailData.Mail) ticketData.MessageEntry {
+	messageEntry := ticketData.MessageEntry{}
 	messageEntry.Content = html.EscapeString(incomingMail.Content)
 	messageEntry.CreationTime = time.Now()
 	messageEntry.CreatorMail = incomingMail.Sender
@@ -72,9 +72,9 @@ func (h *IncomingMailHandler) buildMessageEntry(incomingMail mail.Mail) ticket.M
 }
 
 /*
-	Handle the mail for a new ticket.
+	Handle the mail for a new ticketData.
 */
-func (h *IncomingMailHandler) handleNewTicketMail(incomingMail mail.Mail) error {
+func (h *IncomingMailHandler) handleNewTicketMail(incomingMail mailData.Mail) error {
 	isRegistered, userId := h.UserContext.GetUserForEmail(incomingMail.Sender)
 	if isRegistered {
 		return h.handleNewTicketForInternalUser(userId, incomingMail)
@@ -85,7 +85,7 @@ func (h *IncomingMailHandler) handleNewTicketMail(incomingMail mail.Mail) error 
 /*
 	Handle the incoming mails.
 */
-func (h *IncomingMailHandler) handleIncomingMails(data []mail.Mail) error {
+func (h *IncomingMailHandler) handleIncomingMails(data []mailData.Mail) error {
 	mailIdExtractor := newMailIdExtractor()
 	for _, incomingMail := range data {
 		if h.MailRepliesFilter.IsAutomaticResponse(incomingMail) {
@@ -103,9 +103,9 @@ func (h *IncomingMailHandler) handleIncomingMails(data []mail.Mail) error {
 				}
 				ticketCreatorMail := existingTicket.Info().Creator.Mail
 				if strings.ToLower(incomingMail.Sender) != strings.ToLower(ticketCreatorMail) {
-					subject := "New Entry for your ticket: " + html.EscapeString(incomingMail.Subject)
+					subject := "New Entry for your ticketData: " + html.EscapeString(incomingMail.Subject)
 					senderOfMail := html.EscapeString(incomingMail.Sender)
-					content := html.EscapeString(mail.BuildAppendMessageNotificationMailContent(ticketCreatorMail,
+					content := html.EscapeString(mailData.BuildAppendMessageNotificationMailContent(ticketCreatorMail,
 						senderOfMail, incomingMail.Content))
 					err = h.MailContext.CreateNewOutgoingMail(existingTicket.Info().Creator.Mail, subject, content)
 					if err != nil {
@@ -120,7 +120,7 @@ func (h *IncomingMailHandler) handleIncomingMails(data []mail.Mail) error {
 					return err
 				}
 			}
-		} else { // Non Existing ticket
+		} else { // Non Existing ticketData
 			err := h.handleNewTicketMail(incomingMail)
 			if err != nil {
 				return err
@@ -131,12 +131,12 @@ func (h *IncomingMailHandler) handleIncomingMails(data []mail.Mail) error {
 }
 
 /*
-	Handle a new ticket for a internal user.
+	Handle a new ticketData for a internal userData.
 */
-func (h *IncomingMailHandler) handleNewTicketForInternalUser(userId int, incomingMail mail.Mail) error {
+func (h *IncomingMailHandler) handleNewTicketForInternalUser(userId int, incomingMail mailData.Mail) error {
 	exists, internalUser := h.UserContext.GetUserById(userId)
 	if !exists {
-		return errors.New("user should exist but does not")
+		return errors.New("userData should exist but does not")
 	}
 
 	title := html.EscapeString(incomingMail.Subject)
@@ -149,9 +149,9 @@ func (h *IncomingMailHandler) handleNewTicketForInternalUser(userId int, incomin
 }
 
 /*
-	Handle a new ticket for an unknown sender.
+	Handle a new ticketData for an unknown sender.
 */
-func (h *IncomingMailHandler) handleNewTicketForUnknownSender(incomingMail mail.Mail) error {
+func (h *IncomingMailHandler) handleNewTicketForUnknownSender(incomingMail mailData.Mail) error {
 	title := html.EscapeString(incomingMail.Subject)
 	message := h.buildMessageEntry(incomingMail)
 	creator := h.buildCreator(incomingMail)
@@ -165,6 +165,6 @@ func (h *IncomingMailHandler) handleNewTicketForUnknownSender(incomingMail mail.
 /*
 	Build the creator.
 */
-func (h *IncomingMailHandler) buildCreator(incomingMail mail.Mail) ticket.Creator {
-	return ticket.Creator{Mail: html.EscapeString(incomingMail.Sender), FirstName: "SentPerMail", LastName: "SentPerMail"}
+func (h *IncomingMailHandler) buildCreator(incomingMail mailData.Mail) ticketData.Creator {
+	return ticketData.Creator{Mail: html.EscapeString(incomingMail.Sender), FirstName: "SentPerMail", LastName: "SentPerMail"}
 }

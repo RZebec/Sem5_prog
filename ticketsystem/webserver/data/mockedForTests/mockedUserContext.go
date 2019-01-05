@@ -1,12 +1,12 @@
 package mockedForTests
 
 import (
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"github.com/stretchr/testify/mock"
 )
 
 /*
-	A mocked user context.
+	A mocked userData context.
 */
 type MockedUserContext struct {
 	mock.Mock
@@ -15,10 +15,10 @@ type MockedUserContext struct {
 /*
 	Mocked function.
 */
-func (m *MockedUserContext) SessionIsValid(token string) (isValid bool, userId int, userName string, role user.UserRole, err error) {
+func (m *MockedUserContext) SessionIsValid(token string) (isValid bool, userId int, userName string, role userData.UserRole, err error) {
 	args := m.Called(token)
 	return args.Bool(0), args.Int(1), args.String(2),
-		args.Get(3).(user.UserRole), args.Error(4)
+		args.Get(3).(userData.UserRole), args.Error(4)
 }
 
 /*
@@ -82,9 +82,9 @@ func (m *MockedUserContext) ChangePassword(currentUserToken string, currentUserP
 	return args.Bool(0), args.Error(1)
 }
 
-func (m *MockedUserContext) GetAllLockedUsers() []user.User {
+func (m *MockedUserContext) GetAllLockedUsers() []userData.User {
 	args := m.Called()
-	return args.Get(0).([]user.User)
+	return args.Get(0).([]userData.User)
 }
 
 /*
@@ -98,15 +98,15 @@ func (m *MockedUserContext) GetUserForEmail(mailAddress string) (isRegisteredUse
 /*
 	Mocked function.
 */
-func (m *MockedUserContext) GetUserById(userId int) (exists bool, existingUser user.User) {
+func (m *MockedUserContext) GetUserById(userId int) (exists bool, existingUser userData.User) {
 	args := m.Called(userId)
-	return args.Bool(0), args.Get(1).(user.User)
+	return args.Bool(0), args.Get(1).(userData.User)
 }
 
 /*
 	Mocked function.
 */
-func (m *MockedUserContext) GetAllActiveUsers() []user.User {
+func (m *MockedUserContext) GetAllActiveUsers() []userData.User {
 	args := m.Called()
-	return args.Get(0).([]user.User)
+	return args.Get(0).([]userData.User)
 }

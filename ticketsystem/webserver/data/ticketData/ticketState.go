@@ -1,9 +1,9 @@
-package ticket
+package ticketData
 
 type TicketState int
 
 /*
-	The ticket states.
+	The ticketData states.
  */
 const (
 	Open TicketState = 1 + iota

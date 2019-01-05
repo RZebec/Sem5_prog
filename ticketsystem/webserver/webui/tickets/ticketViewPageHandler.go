@@ -2,8 +2,8 @@ package tickets
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
@@ -18,8 +18,8 @@ import (
 	Structure for the Tickets View Page handler.
 */
 type TicketViewPageHandler struct {
-	UserContext		user.UserContext
-	TicketContext   ticket.TicketContext
+	UserContext     userData.UserContext
+	TicketContext   ticketData.TicketContext
 	Logger          logging.Logger
 	TemplateManager templateManager.TemplateContext
 }
@@ -28,9 +28,9 @@ type TicketViewPageHandler struct {
 	Structure for the Ticket View Page Data.
 */
 type ticketViewPageData struct {
-	TicketInfo 	ticket.TicketInfo
-	Messages	[]ticket.MessageEntry
-	UserName	string
+	TicketInfo ticketData.TicketInfo
+	Messages   []ticketData.MessageEntry
+	UserName   string
 	pages.BasePageData
 }
 
@@ -97,7 +97,7 @@ func (t TicketViewPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func filterOutInternalOnlyMessages(messages []ticket.MessageEntry) (externalMessages []ticket.MessageEntry) {
+func filterOutInternalOnlyMessages(messages []ticketData.MessageEntry) (externalMessages []ticketData.MessageEntry) {
 	for _, message := range messages {
 		if !message.OnlyInternal {
 			externalMessages = append(externalMessages, message)

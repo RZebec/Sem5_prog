@@ -2,7 +2,7 @@ package userSettings
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"html"
 	"net/http"
@@ -14,8 +14,8 @@ import (
 	Structure for the Toggle Vacation Mode handler.
 */
 type ToggleVacationModeHandler struct {
-	UserContext     user.UserContext
-	Logger          logging.Logger
+	UserContext userData.UserContext
+	Logger      logging.Logger
 }
 
 /*

@@ -1,4 +1,4 @@
-package mail
+package mailData
 
 const firstTestmailFileName = "2404E5B5-C952-3AE1-4CA3-B882B81DEAB4.json"
 const firstTestMail = `{

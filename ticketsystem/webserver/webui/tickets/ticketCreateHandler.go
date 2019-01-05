@@ -2,8 +2,8 @@ package tickets
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"github.com/pkg/errors"
 	"html"
@@ -16,9 +16,9 @@ import (
 	Structure for the Ticket Create handler.
 */
 type TicketCreateHandler struct {
-	UserContext     user.UserContext
-	Logger          logging.Logger
-	TicketContext	ticket.TicketContext
+	UserContext   userData.UserContext
+	Logger        logging.Logger
+	TicketContext ticketData.TicketContext
 }
 
 /*
@@ -65,9 +65,9 @@ func (t TicketCreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if !isUserLoggedIn && !exist {
-			initialMessage := ticket.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
+			initialMessage := ticketData.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
 
-			createdTicket, err := t.TicketContext.CreateNewTicket(title, ticket.Creator{Mail: mail, FirstName: firstName, LastName: lastName}, initialMessage)
+			createdTicket, err := t.TicketContext.CreateNewTicket(title, ticketData.Creator{Mail: mail, FirstName: firstName, LastName: lastName}, initialMessage)
 
 			if err != nil {
 				t.Logger.LogError("TicketCreateHandler", err)
@@ -77,7 +77,7 @@ func (t TicketCreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 			ticketId := strconv.Itoa(createdTicket.Info().Id)
 
-			http.Redirect(w, r, "/ticket/" + ticketId, 302)
+			http.Redirect(w, r, "/ticketData/" + ticketId, 302)
 			return
 		}
 
@@ -89,7 +89,7 @@ func (t TicketCreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		initialMessage := ticket.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: internalOnly}
+		initialMessage := ticketData.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: internalOnly}
 
 		createdTicket, err := t.TicketContext.CreateNewTicketForInternalUser(title, existingUser, initialMessage)
 
@@ -101,6 +101,6 @@ func (t TicketCreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		ticketId := strconv.Itoa(createdTicket.Info().Id)
 
-		http.Redirect(w, r, "/ticket/" + ticketId, 302)
+		http.Redirect(w, r, "/ticketData/" + ticketId, 302)
 	}
 }

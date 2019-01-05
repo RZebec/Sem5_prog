@@ -6,39 +6,39 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/acknowledgementStorage"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/confirm"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"errors"
 	"strconv"
 	"testing"
 )
 
-func getTestAcknowledges() []mail.Acknowledgment {
-	var testAcknowledges []mail.Acknowledgment
-	testAcknowledges = append(testAcknowledges, mail.Acknowledgment{Id: "testId1", Subject: "testSubject1"})
-	testAcknowledges = append(testAcknowledges, mail.Acknowledgment{Id: "testId2", Subject: "testSubject2"})
-	testAcknowledges = append(testAcknowledges, mail.Acknowledgment{Id: "testId3", Subject: "testSubject3"})
+func getTestAcknowledges() []mailData.Acknowledgment {
+	var testAcknowledges []mailData.Acknowledgment
+	testAcknowledges = append(testAcknowledges, mailData.Acknowledgment{Id: "testId1", Subject: "testSubject1"})
+	testAcknowledges = append(testAcknowledges, mailData.Acknowledgment{Id: "testId2", Subject: "testSubject2"})
+	testAcknowledges = append(testAcknowledges, mailData.Acknowledgment{Id: "testId3", Subject: "testSubject3"})
 	return testAcknowledges
 }
-func getSpecifyAcknowledges() []mail.Acknowledgment {
-	var testAcknowledges []mail.Acknowledgment
-	testAcknowledges = append(testAcknowledges, mail.Acknowledgment{Id: "testId2", Subject: "testSubject2"})
-	testAcknowledges = append(testAcknowledges, mail.Acknowledgment{Id: "testId3", Subject: "testSubject3"})
+func getSpecifyAcknowledges() []mailData.Acknowledgment {
+	var testAcknowledges []mailData.Acknowledgment
+	testAcknowledges = append(testAcknowledges, mailData.Acknowledgment{Id: "testId2", Subject: "testSubject2"})
+	testAcknowledges = append(testAcknowledges, mailData.Acknowledgment{Id: "testId3", Subject: "testSubject3"})
 	return testAcknowledges
 }
 
-func getTestMails() []mail.Mail {
-	var testMails []mail.Mail
-	testMails = append(testMails, mail.Mail{Id: "testId1", Sender: "test@test.de", Receiver: "testReceiver1@test.de",
+func getTestMails() []mailData.Mail {
+	var testMails []mailData.Mail
+	testMails = append(testMails, mailData.Mail{Id: "testId1", Sender: "test@test.de", Receiver: "testReceiver1@test.de",
 		Subject: "testSubject1", Content: "testContent1"})
-	testMails = append(testMails, mail.Mail{Id: "testId2", Sender: "test@test.de", Receiver: "testReceiver2@test.de",
+	testMails = append(testMails, mailData.Mail{Id: "testId2", Sender: "test@test.de", Receiver: "testReceiver2@test.de",
 		Subject: "testSubject2", Content: "testContent2"})
-	testMails = append(testMails, mail.Mail{Id: "testId3", Sender: "test@test.de", Receiver: "testReceiver3@test.de",
+	testMails = append(testMails, mailData.Mail{Id: "testId3", Sender: "test@test.de", Receiver: "testReceiver3@test.de",
 		Subject: "testSubject3", Content: "testContent3"})
 	return testMails
 }
-func getTestSelectedAcknowledge() []mail.Acknowledgment {
-	var testAcknowledges []mail.Acknowledgment
-	testAcknowledges = append(testAcknowledges, mail.Acknowledgment{Id: "testId1", Subject: "testSubject1"})
+func getTestSelectedAcknowledge() []mailData.Acknowledgment {
+	var testAcknowledges []mailData.Acknowledgment
+	testAcknowledges = append(testAcknowledges, mailData.Acknowledgment{Id: "testId1", Subject: "testSubject1"})
 	return testAcknowledges
 }
 

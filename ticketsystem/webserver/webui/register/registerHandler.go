@@ -2,7 +2,7 @@ package register
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
@@ -15,7 +15,7 @@ import (
 	Structure for the Register handler.
 */
 type RegisterHandler struct {
-	UserContext     user.UserContext
+	UserContext     userData.UserContext
 	Logger          logging.Logger
 	TemplateManager templateManager.TemplateContext
 }
@@ -32,7 +32,7 @@ type registerPageData struct {
 	The Login handler.
 */
 func (l RegisterHandler) ServeHTTPPostRegisteringData(w http.ResponseWriter, r *http.Request) {
-	// TODO: Verification step for the user needs to be implemented here
+	// TODO: Verification step for the userData needs to be implemented here
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {

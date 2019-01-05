@@ -7,7 +7,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/configuration"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"encoding/json"
 	"github.com/pkg/errors"
 	"io/ioutil"
@@ -19,9 +19,9 @@ import (
 	Interface for the api client.
 */
 type Client interface {
-	SendMails(mails []mail.Mail) error
-	ReceiveMails() ([]mail.Mail, error)
-	AcknowledgeMails(mailsToAcknowledge []mail.Acknowledgment) error
+	SendMails(mails []mailData.Mail) error
+	ReceiveMails() ([]mailData.Mail, error)
+	AcknowledgeMails(mailsToAcknowledge []mailData.Acknowledgment) error
 }
 
 /*
@@ -70,7 +70,7 @@ func (c *ApiClient) buildGetRequest(url string) (*http.Request, error) {
 /*
 	Send mails to the server.
 */
-func (c *ApiClient) SendMails(mails []mail.Mail) error {
+func (c *ApiClient) SendMails(mails []mailData.Mail) error {
 	jsonData, err := json.Marshal(mails)
 	if err != nil {
 		return err
@@ -94,7 +94,7 @@ func (c *ApiClient) SendMails(mails []mail.Mail) error {
 /*
 	Receive mails from the server.
 */
-func (c *ApiClient) ReceiveMails() ([]mail.Mail, error) {
+func (c *ApiClient) ReceiveMails() ([]mailData.Mail, error) {
 	url := "https://" + c.baseUrl + ":" + strconv.Itoa(c.port) + shared.ReceivePath
 	req, err := c.buildGetRequest(url)
 	if err != nil {
@@ -110,7 +110,7 @@ func (c *ApiClient) ReceiveMails() ([]mail.Mail, error) {
 	}
 
 	decoder := json.NewDecoder(resp.Body)
-	var data []mail.Mail
+	var data []mailData.Mail
 	err = decoder.Decode(&data)
 	if err != nil {
 		return nil, err
@@ -122,7 +122,7 @@ func (c *ApiClient) ReceiveMails() ([]mail.Mail, error) {
 /*
 	Acknowledge mails.
 */
-func (c *ApiClient) AcknowledgeMails(mailsToAcknowledge []mail.Acknowledgment) error {
+func (c *ApiClient) AcknowledgeMails(mailsToAcknowledge []mailData.Acknowledgment) error {
 	jsonData, err := json.Marshal(mailsToAcknowledge)
 	if err != nil {
 		return err

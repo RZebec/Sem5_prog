@@ -1,17 +1,17 @@
-package ticket
+package ticketData
 
 import (
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"time"
 )
 
 /*
-	Containing only general information about a ticket.
+	Containing only general information about a ticketData.
 */
 type TicketInfo struct {
 	Id                   int
 	Title                string
-	Editor               user.User
+	Editor               userData.User
 	HasEditor            bool
 	Creator              Creator
 	CreationTime         time.Time

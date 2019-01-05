@@ -1,4 +1,4 @@
-package ticket
+package ticketData
 
 import (
 	"github.com/stretchr/testify/assert"

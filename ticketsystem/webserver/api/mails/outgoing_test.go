@@ -2,7 +2,7 @@ package mails
 
 import (
 	"de/vorlesung/projekt/IIIDDD/shared"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"encoding/json"
 	"github.com/pkg/errors"
@@ -18,20 +18,20 @@ import (
 */
 type MockedOutgoingMailContext struct {
 	mock.Mock
-	ReceivedAcks []mail.Acknowledgment
+	ReceivedAcks []mailData.Acknowledgment
 	throwError   bool
 }
 
 /*
 	Get test mails.
 */
-func getTestMails() []mail.Mail {
-	var testMails []mail.Mail
-	testMails = append(testMails, mail.Mail{Id: "testId1", Sender: "test@test.de", Receiver: "testReceiver1@test.de",
+func getTestMails() []mailData.Mail {
+	var testMails []mailData.Mail
+	testMails = append(testMails, mailData.Mail{Id: "testId1", Sender: "test@test.de", Receiver: "testReceiver1@test.de",
 		Subject: "Ticket<1> testSubject1", Content: "testContent1"})
-	testMails = append(testMails, mail.Mail{Id: "testId2", Sender: "test@test.de", Receiver: "testReceiver2@test.de",
+	testMails = append(testMails, mailData.Mail{Id: "testId2", Sender: "test@test.de", Receiver: "testReceiver2@test.de",
 		Subject: "testSubject2", Content: "testContent2"})
-	testMails = append(testMails, mail.Mail{Id: "testId3", Sender: "test@test.de", Receiver: "testReceiver3@test.de",
+	testMails = append(testMails, mailData.Mail{Id: "testId3", Sender: "test@test.de", Receiver: "testReceiver3@test.de",
 		Subject: "testSubject3", Content: "testContent3"})
 	return testMails
 }
@@ -39,9 +39,9 @@ func getTestMails() []mail.Mail {
 /*
 	A mocked function.
 */
-func (m *MockedOutgoingMailContext) GetUnsentMails() ([]mail.Mail, error) {
+func (m *MockedOutgoingMailContext) GetUnsentMails() ([]mailData.Mail, error) {
 	if m.throwError {
-		return []mail.Mail{}, errors.New("Test error")
+		return []mailData.Mail{}, errors.New("Test error")
 	}
 	return getTestMails(), nil
 }
@@ -49,7 +49,7 @@ func (m *MockedOutgoingMailContext) GetUnsentMails() ([]mail.Mail, error) {
 /*
 	A mocked function.
 */
-func (m *MockedOutgoingMailContext) AcknowledgeMails(acknowledgments []mail.Acknowledgment) error {
+func (m *MockedOutgoingMailContext) AcknowledgeMails(acknowledgments []mailData.Acknowledgment) error {
 	return nil
 }
 
@@ -79,7 +79,7 @@ func TestOutgoingMailHandler_ServeHTTP_MailsReceived(t *testing.T) {
 	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
 
 	decoder := json.NewDecoder(rr.Body)
-	var data []mail.Mail
+	var data []mailData.Mail
 	err = decoder.Decode(&data)
 	assert.Nil(t, err)
 

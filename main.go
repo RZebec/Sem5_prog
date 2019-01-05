@@ -7,9 +7,9 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/api"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/api/mails"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"fmt"
@@ -36,17 +36,17 @@ func main() {
 		return
 	}
 
-	mailContext := mail.MailManager{}
+	mailContext := mailData.MailManager{}
 	err = mailContext.Initialize(configuration.MailDataFolderPath, configuration.SendingMailAddress, logger)
 
 
-	userContext := user.LoginSystem{}
+	userContext := userData.LoginSystem{}
 	err = userContext.Initialize(configuration.LoginDataFolderPath)
 	if err != nil {
 		panic(err)
 	}
 
-	ticketContext := ticket.TicketManager{}
+	ticketContext := ticketData.TicketManager{}
 	ticketContext.Initialize(configuration.TicketDataFolderPath)
 
 
@@ -82,8 +82,8 @@ func main() {
 	}
 }
 
-func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mail.MailContext, ticketContext ticket.TicketContext,
-	userContext user.UserContext, logger logging.Logger) http.Handler {
+func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mailData.MailContext, ticketContext ticketData.TicketContext,
+	userContext userData.UserContext, logger logging.Logger) http.Handler {
 	incomingMailHandler := mails.IncomingMailHandler{Logger: logger, MailContext: mailContext, TicketContext: ticketContext,
 		UserContext: userContext, MailRepliesFilter: &mails.RepliesFilter{}}
 	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,
@@ -91,14 +91,14 @@ func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext 
 	return &apiAuthenticationHandler
 }
 
-func getAcknowledgeMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mail.MailContext, logger logging.Logger) http.Handler {
+func getAcknowledgeMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mailData.MailContext, logger logging.Logger) http.Handler {
 	incomingMailHandler := mails.AcknowledgeMailHandler{Logger: logger, MailContext: mailContext}
 	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,
 		Next: &incomingMailHandler, AllowedMethod: "POST", Logger: logger}
 	return &apiAuthenticationHandler
 }
 
-func getOutgoingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mail.MailContext, logger logging.Logger) http.Handler {
+func getOutgoingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mailData.MailContext, logger logging.Logger) http.Handler {
 	outgoingMailHandler := mails.OutgoingMailHandler{Logger: logger, MailContext: mailContext}
 	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetOutgoingMailApiKey,
 		Next: &outgoingMailHandler, AllowedMethod: "GET", Logger: logger}

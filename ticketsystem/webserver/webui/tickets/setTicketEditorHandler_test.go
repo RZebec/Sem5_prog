@@ -2,8 +2,8 @@ package tickets
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"github.com/pkg/errors"
@@ -27,17 +27,17 @@ func TestTicketSetEditorHandler_ServeHTTP_SetEditor_ValidRequest(t *testing.T) {
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
-	mockedUserContext.On("GetUserById", editorUserId).Return(true, user.User{UserId: editorUserId})
-	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, user.User{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
+	mockedUserContext.On("GetUserById", editorUserId).Return(true, userData.User{UserId: editorUserId})
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, userData.User{})
 	// A notification mail should be sent
 	mockedMailContext.On("CreateNewOutgoingMail", mock.Anything, mock.Anything, mock.Anything).Return(nil)
 	// Two changes should be stored in the history:
-	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticket.Ticket{}, nil).Twice()
+	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticketData.Ticket{}, nil).Twice()
 	// The editor should be set:
-	mockedTicketContext.On("SetEditor", mock.Anything, ticketId).Return(&ticket.Ticket{}, nil)
-	// The state of the ticket should be changed:
-	mockedTicketContext.On("SetTicketState", ticketId, ticket.Processing).Return(&ticket.Ticket{}, nil)
+	mockedTicketContext.On("SetEditor", mock.Anything, ticketId).Return(&ticketData.Ticket{}, nil)
+	// The state of the ticketData should be changed:
+	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Processing).Return(&ticketData.Ticket{}, nil)
 
 	testee := TicketSetEditorHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -59,13 +59,13 @@ func TestTicketSetEditorHandler_ServeHTTP_SetEditor_ValidRequest(t *testing.T) {
 
 	resp := rr.Result()
 	assert.Equal(t, http.StatusFound, resp.StatusCode, "Should return 302")
-	assert.Equal(t, "/ticket/4", resp.Header.Get("location"))
+	assert.Equal(t, "/ticketData/4", resp.Header.Get("location"))
 
 	mockedUserContext.AssertExpectations(t)
 	mockedMailContext.AssertExpectations(t)
 	mockedTicketContext.AssertExpectations(t)
 
-	setEditorId := mockedTicketContext.Calls[1].Arguments[0].(user.User).UserId
+	setEditorId := mockedTicketContext.Calls[1].Arguments[0].(userData.User).UserId
 	assert.Equal(t, editorUserId, setEditorId, "The editor should be set")
 }
 
@@ -81,16 +81,16 @@ func TestTicketSetEditorHandler_ServeHTTP_RemoveEditor_ValidRequest(t *testing.T
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
-	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, user.User{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, userData.User{})
 	// A notification mail should be sent
 	mockedMailContext.On("CreateNewOutgoingMail", mock.Anything, mock.Anything, mock.Anything).Return(nil)
 	// Two changes should be stored in the history:
-	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticket.Ticket{}, nil).Twice()
+	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticketData.Ticket{}, nil).Twice()
 	// The editor should be set:
 	mockedTicketContext.On("RemoveEditor", ticketId).Return(nil)
-	// The state of the ticket should be changed:
-	mockedTicketContext.On("SetTicketState", ticketId, ticket.Processing).Return(&ticket.Ticket{}, nil)
+	// The state of the ticketData should be changed:
+	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Processing).Return(&ticketData.Ticket{}, nil)
 
 	testee := TicketSetEditorHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -112,7 +112,7 @@ func TestTicketSetEditorHandler_ServeHTTP_RemoveEditor_ValidRequest(t *testing.T
 
 	resp := rr.Result()
 	assert.Equal(t, http.StatusFound, resp.StatusCode, "Should return 302")
-	assert.Equal(t, "/ticket/4", resp.Header.Get("location"))
+	assert.Equal(t, "/ticketData/4", resp.Header.Get("location"))
 
 	mockedUserContext.AssertExpectations(t)
 	mockedMailContext.AssertExpectations(t)
@@ -120,7 +120,7 @@ func TestTicketSetEditorHandler_ServeHTTP_RemoveEditor_ValidRequest(t *testing.T
 }
 
 /*
-	Setting a non existing user should not be possible.
+	Setting a non existing userData should not be possible.
 */
 func TestTicketSetEditorHandler_ServeHTTP_UnknownEditorId_InvalidRequest(t *testing.T) {
 	ticketId := 4
@@ -130,8 +130,8 @@ func TestTicketSetEditorHandler_ServeHTTP_UnknownEditorId_InvalidRequest(t *test
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
-	mockedUserContext.On("GetUserById", editorUserId).Return(false, user.User{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
+	mockedUserContext.On("GetUserById", editorUserId).Return(false, userData.User{})
 
 	testee := TicketSetEditorHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -161,7 +161,7 @@ func TestTicketSetEditorHandler_ServeHTTP_UnknownEditorId_InvalidRequest(t *test
 }
 
 /*
-	Execution with a non existing logged in user should not be possible. This combination should not be possible.
+	Execution with a non existing logged in userData should not be possible. This combination should not be possible.
 */
 func TestTicketSetEditorHandler_ServeHTTP_UnknownLoggedInUser_invalidRequest(t *testing.T) {
 	ticketId := 4
@@ -171,9 +171,9 @@ func TestTicketSetEditorHandler_ServeHTTP_UnknownLoggedInUser_invalidRequest(t *
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
-	mockedUserContext.On("GetUserById", editorUserId).Return(true, user.User{UserId: editorUserId})
-	mockedUserContext.On("GetUserById", loggedInUserId).Return(false, user.User{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
+	mockedUserContext.On("GetUserById", editorUserId).Return(true, userData.User{UserId: editorUserId})
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(false, userData.User{})
 
 	testee := TicketSetEditorHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -195,7 +195,7 @@ func TestTicketSetEditorHandler_ServeHTTP_UnknownLoggedInUser_invalidRequest(t *
 
 	resp := rr.Result()
 	assert.Equal(t, http.StatusBadRequest, resp.StatusCode, "Should return 400")
-	assert.Equal(t, "/ticket/4", resp.Header.Get("location"))
+	assert.Equal(t, "/ticketData/4", resp.Header.Get("location"))
 
 	mockedUserContext.AssertExpectations(t)
 	mockedMailContext.AssertExpectations(t)
@@ -213,10 +213,10 @@ func TestTicketSetEditorHandler_ServeHTTP_SetEditorFails_Returns500(t *testing.T
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
-	mockedUserContext.On("GetUserById", editorUserId).Return(true, user.User{UserId: editorUserId})
-	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, user.User{})
-	mockedTicketContext.On("SetEditor", mock.Anything, ticketId).Return(&ticket.Ticket{}, errors.New("TestError"))
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
+	mockedUserContext.On("GetUserById", editorUserId).Return(true, userData.User{UserId: editorUserId})
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, userData.User{})
+	mockedTicketContext.On("SetEditor", mock.Anything, ticketId).Return(&ticketData.Ticket{}, errors.New("TestError"))
 
 	testee := TicketSetEditorHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -256,15 +256,15 @@ func TestTicketSetEditorHandler_ServeHTTP_AppendMessageFailed_500Returned(t *tes
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
-	mockedUserContext.On("GetUserById", editorUserId).Return(true, user.User{UserId: editorUserId})
-	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, user.User{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
+	mockedUserContext.On("GetUserById", editorUserId).Return(true, userData.User{UserId: editorUserId})
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, userData.User{})
 
 	// Appending to the history should fail:
 	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).
-		Return(&ticket.Ticket{}, errors.New("Testerror"))
+		Return(&ticketData.Ticket{}, errors.New("Testerror"))
 	// The editor should be set:
-	mockedTicketContext.On("SetEditor", mock.Anything, ticketId).Return(&ticket.Ticket{}, nil)
+	mockedTicketContext.On("SetEditor", mock.Anything, ticketId).Return(&ticketData.Ticket{}, nil)
 
 	testee := TicketSetEditorHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -286,7 +286,7 @@ func TestTicketSetEditorHandler_ServeHTTP_AppendMessageFailed_500Returned(t *tes
 
 	resp := rr.Result()
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode, "Should return 500")
-	assert.Equal(t, "/ticket/4", resp.Header.Get("location"))
+	assert.Equal(t, "/ticketData/4", resp.Header.Get("location"))
 
 	mockedUserContext.AssertExpectations(t)
 	mockedMailContext.AssertExpectations(t)
@@ -294,7 +294,7 @@ func TestTicketSetEditorHandler_ServeHTTP_AppendMessageFailed_500Returned(t *tes
 }
 
 /*
-	A error during the change of the ticket state should result in a 500.
+	A error during the change of the ticketData state should result in a 500.
 */
 func TestTicketSetEditorHandler_ServeHTTP_TicketStateChangedFailed_Returns500(t *testing.T) {
 	ticketId := 4
@@ -304,18 +304,18 @@ func TestTicketSetEditorHandler_ServeHTTP_TicketStateChangedFailed_Returns500(t 
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
-	mockedUserContext.On("GetUserById", editorUserId).Return(true, user.User{UserId: editorUserId})
-	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, user.User{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
+	mockedUserContext.On("GetUserById", editorUserId).Return(true, userData.User{UserId: editorUserId})
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, userData.User{})
 
 	// Two changes should be stored in the history:
-	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticket.Ticket{}, nil).Once()
+	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticketData.Ticket{}, nil).Once()
 	// The editor should be set:
-	mockedTicketContext.On("SetEditor", mock.Anything, ticketId).Return(&ticket.Ticket{}, nil)
+	mockedTicketContext.On("SetEditor", mock.Anything, ticketId).Return(&ticketData.Ticket{}, nil)
 
 	// Ticket state change should fail
-	mockedTicketContext.On("SetTicketState", ticketId, ticket.Processing).
-		Return(&ticket.Ticket{}, errors.New("TestError"))
+	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Processing).
+		Return(&ticketData.Ticket{}, errors.New("TestError"))
 
 	testee := TicketSetEditorHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -337,7 +337,7 @@ func TestTicketSetEditorHandler_ServeHTTP_TicketStateChangedFailed_Returns500(t 
 
 	resp := rr.Result()
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode, "Should return 500")
-	assert.Equal(t, "/ticket/4", resp.Header.Get("location"))
+	assert.Equal(t, "/ticketData/4", resp.Header.Get("location"))
 
 	mockedUserContext.AssertExpectations(t)
 	mockedMailContext.AssertExpectations(t)
@@ -345,7 +345,7 @@ func TestTicketSetEditorHandler_ServeHTTP_TicketStateChangedFailed_Returns500(t 
 }
 
 /*
-	A error during the change of the ticket state history writing should result in a 500.
+	A error during the change of the ticketData state history writing should result in a 500.
 */
 func TestTicketSetEditorHandler_ServeHTTP_TicketStateChangedHistoryWriteFailed_Returns500(t *testing.T) {
 	ticketId := 4
@@ -355,21 +355,21 @@ func TestTicketSetEditorHandler_ServeHTTP_TicketStateChangedHistoryWriteFailed_R
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
-	mockedUserContext.On("GetUserById", editorUserId).Return(true, user.User{UserId: editorUserId})
-	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, user.User{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
+	mockedUserContext.On("GetUserById", editorUserId).Return(true, userData.User{UserId: editorUserId})
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, userData.User{})
 
-	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticket.Ticket{}, nil).Once()
+	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticketData.Ticket{}, nil).Once()
 	// The editor should be set:
-	mockedTicketContext.On("SetEditor", mock.Anything, ticketId).Return(&ticket.Ticket{}, nil)
+	mockedTicketContext.On("SetEditor", mock.Anything, ticketId).Return(&ticketData.Ticket{}, nil)
 
 	// Ticket state change should work
-	mockedTicketContext.On("SetTicketState", ticketId, ticket.Processing).
-		Return(&ticket.Ticket{}, nil)
+	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Processing).
+		Return(&ticketData.Ticket{}, nil)
 
 	// Second message for the history should fail
 	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).
-		Return(&ticket.Ticket{}, errors.New("TestError")).Once()
+		Return(&ticketData.Ticket{}, errors.New("TestError")).Once()
 
 	testee := TicketSetEditorHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -391,7 +391,7 @@ func TestTicketSetEditorHandler_ServeHTTP_TicketStateChangedHistoryWriteFailed_R
 
 	resp := rr.Result()
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode, "Should return 500")
-	assert.Equal(t, "/ticket/4", resp.Header.Get("location"))
+	assert.Equal(t, "/ticketData/4", resp.Header.Get("location"))
 
 	mockedUserContext.AssertExpectations(t)
 	mockedMailContext.AssertExpectations(t)
@@ -409,15 +409,15 @@ func TestTicketSetEditorHandler_ServeHTTP_NotificationFailed_Returns500(t *testi
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
-	mockedUserContext.On("GetUserById", editorUserId).Return(true, user.User{UserId: editorUserId})
-	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, user.User{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
+	mockedUserContext.On("GetUserById", editorUserId).Return(true, userData.User{UserId: editorUserId})
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, userData.User{})
 	// Two changes should be stored in the history:
-	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticket.Ticket{}, nil).Twice()
+	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticketData.Ticket{}, nil).Twice()
 	// The editor should be set:
-	mockedTicketContext.On("SetEditor", mock.Anything, ticketId).Return(&ticket.Ticket{}, nil)
-	// The state of the ticket should be changed:
-	mockedTicketContext.On("SetTicketState", ticketId, ticket.Processing).Return(&ticket.Ticket{}, nil)
+	mockedTicketContext.On("SetEditor", mock.Anything, ticketId).Return(&ticketData.Ticket{}, nil)
+	// The state of the ticketData should be changed:
+	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Processing).Return(&ticketData.Ticket{}, nil)
 
 	// A notification mail should fail
 	mockedMailContext.On("CreateNewOutgoingMail", mock.Anything, mock.Anything, mock.Anything).
@@ -443,13 +443,13 @@ func TestTicketSetEditorHandler_ServeHTTP_NotificationFailed_Returns500(t *testi
 
 	resp := rr.Result()
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode, "Should return 500")
-	assert.Equal(t, "/ticket/4", resp.Header.Get("location"))
+	assert.Equal(t, "/ticketData/4", resp.Header.Get("location"))
 
 	mockedUserContext.AssertExpectations(t)
 	mockedMailContext.AssertExpectations(t)
 	mockedTicketContext.AssertExpectations(t)
 
-	setEditorId := mockedTicketContext.Calls[1].Arguments[0].(user.User).UserId
+	setEditorId := mockedTicketContext.Calls[1].Arguments[0].(userData.User).UserId
 	assert.Equal(t, editorUserId, setEditorId, "The editor should be set")
 }
 
@@ -465,7 +465,7 @@ func TestTicketSetEditorHandler_ServeHTTP_RemoveEditorFails_Returns500(t *testin
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
 	// Removing the editor should fail:
 	mockedTicketContext.On("RemoveEditor", ticketId).Return(errors.New("TestError"))
 
@@ -497,7 +497,7 @@ func TestTicketSetEditorHandler_ServeHTTP_RemoveEditorFails_Returns500(t *testin
 }
 
 /*
-	Execution for a logged in user which does not exist should not be possible. This should never occur.
+	Execution for a logged in userData which does not exist should not be possible. This should never occur.
 */
 func TestTicketSetEditorHandler_ServeHTTP_RemoveEditorFails_InvalidRequest(t *testing.T) {
 	ticketId := 4
@@ -508,11 +508,11 @@ func TestTicketSetEditorHandler_ServeHTTP_RemoveEditorFails_InvalidRequest(t *te
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
 	// Removing the editor should work:
 	mockedTicketContext.On("RemoveEditor", ticketId).Return(nil)
-	// The user should not exist:
-	mockedUserContext.On("GetUserById", loggedInUserId).Return(false, user.User{})
+	// The userData should not exist:
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(false, userData.User{})
 
 	testee := TicketSetEditorHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -534,7 +534,7 @@ func TestTicketSetEditorHandler_ServeHTTP_RemoveEditorFails_InvalidRequest(t *te
 
 	resp := rr.Result()
 	assert.Equal(t, http.StatusBadRequest, resp.StatusCode, "Should return 400")
-	assert.Equal(t, "/ticket/4", resp.Header.Get("location"))
+	assert.Equal(t, "/ticketData/4", resp.Header.Get("location"))
 
 	mockedUserContext.AssertExpectations(t)
 	mockedMailContext.AssertExpectations(t)
@@ -553,14 +553,14 @@ func TestTicketSetEditorHandler_ServeHTTP_RemoveEditorFails_500Returned(t *testi
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
 	// Removing the editor should work:
 	mockedTicketContext.On("RemoveEditor", ticketId).Return(nil)
-	// The user should exist:
-	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, user.User{})
+	// The userData should exist:
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, userData.User{})
 	// Appending the message should fail:
 	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).
-		Return(&ticket.Ticket{}, errors.New("TestError"))
+		Return(&ticketData.Ticket{}, errors.New("TestError"))
 
 	testee := TicketSetEditorHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -582,7 +582,7 @@ func TestTicketSetEditorHandler_ServeHTTP_RemoveEditorFails_500Returned(t *testi
 
 	resp := rr.Result()
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode, "Should return 500")
-	assert.Equal(t, "/ticket/4", resp.Header.Get("location"))
+	assert.Equal(t, "/ticketData/4", resp.Header.Get("location"))
 
 	mockedUserContext.AssertExpectations(t)
 	mockedMailContext.AssertExpectations(t)
@@ -601,17 +601,17 @@ func TestTicketSetEditorHandler_ServeHTTP_StateChangeFails_500Returned(t *testin
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
 	// Removing the editor should work:
 	mockedTicketContext.On("RemoveEditor", ticketId).Return(nil)
-	// The user should exist:
-	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, user.User{})
+	// The userData should exist:
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, userData.User{})
 	// Appending the message should work:
 	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).
-		Return(&ticket.Ticket{}, nil)
+		Return(&ticketData.Ticket{}, nil)
 	// Changing the state should fail:
-	mockedTicketContext.On("SetTicketState", ticketId, ticket.Processing).
-		Return(&ticket.Ticket{}, errors.New("TestEditor"))
+	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Processing).
+		Return(&ticketData.Ticket{}, errors.New("TestEditor"))
 
 	testee := TicketSetEditorHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -633,7 +633,7 @@ func TestTicketSetEditorHandler_ServeHTTP_StateChangeFails_500Returned(t *testin
 
 	resp := rr.Result()
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode, "Should return 500")
-	assert.Equal(t, "/ticket/4", resp.Header.Get("location"))
+	assert.Equal(t, "/ticketData/4", resp.Header.Get("location"))
 
 	mockedUserContext.AssertExpectations(t)
 	mockedMailContext.AssertExpectations(t)
@@ -652,20 +652,20 @@ func TestTicketSetEditorHandler_ServeHTTP_StateChangeHistoryFails_500Returned(t 
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
 	// Removing the editor should work:
 	mockedTicketContext.On("RemoveEditor", ticketId).Return(nil)
-	// The user should exist:
-	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, user.User{})
+	// The userData should exist:
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, userData.User{})
 	// Appending the message should work:
 	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).
-		Return(&ticket.Ticket{}, nil).Once()
+		Return(&ticketData.Ticket{}, nil).Once()
 	// Changing the state should work:
-	mockedTicketContext.On("SetTicketState", ticketId, ticket.Processing).
-		Return(&ticket.Ticket{}, nil)
+	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Processing).
+		Return(&ticketData.Ticket{}, nil)
 	// Appending the second message should fail:
 	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).
-		Return(&ticket.Ticket{}, errors.New("TestError"))
+		Return(&ticketData.Ticket{}, errors.New("TestError"))
 
 	testee := TicketSetEditorHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -687,7 +687,7 @@ func TestTicketSetEditorHandler_ServeHTTP_StateChangeHistoryFails_500Returned(t 
 
 	resp := rr.Result()
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode, "Should return 500")
-	assert.Equal(t, "/ticket/4", resp.Header.Get("location"))
+	assert.Equal(t, "/ticketData/4", resp.Header.Get("location"))
 
 	mockedUserContext.AssertExpectations(t)
 	mockedMailContext.AssertExpectations(t)
@@ -706,14 +706,14 @@ func TestTicketSetEditorHandler_ServeHTTP_NotificationFailed_500Returned(t *test
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
-	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, user.User{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, userData.User{})
 	// Two changes should be stored in the history:
-	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticket.Ticket{}, nil).Twice()
+	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticketData.Ticket{}, nil).Twice()
 	// The editor should be set:
 	mockedTicketContext.On("RemoveEditor", ticketId).Return(nil)
-	// The state of the ticket should be changed:
-	mockedTicketContext.On("SetTicketState", ticketId, ticket.Processing).Return(&ticket.Ticket{}, nil)
+	// The state of the ticketData should be changed:
+	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Processing).Return(&ticketData.Ticket{}, nil)
 
 	// A notification mail should fail:
 	mockedMailContext.On("CreateNewOutgoingMail", mock.Anything, mock.Anything, mock.Anything).
@@ -739,11 +739,11 @@ func TestTicketSetEditorHandler_ServeHTTP_NotificationFailed_500Returned(t *test
 
 	resp := rr.Result()
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode, "Should return 500")
-	assert.Equal(t, "/ticket/4", resp.Header.Get("location"))
+	assert.Equal(t, "/ticketData/4", resp.Header.Get("location"))
 }
 
 /*
-	A invalid ticket id should result in a invalid request.
+	A invalid ticketData id should result in a invalid request.
 */
 func TestTicketSetEditorHandler_ServeHTTP_InvalidTicketId_InvalidRequest(t *testing.T) {
 	editorUserId := 8
@@ -780,7 +780,7 @@ func TestTicketSetEditorHandler_ServeHTTP_InvalidTicketId_InvalidRequest(t *test
 }
 
 /*
-	A invalid user id should result in a invalid request.
+	A invalid userData id should result in a invalid request.
 */
 func TestTicketSetEditorHandler_ServeHTTP_InvalidUserId_InvalidRequest(t *testing.T) {
 	loggedInUserId := 2
@@ -789,7 +789,7 @@ func TestTicketSetEditorHandler_ServeHTTP_InvalidUserId_InvalidRequest(t *testin
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
 
 	testee := TicketSetEditorHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -819,7 +819,7 @@ func TestTicketSetEditorHandler_ServeHTTP_InvalidUserId_InvalidRequest(t *testin
 }
 
 /*
-	A ticket id for a non existing ticket should result in a invalid request.
+	A ticketData id for a non existing ticketData should result in a invalid request.
 */
 func TestTicketSetEditorHandler_ServeHTTP_NonExistingTicket_InvalidRequest(t *testing.T) {
 	loggedInUserId := 2
@@ -828,8 +828,8 @@ func TestTicketSetEditorHandler_ServeHTTP_NonExistingTicket_InvalidRequest(t *te
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	// The ticket should not exist:
-	mockedTicketContext.On("GetTicketById", ticketId).Return(false, &ticket.Ticket{})
+	// The ticketData should not exist:
+	mockedTicketContext.On("GetTicketById", ticketId).Return(false, &ticketData.Ticket{})
 
 	testee := TicketSetEditorHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}

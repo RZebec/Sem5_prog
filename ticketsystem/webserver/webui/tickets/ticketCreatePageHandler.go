@@ -2,7 +2,7 @@ package tickets
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
@@ -17,7 +17,7 @@ import (
 type TicketCreatePageHandler struct {
 	Logger          logging.Logger
 	TemplateManager templateManager.TemplateContext
-	UserContext		user.UserContext
+	UserContext     userData.UserContext
 }
 
 /*
@@ -60,7 +60,7 @@ func (t TicketCreatePageHandler) ServeHTTP(w http.ResponseWriter, r *http.Reques
 					LastName: existingUser.LastName,
 				}
 			} else {
-				t.Logger.LogError("TicketCreatePageHandler", errors.New("User ID couldn´t be referenced back to a user!"))
+				t.Logger.LogError("TicketCreatePageHandler", errors.New("User ID couldn´t be referenced back to a userData!"))
 				http.Redirect(w, r, "/", http.StatusInternalServerError)
 				return
 			}

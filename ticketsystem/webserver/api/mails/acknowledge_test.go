@@ -3,7 +3,7 @@ package mails
 import (
 	"bytes"
 	"de/vorlesung/projekt/IIIDDD/shared"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"encoding/json"
 	"github.com/pkg/errors"
@@ -19,32 +19,32 @@ import (
 */
 type MockedAcknowledgementMailContext struct {
 	mock.Mock
-	ReceivedAcks []mail.Acknowledgment
+	ReceivedAcks []mailData.Acknowledgment
 	throwError   bool
 }
 
 /*
 	Get test data.
 */
-func getTestAcknowledgements() []mail.Acknowledgment {
-	var acks []mail.Acknowledgment
-	acks = append(acks, mail.Acknowledgment{Id: "id01", Subject: "Subject01"})
-	acks = append(acks, mail.Acknowledgment{Id: "id02", Subject: "Subject02"})
-	acks = append(acks, mail.Acknowledgment{Id: "id03", Subject: "Subject03"})
+func getTestAcknowledgements() []mailData.Acknowledgment {
+	var acks []mailData.Acknowledgment
+	acks = append(acks, mailData.Acknowledgment{Id: "id01", Subject: "Subject01"})
+	acks = append(acks, mailData.Acknowledgment{Id: "id02", Subject: "Subject02"})
+	acks = append(acks, mailData.Acknowledgment{Id: "id03", Subject: "Subject03"})
 	return acks
 }
 
 /*
 	A mocked function.
 */
-func (m *MockedAcknowledgementMailContext) GetUnsentMails() ([]mail.Mail, error) {
-	return []mail.Mail{}, nil
+func (m *MockedAcknowledgementMailContext) GetUnsentMails() ([]mailData.Mail, error) {
+	return []mailData.Mail{}, nil
 }
 
 /*
 	A mocked function.
 */
-func (m *MockedAcknowledgementMailContext) AcknowledgeMails(acknowledgments []mail.Acknowledgment) error {
+func (m *MockedAcknowledgementMailContext) AcknowledgeMails(acknowledgments []mailData.Acknowledgment) error {
 	if m.throwError {
 		return errors.New("Test error")
 	}

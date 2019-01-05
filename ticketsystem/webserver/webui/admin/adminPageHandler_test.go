@@ -2,7 +2,7 @@ package admin
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"github.com/stretchr/testify/assert"
@@ -35,8 +35,8 @@ func TestAdminPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedUserContext.On("GetAllLockedUsers").Return([]user.User{{"Test@Test.de", 1,
-		"Test", "Test", user.RegisteredUser, user.WaitingToBeUnlocked}})
+	mockedUserContext.On("GetAllLockedUsers").Return([]userData.User{{"Test@Test.de", 1,
+		"Test", "Test", userData.RegisteredUser, userData.WaitingToBeUnlocked}})
 
 	rr := httptest.NewRecorder()
 
@@ -79,8 +79,8 @@ func TestAdminPageHandler_ServeHTTP_RenderTemplateError_500Returned(t *testing.T
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedUserContext.On("GetAllLockedUsers").Return([]user.User{{"Test@Test.de", 1,
-		"Test", "Test", user.RegisteredUser, user.WaitingToBeUnlocked}})
+	mockedUserContext.On("GetAllLockedUsers").Return([]userData.User{{"Test@Test.de", 1,
+		"Test", "Test", userData.RegisteredUser, userData.WaitingToBeUnlocked}})
 
 	testee := AdminPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager, ApiContext: mockedApiContext}
 
@@ -115,8 +115,8 @@ func TestAdminPageHandler_ServeHTTP_WrongRequest(t *testing.T) {
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
-	mockedUserContext.On("GetAllLockedUsers").Return([]user.User{{"Test@Test.de", 1,
-		"Test", "Test", user.RegisteredUser, user.WaitingToBeUnlocked}})
+	mockedUserContext.On("GetAllLockedUsers").Return([]userData.User{{"Test@Test.de", 1,
+		"Test", "Test", userData.RegisteredUser, userData.WaitingToBeUnlocked}})
 
 	testee := AdminPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager, ApiContext: mockedApiContext}
 

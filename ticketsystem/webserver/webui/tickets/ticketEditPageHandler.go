@@ -2,8 +2,8 @@ package tickets
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
@@ -18,8 +18,8 @@ import (
 	Structure for the Tickets Edit Page handler.
 */
 type TicketEditPageHandler struct {
-	TicketContext   ticket.TicketContext
-	UserContext		user.UserContext
+	TicketContext   ticketData.TicketContext
+	UserContext     userData.UserContext
 	Logger          logging.Logger
 	TemplateManager templateManager.TemplateContext
 }
@@ -28,11 +28,11 @@ type TicketEditPageHandler struct {
 	Structure for the Ticket Edit Page Data.
 */
 type ticketEditPageData struct {
-	TicketInfo 		ticket.TicketInfo
-	OtherTickets	[]ticket.TicketInfo
-	Users			[]user.User
-	OtherState1		ticket.TicketState
-	OtherState2		ticket.TicketState
+	TicketInfo   ticketData.TicketInfo
+	OtherTickets []ticketData.TicketInfo
+	Users        []userData.User
+	OtherState1  ticketData.TicketState
+	OtherState2  ticketData.TicketState
 	pages.BasePageData
 }
 
@@ -94,7 +94,7 @@ func (t TicketEditPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func filterOutTicket(ticketInfo ticket.TicketInfo, tickets []ticket.TicketInfo) (result []ticket.TicketInfo) {
+func filterOutTicket(ticketInfo ticketData.TicketInfo, tickets []ticketData.TicketInfo) (result []ticketData.TicketInfo) {
 	for _, t := range tickets {
 		if t.Id != ticketInfo.Id && t.Editor == ticketInfo.Editor {
 			result = append(result, t)
@@ -103,8 +103,8 @@ func filterOutTicket(ticketInfo ticket.TicketInfo, tickets []ticket.TicketInfo) 
 	return
 }
 
-func getOtherTicketStates(ticketState ticket.TicketState) (result []ticket.TicketState) {
-	states := []ticket.TicketState{ticket.Open, ticket.Closed, ticket.Processing}
+func getOtherTicketStates(ticketState ticketData.TicketState) (result []ticketData.TicketState) {
+	states := []ticketData.TicketState{ticketData.Open, ticketData.Closed, ticketData.Processing}
 	for _, state := range states {
 		if state != ticketState {
 			result = append(result, state)

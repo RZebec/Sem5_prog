@@ -2,7 +2,7 @@ package acknowledgementStorage
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/helpers"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"encoding/json"
 	"github.com/pkg/errors"
 	"sync"
@@ -12,9 +12,9 @@ import (
 	Interface for the acknowledgment storage.
 */
 type AckStorage interface {
-	DeleteAcknowledges(delete []mail.Acknowledgment) error
-	AppendAcknowledgements(acknowledge []mail.Acknowledgment) error
-	ReadAcknowledgements() ([]mail.Acknowledgment, error)
+	DeleteAcknowledges(delete []mailData.Acknowledgment) error
+	AppendAcknowledgements(acknowledge []mailData.Acknowledgment) error
+	ReadAcknowledgements() ([]mailData.Acknowledgment, error)
 }
 
 /*
@@ -23,7 +23,7 @@ type AckStorage interface {
 type AckManager struct {
 	filePath        string
 	fileAccessMutex sync.RWMutex
-	acknowledgments []mail.Acknowledgment
+	acknowledgments []mailData.Acknowledgment
 }
 
 /*
@@ -57,8 +57,8 @@ func InitializeAckManager(filepath string) (*AckManager, error) {
 /*
 	Delete acknowledgements from the tracked list.
 */
-func (m *AckManager) DeleteAcknowledges(delete []mail.Acknowledgment) error {
-	var acksToSave []mail.Acknowledgment
+func (m *AckManager) DeleteAcknowledges(delete []mailData.Acknowledgment) error {
+	var acksToSave []mailData.Acknowledgment
 	for _, currentAck := range m.acknowledgments {
 		deleteAck := false
 		for _, toDelete := range delete {
@@ -79,7 +79,7 @@ func (m *AckManager) DeleteAcknowledges(delete []mail.Acknowledgment) error {
 /*
 	Write new Acknowledgements to the storage. They will be appended to the existing one.
 */
-func (m *AckManager) AppendAcknowledgements(acknowledge []mail.Acknowledgment) error {
+func (m *AckManager) AppendAcknowledgements(acknowledge []mailData.Acknowledgment) error {
 	for _, ackToAdd := range acknowledge {
 		m.acknowledgments = append(m.acknowledgments, ackToAdd)
 	}
@@ -89,10 +89,10 @@ func (m *AckManager) AppendAcknowledgements(acknowledge []mail.Acknowledgment) e
 /*
 	Read Acknowledgment data from file.
 */
-func (m *AckManager) ReadAcknowledgements() ([]mail.Acknowledgment, error) {
+func (m *AckManager) ReadAcknowledgements() ([]mailData.Acknowledgment, error) {
 	err := m.readDataFromFile()
 	if err != nil {
-		return []mail.Acknowledgment{}, err
+		return []mailData.Acknowledgment{}, err
 	}
 	return m.acknowledgments, nil
 }
@@ -107,7 +107,7 @@ func (m *AckManager) readDataFromFile() error {
 	if err != nil {
 		return err
 	}
-	parsedData := new([]mail.Acknowledgment)
+	parsedData := new([]mailData.Acknowledgment)
 	err = json.Unmarshal(fileValue, &parsedData)
 	if err != nil {
 		return err
@@ -123,7 +123,7 @@ func (m *AckManager) writeDataToFile() error {
 	m.fileAccessMutex.Lock()
 	defer m.fileAccessMutex.Unlock()
 	if len(m.acknowledgments) == 0 {
-		m.acknowledgments = make([]mail.Acknowledgment, 0)
+		m.acknowledgments = make([]mailData.Acknowledgment, 0)
 	}
 	jsonData, err := json.MarshalIndent(m.acknowledgments, "", "    ")
 	if err != nil {

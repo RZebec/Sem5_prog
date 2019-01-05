@@ -1,4 +1,4 @@
-package user
+package userData
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -21,6 +21,6 @@ func TestUser_Copy(t *testing.T) {
 	copiedUser := user.Copy()
 	copiedUser.LastName = "Müller"
 
-	// The original user should not be changed:
+	// The original userData should not be changed:
 	assert.Equal(t, "Mustermann", user.LastName)
 }

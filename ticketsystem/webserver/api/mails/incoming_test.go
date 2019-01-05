@@ -3,10 +3,10 @@ package mails
 import (
 	"bytes"
 	"de/vorlesung/projekt/IIIDDD/shared"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"encoding/json"
 	"github.com/pkg/errors"
@@ -23,7 +23,7 @@ type MockedMailFilter struct {
 	mock.Mock
 }
 
-func (m *MockedMailFilter) IsAutomaticResponse(mail mail.Mail) bool {
+func (m *MockedMailFilter) IsAutomaticResponse(mail mailData.Mail) bool {
 	args := m.Called(mail)
 	return args.Bool(0)
 }
@@ -42,7 +42,7 @@ func getTestHandlerWithMockedData() IncomingMailHandler {
 }
 
 /*
-	Handling a mail to a existing ticket should be able.
+	Handling a mail to a existing ticketData should be able.
 */
 func TestIncomingMailHandler_handleExistingTicketMail(t *testing.T) {
 	testee := getTestHandlerWithMockedData()
@@ -50,11 +50,11 @@ func TestIncomingMailHandler_handleExistingTicketMail(t *testing.T) {
 	// Overwrite the mocked interface which are needed in this test:
 	ticketId := 2
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
-	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticket.Ticket{}, nil)
+	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticketData.Ticket{}, nil)
 
 	testee.TicketContext = mockedTicketContext
 
-	testMail := mail.Mail{Id: "TestId01", Sender: "testsender@test.de", Receiver: "test@test.de", Subject: "TestSubject",
+	testMail := mailData.Mail{Id: "TestId01", Sender: "testsender@test.de", Receiver: "test@test.de", Subject: "TestSubject",
 		Content: "TestContent", SentTime: time.Now().Unix()}
 
 	err := testee.handleExistingTicketMail(ticketId, testMail)
@@ -62,30 +62,30 @@ func TestIncomingMailHandler_handleExistingTicketMail(t *testing.T) {
 
 	mockedTicketContext.AssertExpectations(t)
 	// Assert that the parameter has been correctly set:
-	assert.Equal(t, ticketId, mockedTicketContext.Calls[0].Arguments[0], "The correct ticket id should be provided")
+	assert.Equal(t, ticketId, mockedTicketContext.Calls[0].Arguments[0], "The correct ticketData id should be provided")
 
 	assertMessageEntryIgnoringTime(t, testee.buildMessageEntry(testMail),
-		mockedTicketContext.Calls[0].Arguments[1].(ticket.MessageEntry))
+		mockedTicketContext.Calls[0].Arguments[1].(ticketData.MessageEntry))
 }
 
 /*
-	Handling a mail from a registered user should be possible.
+	Handling a mail from a registered userData should be possible.
 */
 func TestIncomingMailHandler_handleNewTicketMail_RegisteredUser(t *testing.T) {
 	testee := getTestHandlerWithMockedData()
 	userId := 1
-	testMail := mail.Mail{Id: "TestId01", Sender: "testsender@test.de", Receiver: "test@test.de", Subject: "TestSubject",
+	testMail := mailData.Mail{Id: "TestId01", Sender: "testsender@test.de", Receiver: "test@test.de", Subject: "TestSubject",
 		Content: "TestContent", SentTime: time.Now().Unix()}
 
 	// Overwrite the mocked interface which are needed in this test:
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedUserContext.On("GetUserForEmail", testMail.Sender).Return(true, userId)
-	returnedUser := user.User{}
+	returnedUser := userData.User{}
 	mockedUserContext.On("GetUserById", userId).Return(true, returnedUser)
 
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedTicketContext.On("CreateNewTicketForInternalUser", testMail.Subject, returnedUser, mock.Anything).
-		Return(&ticket.Ticket{}, nil)
+		Return(&ticketData.Ticket{}, nil)
 
 	testee.TicketContext = mockedTicketContext
 	testee.UserContext = mockedUserContext
@@ -100,11 +100,11 @@ func TestIncomingMailHandler_handleNewTicketMail_RegisteredUser(t *testing.T) {
 }
 
 /*
-	Handling a mail from a sender which is no registered user should be able.
+	Handling a mail from a sender which is no registered userData should be able.
 */
 func TestIncomingMailHandler_handleNewTicketMail_SenderIsNoUser(t *testing.T) {
 	testee := getTestHandlerWithMockedData()
-	testMail := mail.Mail{Id: "TestId01", Sender: "testsender@test.de", Receiver: "test@test.de", Subject: "TestSubject",
+	testMail := mailData.Mail{Id: "TestId01", Sender: "testsender@test.de", Receiver: "test@test.de", Subject: "TestSubject",
 		Content: "TestContent", SentTime: time.Now().Unix()}
 	creator := testee.buildCreator(testMail)
 
@@ -114,7 +114,7 @@ func TestIncomingMailHandler_handleNewTicketMail_SenderIsNoUser(t *testing.T) {
 
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedTicketContext.On("CreateNewTicket", testMail.Subject, creator, mock.Anything).
-		Return(&ticket.Ticket{}, nil)
+		Return(&ticketData.Ticket{}, nil)
 
 	// Set the mocked contexts:
 	testee.TicketContext = mockedTicketContext
@@ -130,24 +130,24 @@ func TestIncomingMailHandler_handleNewTicketMail_SenderIsNoUser(t *testing.T) {
 }
 
 /*
-	Handling a mail from a user which is registered, should be possible.
+	Handling a mail from a userData which is registered, should be possible.
 */
 func TestIncomingMailHandler_handleIncomingMails_SenderIsAUser(t *testing.T) {
 	testee := getTestHandlerWithMockedData()
 	userId := 1
-	testMail := mail.Mail{Id: "TestId01", Sender: "testsender@test.de", Receiver: "test@test.de", Subject: "TestSubject",
+	testMail := mailData.Mail{Id: "TestId01", Sender: "testsender@test.de", Receiver: "test@test.de", Subject: "TestSubject",
 		Content: "TestContent", SentTime: time.Now().Unix()}
-	testMails := []mail.Mail{testMail}
+	testMails := []mailData.Mail{testMail}
 
 	// Overwrite the mocked interface which are needed in this test:
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedUserContext.On("GetUserForEmail", testMail.Sender).Return(true, userId)
-	returnedUser := user.User{}
+	returnedUser := userData.User{}
 	mockedUserContext.On("GetUserById", userId).Return(true, returnedUser)
 
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedTicketContext.On("CreateNewTicketForInternalUser", testMail.Subject, returnedUser, mock.Anything).
-		Return(&ticket.Ticket{}, nil)
+		Return(&ticketData.Ticket{}, nil)
 
 	testee.TicketContext = mockedTicketContext
 	testee.UserContext = mockedUserContext
@@ -162,14 +162,14 @@ func TestIncomingMailHandler_handleIncomingMails_SenderIsAUser(t *testing.T) {
 }
 
 /*
-	Handling a mail for when the sender is no user, should be possible.
+	Handling a mail for when the sender is no userData, should be possible.
 */
 func TestIncomingMailHandler_handleIncomingMails_SenderIsNoUser(t *testing.T) {
 	testee := getTestHandlerWithMockedData()
-	testMail := mail.Mail{Id: "TestId01", Sender: "testsender@test.de", Receiver: "test@test.de", Subject: "TestSubject",
+	testMail := mailData.Mail{Id: "TestId01", Sender: "testsender@test.de", Receiver: "test@test.de", Subject: "TestSubject",
 		Content: "TestContent", SentTime: time.Now().Unix()}
 	creator := testee.buildCreator(testMail)
-	testMails := []mail.Mail{testMail}
+	testMails := []mailData.Mail{testMail}
 
 	// Overwrite the mocked interface which are needed in this test:
 	mockedUserContext := new(mockedForTests.MockedUserContext)
@@ -177,7 +177,7 @@ func TestIncomingMailHandler_handleIncomingMails_SenderIsNoUser(t *testing.T) {
 
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedTicketContext.On("CreateNewTicket", testMail.Subject, creator, mock.Anything).
-		Return(&ticket.Ticket{}, nil)
+		Return(&ticketData.Ticket{}, nil)
 
 	// Set the mocked contexts:
 	testee.TicketContext = mockedTicketContext
@@ -193,14 +193,14 @@ func TestIncomingMailHandler_handleIncomingMails_SenderIsNoUser(t *testing.T) {
 }
 
 /*
-	A incoming mail for a existing ticket should notify the creator of the ticket.
+	A incoming mail for a existing ticketData should notify the creator of the ticketData.
 */
 func TestIncomingMailHandler_handleIncomingMails_TicketExists_MailSent(t *testing.T) {
 	testee := getTestHandlerWithMockedData()
-	testMail := mail.Mail{Id: "TestId01", Sender: "testsender@test.de", Receiver: "test@test.de", Subject: "Ticket<1> TestSubject",
+	testMail := mailData.Mail{Id: "TestId01", Sender: "testsender@test.de", Receiver: "test@test.de", Subject: "Ticket<1> TestSubject",
 		Content: "TestContent", SentTime: time.Now().Unix()}
-	testMails := []mail.Mail{testMail}
-	existingTicket := ticket.Ticket{}
+	testMails := []mailData.Mail{testMail}
+	existingTicket := ticketData.Ticket{}
 
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedTicketContext.On("GetTicketById", 1).Return(true, &existingTicket)
@@ -208,8 +208,8 @@ func TestIncomingMailHandler_handleIncomingMails_TicketExists_MailSent(t *testin
 		Return(&existingTicket, nil)
 
 	mockedMailContext := new(mockedForTests.MockedMailContext)
-	expectedSubject := "New Entry for your ticket: " + html.EscapeString(testMail.Subject)
-	expectedMailContent := mail.BuildAppendMessageNotificationMailContent(existingTicket.Info().Creator.Mail, testMail.Sender, testMail.Content)
+	expectedSubject := "New Entry for your ticketData: " + html.EscapeString(testMail.Subject)
+	expectedMailContent := mailData.BuildAppendMessageNotificationMailContent(existingTicket.Info().Creator.Mail, testMail.Sender, testMail.Content)
 
 	mockedMailContext.On("CreateNewOutgoingMail", "", expectedSubject, expectedMailContent).Return(nil)
 
@@ -252,9 +252,9 @@ func TestIncomingMailHandler_ServeHTTP_InvalidPayload_400Returned(t *testing.T) 
 func TestIncomingMailHandler_ServeHTTP_500Returned(t *testing.T) {
 	testee := getTestHandlerWithMockedData()
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
-	mockedTicketContext.On("GetTicketById", mock.Anything).Return(true, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", mock.Anything).Return(true, &ticketData.Ticket{})
 	mockedTicketContext.On("AppendMessageToTicket", mock.Anything, mock.Anything).
-		Return(&ticket.Ticket{}, errors.New("TestError"))
+		Return(&ticketData.Ticket{}, errors.New("TestError"))
 	testee.TicketContext = mockedTicketContext
 
 	jsonData, _ := json.Marshal(getTestMails())
@@ -297,7 +297,7 @@ func TestIncomingMailHandler_ServeHTTP_MailFiltered(t *testing.T) {
 /*
 	Assert a MessageEntry ignoring the autonatically set timestamp.
 */
-func assertMessageEntryIgnoringTime(t *testing.T, expected ticket.MessageEntry, actual ticket.MessageEntry) {
+func assertMessageEntryIgnoringTime(t *testing.T, expected ticketData.MessageEntry, actual ticketData.MessageEntry) {
 	assert.Equal(t, expected.Content, actual.Content, "Content should be equal")
 	assert.Equal(t, expected.CreatorMail, actual.CreatorMail, "CreatorMail should be equal")
 	assert.Equal(t, expected.OnlyInternal, actual.OnlyInternal, "OnlyInternal should be equal")
