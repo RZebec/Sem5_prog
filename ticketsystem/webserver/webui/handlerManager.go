@@ -138,7 +138,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	ticketAppendHandlerWrapper.Next = ticketAppendMessageHandler
 	http.HandleFunc("/append_message", ticketAppendHandlerWrapper.ServeHTTP)
 
-	ticketMergeHandler := tickets.TicketMergeHandler{TicketContext: handlerManager.TicketContext,
+	ticketMergeHandler := tickets.TicketMergeHandler{TicketContext: handlerManager.TicketContext, UserContext: handlerManager.UserContext,
 		MailContext: handlerManager.MailContext, Logger: handlerManager.Logger}
 	ticketMergeEnforceAuthenticationWrapper:= wrappers.EnforceAuthenticationWrapper{}
 	ticketMergeEnforceAuthenticationWrapper.Next = ticketMergeHandler
