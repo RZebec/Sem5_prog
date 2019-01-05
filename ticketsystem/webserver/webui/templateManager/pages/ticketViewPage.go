@@ -96,24 +96,18 @@ var TicketViewPage = `
 					<table>
 						<tr>
 							<th>
+                                Created on
+                            </th>
+							<th>
 								Creator
                             </th>
                             <th>
                                 Message
                             </th>
-                            <th>
-                                Created on
-                            </th>
 						</tr>
                         {{range .Messages}}
                         <tr>
-							<td>
-                                {{.CreatorMail}}
-                            </td>
-                            <td>
-                                {{.Content}}
-                            </td>
-                            <td id="creationTime_{{.Id}}">
+							<td id="creationTime_{{.Id}}">
                             </td>
 							<script>
 								var creationTime = new Date({{.CreationTime}});
@@ -129,6 +123,12 @@ var TicketViewPage = `
 								creationTime = creationTime.toLocaleDateString("en-GB", options);
 								document.getElementById("creationTime_{{.Id}}").innerHTML = creationTime;
 							</script>
+							<td>
+                                {{.CreatorMail}}
+                            </td>
+                            <td>
+                                {{.Content}}
+                            </td>
                         </tr>
 						{{end}}
 					</table>
