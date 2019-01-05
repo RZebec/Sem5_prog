@@ -4,10 +4,13 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"github.com/pkg/errors"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 /*
@@ -17,6 +20,7 @@ type TicketMergeHandler struct {
 	Logger        logging.Logger
 	TicketContext ticketData.TicketContext
 	MailContext   mailData.MailContext
+	UserContext   userData.UserContext
 }
 
 /*
@@ -76,8 +80,8 @@ func (t TicketMergeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				firstTicketId, secondTicketId)
 			err = t.MailContext.CreateNewOutgoingMail(firstTicket.Info().Creator.Mail, firstMailSubject, firstMailContent)
 			if err != nil {
-				t.Logger.LogError("TicketAppendMessageHandler", err)
-				http.Redirect(w, r, "/ticketData/"+strconv.Itoa(olderTicket), http.StatusInternalServerError)
+				t.Logger.LogError("TicketMergeHandler", err)
+				http.Redirect(w, r, "/ticket/"+strconv.Itoa(olderTicket), http.StatusInternalServerError)
 				return
 			}
 			// Notify creator of second ticketData:
@@ -86,13 +90,31 @@ func (t TicketMergeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				firstTicketId, secondTicketId)
 			err = t.MailContext.CreateNewOutgoingMail(secondTicket.Info().Creator.Mail, secondMailSubject, secondMailContent)
 			if err != nil {
-				t.Logger.LogError("TicketAppendMessageHandler", err)
-				http.Redirect(w, r, "/ticketData/"+strconv.Itoa(olderTicket), http.StatusInternalServerError)
+				t.Logger.LogError("TicketMergeHandler", err)
+				http.Redirect(w, r, "/ticket/"+strconv.Itoa(olderTicket), http.StatusInternalServerError)
+				return
+			}
+
+			loggedInUserId := wrappers.GetUserId(r.Context())
+			userExists, authenticatedUser := t.UserContext.GetUserById(loggedInUserId)
+			if !userExists {
+				t.Logger.LogError("TicketMergeHandler", err)
+				http.Redirect(w, r, "/", http.StatusBadRequest)
+				return
+			}
+
+			// Build message for history:
+			messageEntry := ticketData.MessageEntry{CreatorMail: authenticatedUser.Mail, OnlyInternal: false,
+				Content: "Tickets merged: " + rawFirstTickedId + " with " + rawSecondTickedId, CreationTime: time.Now()}
+			_, err = t.TicketContext.AppendMessageToTicket(olderTicket, messageEntry)
+			if err != nil {
+				t.Logger.LogError("TicketMergeHandler", err)
+				http.Redirect(w, r, "/ticket/"+strconv.Itoa(olderTicket), http.StatusInternalServerError)
 				return
 			}
 
 			// Redirect to the older ticketData:
-			http.Redirect(w, r, "/ticketData/"+strconv.Itoa(olderTicket), http.StatusFound)
+			http.Redirect(w, r, "/ticket/"+strconv.Itoa(olderTicket), http.StatusFound)
 
 			return
 		}

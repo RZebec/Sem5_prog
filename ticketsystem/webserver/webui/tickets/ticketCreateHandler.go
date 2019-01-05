@@ -77,7 +77,7 @@ func (t TicketCreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 			ticketId := strconv.Itoa(createdTicket.Info().Id)
 
-			http.Redirect(w, r, "/ticketData/" + ticketId, 302)
+			http.Redirect(w, r, "/ticket/" + ticketId, 302)
 			return
 		}
 
@@ -101,7 +101,7 @@ func (t TicketCreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		ticketId := strconv.Itoa(createdTicket.Info().Id)
 
-		http.Redirect(w, r, "/ticketData/" + ticketId, 302)
+		http.Redirect(w, r, "/ticket/" + ticketId, 302)
 		t.Logger.LogInfo("TicketCreateHandler", "New ticket with id " + ticketId + "created")
 	}
 }
