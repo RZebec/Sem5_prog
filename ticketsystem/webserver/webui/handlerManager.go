@@ -46,9 +46,19 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	http.HandleFunc("/register", registerHandler.ServeHTTPGetRegisterPage)
 	http.HandleFunc("/user_register", registerHandler.ServeHTTPPostRegisteringData)
 
-	loginHandler := login.LoginHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
-	http.HandleFunc("/login", loginHandler.ServeHTTPGetLoginPage)
-	http.HandleFunc("/user_login", loginHandler.ServeHTTPPostLoginData)
+	loginPageHandler := login.PageHandler{TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
+	loginPageHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
+	loginPageHandlerWrapper.Next = loginPageHandler
+	loginPageHandlerWrapper.Logger = handlerManager.Logger
+	loginPageHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/login", loginPageHandlerWrapper.ServeHTTP)
+
+	userLoginHandler := login.UserLoginHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
+	userLoginHandlerWrapper := wrappers.AddAuthenticationInfoWrapper{}
+	userLoginHandlerWrapper.Next = userLoginHandler
+	userLoginHandlerWrapper.Logger = handlerManager.Logger
+	userLoginHandlerWrapper.UserContext = handlerManager.UserContext
+	http.HandleFunc("/user_login", userLoginHandlerWrapper.ServeHTTP)
 
 	logoutHandler := logout.LogoutHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
 	logoutWrapper := wrappers.EnforceAuthenticationWrapper{Next: logoutHandler, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
