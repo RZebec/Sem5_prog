@@ -144,13 +144,13 @@ func (t *MailManager) CreateNewOutgoingMail(receiver string, subject string, con
 		return errors.New("Receiver address is not valid")
 	}
 	adjustedContent := html.EscapeString(content)
-	adjustedSubject := html.EscapeString(subject)
+
 	uuid, err := helpers.GenerateUUID()
 	if err != nil {
 		return err
 	}
 	mailToSent := Mail{Id: uuid, Sender: t.outgoingMailAddress, Receiver: receiver,
-		Subject: adjustedSubject, Content: adjustedContent, SentTime: time.Now().Unix()}
+		Subject: subject, Content: adjustedContent, SentTime: time.Now().Unix()}
 
 	t.mailFolderAccessMutex.Lock()
 	defer t.mailFolderAccessMutex.Unlock()

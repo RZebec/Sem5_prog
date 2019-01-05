@@ -50,9 +50,6 @@ func main() {
 	ticketContext.Initialize(configuration.TicketDataFolderPath)
 
 
-	g := ticketContext.GetAllTicketInfo()
-	fmt.Println(len(g))
-
 	http.HandleFunc(shared.SendPath, getIncomingMailHandlerChain(*apiConfig, &mailContext, &ticketContext, &userContext, logger).ServeHTTP)
 	http.HandleFunc(shared.AcknowledgmentPath, getAcknowledgeMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
 	http.HandleFunc(shared.ReceivePath, getOutgoingMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
@@ -77,6 +74,7 @@ func main() {
 	templateMan.LoadTemplates(logger)
 	handlerManager.RegisterHandlers()
 
+	logger.LogInfo("Server", "Server started")
 	if err := http.ListenAndServeTLS(configuration.GetServiceUrl(), configuration.CertificatePath, configuration.CertificateKeyPath, nil); err != nil {
 		logger.LogError("Main", err)
 	}
