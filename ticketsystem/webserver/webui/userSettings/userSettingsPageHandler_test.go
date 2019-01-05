@@ -46,7 +46,7 @@ func TestUserSettingsPageHandler_ServeHTTP__ValidRequest(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	testee := UserSettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
+	testee := SettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -76,7 +76,7 @@ func TestUserSettingsPageHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	testee := UserSettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
+	testee := SettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -120,7 +120,7 @@ func TestUserSettingsPageHandler_ServeHTTP_ContextError(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	testee := UserSettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
+	testee := SettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -164,7 +164,7 @@ func TestUserSettingsPageHandler_ServeHTTP_ChangePasswordFailed(t *testing.T) {
 	mockedTemplateManager := new(templateManager.MockedTemplateManager)
 	mockedTemplateManager.On("RenderTemplate", mock.Anything, mock.Anything, data).Return(nil)
 
-	testee := UserSettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
+	testee := SettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 

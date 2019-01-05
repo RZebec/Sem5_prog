@@ -14,7 +14,7 @@ import (
 /*
 	Structure for the User Settings Page handler.
 */
-type UserSettingsPageHandler struct {
+type SettingsPageHandler struct {
 	Logger          logging.Logger
 	TemplateManager templateManager.TemplateContext
 	UserContext     userData.UserContext
@@ -32,7 +32,7 @@ type userSettingsPageData struct {
 /*
 	The User Settings Page handler.
 */
-func (u UserSettingsPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (u SettingsPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if strings.ToLower(r.Method) != "get" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {
@@ -71,7 +71,7 @@ func (u UserSettingsPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Reques
 		templateRenderError := u.TemplateManager.RenderTemplate(w, "UserSettingsPage", data)
 
 		if templateRenderError != nil {
-			u.Logger.LogError("UserSettingsPageHandler", templateRenderError)
+			u.Logger.LogError("SettingsPageHandler", templateRenderError)
 			http.Redirect(w, r, "/", http.StatusInternalServerError)
 		}
 	}

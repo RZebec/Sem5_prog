@@ -12,7 +12,7 @@ import (
 /*
 	Structure for the Logout handler.
 */
-type LogoutHandler struct {
+type UserLogoutHandler struct {
 	UserContext userData.UserContext
 	Logger      logging.Logger
 }
@@ -20,14 +20,14 @@ type LogoutHandler struct {
 /*
 	The Logout handler.
 */
-func (l LogoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (l UserLogoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if strings.ToLower(r.Method) != "get" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {
 		cookie, err := r.Cookie(shared.AccessTokenCookieName)
 
 		if err != nil {
-			l.Logger.LogError("Logout", err)
+			l.Logger.LogError("UserLogoutHandler", err)
 			helpers.RemoveCookie(w, shared.AccessTokenCookieName)
 			http.Redirect(w, r, "/", http.StatusFound)
 			return
@@ -37,7 +37,7 @@ func (l LogoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		l.UserContext.Logout(token)
 		helpers.RemoveCookie(w, shared.AccessTokenCookieName)
 		http.Redirect(w, r, "/", http.StatusFound)
-		l.Logger.LogInfo("LogoutHandler","User logged out" )
+		l.Logger.LogInfo("UserLogoutHandler","User logged out" )
 
 		return
 	}

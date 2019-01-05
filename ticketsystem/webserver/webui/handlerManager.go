@@ -34,7 +34,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	filesHandler := files.FileHandler{}
 	http.HandleFunc("/files/", filesHandler.ServeHTTP)
 
-	indexPageHandler := index.IndexPageHandler{Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
+	indexPageHandler := index.PageHandler{Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager}
 	indexPageAuthenticationInfoWrapper := wrappers.AddAuthenticationInfoWrapper{}
 	indexPageAuthenticationInfoWrapper.Next = indexPageHandler
 	indexPageAuthenticationInfoWrapper.Logger = handlerManager.Logger
@@ -69,7 +69,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	userLoginHandlerWrapper.UserContext = handlerManager.UserContext
 	http.HandleFunc("/user_login", userLoginHandlerWrapper.ServeHTTP)
 
-	logoutHandler := logout.LogoutHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
+	logoutHandler := logout.UserLogoutHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
 	logoutWrapper := wrappers.EnforceAuthenticationWrapper{Next: logoutHandler, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/user_logout", logoutWrapper.ServeHTTP)
 
@@ -162,7 +162,7 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	setStateWrapper.UserContext = handlerManager.UserContext
 	http.HandleFunc("/ticket_setState", setStateWrapper.ServeHTTP)
 
-	userSettingsPageHandler := userSettings.UserSettingsPageHandler{UserContext: handlerManager.UserContext, TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
+	userSettingsPageHandler := userSettings.SettingsPageHandler{UserContext: handlerManager.UserContext, TemplateManager: handlerManager.TemplateManager, Logger: handlerManager.Logger}
 	userSettingsPageHandlerWrapper := wrappers.EnforceAuthenticationWrapper{}
 	userSettingsPageHandlerWrapper.Next = userSettingsPageHandler
 	userSettingsPageHandlerWrapper.Logger = handlerManager.Logger
