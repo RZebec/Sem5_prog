@@ -60,7 +60,7 @@ func (s *Sender) Run() {
 		} else if answer == "stop" {
 			break
 		} else {
-			s.io.Print("wrong entry. Please press e, r or stop the tool : ")
+			s.io.Print("wrong entry. Please press e, r or stop for finish the tool : ")
 		}
 	}
 }
@@ -73,7 +73,10 @@ func (s *Sender) httpRequest(eMails []mailData.Mail) {
 	s.io.Print("Start HTTPS-Request")
 	err := s.apiClient.SendMails(eMails)
 	if err != nil {
+		s.io.Print("Request was not successful")
 		s.io.Print(err.Error())
+	} else {
+		s.io.Print("Request was successful")
 	}
 }
 

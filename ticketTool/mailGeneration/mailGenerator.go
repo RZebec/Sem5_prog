@@ -2,6 +2,7 @@ package mailGeneration
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/validation/mail"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"math/rand"
 	"strconv"
@@ -75,14 +76,24 @@ func generateTwoMailAdresses_FromRandomPool() (string, string) {
 create a Mail on your own and get back a List with one entry
 */
 func (m *MailGenerator) ExplicitMail() []mailData.Mail {
+	validator := mail.NewValidator()
 	email := mailData.Mail{}
 	m.io.Print("Entry subject: ")
 	email.Subject = m.io.ReadEntry()
 	m.io.Print("Entry text: ")
 	email.Content = m.io.ReadEntry()
 	email.Receiver = "notification@ticketsystem.de"
-	m.io.Print("Enter your SenderMail: ")
-	email.Sender = m.io.ReadEntry()
+	for true {
+		m.io.Print("Enter your Sender-Mailadress: ")
+		sendAdress := m.io.ReadEntry()
+		if validator.Validate(sendAdress) {
+			email.Sender = sendAdress
+			break
+		} else {
+			m.io.Print("This is not a valide Adress. Retry!")
+		}
+	}
+
 	email.SentTime = time.Now().Unix()
 
 	mails := make([]mailData.Mail, 1)

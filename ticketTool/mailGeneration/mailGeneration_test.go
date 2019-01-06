@@ -2,6 +2,7 @@ package mailGeneration
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/validation/mail"
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -55,13 +56,15 @@ func TestGenerateMailAddresses(t *testing.T) {
 */
 func TestMailGenerator_ExplicitMail(t *testing.T) {
 	mockedIO := new(inputOutput.MockedInputOutput)
-
-	mockedIO.On("Print", "Entry subject: ").Once()
-	mockedIO.On("ReadEntry").Return("testSubject1")
-	mockedIO.On("Print", "Entry text: ").Once()
-	mockedIO.On("ReadEntry").Return("testContent1")
-	mockedIO.On("Print", "Enter your SenderMail: ")
-	mockedIO.On("ReadEntry").Return(mock.Anything)
+	mockedValid := new(mail.MockedValidator)
+	mailAdress := "aasdfas@web.de"
+	mockedIO.On("Print", "Entry subject: ")
+	mockedIO.On("ReadEntry").Return("testSubject1").Once()
+	mockedIO.On("Print", "Entry text: ")
+	mockedIO.On("ReadEntry").Return("testContent1").Once()
+	mockedIO.On("Print", "Enter your Sender-Mailadress: ")
+	mockedIO.On("ReadEntry").Return(mailAdress).Once()
+	mockedValid.On("Validate", mailAdress).Return(true)
 
 	testee := CreateMailGenerator(mockedIO)
 	testee.ExplicitMail()
