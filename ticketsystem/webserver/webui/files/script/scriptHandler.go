@@ -62,7 +62,7 @@ var registerScript = `
 		
 		if (!validatePassword(password)) {
 		    isValid = false;
-		    document.getElementById("passwordNotice").innerHTML = "Password must contain at least one upper case letter, one lower case letter, one number and one special character!\r\n";
+		    document.getElementById("passwordNotice").innerHTML = "Password must contain at least 8 characters, one upper case letter, one lower case letter, one number and one special character!\r\n";
 		} else {
 		    document.getElementById("passwordNotice").innerHTML = "";
 		}
@@ -155,7 +155,7 @@ var userSettingsScript = `
 		
 		if (!validatePassword(new_password)) {
 		    isValid = false;
-		    document.getElementById("passwordNotice").innerHTML = "Password must contain at least one upper case letter, one lower case letter, one number and one special character!\r\n";
+		    document.getElementById("passwordNotice").innerHTML = "Password must contain at least 8 characters, one upper case letter, one lower case letter, one number and one special character!\r\n";
 		} else {
 		    document.getElementById("passwordNotice").innerHTML = "";
 		}
