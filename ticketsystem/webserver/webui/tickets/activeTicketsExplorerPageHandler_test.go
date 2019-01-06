@@ -63,7 +63,8 @@ func TestActiveTicketsExplorerPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	expectedPageData.Active = "active_tickets"
 
 	mockedTicketContext.On("GetAllTicketInfo").Return(testTickets)
-	mockedTemplateManager.On("RenderTemplate", mock.Anything, "TicketExplorerPage", expectedPageData).Return(nil)
+	mockedTemplateManager.On("RenderTemplate", mock.Anything, "TicketExplorerPage", mock.AnythingOfType("activeTicketsExplorerPageData")).
+		Return(nil)
 
 	req, err := http.NewRequest("GET", "/active_tickets", nil)
 	if err != nil {
@@ -81,6 +82,28 @@ func TestActiveTicketsExplorerPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	newLocation := resp.Header.Get("location")
 	assert.Equal(t, http.StatusOK, resp.StatusCode, "Should return status code 200")
 	assert.Equal(t, "", newLocation, "Should not be redirected")
+
+	actualPageData := mockedTemplateManager.Calls[0].Arguments[2].(activeTicketsExplorerPageData)
+	assert.Equal(t, expectedPageData.BasePageData, actualPageData.BasePageData, "BasePageData should be correct")
+
+	// Assert that all tickets are included:
+	assert.Equal(t, len(expectedPageData.Tickets), len(actualPageData.Tickets), "All expected tickets should be included")
+
+	allTicketsIncluded := true
+	for _, expectedTicket := range expectedPageData.Tickets{
+		currentTicketFound := false
+		for _, possibleTicket := range actualPageData.Tickets {
+			if expectedTicket.Id == possibleTicket.Id {
+				currentTicketFound = true
+				break
+			}
+		}
+		if !currentTicketFound {
+			allTicketsIncluded = false
+			break
+		}
+	}
+	assert.True(t, allTicketsIncluded, "All expected tickets should be rendered.")
 
 	mockedTicketContext.AssertExpectations(t)
 	mockedTemplateManager.AssertExpectations(t)
