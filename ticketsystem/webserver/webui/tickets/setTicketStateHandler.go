@@ -100,8 +100,8 @@ func (t SetTicketStateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 			// Notify:
 			receiver := existingTicket.Info().Creator.Mail
-			subject := mailData.BuildTicketEditorChangedNotificationMailSubject(ticketId)
-			mailContent := mailData.BuildTicketEditorChangedNotificationMailContent(receiver, ticketId, authenticatedUser.GetUserNameString())
+			subject := mailData.BuildTicketStateChangedNotificationMailSubject(ticketId)
+			mailContent := mailData.BuildTicketStateChangedNotificationMailContent(receiver, newState)
 			err = t.MailContext.CreateNewOutgoingMail(existingTicket.Info().Creator.Mail, subject, mailContent)
 			if err != nil {
 				t.Logger.LogError("TicketSetEditorHandler", err)
