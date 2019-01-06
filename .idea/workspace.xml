@@ -5,6 +5,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ticketTool/recieve/recieve.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketTool/recieve/recieve.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever_test.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,24 +38,24 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="go" value="11" />
+          <entry key="go" value="13" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Go" value="11" />
+          <entry key="Go" value="13" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="go" value="106" />
-          <entry key="txt" value="49" />
+          <entry key="go" value="348" />
+          <entry key="txt" value="67" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Go" value="106" />
-          <entry key="PLAIN_TEXT" value="49" />
+          <entry key="Go" value="348" />
+          <entry key="PLAIN_TEXT" value="67" />
         </counts>
       </usages-collector>
     </session>
@@ -65,7 +66,7 @@
         <entry file="file://$PROJECT_DIR$/main.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="543">
-              <caret line="83" column="116" selection-start-line="83" selection-start-column="116" selection-end-line="83" selection-end-column="116" />
+              <caret line="86" column="116" selection-start-line="86" selection-start-column="116" selection-end-line="86" selection-end-column="116" />
             </state>
           </provider>
         </entry>
@@ -73,8 +74,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recieve.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="680">
-              <caret line="51" column="9" selection-start-line="51" selection-start-column="9" selection-end-line="51" selection-end-column="9" />
+            <state relative-caret-position="629">
+              <caret line="49" selection-start-line="49" selection-end-line="49" />
             </state>
           </provider>
         </entry>
@@ -82,8 +83,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-114">
-              <caret line="33" column="60" selection-start-line="33" selection-start-column="60" selection-end-line="33" selection-end-column="60" />
+            <state relative-caret-position="175">
+              <caret line="40" column="12" lean-forward="true" selection-start-line="40" selection-start-column="12" selection-end-line="40" selection-end-column="12" />
             </state>
           </provider>
         </entry>
@@ -160,7 +161,6 @@
         <option value="$PROJECT_DIR$/ticketTool/recieve/acknowledgementStorage/mockedAcknowledgementStorage.go" />
         <option value="$PROJECT_DIR$/ticketTool/recieve/confirm/mockedConfirm.go" />
         <option value="$PROJECT_DIR$/ticketTool/recieve/recieve_test.go" />
-        <option value="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever_test.go" />
         <option value="$PROJECT_DIR$/ticketTool/send/send.go" />
         <option value="$PROJECT_DIR$/ticketTool/recieve/confirm/confirm.go" />
         <option value="$PROJECT_DIR$/ticketTool/mailGeneration/mailGenerator.go" />
@@ -195,8 +195,9 @@
         <option value="$PROJECT_DIR$/ticketsystem/webserver/data/userData/user_test.go" />
         <option value="$PROJECT_DIR$/ticketTool/inputOutput/inputOutput.go" />
         <option value="$PROJECT_DIR$/ticketTool/send/sender/sender.go" />
-        <option value="$PROJECT_DIR$/ticketTool/recieve/recieve.go" />
         <option value="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go" />
+        <option value="$PROJECT_DIR$/ticketTool/recieve/recieve.go" />
+        <option value="$PROJECT_DIR$/ticketTool/recieve/recviever/reciever_test.go" />
       </list>
     </option>
   </component>
@@ -280,7 +281,7 @@
     <property name="GO_FMT" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546771407733" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546774080877" />
     <property name="go.gopath.indexing.explicitly.defined" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$" />
@@ -513,32 +514,48 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Test.go test de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever">
-    <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
-      <module name="Sem5_prog" />
-      <working_directory value="$PROJECT_DIR$/" />
-      <kind value="FILE" />
-      <filePath value="$PROJECT_DIR$/main.go" />
-      <package value="de/vorlesung/projekt/IIIDDD" />
-      <directory value="$PROJECT_DIR$/" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Go Test.TestRecieveMailsError in de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever">
     <configuration name="go build recieve.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="Sem5_prog" />
       <working_directory value="$PROJECT_DIR$/" />
+      <parameters value="-baseUrl=localhost -port=2000" />
       <kind value="FILE" />
       <filePath value="$PROJECT_DIR$/ticketTool/recieve/recieve.go" />
       <package value="de/vorlesung/projekt/IIIDDD" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
-    <configuration name="go build send.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="TestRecieveMailsError in de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="Sem5_prog" />
-      <working_directory value="$PROJECT_DIR$/" />
-      <kind value="FILE" />
-      <filePath value="$PROJECT_DIR$/ticketTool/send/send.go" />
-      <package value="de/vorlesung/projekt/IIIDDD" />
+      <working_directory value="$PROJECT_DIR$/ticketTool/recieve/recviever" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" />
       <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestRecieveMailsError$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test_AcknowledgeSpecify in de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="Sem5_prog" />
+      <working_directory value="$PROJECT_DIR$/ticketTool/recieve/recviever" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^Test_AcknowledgeSpecify$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test_AcknowledgeStop in de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="Sem5_prog" />
+      <working_directory value="$PROJECT_DIR$/ticketTool/recieve/recviever" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^Test_AcknowledgeStop$" />
       <method v="2" />
     </configuration>
     <configuration name="go test de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -551,31 +568,20 @@
       <filePath value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
-    <configuration name="go test de/vorlesung/projekt/IIIDDD/ticketTool/send/sender" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="Sem5_prog" />
-      <working_directory value="$PROJECT_DIR$/ticketTool/send/sender" />
-      <parameters value="apiKeysFilePath=&quot;C:\Users\User\Documents\DHBW Studium\DHBW\Meine Kurse\Semester 5\Go&quot;, baseUrl=localhosta,port=8080,certificatePath=&quot;C:\Users\User\Documents\DHBW Studium\DHBW\Meine Kurse\Semester 5\Go&quot;,unAcknowledgedMailPath=&quot;C:\Users\User\Documents\DHBW Studium\DHBW\Meine Kurse\Semester 5\Go&quot;" />
-      <framework value="gotest" />
-      <kind value="PACKAGE" />
-      <package value="de/vorlesung/projekt/IIIDDD/ticketTool/send/sender" />
-      <directory value="$PROJECT_DIR$/" />
-      <filePath value="$PROJECT_DIR$/" />
-      <method v="2" />
-    </configuration>
     <list>
-      <item itemvalue="Go Build.go build main.go" />
       <item itemvalue="Go Build.go build recieve.go" />
-      <item itemvalue="Go Build.go build send.go" />
-      <item itemvalue="Go Test.go test de/vorlesung/projekt/IIIDDD/ticketTool/send/sender" />
       <item itemvalue="Go Test.go test de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" />
+      <item itemvalue="Go Test.Test_AcknowledgeSpecify in de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" />
+      <item itemvalue="Go Test.Test_AcknowledgeStop in de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" />
+      <item itemvalue="Go Test.TestRecieveMailsError in de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Test.go test de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" />
+        <item itemvalue="Go Test.TestRecieveMailsError in de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" />
+        <item itemvalue="Go Test.Test_AcknowledgeStop in de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" />
+        <item itemvalue="Go Test.Test_AcknowledgeSpecify in de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" />
         <item itemvalue="Go Build.go build recieve.go" />
-        <item itemvalue="Go Test.go test de/vorlesung/projekt/IIIDDD/ticketTool/send/sender" />
-        <item itemvalue="Go Build.go build send.go" />
-        <item itemvalue="Go Build.go build main.go" />
+        <item itemvalue="Go Test.go test de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" />
       </list>
     </recent_temporary>
   </component>
@@ -611,7 +617,7 @@
       <workItem from="1546518555547" duration="1364000" />
       <workItem from="1546601381593" duration="4595000" />
       <workItem from="1546709441231" duration="1100000" />
-      <workItem from="1546766575988" duration="5289000" />
+      <workItem from="1546766575988" duration="7638000" />
     </task>
     <task id="LOCAL-00001" summary="HttpRequest, Input implementiert&#10;als nächstes Tests">
       <created>1545905848538</created>
@@ -774,25 +780,17 @@
       <option name="project" value="LOCAL" />
       <updated>1546769075907</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="recieve bug gefixt">
+      <created>1546771971808</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1546771971808</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestRecieveMailsError_in_de_vorlesung_projekt_IIIDDD_ticketTool_recieve_recviever - 2019.01.02 at 13h 26m 24s.xml">
-      <configuration name="TestRecieveMailsError in de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestMailGenerator_ExplicitMail_in_de_vorlesung_projekt_IIIDDD_ticketTool_mailGeneration - 2019.01.02 at 13h 42m 55s.xml">
-      <configuration name="TestMailGenerator_ExplicitMail in de/vorlesung/projekt/IIIDDD/ticketTool/mailGeneration" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestMailGenerator_ExplicitMail_in_de_vorlesung_projekt_IIIDDD_ticketTool_mailGeneration - 2019.01.02 at 13h 47m 13s.xml">
-      <configuration name="TestMailGenerator_ExplicitMail in de/vorlesung/projekt/IIIDDD/ticketTool/mailGeneration" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestMailGenerator_ExplicitMail_in_de_vorlesung_projekt_IIIDDD_ticketTool_mailGeneration - 2019.01.02 at 13h 58m 27s.xml">
-      <configuration name="TestMailGenerator_ExplicitMail in de/vorlesung/projekt/IIIDDD/ticketTool/mailGeneration" configurationId="GoTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="go_test_IIIDDD - 2019.01.04 at 20h 35m 31s.xml">
-      <configuration name="go test IIIDDD" configurationId="GoTestRunConfiguration" />
-    </history-entry>
     <history-entry file="go_test_IIIDDD - 2019.01.04 at 20h 36m 41s.xml">
       <configuration name="go test IIIDDD" configurationId="GoTestRunConfiguration" />
     </history-entry>
@@ -808,9 +806,24 @@
     <history-entry file="go_test_de_vorlesung_projekt_IIIDDD_ticketTool_recieve_recviever - 2019.01.06 at 11h 51m 22s.xml">
       <configuration name="go test de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" configurationId="GoTestRunConfiguration" />
     </history-entry>
+    <history-entry file="go_test_de_vorlesung_projekt_IIIDDD_ticketTool_recieve_recviever - 2019.01.06 at 12h 09m 54s.xml">
+      <configuration name="go test de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="Test_AcknowledgeSpecify_in_de_vorlesung_projekt_IIIDDD_ticketTool_recieve_recviever - 2019.01.06 at 12h 25m 24s.xml">
+      <configuration name="Test_AcknowledgeSpecify in de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="Test_AcknowledgeStop_in_de_vorlesung_projekt_IIIDDD_ticketTool_recieve_recviever - 2019.01.06 at 12h 25m 33s.xml">
+      <configuration name="Test_AcknowledgeStop in de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestRecieveMailsError_in_de_vorlesung_projekt_IIIDDD_ticketTool_recieve_recviever - 2019.01.06 at 12h 25m 42s.xml">
+      <configuration name="TestRecieveMailsError in de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestRecieveMailsError_in_de_vorlesung_projekt_IIIDDD_ticketTool_recieve_recviever - 2019.01.06 at 12h 27m 51s.xml">
+      <configuration name="TestRecieveMailsError in de/vorlesung/projekt/IIIDDD/ticketTool/recieve/recviever" configurationId="GoTestRunConfiguration" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="128186000" />
+    <option name="totallyTimeSpent" value="130535000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -835,7 +848,7 @@
       <window_info anchor="bottom" id="Docker" order="0" show_stripe_button="false" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" sideWeight="0.49307036" visible="true" weight="0.32936078" />
-      <window_info active="true" anchor="bottom" id="Run" order="3" sideWeight="0.4871407" visible="true" weight="0.32569557" />
+      <window_info active="true" anchor="bottom" id="Run" order="3" sideWeight="0.4871407" visible="true" weight="0.29787233" />
       <window_info anchor="bottom" id="Debug" order="4" sideWeight="0.49093816" weight="0.30441898" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
@@ -911,7 +924,8 @@
     <MESSAGE value="test reciever" />
     <MESSAGE value="test tickettool" />
     <MESSAGE value="inputoutput bug refixt/ tests funktionieren noch" />
-    <option name="LAST_COMMIT_MESSAGE" value="inputoutput bug refixt/ tests funktionieren noch" />
+    <MESSAGE value="recieve bug gefixt" />
+    <option name="LAST_COMMIT_MESSAGE" value="recieve bug gefixt" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -961,6 +975,12 @@
           <line>61</line>
           <option name="timeStamp" value="54" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go</url>
+          <line>36</line>
+          <properties />
+          <option name="timeStamp" value="64" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
@@ -992,13 +1012,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/acknowledgementStorage/acknowledgementStorage.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1104">
-          <caret line="121" column="46" selection-start-line="121" selection-end-line="121" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ticketTool/configuration/configuration.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="408">
@@ -1298,24 +1311,35 @@
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="543">
-          <caret line="83" column="116" selection-start-line="83" selection-start-column="116" selection-end-line="83" selection-end-column="116" />
+          <caret line="86" column="116" selection-start-line="86" selection-start-column="116" selection-end-line="86" selection-end-column="116" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Go/src/runtime/proc.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="124">
+          <caret line="209" selection-start-line="209" selection-end-line="209" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recieve.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="629">
+          <caret line="49" selection-start-line="49" selection-end-line="49" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recviever/reciever_test.go">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recieve.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="680">
-          <caret line="51" column="9" selection-start-line="51" selection-start-column="9" selection-end-line="51" selection-end-column="9" />
+        <state relative-caret-position="75">
+          <caret line="163" column="81" selection-start-line="163" selection-start-column="81" selection-end-line="163" selection-end-column="81" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ticketTool/recieve/recviever/reciever.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-114">
-          <caret line="33" column="60" selection-start-line="33" selection-start-column="60" selection-end-line="33" selection-end-column="60" />
+        <state relative-caret-position="175">
+          <caret line="40" column="12" lean-forward="true" selection-start-line="40" selection-start-column="12" selection-end-line="40" selection-end-column="12" />
         </state>
       </provider>
     </entry>

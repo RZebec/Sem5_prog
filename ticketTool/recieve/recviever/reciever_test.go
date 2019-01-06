@@ -161,7 +161,7 @@ func TestRecieveMailsError(t *testing.T) {
 	mockedStorage := new(acknowledgementStorage.MockedAcknowledgementStorage)
 
 	mockedApiClient.On("ReceiveMails").Return(testMails, errors.New(""))
-	mockedIO.On("Print", "Transmission is going wrong. Retry? (n,press any key)")
+	mockedIO.On("Print", "Transmission is going wrong. Retry? (no/press any key)")
 	mockedIO.On("ReadEntry").Return("n")
 
 	testee := CreateReciever(config, mockedIO, mockedApiClient, mockedStorage, mockedConfirm)
