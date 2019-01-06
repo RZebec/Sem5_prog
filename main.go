@@ -24,16 +24,16 @@ func main() {
 	configuration.RegisterFlags()
 	configuration.BindFlags()
 
-	apiConfig, err := config.CreateAndInitialize(configuration)
-	if err != nil {
-		panic(err)
-	}
-
 	if !configuration.ValidateConfiguration(logger) {
 		fmt.Println("Configuration is not valid. Press enter to exit application.")
 		reader := bufio.NewReader(os.Stdin)
 		reader.ReadByte()
 		return
+	}
+
+	apiConfig, err := config.CreateAndInitialize(configuration)
+	if err != nil {
+		panic(err)
 	}
 
 	mailContext := mailData.MailManager{}
@@ -46,7 +46,10 @@ func main() {
 	}
 
 	ticketContext := ticketData.TicketManager{}
-	ticketContext.Initialize(configuration.TicketDataFolderPath)
+	err = ticketContext.Initialize(configuration.TicketDataFolderPath)
+	if err != nil {
+		panic(err)
+	}
 
 	http.HandleFunc(shared.SendPath, getIncomingMailHandlerChain(*apiConfig, &mailContext, &ticketContext, &userContext, logger).ServeHTTP)
 	http.HandleFunc(shared.AcknowledgmentPath, getAcknowledgeMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
