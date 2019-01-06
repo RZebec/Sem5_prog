@@ -28,15 +28,15 @@ func CreateReciever(config configuration.Configuration, io inputOutput.InputOutp
 	return reciever
 }
 
-func (r *Reciever) Run() error {
+func (r *Reciever) Run() (bool, error) {
 	recieveMails, err := r.apiClient.ReceiveMails() //recieve Mails from Server
 	if err != nil {
 		r.io.Print("Transmission is going wrong. Retry? (no/press any key)")
 		answer := r.io.ReadEntry() //request if you want to retry the transmission
 		if answer == "no" {
-			return err
+			return false, err
 		} else {
-			return nil
+			return true, err
 		}
 	} else {
 		r.io.Print(strconv.Itoa(len(recieveMails)) + " Mails are coming from Server")
@@ -47,24 +47,24 @@ func (r *Reciever) Run() error {
 		err := r.storage.AppendAcknowledgements(acknowledges)          //store these Acknowledges
 		if err != nil {
 			r.io.Print("mails cant't saved: " + err.Error())
-			return err
+			return false, err
 		}
 		r.io.Print("Save Acknowledges...")
 		allAcknowledges, err := r.storage.ReadAcknowledgements() //read the recieved Acknowledges and previous Acknowledges
 		if err != nil {
 			r.io.Print("couldn't read storaged Acknowledges")
-			return err
+			return false, err
 		} else if len(allAcknowledges) == 0 {
 			r.io.Print("No Emails available")
-			return nil
+			return false, nil
 		}
 		r.io.Print("Available Mails: " + strconv.Itoa(len(allAcknowledges)))
 		if len(allAcknowledges) != 0 {
 			r.allOrSpecifyConfirm(&allAcknowledges)
-			return nil
+			return false, nil
 		}
 	}
-	return nil
+	return false, nil
 }
 
 /*
