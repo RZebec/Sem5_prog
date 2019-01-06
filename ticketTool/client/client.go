@@ -13,6 +13,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 /*
@@ -187,7 +188,7 @@ func CreateClient(config configuration.Configuration) (ApiClient, error) {
 
 	apiClient.client = &http.Client{
 		Transport: &http.Transport{TLSClientConfig: &tls.Config{RootCAs: caCertPool}}}
-
+	apiClient.client.Timeout = time.Duration(30 * time.Second)
 	err = apiClient.readApiKeys(config.ApiKeysFilePath)
 	if err != nil {
 		return apiClient, err
