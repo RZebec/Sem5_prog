@@ -46,10 +46,9 @@ func main() {
 	fmt.Println("Recieve Mails")
 	for true {
 		result := recieve.Run()
-		if result == nil {
-			break
-		} else {
+		if result != nil {
 			fmt.Println(result)
+			break
 		}
 	}
 }

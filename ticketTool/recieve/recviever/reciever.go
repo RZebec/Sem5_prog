@@ -31,10 +31,12 @@ func CreateReciever(config configuration.Configuration, io inputOutput.InputOutp
 func (r *Reciever) Run() error {
 	recieveMails, err := r.apiClient.ReceiveMails() //recieve Mails from Server
 	if err != nil {
-		r.io.Print("Transmission is going wrong. Retry? (n,press any key)")
+		r.io.Print("Transmission is going wrong. Retry? (no/press any key)")
 		answer := r.io.ReadEntry() //request if you want to retry the transmission
-		if answer == "n" {
+		if answer == "no" {
 			return err
+		} else {
+			return nil
 		}
 	} else {
 		r.io.Print(strconv.Itoa(len(recieveMails)) + " Mails are coming from Server")
