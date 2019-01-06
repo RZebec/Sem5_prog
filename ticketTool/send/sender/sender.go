@@ -36,10 +36,11 @@ func CreateSender(config configuration.Configuration, io inputOutput.InputOutput
 	The SubjectLength and Contentlength is Hardcoded with, SL=10,CL=50
 */
 func (s *Sender) Run() {
-	s.io.Print("write explicit mail or random mails ? (e/r):")
+	s.io.Print("write explicit mail or random mails ? (e/r/stop):")
 	var eMails []mailData.Mail
 	for true {
 		answer := s.io.ReadEntry()
+
 		if answer == "e" {
 			eMails = s.mailGenerator.ExplicitMail()
 			s.httpRequest(eMails)
@@ -56,8 +57,10 @@ func (s *Sender) Run() {
 			eMails = s.mailGenerator.RandomMail(foundNumber, 10, 50)
 			s.httpRequest(eMails)
 			break
+		} else if answer == "stop" {
+			break
 		} else {
-			s.io.Print("wrong entry. Please press e or r: ")
+			s.io.Print("wrong entry. Please press e, r or stop the tool : ")
 		}
 	}
 }

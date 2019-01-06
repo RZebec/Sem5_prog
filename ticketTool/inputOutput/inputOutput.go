@@ -28,6 +28,7 @@ func (d *DefaultInputOutput) ReadEntry() string {
 	reader := bufio.NewReader(os.Stdin)
 	value, _ := reader.ReadString('\n')
 	value = strings.TrimRight(value, "\n")
+	value = strings.TrimRight(value, "\r")
 	return value
 }
 
