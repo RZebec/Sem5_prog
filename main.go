@@ -51,9 +51,9 @@ func main() {
 		panic(err)
 	}
 
-	http.HandleFunc(shared.SendPath, getIncomingMailHandlerChain(*apiConfig, &mailContext, &ticketContext, &userContext, logger).ServeHTTP)
-	http.HandleFunc(shared.AcknowledgmentPath, getAcknowledgeMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
-	http.HandleFunc(shared.ReceivePath, getOutgoingMailHandlerChain(*apiConfig, &mailContext, logger).ServeHTTP)
+	http.HandleFunc(shared.SendPath, getIncomingMailHandlerChain(apiConfig.GetIncomingMailApiKey, &mailContext, &ticketContext, &userContext, logger).ServeHTTP)
+	http.HandleFunc(shared.AcknowledgmentPath, getAcknowledgeMailHandlerChain(apiConfig.GetIncomingMailApiKey, &mailContext, logger).ServeHTTP)
+	http.HandleFunc(shared.ReceivePath, getOutgoingMailHandlerChain(apiConfig.GetOutgoingMailApiKey, &mailContext, logger).ServeHTTP)
 
 	templateMan := templateManager.TemplateManager{Templates: map[string]*template.Template{}}
 
@@ -67,9 +67,12 @@ func main() {
 		TicketContext:    &ticketContext,
 		Config:           configuration,
 		Logger:           logger,
-		ApiConfiguration: apiConfig,
 		TemplateManager:  &templateMan,
 		MailContext:      &mailContext,
+		ChangeIncomingMailApiKey: apiConfig.ChangeIncomingMailApiKey,
+		ChangeOutgoingMailApiKey: apiConfig.ChangeOutgoingMailApiKey,
+		GetIncomingMailApiKey: apiConfig.GetIncomingMailApiKey,
+		GetOutgoingMailApiKey: apiConfig.GetOutgoingMailApiKey,
 	}
 
 	templateMan.LoadTemplates(logger)
@@ -84,11 +87,11 @@ func main() {
 /*
 	Get the api handler chain for incoming mails:
  */
-func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mailData.MailContext, ticketContext ticketData.TicketContext,
+func getIncomingMailHandlerChain(getIncomingMailApiKey func() string, mailContext mailData.MailContext, ticketContext ticketData.TicketContext,
 	userContext userData.UserContext, logger logging.Logger) http.Handler {
 	incomingMailHandler := mails.IncomingMailHandler{Logger: logger, MailContext: mailContext, TicketContext: ticketContext,
 		UserContext: userContext, MailRepliesFilter: &mails.RepliesFilter{}}
-	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,
+	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: getIncomingMailApiKey,
 		Next: &incomingMailHandler, AllowedMethod: "POST", Logger: logger}
 	return &apiAuthenticationHandler
 }
@@ -96,9 +99,9 @@ func getIncomingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext 
 /*
 	Get the api handler chain for acknowledgment of mails:
  */
-func getAcknowledgeMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mailData.MailContext, logger logging.Logger) http.Handler {
+func getAcknowledgeMailHandlerChain(getIncomingMailApiKey func() string, mailContext mailData.MailContext, logger logging.Logger) http.Handler {
 	incomingMailHandler := mails.AcknowledgeMailHandler{Logger: logger, MailContext: mailContext}
-	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetIncomingMailApiKey,
+	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: getIncomingMailApiKey,
 		Next: &incomingMailHandler, AllowedMethod: "POST", Logger: logger}
 	return &apiAuthenticationHandler
 }
@@ -106,9 +109,9 @@ func getAcknowledgeMailHandlerChain(apiConfig config.ApiConfiguration, mailConte
 /*
 	Get the api handler chain for outgoing mails:
  */
-func getOutgoingMailHandlerChain(apiConfig config.ApiConfiguration, mailContext mailData.MailContext, logger logging.Logger) http.Handler {
+func getOutgoingMailHandlerChain(getOutgoingMailApiKey func() string, mailContext mailData.MailContext, logger logging.Logger) http.Handler {
 	outgoingMailHandler := mails.OutgoingMailHandler{Logger: logger, MailContext: mailContext}
-	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: apiConfig.GetOutgoingMailApiKey,
+	apiAuthenticationHandler := api.ApiKeyAuthenticationHandler{ApiKeyResolver: getOutgoingMailApiKey,
 		Next: &outgoingMailHandler, AllowedMethod: "GET", Logger: logger}
 	return &apiAuthenticationHandler
 }

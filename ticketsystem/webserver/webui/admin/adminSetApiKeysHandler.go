@@ -2,7 +2,6 @@ package admin
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"html"
 	"net/http"
 )
@@ -11,8 +10,9 @@ import (
 	Structure for the Login handler.
 */
 type SetApiKeysHandler struct {
-	ApiConfiguration config.ApiContext
 	Logger           logging.Logger
+	ChangeIncomingMailApiKey func(newKey string) error
+	ChangeOutgoingMailApiKey func(newKey string) error
 }
 
 /*
@@ -29,13 +29,13 @@ func (a SetApiKeysHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		outgoingMailApiKey = html.EscapeString(outgoingMailApiKey)
 
 		if len(incomingMailApiKey) >= 128 && len(outgoingMailApiKey) >= 128 {
-			err := a.ApiConfiguration.ChangeIncomingMailApiKey(incomingMailApiKey)
+			err := a.ChangeIncomingMailApiKey(incomingMailApiKey)
 			if err != nil {
 				http.Redirect(w, r, "/admin?IsChangeFailed=yes", http.StatusInternalServerError)
 				a.Logger.LogError("SetApiKeysHandler", err)
 				return
 			}
-			err = a.ApiConfiguration.ChangeOutgoingMailApiKey(outgoingMailApiKey)
+			err = a.ChangeOutgoingMailApiKey(outgoingMailApiKey)
 			if err != nil {
 				http.Redirect(w, r, "/admin?IsChangeFailed=yes", http.StatusInternalServerError)
 				a.Logger.LogError("SetApiKeysHandler", err)

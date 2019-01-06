@@ -2,7 +2,6 @@ package admin
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
@@ -18,7 +17,8 @@ type PageHandler struct {
 	UserContext     userData.UserContext
 	Logger          logging.Logger
 	TemplateManager templateManager.TemplateContext
-	ApiContext      config.ApiContext
+	GetIncomingMailApiKey func() string
+	GetOutgoingMailApiKey func() string
 }
 
 /*
@@ -54,8 +54,8 @@ func (a PageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		users := a.UserContext.GetAllLockedUsers()
 
-		incomingMailApiKey := a.ApiContext.GetIncomingMailApiKey()
-		outgoingMailApiKey := a.ApiContext.GetOutgoingMailApiKey()
+		incomingMailApiKey := a.GetIncomingMailApiKey()
+		outgoingMailApiKey := a.GetOutgoingMailApiKey()
 
 		data := adminPageData{
 			Users:              users,

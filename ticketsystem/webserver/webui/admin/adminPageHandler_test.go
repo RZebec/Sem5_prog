@@ -41,7 +41,8 @@ func TestAdminPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	testee := PageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager, ApiContext: mockedApiContext}
+	testee := PageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager,
+		GetIncomingMailApiKey: mockedApiContext.GetIncomingMailApiKey, GetOutgoingMailApiKey: mockedApiContext.GetOutgoingMailApiKey}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -83,7 +84,8 @@ func TestAdminPageHandler_ServeHTTP_RenderTemplateError_500Returned(t *testing.T
 	mockedUserContext.On("GetAllLockedUsers").Return([]userData.User{{"Test@Test.de", 1,
 		"Test", "Test", userData.RegisteredUser, userData.WaitingToBeUnlocked}})
 
-	testee := PageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager, ApiContext: mockedApiContext}
+	testee := PageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager,
+		GetIncomingMailApiKey: mockedApiContext.GetIncomingMailApiKey, GetOutgoingMailApiKey: mockedApiContext.GetOutgoingMailApiKey}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -119,7 +121,8 @@ func TestAdminPageHandler_ServeHTTP_WrongRequest(t *testing.T) {
 	mockedUserContext.On("GetAllLockedUsers").Return([]userData.User{{"Test@Test.de", 1,
 		"Test", "Test", userData.RegisteredUser, userData.WaitingToBeUnlocked}})
 
-	testee := PageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager, ApiContext: mockedApiContext}
+	testee := PageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager,
+		GetIncomingMailApiKey: mockedApiContext.GetIncomingMailApiKey, GetOutgoingMailApiKey: mockedApiContext.GetOutgoingMailApiKey}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -167,7 +170,8 @@ func TestAdminPageHandler_ServeHTTP_FailedChange(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	testee := PageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager, ApiContext: mockedApiContext}
+	testee := PageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager,
+		GetIncomingMailApiKey: mockedApiContext.GetIncomingMailApiKey, GetOutgoingMailApiKey: mockedApiContext.GetOutgoingMailApiKey}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, true, 1, "")

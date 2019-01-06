@@ -24,9 +24,12 @@ type HandlerManager struct {
 	TicketContext    ticketData.TicketContext
 	Config           config.Configuration
 	Logger           logging.Logger
-	ApiConfiguration config.ApiContext
 	TemplateManager  templateManager.TemplateContext
 	MailContext      mailData.MailContext
+	GetIncomingMailApiKey func() string
+	GetOutgoingMailApiKey func() string
+	ChangeIncomingMailApiKey func(newKey string) error
+	ChangeOutgoingMailApiKey func(newKey string) error
 }
 
 func (handlerManager *HandlerManager) RegisterHandlers() {
@@ -78,12 +81,14 @@ func (handlerManager *HandlerManager) RegisterHandlers() {
 	http.HandleFunc("/user_logout", logoutWrapper.ServeHTTP)
 
 	// Administration:
-	adminPageHandler := admin.PageHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager, ApiContext: handlerManager.ApiConfiguration}
+	adminPageHandler := admin.PageHandler{UserContext: handlerManager.UserContext, Logger: handlerManager.Logger, TemplateManager: handlerManager.TemplateManager,
+		GetOutgoingMailApiKey: handlerManager.GetOutgoingMailApiKey, GetIncomingMailApiKey: handlerManager.GetIncomingMailApiKey}
 	adminPageWrapper := wrappers.AdminWrapper{Next: adminPageHandler, UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
 	adminPageAuthenticationWrapper := wrappers.EnforceAuthenticationWrapper{Next: adminPageWrapper, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/admin", adminPageAuthenticationWrapper.ServeHTTP)
 
-	adminSetApiKeysHandler := admin.SetApiKeysHandler{Logger: handlerManager.Logger, ApiConfiguration: handlerManager.ApiConfiguration}
+	adminSetApiKeysHandler := admin.SetApiKeysHandler{Logger: handlerManager.Logger, ChangeOutgoingMailApiKey: handlerManager.ChangeOutgoingMailApiKey,
+		ChangeIncomingMailApiKey: handlerManager.ChangeIncomingMailApiKey}
 	adminSetApiKeysWrapper := wrappers.AdminWrapper{Next: adminSetApiKeysHandler, UserContext: handlerManager.UserContext, Logger: handlerManager.Logger}
 	adminSetApiKeysAuthenticationWrapper := wrappers.EnforceAuthenticationWrapper{Next: adminSetApiKeysWrapper, UserContext: handlerManager.UserContext, Config: handlerManager.Config, Logger: handlerManager.Logger}
 	http.HandleFunc("/set_api_keys", adminSetApiKeysAuthenticationWrapper.ServeHTTP)
