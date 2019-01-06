@@ -79,7 +79,7 @@ var TicketViewPage = `
         							second: "2-digit"
     							};
 								creationTime = creationTime.toLocaleDateString("en-GB", options);
-								lastModificationTime = lastModificationTime.toLocaleDateString("de-DE", options);
+								lastModificationTime = lastModificationTime.toLocaleDateString("en-GB", options);
 								document.getElementById("creationTime").innerHTML = creationTime;
 								document.getElementById("lastModificationTime").innerHTML = lastModificationTime;
 							</script>
@@ -104,6 +104,9 @@ var TicketViewPage = `
                             <th>
                                 Message
                             </th>
+							<th>
+								Internal Only
+							</th>
 						</tr>
                         {{range .Messages}}
                         <tr>
@@ -129,6 +132,13 @@ var TicketViewPage = `
                             <td>
                                 {{.Content}}
                             </td>
+							<td>
+								{{if .OnlyInternal}}
+									Yes
+								{{else}}
+									No
+								{{end}}
+							</td>
                         </tr>
 						{{end}}
 					</table>
@@ -142,7 +152,7 @@ var TicketViewPage = `
                             </th>
 							{{if .UserIsAuthenticated}}
 							<th>
-								<label>Internal Only</label>
+								Internal Only
 							</th>
 							{{end}}
                             <th>
