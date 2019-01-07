@@ -15,7 +15,7 @@ import (
 */
 func ExampleConfiguration_ValidateConfiguration_PortIsNegative_ReturnsFalse() {
 	logger := logging.ConsoleLogger{}
-	config := Configuration{}
+	config := WebServerConfiguration{}
 	config.BindFlags()
 
 	config.Port = -5
@@ -31,7 +31,7 @@ func ExampleConfiguration_ValidateConfiguration_PortIsNegative_ReturnsFalse() {
 */
 func ExampleConfiguration_ValidateConfiguration_PortIsToBig_ReturnsFalse() {
 	logger := logging.ConsoleLogger{}
-	config := Configuration{}
+	config := WebServerConfiguration{}
 	config.BindFlags()
 
 	config.Port = 99999999
@@ -47,7 +47,7 @@ func ExampleConfiguration_ValidateConfiguration_PortIsToBig_ReturnsFalse() {
 */
 func TestConfiguration_ValidateConfiguration_CertificateDoesNotExist_ReturnsFalse(t *testing.T) {
 	logger := logging.ConsoleLogger{}
-	config := Configuration{}
+	config := WebServerConfiguration{}
 	config.BindFlags()
 
 	// The path should not exist.
@@ -71,7 +71,7 @@ func TestConfiguration_ValidateConfiguration_OutgoingMailAddressInvalid_ReturnsF
 
 	defer os.Remove(tmpfile.Name()) // clean up
 	logger := logging.ConsoleLogger{}
-	config := Configuration{}
+	config := WebServerConfiguration{}
 	config.BindFlags()
 
 	config.CertificatePath = tmpfile.Name()
@@ -100,7 +100,7 @@ func ExampleConfiguration_ValidateConfiguration_CertificateKeyDoesNotExist_Retur
 	defer os.Remove(tmpfile.Name()) // clean up
 
 	logger := logging.ConsoleLogger{}
-	config := Configuration{}
+	config := WebServerConfiguration{}
 	config.BindFlags()
 
 	// The path should not exist.
@@ -118,7 +118,7 @@ func ExampleConfiguration_ValidateConfiguration_CertificateKeyDoesNotExist_Retur
 	Default values should be set.
 */
 func TestConfiguration_RegisterAndBindFlags(t *testing.T) {
-	config := Configuration{}
+	config := WebServerConfiguration{}
 
 	config.RegisterFlags()
 	config.BindFlags()

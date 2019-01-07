@@ -101,7 +101,7 @@ func (c *ApiConfiguration) ChangeOutgoingMailApiKey(newKey string) error {
 /*
 	Create and initialize the configuration.
 */
-func CreateAndInitialize(config Configuration) (*ApiConfiguration, error) {
+func CreateAndInitialize(config WebServerConfiguration) (*ApiConfiguration, error) {
 	existed, err := helpers.CreateFileWithPathIfNotExists(config.ApiKeyFilePath)
 	if err != nil {
 		return nil, err

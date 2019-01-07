@@ -252,7 +252,7 @@ func TestCreateAndInitialize_ExistingKeysLoaded(t *testing.T) {
 
 	// Write a key file to a temporary directory:
 	writeTestDataToFile(t, tmpfile.Name())
-	configuration := Configuration{}
+	configuration := WebServerConfiguration{}
 	configuration.ApiKeyFilePath = tmpfile.Name()
 
 	// Initialize from existing key file:
@@ -280,7 +280,7 @@ func TestCreateAndInitialize_DefaultValuesSet(t *testing.T) {
 	assert.False(t, exists, "The file should not exist")
 	assert.Nil(t, err)
 
-	configuration := Configuration{}
+	configuration := WebServerConfiguration{}
 	configuration.ApiKeyFilePath = keyFilePath
 
 	// Initialize the configuration:

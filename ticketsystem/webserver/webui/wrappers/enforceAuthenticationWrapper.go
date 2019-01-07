@@ -14,7 +14,7 @@ import (
 */
 type EnforceAuthenticationWrapper struct {
 	Next        HttpHandler
-	Config      config.Configuration
+	Config      config.WebServerConfiguration
 	UserContext userData.UserContext
 	Logger      logging.Logger
 }

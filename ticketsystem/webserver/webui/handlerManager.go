@@ -22,7 +22,7 @@ import (
 type HandlerManager struct {
 	UserContext      userData.UserContext
 	TicketContext    ticketData.TicketContext
-	Config           config.Configuration
+	Config           config.WebServerConfiguration
 	Logger           logging.Logger
 	TemplateManager  templateManager.TemplateContext
 	MailContext      mailData.MailContext

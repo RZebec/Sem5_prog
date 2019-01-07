@@ -20,7 +20,7 @@ import (
 
 func main() {
 	logger := logging.ConsoleLogger{SetTimeStamp: true}
-	configuration := config.Configuration{}
+	configuration := config.WebServerConfiguration{}
 	configuration.RegisterFlags()
 	configuration.BindFlags()
 

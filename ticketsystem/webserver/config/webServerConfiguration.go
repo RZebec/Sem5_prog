@@ -12,7 +12,7 @@ import (
 /*
 	A struct to hold configuration values.
 */
-type Configuration struct {
+type WebServerConfiguration struct {
 	LoginDataFolderPath  string
 	TicketDataFolderPath string
 	MailDataFolderPath   string
@@ -27,7 +27,7 @@ type Configuration struct {
 /*
 	Register the configuration properties as flags.
 */
-func (c *Configuration) RegisterFlags() {
+func (c *WebServerConfiguration) RegisterFlags() {
 	flag.StringVar(&c.BaseUrl, "baseUrl", "localhost", "the base url")
 	flag.IntVar(&c.Port, "port", 9000, "the port to use")
 	flag.StringVar(&c.LoginDataFolderPath, "loginDataFolderPath", "data/login", "path to the folder to store the login data")
@@ -42,14 +42,14 @@ func (c *Configuration) RegisterFlags() {
 /*
 	Bind the flags to the configuration.
 */
-func (c *Configuration) BindFlags() {
+func (c *WebServerConfiguration) BindFlags() {
 	flag.Parse()
 }
 
 /*
 	Validate the configuration and use the logger to print out the validation error.
 */
-func (c *Configuration) ValidateConfiguration(log logging.Logger) bool {
+func (c *WebServerConfiguration) ValidateConfiguration(log logging.Logger) bool {
 	if c.Port < 0 || c.Port > 65535 {
 		log.LogError("Configuration", errors.New("Invalid port. Provided value: "+strconv.Itoa(c.Port)))
 		return false
@@ -87,6 +87,6 @@ func (c *Configuration) ValidateConfiguration(log logging.Logger) bool {
 /*
 	Get the service url. Consisting of the base url and the port.
 */
-func (c Configuration) GetServiceUrl() string {
+func (c WebServerConfiguration) GetServiceUrl() string {
 	return c.BaseUrl + ":" + strconv.Itoa(c.Port)
 }
