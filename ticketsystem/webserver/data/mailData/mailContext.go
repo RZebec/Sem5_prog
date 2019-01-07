@@ -300,7 +300,7 @@ func (t *MailManager) persistUnAcknowledgedMailState() error {
 	if err != nil {
 		return errors.Wrap(err, "could not encode data file for unAcknowledged mails.")
 	}
-	helpers.WriteDataToFile(path.Join(t.mailFolderPath, unAcknowledgeMailFileName), jsonData)
+	err = helpers.WriteDataToFile(path.Join(t.mailFolderPath, unAcknowledgeMailFileName), jsonData)
 	if err != nil {
 		return errors.Wrap(err, "could not write data file for unAcknowledged mails.")
 	}
