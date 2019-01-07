@@ -38,6 +38,9 @@ func main() {
 
 	mailContext := mailData.MailManager{}
 	err = mailContext.Initialize(configuration.MailDataFolderPath, configuration.SendingMailAddress, logger)
+	if err != nil {
+		panic(err)
+	}
 
 	userContext := userData.LoginSystem{}
 	err = userContext.Initialize(configuration.LoginDataFolderPath)
