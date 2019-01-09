@@ -11,7 +11,7 @@ import (
 	Structure for the Login handler.
 */
 type SetApiKeysHandler struct {
-	Logger           logging.Logger
+	Logger                   logging.Logger
 	ChangeIncomingMailApiKey func(newKey string) error
 	ChangeOutgoingMailApiKey func(newKey string) error
 }

@@ -76,7 +76,6 @@ func TestTicketAppendMessageHandler_ServeHTTP_AuthenticatedUser_ValidRequest(t *
 	assert.NotNil(t, messageEntry.CreationTime, "The creation time should be set")
 }
 
-
 /*
 	A error during the mail notification should result in a 500.
 */

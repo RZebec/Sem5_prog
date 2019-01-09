@@ -21,14 +21,14 @@ import (
 )
 
 type HandlerManager struct {
-	UserContext      userData.UserContext
-	TicketContext    ticketData.TicketContext
-	Config           config.WebServerConfiguration
-	Logger           logging.Logger
-	TemplateManager  templateManager.TemplateContext
-	MailContext      mailData.MailContext
-	GetIncomingMailApiKey func() string
-	GetOutgoingMailApiKey func() string
+	UserContext              userData.UserContext
+	TicketContext            ticketData.TicketContext
+	Config                   config.WebServerConfiguration
+	Logger                   logging.Logger
+	TemplateManager          templateManager.TemplateContext
+	MailContext              mailData.MailContext
+	GetIncomingMailApiKey    func() string
+	GetOutgoingMailApiKey    func() string
 	ChangeIncomingMailApiKey func(newKey string) error
 	ChangeOutgoingMailApiKey func(newKey string) error
 }

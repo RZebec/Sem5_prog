@@ -91,7 +91,7 @@ func TestActiveTicketsExplorerPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	assert.Equal(t, len(expectedPageData.Tickets), len(actualPageData.Tickets), "All expected tickets should be included")
 
 	allTicketsIncluded := true
-	for _, expectedTicket := range expectedPageData.Tickets{
+	for _, expectedTicket := range expectedPageData.Tickets {
 		currentTicketFound := false
 		for _, possibleTicket := range actualPageData.Tickets {
 			if expectedTicket.Id == possibleTicket.Id {

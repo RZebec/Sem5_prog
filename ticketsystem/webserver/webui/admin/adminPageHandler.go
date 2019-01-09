@@ -15,9 +15,9 @@ import (
 	Structure for the Admin handler.
 */
 type PageHandler struct {
-	UserContext     userData.UserContext
-	Logger          logging.Logger
-	TemplateManager templateManager.TemplateContext
+	UserContext           userData.UserContext
+	Logger                logging.Logger
+	TemplateManager       templateManager.TemplateContext
 	GetIncomingMailApiKey func() string
 	GetOutgoingMailApiKey func() string
 }

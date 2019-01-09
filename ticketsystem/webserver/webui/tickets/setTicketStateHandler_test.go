@@ -349,10 +349,9 @@ func TestSetTicketStateHandler_InvalidRequestMethod_ValidStateSet(t *testing.T) 
 	mockedTicketContext.AssertExpectations(t)
 }
 
-
 /*
 	Error during mail creation should result in a 500.
- */
+*/
 func TestSetTicketStateHandler_ServeHTTP_MailCreationError_Returns500(t *testing.T) {
 	ticketId := 5
 	loggedInUserId := 3
