@@ -1,12 +1,14 @@
+// 5894619, 6720876, 9793350
 package tickets
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"net/http"
+	"sort"
 	"strings"
 )
 
@@ -14,7 +16,7 @@ import (
 	Structure for the All Ticket Explorer Page handler.
 */
 type AllTicketsExplorerPageHandler struct {
-	TicketContext   ticket.TicketContext
+	TicketContext   ticketData.TicketContext
 	Logger          logging.Logger
 	TemplateManager templateManager.TemplateContext
 }
@@ -23,7 +25,7 @@ type AllTicketsExplorerPageHandler struct {
 	Structure for the All Ticket Explorer Page Data.
 */
 type allTicketsExplorerPageData struct {
-	Tickets []ticket.TicketInfo
+	Tickets []ticketData.TicketInfo
 	pages.BasePageData
 }
 
@@ -35,6 +37,10 @@ func (t AllTicketsExplorerPageHandler) ServeHTTP(w http.ResponseWriter, r *http.
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {
 		tickets := t.TicketContext.GetAllTicketInfo()
+
+		sort.Slice(tickets, func(i, j int) bool {
+			return tickets[i].CreationTime.After(tickets[j].CreationTime)
+		})
 
 		data := allTicketsExplorerPageData{
 			Tickets: tickets,

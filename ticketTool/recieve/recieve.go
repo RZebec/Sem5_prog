@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package main
 
 import (
@@ -45,11 +46,16 @@ func main() {
 
 	fmt.Println("Recieve Mails")
 	for true {
-		result := recieve.Run()
-		if result == nil {
+		ack, result := recieve.Run()
+		if ack == false {
 			break
-		} else {
+		}
+		if ack == true && result != nil {
 			fmt.Println(result)
 		}
+		if ack == false && result != nil {
+			break
+		}
 	}
+
 }

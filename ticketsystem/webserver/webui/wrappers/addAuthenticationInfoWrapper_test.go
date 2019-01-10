@@ -1,9 +1,10 @@
+// 5894619, 6720876, 9793350
 package wrappers
 
 import (
 	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -25,7 +26,7 @@ func TestAddAuthenticationInfoWrapper_ServeHTTP_UserIsAuthenticatedAndAdmin(t *t
 	// Mock the context:
 	mockedUserContext.On("RefreshToken", mock.Anything).Return("tete", nil)
 	mockedUserContext.On("SessionIsValid", mock.Anything).Return(true, 2,
-		"testName", user.Admin, nil)
+		"testName", userData.Admin, nil)
 
 	req, err := http.NewRequest("GET", shared.ReceivePath, nil)
 	if err != nil {
@@ -62,7 +63,7 @@ func TestAddAuthenticationInfoWrapper_ServeHTTP_UserIsAuthenticatedAndNoAdmin(t 
 	// Mock the context:
 	mockedUserContext.On("RefreshToken", mock.Anything).Return("tete", nil)
 	mockedUserContext.On("SessionIsValid", mock.Anything).Return(true, 2,
-		"testName", user.RegisteredUser, nil)
+		"testName", userData.RegisteredUser, nil)
 
 	req, err := http.NewRequest("GET", shared.ReceivePath, nil)
 	if err != nil {
@@ -99,7 +100,7 @@ func TestAddAuthenticationInfoWrapper_ServeHTTP_NotAuthenticated(t *testing.T) {
 
 	// Mock the context:
 	mockedUserContext.On("SessionIsValid", mock.Anything).Return(false, -1,
-		"", user.RegisteredUser, nil)
+		"", userData.RegisteredUser, nil)
 
 	req, err := http.NewRequest("GET", shared.ReceivePath, nil)
 	if err != nil {

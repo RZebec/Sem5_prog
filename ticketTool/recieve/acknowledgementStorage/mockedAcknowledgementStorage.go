@@ -1,35 +1,48 @@
+// 5894619, 6720876, 9793350
 package acknowledgementStorage
 
 import (
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"github.com/stretchr/testify/mock"
 )
 
-type MockedAcknowledementStorage struct {
+/*
+	A mocked acknowledgement storage.
+*/
+type MockedAcknowledgementStorage struct {
 	mock.Mock
 }
 
-func (m *MockedAcknowledementStorage)AppendAcknowledgements(acknowledge []mail.Acknowledgment)error{
-	args:=m.Called(acknowledge)
+/*
+	A mocked function.
+*/
+func (m *MockedAcknowledgementStorage) AppendAcknowledgements(acknowledge []mailData.Acknowledgment) error {
+	args := m.Called(acknowledge)
 	return args.Error(0)
 }
 
-func (m *MockedAcknowledementStorage) DeleteAcknowledges(delete []mail.Acknowledgment) error {
-	args:=m.Called(delete)
+/*
+	A mocked function.
+*/
+func (m *MockedAcknowledgementStorage) DeleteAcknowledges(delete []mailData.Acknowledgment) error {
+	args := m.Called(delete)
 	return args.Error(0)
 }
 
-func (m *MockedAcknowledementStorage) ReadAcknowledgements() ([]mail.Acknowledgment, error) {
-	args:=m.Called()
-	return args.Get(0).([]mail.Acknowledgment),args.Error(1)
+func (m *MockedAcknowledgementStorage) ReadAcknowledgements() ([]mailData.Acknowledgment, error) {
+	args := m.Called()
+	return args.Get(0).([]mailData.Acknowledgment), args.Error(1)
 }
 
-func (m *MockedAcknowledementStorage) readDataFromFile() error{
-	args:=m.Called()
+func (m *MockedAcknowledgementStorage) readDataFromFile() error {
+	args := m.Called()
 	return args.Error(0)
 }
 
-func (m *MockedAcknowledementStorage) writeDataToFile() error {
-	args:=m.Called()
+/*
+	A mocked function.
+*/
+func (m *MockedAcknowledgementStorage) writeDataToFile() error {
+	args := m.Called()
 	return args.Error(0)
 }

@@ -1,9 +1,10 @@
+// 5894619, 6720876, 9793350
 package admin
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"net/http"
 	"strconv"
@@ -12,16 +13,16 @@ import (
 /*
 	Structure for the Login handler.
 */
-type AdminUnlockUserHandler struct {
-	UserContext user.UserContext
+type UnlockUserHandler struct {
+	UserContext userData.UserContext
 	Logger      logging.Logger
-	MailContext	mail.MailContext
+	MailContext mailData.MailContext
 }
 
 /*
 	The Unlock user handler.
 */
-func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (a UnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {
@@ -30,7 +31,7 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		userId, idConversionError := strconv.Atoi(formId)
 
 		if idConversionError != nil {
-			a.Logger.LogError("AdminUnlockUserHandler", idConversionError)
+			a.Logger.LogError("UnlockUserHandler", idConversionError)
 			http.Redirect(w, r, "/", http.StatusBadRequest)
 			return
 		}
@@ -40,25 +41,26 @@ func (a AdminUnlockUserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		unlocked, err := a.UserContext.UnlockAccount(accessToken, userId)
 
 		if err != nil {
-			a.Logger.LogError("AdminUnlockUserHandler", err)
+			a.Logger.LogError("UnlockUserHandler", err)
 			http.Redirect(w, r, "/", http.StatusInternalServerError)
 			return
 		}
 
-		exist, user := a.UserContext.GetUserById(userId)
+		exist, existingUser := a.UserContext.GetUserById(userId)
 
-		if unlocked && exist{
-			mailSubject := mail.BuildUnlockUserNotificationMailSubject()
-			mailContent := mail.BuildUnlockUserNotificationMailContent(user.FirstName + " " + user.LastName)
+		if unlocked && exist {
+			mailSubject := mailData.BuildUnlockUserNotificationMailSubject()
+			mailContent := mailData.BuildUnlockUserNotificationMailContent(existingUser.FirstName + " " + existingUser.LastName)
 
-			err = a.MailContext.CreateNewOutgoingMail(user.Mail, mailSubject, mailContent)
+			err = a.MailContext.CreateNewOutgoingMail(existingUser.Mail, mailSubject, mailContent)
 
 			if err != nil {
-				a.Logger.LogError("AdminUnlockUserHandler", err)
+				a.Logger.LogError("UnlockUserHandler", err)
 				http.Redirect(w, r, "/admin", http.StatusInternalServerError)
 				return
 			}
 
+			a.Logger.LogInfo("UnlockUserHandler", "User unlocked. UserId: "+formId)
 			http.Redirect(w, r, "/admin", http.StatusFound)
 			return
 		}

@@ -1,12 +1,14 @@
+// 5894619, 6720876, 9793350
 package tickets
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"net/http"
+	"sort"
 	"strings"
 )
 
@@ -14,7 +16,7 @@ import (
 	Structure for the User Tickets Explorer Page handler.
 */
 type UserTicketsExplorerPageHandler struct {
-	TicketContext   ticket.TicketContext
+	TicketContext   ticketData.TicketContext
 	Logger          logging.Logger
 	TemplateManager templateManager.TemplateContext
 }
@@ -23,7 +25,7 @@ type UserTicketsExplorerPageHandler struct {
 	Structure for the User Tickets Explorer Page Data.
 */
 type userTicketsExplorerPageData struct {
-	Tickets []ticket.TicketInfo
+	Tickets []ticketData.TicketInfo
 	pages.BasePageData
 }
 
@@ -36,6 +38,10 @@ func (t UserTicketsExplorerPageHandler) ServeHTTP(w http.ResponseWriter, r *http
 	} else {
 		userId := wrappers.GetUserId(r.Context())
 		tickets := t.TicketContext.GetTicketsForEditorId(userId)
+
+		sort.Slice(tickets, func(i, j int) bool {
+			return tickets[i].CreationTime.After(tickets[j].CreationTime)
+		})
 
 		data := userTicketsExplorerPageData{
 			Tickets: tickets,

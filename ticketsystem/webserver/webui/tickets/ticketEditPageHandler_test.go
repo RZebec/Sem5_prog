@@ -1,9 +1,10 @@
+// 5894619, 6720876, 9793350
 package tickets
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
@@ -27,48 +28,49 @@ func TestTicketEditPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	testee := TicketEditPageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager,
 		Logger: testhelpers.GetTestLogger()}
 
-	testEditor := user.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
+	testEditor := userData.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
 
-	testCreator := ticket.Creator{Mail: "Test@Test.de", FirstName: "Max", LastName: "Muller"}
-	testTicketInfo := ticket.TicketInfo{Id: 5, Title: "TicketTest", Editor: testEditor, HasEditor: true, Creator: testCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State:  ticket.Processing}
-	testMessages := []ticket.MessageEntry{{Id: 0, CreatorMail: "test@test.de", Content: "TestContent2", OnlyInternal: false}}
+	testCreator := ticketData.Creator{Mail: "Test@Test.de", FirstName: "Max", LastName: "Muller"}
+	testTicketInfo := ticketData.TicketInfo{Id: 5, Title: "TicketTest", Editor: testEditor, HasEditor: true, Creator: testCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
+	testMessages := []ticketData.MessageEntry{{Id: 0, CreatorMail: "test@test.de", Content: "TestContent2", OnlyInternal: false}}
 
-	testTicket := ticket.CreateTestTicket(testTicketInfo, testMessages)
+	testTicket := ticketData.CreateTestTicket(testTicketInfo, testMessages)
 
-	testUser := user.User{Mail: "Test25@Test.de", UserId: 25, FirstName: "Dieter22", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
+	testUser := userData.User{Mail: "Test25@Test.de", UserId: 25, FirstName: "Dieter22", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
 
-	testCreator2 := ticket.Creator{Mail: "Ivan@Test.de", FirstName: "Ivan", LastName: "Muller"}
-	testTicketInfo2 := ticket.TicketInfo{Id: 0, Title: "TicketTest2", Editor: user.GetInvalidDefaultUser(), HasEditor: false, Creator: testCreator2, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Open}
+	testCreator2 := ticketData.Creator{Mail: "Ivan@Test.de", FirstName: "Ivan", LastName: "Muller"}
+	testTicketInfo2 := ticketData.TicketInfo{Id: 0, Title: "TicketTest2", Editor: userData.GetInvalidDefaultUser(), HasEditor: false, Creator: testCreator2, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Open}
 
-	testCreator3 := ticket.Creator{Mail: "Ivan2@Test.de", FirstName: "Ivan2", LastName: "Muller"}
-	testTicketInfo3 := ticket.TicketInfo{Id: 1, Title: "TicketTest3", Editor: testEditor, HasEditor: false, Creator: testCreator3, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Processing}
+	testCreator3 := ticketData.Creator{Mail: "Ivan2@Test.de", FirstName: "Ivan2", LastName: "Muller"}
+	testTicketInfo3 := ticketData.TicketInfo{Id: 1, Title: "TicketTest3", Editor: testEditor, HasEditor: true, Creator: testCreator3, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
 
-	testEditor4 := user.User{Mail: "Test44@Test.de", UserId: 44, FirstName: "Dieter33", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
-	testCreator4 := ticket.Creator{Mail: "Ivan3@Test.de", FirstName: "Ivan3", LastName: "Muller"}
-	testTicketInfo4 := ticket.TicketInfo{Id: 2, Title: "TicketTest4", Editor: testEditor4, HasEditor: true, Creator: testCreator4, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Processing}
+	testEditor4 := userData.User{Mail: "Test44@Test.de", UserId: 44, FirstName: "Dieter33", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
+	testCreator4 := ticketData.Creator{Mail: "Ivan3@Test.de", FirstName: "Ivan3", LastName: "Muller"}
+	testTicketInfo4 := ticketData.TicketInfo{Id: 2, Title: "TicketTest4", Editor: testEditor4, HasEditor: true, Creator: testCreator4, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
 
 	req, err := http.NewRequest("GET", "/ticket/ticket_edit/5", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	allTestTickets := []ticket.TicketInfo{testTicketInfo, testTicketInfo2, testTicketInfo3, testTicketInfo4}
-	allTestUsers := []user.User{testEditor, testUser, testEditor4}
-	filteredTickets := []ticket.TicketInfo{testTicketInfo3}
-	states := []ticket.TicketState{ticket.Open, ticket.Closed}
+	allTestTickets := []ticketData.TicketInfo{testTicketInfo, testTicketInfo2, testTicketInfo3, testTicketInfo4}
+	allTestUsers := []userData.User{testEditor, testUser, testEditor4}
+	filteredTickets := []ticketData.TicketInfo{testTicketInfo3}
+	states := []ticketData.TicketState{ticketData.Open, ticketData.Closed}
 
 	data := ticketEditPageData{
-		TicketInfo: 	testTicketInfo,
-		OtherTickets:	filteredTickets,
-		Users:			allTestUsers,
-		OtherState1:	states[0],
-		OtherState2:	states[1],
+		TicketInfo:                 testTicketInfo,
+		OtherTickets:               filteredTickets,
+		Users:                      allTestUsers,
+		OtherState1:                states[0],
+		OtherState2:                states[1],
+		ShowTicketSpecificControls: true,
 	}
 
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	data.UserIsAdmin = false
 	data.UserIsAuthenticated = true
@@ -77,10 +79,9 @@ func TestTicketEditPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	mockedTicketContext.On("GetTicketById", 5).Return(true, testTicket)
 	mockedTicketContext.On("GetAllTicketInfo").Return(allTestTickets)
 
-	mockedUserContext.On( "GetAllActiveUsers").Return(allTestUsers)
+	mockedUserContext.On("GetAllActiveUsers").Return(allTestUsers)
 
 	mockedTemplateManager.On("RenderTemplate", mock.Anything, "TicketEditPage", data).Return(nil)
-
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -114,7 +115,7 @@ func TestTicketEditPageHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -146,7 +147,7 @@ func TestTicketEditPageHandler_ServeHTTP_ConversionError(t *testing.T) {
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -175,12 +176,12 @@ func TestTicketEditPageHandler_ServeHTTP_TicketDoesNotExist(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	mockedTicketContext.On("GetTicketById", 5).Return(false, new(ticket.Ticket))
+	mockedTicketContext.On("GetTicketById", 5).Return(false, new(ticketData.Ticket))
 
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -204,48 +205,49 @@ func TestTicketEditPageHandler_ServeHTTP_RenderTemplateError(t *testing.T) {
 	testee := TicketEditPageHandler{UserContext: mockedUserContext, TicketContext: mockedTicketContext, TemplateManager: mockedTemplateManager,
 		Logger: testhelpers.GetTestLogger()}
 
-	testEditor := user.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
+	testEditor := userData.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
 
-	testCreator := ticket.Creator{Mail: "Test@Test.de", FirstName: "Max", LastName: "Muller"}
-	testTicketInfo := ticket.TicketInfo{Id: 5, Title: "TicketTest", Editor: testEditor, HasEditor: true, Creator: testCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State:  ticket.Processing}
-	testMessages := []ticket.MessageEntry{{Id: 0, CreatorMail: "test@test.de", Content: "TestContent2", OnlyInternal: false}}
+	testCreator := ticketData.Creator{Mail: "Test@Test.de", FirstName: "Max", LastName: "Muller"}
+	testTicketInfo := ticketData.TicketInfo{Id: 5, Title: "TicketTest", Editor: testEditor, HasEditor: true, Creator: testCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
+	testMessages := []ticketData.MessageEntry{{Id: 0, CreatorMail: "test@test.de", Content: "TestContent2", OnlyInternal: false}}
 
-	testTicket := ticket.CreateTestTicket(testTicketInfo, testMessages)
+	testTicket := ticketData.CreateTestTicket(testTicketInfo, testMessages)
 
-	testUser := user.User{Mail: "Test25@Test.de", UserId: 25, FirstName: "Dieter22", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
+	testUser := userData.User{Mail: "Test25@Test.de", UserId: 25, FirstName: "Dieter22", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
 
-	testCreator2 := ticket.Creator{Mail: "Ivan@Test.de", FirstName: "Ivan", LastName: "Muller"}
-	testTicketInfo2 := ticket.TicketInfo{Id: 0, Title: "TicketTest2", Editor: user.GetInvalidDefaultUser(), HasEditor: false, Creator: testCreator2, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Open}
+	testCreator2 := ticketData.Creator{Mail: "Ivan@Test.de", FirstName: "Ivan", LastName: "Muller"}
+	testTicketInfo2 := ticketData.TicketInfo{Id: 0, Title: "TicketTest2", Editor: userData.GetInvalidDefaultUser(), HasEditor: false, Creator: testCreator2, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Open}
 
-	testCreator3 := ticket.Creator{Mail: "Ivan2@Test.de", FirstName: "Ivan2", LastName: "Muller"}
-	testTicketInfo3 := ticket.TicketInfo{Id: 1, Title: "TicketTest3", Editor: testEditor, HasEditor: false, Creator: testCreator3, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Processing}
+	testCreator3 := ticketData.Creator{Mail: "Ivan2@Test.de", FirstName: "Ivan2", LastName: "Muller"}
+	testTicketInfo3 := ticketData.TicketInfo{Id: 1, Title: "TicketTest3", Editor: testEditor, HasEditor: true, Creator: testCreator3, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
 
-	testEditor4 := user.User{Mail: "Test44@Test.de", UserId: 44, FirstName: "Dieter33", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
-	testCreator4 := ticket.Creator{Mail: "Ivan3@Test.de", FirstName: "Ivan3", LastName: "Muller"}
-	testTicketInfo4 := ticket.TicketInfo{Id: 2, Title: "TicketTest4", Editor: testEditor4, HasEditor: true, Creator: testCreator4, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Processing}
+	testEditor4 := userData.User{Mail: "Test44@Test.de", UserId: 44, FirstName: "Dieter33", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
+	testCreator4 := ticketData.Creator{Mail: "Ivan3@Test.de", FirstName: "Ivan3", LastName: "Muller"}
+	testTicketInfo4 := ticketData.TicketInfo{Id: 2, Title: "TicketTest4", Editor: testEditor4, HasEditor: true, Creator: testCreator4, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
 
 	req, err := http.NewRequest("GET", "/ticket/ticket_edit/5", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	allTestTickets := []ticket.TicketInfo{testTicketInfo, testTicketInfo2, testTicketInfo3, testTicketInfo4}
-	allTestUsers := []user.User{testEditor, testUser, testEditor4}
-	filteredTickets := []ticket.TicketInfo{testTicketInfo3}
-	states := []ticket.TicketState{ticket.Open, ticket.Closed}
+	allTestTickets := []ticketData.TicketInfo{testTicketInfo, testTicketInfo2, testTicketInfo3, testTicketInfo4}
+	allTestUsers := []userData.User{testEditor, testUser, testEditor4}
+	filteredTickets := []ticketData.TicketInfo{testTicketInfo3}
+	states := []ticketData.TicketState{ticketData.Open, ticketData.Closed}
 
 	data := ticketEditPageData{
-		TicketInfo: 	testTicketInfo,
-		OtherTickets:	filteredTickets,
-		Users:			allTestUsers,
-		OtherState1:	states[0],
-		OtherState2:	states[1],
+		TicketInfo:                 testTicketInfo,
+		OtherTickets:               filteredTickets,
+		Users:                      allTestUsers,
+		OtherState1:                states[0],
+		OtherState2:                states[1],
+		ShowTicketSpecificControls: true,
 	}
 
 	// Execute the test:
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	data.UserIsAdmin = false
 	data.UserIsAuthenticated = true
@@ -254,10 +256,9 @@ func TestTicketEditPageHandler_ServeHTTP_RenderTemplateError(t *testing.T) {
 	mockedTicketContext.On("GetTicketById", 5).Return(true, testTicket)
 	mockedTicketContext.On("GetAllTicketInfo").Return(allTestTickets)
 
-	mockedUserContext.On( "GetAllActiveUsers").Return(allTestUsers)
+	mockedUserContext.On("GetAllActiveUsers").Return(allTestUsers)
 
 	mockedTemplateManager.On("RenderTemplate", mock.Anything, "TicketEditPage", data).Return(errors.New("TestError"))
-
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 

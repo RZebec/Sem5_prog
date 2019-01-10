@@ -1,7 +1,8 @@
+// 5894619, 6720876, 9793350
 package mails
 
 import (
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -11,7 +12,7 @@ import (
 */
 func TestRepliesFilter_IsAutomaticResponse_AutoRespondHeaderSet(t *testing.T) {
 	// Filter only looking at headers, so the rest can be ignored:
-	testMail := mail.Mail{Headers: []string{"x-autorespond"}}
+	testMail := mailData.Mail{Headers: []string{"x-autorespond"}}
 
 	testee := RepliesFilter{}
 	assert.True(t, testee.IsAutomaticResponse(testMail), "Mail should be filtered")
@@ -22,7 +23,7 @@ func TestRepliesFilter_IsAutomaticResponse_AutoRespondHeaderSet(t *testing.T) {
 */
 func TestRepliesFilter_IsAutomaticResponse_PrecendenceSetToAutoReply(t *testing.T) {
 	// Filter only looking at headers, so the rest can be ignored:
-	testMail := mail.Mail{Headers: []string{"x-precedence:auto_reply"}}
+	testMail := mailData.Mail{Headers: []string{"x-precedence:auto_reply"}}
 
 	testee := RepliesFilter{}
 	assert.True(t, testee.IsAutomaticResponse(testMail), "Mail should be filtered")
@@ -33,7 +34,7 @@ func TestRepliesFilter_IsAutomaticResponse_PrecendenceSetToAutoReply(t *testing.
 */
 func TestRepliesFilter_IsAutomaticResponse_PrecendenceSetToBulk(t *testing.T) {
 	// Filter only looking at headers, so the rest can be ignored:
-	testMail := mail.Mail{Headers: []string{"precedence:bulk"}}
+	testMail := mailData.Mail{Headers: []string{"precedence:bulk"}}
 
 	testee := RepliesFilter{}
 	assert.True(t, testee.IsAutomaticResponse(testMail), "Mail should be filtered")
@@ -44,7 +45,7 @@ func TestRepliesFilter_IsAutomaticResponse_PrecendenceSetToBulk(t *testing.T) {
 */
 func TestRepliesFilter_IsAutomaticResponse_PrecendenceSetToJunk(t *testing.T) {
 	// Filter only looking at headers, so the rest can be ignored:
-	testMail := mail.Mail{Headers: []string{"precedence:junk"}}
+	testMail := mailData.Mail{Headers: []string{"precedence:junk"}}
 
 	testee := RepliesFilter{}
 	assert.True(t, testee.IsAutomaticResponse(testMail), "Mail should be filtered")
@@ -55,7 +56,7 @@ func TestRepliesFilter_IsAutomaticResponse_PrecendenceSetToJunk(t *testing.T) {
 */
 func TestRepliesFilter_IsAutomaticResponse_AutoSubmittedSetToAutoReplied(t *testing.T) {
 	// Filter only looking at headers, so the rest can be ignored:
-	testMail := mail.Mail{Headers: []string{"auto-submitted:auto-replied"}}
+	testMail := mailData.Mail{Headers: []string{"auto-submitted:auto-replied"}}
 
 	testee := RepliesFilter{}
 	assert.True(t, testee.IsAutomaticResponse(testMail), "Mail should be filtered")
@@ -66,7 +67,7 @@ func TestRepliesFilter_IsAutomaticResponse_AutoSubmittedSetToAutoReplied(t *test
 */
 func TestRepliesFilter_IsAutomaticResponse_ReturnsFalse(t *testing.T) {
 	// Filter only looking at headers, so the rest can be ignored:
-	testMail := mail.Mail{Headers: []string{}}
+	testMail := mailData.Mail{Headers: []string{}}
 
 	testee := RepliesFilter{}
 	assert.False(t, testee.IsAutomaticResponse(testMail), "Mail should not be filtered")

@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package recviever
 
 import (
@@ -6,39 +7,39 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/acknowledgementStorage"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/confirm"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"errors"
 	"strconv"
 	"testing"
 )
 
-func getTestAcknowledges() []mail.Acknowledgment {
-	var testAcknowledges []mail.Acknowledgment
-	testAcknowledges = append(testAcknowledges, mail.Acknowledgment{Id: "testId1", Subject: "testSubject1"})
-	testAcknowledges = append(testAcknowledges, mail.Acknowledgment{Id: "testId2", Subject: "testSubject2"})
-	testAcknowledges = append(testAcknowledges, mail.Acknowledgment{Id: "testId3", Subject: "testSubject3"})
+func getTestAcknowledges() []mailData.Acknowledgment {
+	var testAcknowledges []mailData.Acknowledgment
+	testAcknowledges = append(testAcknowledges, mailData.Acknowledgment{Id: "testId1", Subject: "testSubject1"})
+	testAcknowledges = append(testAcknowledges, mailData.Acknowledgment{Id: "testId2", Subject: "testSubject2"})
+	testAcknowledges = append(testAcknowledges, mailData.Acknowledgment{Id: "testId3", Subject: "testSubject3"})
 	return testAcknowledges
 }
-func getSpecifyAcknowledges() []mail.Acknowledgment {
-	var testAcknowledges []mail.Acknowledgment
-	testAcknowledges = append(testAcknowledges, mail.Acknowledgment{Id: "testId2", Subject: "testSubject2"})
-	testAcknowledges = append(testAcknowledges, mail.Acknowledgment{Id: "testId3", Subject: "testSubject3"})
+func getSpecifyAcknowledges() []mailData.Acknowledgment {
+	var testAcknowledges []mailData.Acknowledgment
+	testAcknowledges = append(testAcknowledges, mailData.Acknowledgment{Id: "testId2", Subject: "testSubject2"})
+	testAcknowledges = append(testAcknowledges, mailData.Acknowledgment{Id: "testId3", Subject: "testSubject3"})
 	return testAcknowledges
 }
 
-func getTestMails() []mail.Mail {
-	var testMails []mail.Mail
-	testMails = append(testMails, mail.Mail{Id: "testId1", Sender: "test@test.de", Receiver: "testReceiver1@test.de",
+func getTestMails() []mailData.Mail {
+	var testMails []mailData.Mail
+	testMails = append(testMails, mailData.Mail{Id: "testId1", Sender: "test@test.de", Receiver: "testReceiver1@test.de",
 		Subject: "testSubject1", Content: "testContent1"})
-	testMails = append(testMails, mail.Mail{Id: "testId2", Sender: "test@test.de", Receiver: "testReceiver2@test.de",
+	testMails = append(testMails, mailData.Mail{Id: "testId2", Sender: "test@test.de", Receiver: "testReceiver2@test.de",
 		Subject: "testSubject2", Content: "testContent2"})
-	testMails = append(testMails, mail.Mail{Id: "testId3", Sender: "test@test.de", Receiver: "testReceiver3@test.de",
+	testMails = append(testMails, mailData.Mail{Id: "testId3", Sender: "test@test.de", Receiver: "testReceiver3@test.de",
 		Subject: "testSubject3", Content: "testContent3"})
 	return testMails
 }
-func getTestSelectedAcknowledge() []mail.Acknowledgment {
-	var testAcknowledges []mail.Acknowledgment
-	testAcknowledges = append(testAcknowledges, mail.Acknowledgment{Id: "testId1", Subject: "testSubject1"})
+func getTestSelectedAcknowledge() []mailData.Acknowledgment {
+	var testAcknowledges []mailData.Acknowledgment
+	testAcknowledges = append(testAcknowledges, mailData.Acknowledgment{Id: "testId1", Subject: "testSubject1"})
 	return testAcknowledges
 }
 
@@ -49,10 +50,14 @@ func Test_AcknowledgeAll(t *testing.T) {
 	mockedIO := new(inputOutput.MockedInputOutput)
 	mockedApiClient := new(client.MockedClient)
 	mockedConfirm := new(confirm.MockedConfirm)
-	mockedStorage := new(acknowledgementStorage.MockedAcknowledementStorage)
+	mockedStorage := new(acknowledgementStorage.MockedAcknowledgementStorage)
 
 	mockedApiClient.On("ReceiveMails").Return(testMails, nil)
-	mockedIO.On("Print", strconv.Itoa(len(testMails))+" Mails are coming from Server")
+	mockedIO.On("Print", strconv.Itoa(len(testMails))+" Mails are coming from Server").Once()
+	// Each mail should be printed
+	for _, testMail := range testMails {
+		mockedIO.On("Print", "Receiver: "+testMail.Receiver+" Subject: "+testMail.Subject).Once()
+	}
 	mockedConfirm.On("GetAllAcknowledges", testMails).Return(testAcknowledges)
 	mockedStorage.On("AppendAcknowledgements", testAcknowledges).Return(nil)
 	mockedIO.On("Print", "Save Acknowledges...")
@@ -82,11 +87,15 @@ func Test_AcknowledgeSpecify(t *testing.T) {
 	mockedIO := new(inputOutput.MockedInputOutput)
 	mockedApiClient := new(client.MockedClient)
 	mockedConfirm := new(confirm.MockedConfirm)
-	mockedStorage := new(acknowledgementStorage.MockedAcknowledementStorage)
+	mockedStorage := new(acknowledgementStorage.MockedAcknowledgementStorage)
 
 	mockedApiClient.On("ReceiveMails").Return(testMails, nil)
 	mockedIO.On("Print", strconv.Itoa(len(testMails))+" Mails are coming from Server")
 	mockedConfirm.On("GetAllAcknowledges", testMails).Return(testAcknowledges)
+	// Each mail should be printed
+	for _, testMail := range testMails {
+		mockedIO.On("Print", "Receiver: "+testMail.Receiver+" Subject: "+testMail.Subject).Once()
+	}
 	mockedStorage.On("AppendAcknowledgements", testAcknowledges).Return(nil)
 	mockedIO.On("Print", "Save Acknowledges...")
 	mockedStorage.On("ReadAcknowledgements").Return(testAcknowledges, nil)
@@ -116,10 +125,14 @@ func Test_AcknowledgeStop(t *testing.T) {
 	mockedIO := new(inputOutput.MockedInputOutput)
 	mockedApiClient := new(client.MockedClient)
 	mockedConfirm := new(confirm.MockedConfirm)
-	mockedStorage := new(acknowledgementStorage.MockedAcknowledementStorage)
+	mockedStorage := new(acknowledgementStorage.MockedAcknowledgementStorage)
 
 	mockedApiClient.On("ReceiveMails").Return(getTestMails(), nil)
 	mockedIO.On("Print", strconv.Itoa(len(getTestMails()))+" Mails are coming from Server")
+	// Each mail should be printed
+	for _, testMail := range getTestMails() {
+		mockedIO.On("Print", "Receiver: "+testMail.Receiver+" Subject: "+testMail.Subject).Once()
+	}
 	mockedConfirm.On("GetAllAcknowledges", getTestMails()).Return(getTestAcknowledges())
 	mockedStorage.On("AppendAcknowledgements", getTestAcknowledges()).Return(nil)
 	mockedIO.On("Print", "Save Acknowledges...")
@@ -146,10 +159,10 @@ func TestRecieveMailsError(t *testing.T) {
 	mockedIO := new(inputOutput.MockedInputOutput)
 	mockedApiClient := new(client.MockedClient)
 	mockedConfirm := new(confirm.MockedConfirm)
-	mockedStorage := new(acknowledgementStorage.MockedAcknowledementStorage)
+	mockedStorage := new(acknowledgementStorage.MockedAcknowledgementStorage)
 
 	mockedApiClient.On("ReceiveMails").Return(testMails, errors.New(""))
-	mockedIO.On("Print", "Transmission is going wrong. Retry? (n,press any key)")
+	mockedIO.On("Print", "Transmission is going wrong. Retry? (no/press any key)")
 	mockedIO.On("ReadEntry").Return("n")
 
 	testee := CreateReciever(config, mockedIO, mockedApiClient, mockedStorage, mockedConfirm)

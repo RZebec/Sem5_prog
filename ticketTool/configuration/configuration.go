@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package configuration
 
 import (
@@ -8,6 +9,9 @@ import (
 	"strconv"
 )
 
+/*
+	A configuration.
+*/
 type Configuration struct {
 	Port                   int
 	BaseUrl                string
@@ -16,6 +20,9 @@ type Configuration struct {
 	UnAcknowledgedMailPath string
 }
 
+/*
+	Register the flags.
+*/
 func (c *Configuration) RegisterFlags() {
 	flag.StringVar(&c.BaseUrl, "baseUrl", "localhost", "the base url")
 	flag.IntVar(&c.Port, "port", 9000, "the port to use")

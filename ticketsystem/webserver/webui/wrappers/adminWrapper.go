@@ -1,8 +1,9 @@
+// 5894619, 6720876, 9793350
 package wrappers
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"net/http"
 )
 
@@ -11,7 +12,7 @@ import (
 */
 type AdminWrapper struct {
 	Next        HttpHandler
-	UserContext user.UserContext
+	UserContext userData.UserContext
 	Logger      logging.Logger
 }
 
@@ -25,7 +26,7 @@ func (h AdminWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		h.Next.ServeHTTP(w, r)
 		return
 	} else {
-		http.Redirect(w, r, "/", http.StatusForbidden)
+		http.Redirect(w, r, "/login", http.StatusForbidden)
 		return
 	}
 }

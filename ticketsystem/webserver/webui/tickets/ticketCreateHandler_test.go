@@ -1,9 +1,10 @@
+// 5894619, 6720876, 9793350
 package tickets
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"errors"
@@ -31,14 +32,14 @@ func TestTicketCreateHandler_ServeHTTP_ValidRequestLoggedIn(t *testing.T) {
 	req.Form.Add("message", message)
 	req.Form.Add("internal", internal)
 
-	testUser := user.User{Mail: mail, UserId: 5, FirstName: "Max", LastName: "Muller", Role: user.RegisteredUser, State: user.Active}
-	testMessage := ticket.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
+	testUser := userData.User{Mail: mail, UserId: 5, FirstName: "Max", LastName: "Muller", Role: userData.RegisteredUser, State: userData.Active}
+	testMessage := ticketData.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
 
-	testTicketCreator := ticket.Creator{Mail: mail, FirstName: "Max", LastName: "Muller"}
+	testTicketCreator := ticketData.Creator{Mail: mail, FirstName: "Max", LastName: "Muller"}
 
-	testTicketInfo := ticket.TicketInfo{Id: 26, Title: title, Editor: testUser, HasEditor: true, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Processing}
+	testTicketInfo := ticketData.TicketInfo{Id: 26, Title: title, Editor: testUser, HasEditor: true, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
 
-	ticket := ticket.CreateTestTicket(testTicketInfo, []ticket.MessageEntry{testMessage})
+	createdTicket := ticketData.CreateTestTicket(testTicketInfo, []ticketData.MessageEntry{testMessage})
 
 	if err != nil {
 		t.Fatal(err)
@@ -47,7 +48,7 @@ func TestTicketCreateHandler_ServeHTTP_ValidRequestLoggedIn(t *testing.T) {
 	testLogger := testhelpers.GetTestLogger()
 
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
-	mockedTicketContext.On("CreateNewTicketForInternalUser", title, testUser, testMessage).Return(ticket, nil)
+	mockedTicketContext.On("CreateNewTicketForInternalUser", title, testUser, testMessage).Return(createdTicket, nil)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedUserContext.On("GetUserForEmail", mail).Return(true, testUser.UserId)
 	mockedUserContext.On("GetUserById", testUser.UserId).Return(true, testUser)
@@ -56,7 +57,7 @@ func TestTicketCreateHandler_ServeHTTP_ValidRequestLoggedIn(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -90,13 +91,13 @@ func TestTicketCreateHandler_ServeHTTP_ValidRequestNotLoggedIn(t *testing.T) {
 	req.Form.Add("first_name", firstName)
 	req.Form.Add("last_name", lastName)
 
-	testMessage := ticket.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
+	testMessage := ticketData.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
 
-	testTicketCreator := ticket.Creator{Mail: mail, FirstName: firstName, LastName: lastName}
+	testTicketCreator := ticketData.Creator{Mail: mail, FirstName: firstName, LastName: lastName}
 
-	testTicketInfo := ticket.TicketInfo{Id: 26, Title: title, Editor: user.GetInvalidDefaultUser(), HasEditor: false, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Processing}
+	testTicketInfo := ticketData.TicketInfo{Id: 26, Title: title, Editor: userData.GetInvalidDefaultUser(), HasEditor: false, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
 
-	ticket := ticket.CreateTestTicket(testTicketInfo, []ticket.MessageEntry{testMessage})
+	createdTicket := ticketData.CreateTestTicket(testTicketInfo, []ticketData.MessageEntry{testMessage})
 
 	if err != nil {
 		t.Fatal(err)
@@ -105,7 +106,7 @@ func TestTicketCreateHandler_ServeHTTP_ValidRequestNotLoggedIn(t *testing.T) {
 	testLogger := testhelpers.GetTestLogger()
 
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
-	mockedTicketContext.On("CreateNewTicket", title, testTicketCreator, testMessage).Return(ticket, nil)
+	mockedTicketContext.On("CreateNewTicket", title, testTicketCreator, testMessage).Return(createdTicket, nil)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedUserContext.On("GetUserForEmail", mail).Return(false, -1)
 
@@ -113,7 +114,7 @@ func TestTicketCreateHandler_ServeHTTP_ValidRequestNotLoggedIn(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -146,7 +147,7 @@ func TestTicketCreateHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, -1, "")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -187,7 +188,7 @@ func TestTicketCreateHandler_ServeHTTP_ParsingError(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -217,14 +218,14 @@ func TestTicketCreateHandler_ServeHTTP_InternalOnlyEmpty(t *testing.T) {
 	req.Form.Add("message", message)
 	req.Form.Add("internal", internal)
 
-	testUser := user.User{Mail: mail, UserId: 5, FirstName: "Max", LastName: "Muller", Role: user.RegisteredUser, State: user.Active}
-	testMessage := ticket.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
+	testUser := userData.User{Mail: mail, UserId: 5, FirstName: "Max", LastName: "Muller", Role: userData.RegisteredUser, State: userData.Active}
+	testMessage := ticketData.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
 
-	testTicketCreator := ticket.Creator{Mail: mail, FirstName: "Max", LastName: "Muller"}
+	testTicketCreator := ticketData.Creator{Mail: mail, FirstName: "Max", LastName: "Muller"}
 
-	testTicketInfo := ticket.TicketInfo{Id: 26, Title: title, Editor: testUser, HasEditor: true, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Processing}
+	testTicketInfo := ticketData.TicketInfo{Id: 26, Title: title, Editor: testUser, HasEditor: true, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
 
-	ticket := ticket.CreateTestTicket(testTicketInfo, []ticket.MessageEntry{testMessage})
+	createdTicket := ticketData.CreateTestTicket(testTicketInfo, []ticketData.MessageEntry{testMessage})
 
 	if err != nil {
 		t.Fatal(err)
@@ -233,7 +234,7 @@ func TestTicketCreateHandler_ServeHTTP_InternalOnlyEmpty(t *testing.T) {
 	testLogger := testhelpers.GetTestLogger()
 
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
-	mockedTicketContext.On("CreateNewTicketForInternalUser", title, testUser, testMessage).Return(ticket, nil)
+	mockedTicketContext.On("CreateNewTicketForInternalUser", title, testUser, testMessage).Return(createdTicket, nil)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedUserContext.On("GetUserForEmail", mail).Return(true, testUser.UserId)
 	mockedUserContext.On("GetUserById", testUser.UserId).Return(true, testUser)
@@ -242,7 +243,7 @@ func TestTicketCreateHandler_ServeHTTP_InternalOnlyEmpty(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -276,13 +277,13 @@ func TestTicketCreateHandler_ServeHTTP_CreateNewTicketError500(t *testing.T) {
 	req.Form.Add("first_name", firstName)
 	req.Form.Add("last_name", lastName)
 
-	testMessage := ticket.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
+	testMessage := ticketData.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
 
-	testTicketCreator := ticket.Creator{Mail: mail, FirstName: firstName, LastName: lastName}
+	testTicketCreator := ticketData.Creator{Mail: mail, FirstName: firstName, LastName: lastName}
 
-	testTicketInfo := ticket.TicketInfo{Id: 26, Title: title, Editor: user.GetInvalidDefaultUser(), HasEditor: false, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Processing}
+	testTicketInfo := ticketData.TicketInfo{Id: 26, Title: title, Editor: userData.GetInvalidDefaultUser(), HasEditor: false, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
 
-	ticket := ticket.CreateTestTicket(testTicketInfo, []ticket.MessageEntry{testMessage})
+	createdTicket := ticketData.CreateTestTicket(testTicketInfo, []ticketData.MessageEntry{testMessage})
 
 	if err != nil {
 		t.Fatal(err)
@@ -291,7 +292,7 @@ func TestTicketCreateHandler_ServeHTTP_CreateNewTicketError500(t *testing.T) {
 	testLogger := testhelpers.GetTestLogger()
 
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
-	mockedTicketContext.On("CreateNewTicket", title, testTicketCreator, testMessage).Return(ticket, errors.New("TestError"))
+	mockedTicketContext.On("CreateNewTicket", title, testTicketCreator, testMessage).Return(createdTicket, errors.New("TestError"))
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedUserContext.On("GetUserForEmail", mail).Return(false, -1)
 
@@ -299,7 +300,7 @@ func TestTicketCreateHandler_ServeHTTP_CreateNewTicketError500(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -343,7 +344,7 @@ func TestTicketCreateHandler_ServeHTTP_LoggedInUserTriesToCreateTicketForOtherMa
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -373,7 +374,7 @@ func TestTicketCreateHandler_ServeHTTP_UserNotFoundWithId(t *testing.T) {
 	req.Form.Add("message", message)
 	req.Form.Add("internal", internal)
 
-	testUser := user.User{Mail: mail, UserId: 5, FirstName: "Max", LastName: "Muller", Role: user.RegisteredUser, State: user.Active}
+	testUser := userData.User{Mail: mail, UserId: 5, FirstName: "Max", LastName: "Muller", Role: userData.RegisteredUser, State: userData.Active}
 
 	if err != nil {
 		t.Fatal(err)
@@ -384,13 +385,13 @@ func TestTicketCreateHandler_ServeHTTP_UserNotFoundWithId(t *testing.T) {
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedUserContext.On("GetUserForEmail", mail).Return(true, testUser.UserId)
-	mockedUserContext.On("GetUserById", testUser.UserId).Return(false, *new(user.User))
+	mockedUserContext.On("GetUserById", testUser.UserId).Return(false, *new(userData.User))
 
 	testee := TicketCreateHandler{TicketContext: mockedTicketContext, UserContext: mockedUserContext, Logger: testLogger}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -420,14 +421,14 @@ func TestTicketCreateHandler_ServeHTTP_CreateNewTicketForInternalUserError500(t 
 	req.Form.Add("message", message)
 	req.Form.Add("internal", internal)
 
-	testUser := user.User{Mail: mail, UserId: 5, FirstName: "Max", LastName: "Muller", Role: user.RegisteredUser, State: user.Active}
-	testMessage := ticket.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
+	testUser := userData.User{Mail: mail, UserId: 5, FirstName: "Max", LastName: "Muller", Role: userData.RegisteredUser, State: userData.Active}
+	testMessage := ticketData.MessageEntry{Id: 0, CreatorMail: mail, Content: message, OnlyInternal: false}
 
-	testTicketCreator := ticket.Creator{Mail: mail, FirstName: "Max", LastName: "Muller"}
+	testTicketCreator := ticketData.Creator{Mail: mail, FirstName: "Max", LastName: "Muller"}
 
-	testTicketInfo := ticket.TicketInfo{Id: 26, Title: title, Editor: testUser, HasEditor: true, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticket.Processing}
+	testTicketInfo := ticketData.TicketInfo{Id: 26, Title: title, Editor: testUser, HasEditor: true, Creator: testTicketCreator, CreationTime: time.Now(), LastModificationTime: time.Now(), State: ticketData.Processing}
 
-	ticket := ticket.CreateTestTicket(testTicketInfo, []ticket.MessageEntry{testMessage})
+	createdTicket := ticketData.CreateTestTicket(testTicketInfo, []ticketData.MessageEntry{testMessage})
 
 	if err != nil {
 		t.Fatal(err)
@@ -436,7 +437,7 @@ func TestTicketCreateHandler_ServeHTTP_CreateNewTicketForInternalUserError500(t 
 	testLogger := testhelpers.GetTestLogger()
 
 	mockedTicketContext := new(mockedForTests.MockedTicketContext)
-	mockedTicketContext.On("CreateNewTicketForInternalUser", title, testUser, testMessage).Return(ticket, errors.New("TestError"))
+	mockedTicketContext.On("CreateNewTicketForInternalUser", title, testUser, testMessage).Return(createdTicket, errors.New("TestError"))
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedUserContext.On("GetUserForEmail", mail).Return(true, testUser.UserId)
 	mockedUserContext.On("GetUserById", testUser.UserId).Return(true, testUser)
@@ -445,7 +446,7 @@ func TestTicketCreateHandler_ServeHTTP_CreateNewTicketForInternalUserError500(t 
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
@@ -489,7 +490,7 @@ func TestTicketCreateHandler_ServeHTTP_NotLoggedInUserTriesToCreateTicketForOthe
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 

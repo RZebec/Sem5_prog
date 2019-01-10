@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package pages
 
 var AdminPage = `
@@ -22,9 +23,22 @@ var AdminPage = `
 						<input type="text" name="outgoingMailApiKey" id="outgoingMailApiKey" value="{{.OutgoingMailApiKey}}"/>
 						<button type="submit" id="submitKeys" class="submit-button" disabled>Set Api Keys</button>
 					</form>
+					{{if eq .IsChangeFailed "yes" }}
+					<span class="error-message">
+							Api Key Change Failed!
+					</span>
+					</br>
+					{{end}}
+					{{if eq .IsChangeFailed "no" }}
+					<span>
+							Api Key Change Successful!
+					</span>
+					</br>
+					{{end}}
 				</div>
 			</div>
 				<div class="container">
+					<div class="main">
 					<h2>Locked Users</h2>
 					<table>
 						<tr>
@@ -66,6 +80,7 @@ var AdminPage = `
                         </tr>
 						{{end}}
 					</table>
+					</div>
 				</div>
 		</div>
 	{{ end }}`

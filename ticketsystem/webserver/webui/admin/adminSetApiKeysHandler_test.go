@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package admin
 
 import (
@@ -27,7 +28,8 @@ func TestAdminSetApiKeysHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 
 	mockedApiContext := new(mockedForTests.MockedApiConfiguration)
 
-	testee := AdminSetApiKeysHandler{ApiConfiguration: mockedApiContext, Logger: testLogger}
+	testee := SetApiKeysHandler{ChangeOutgoingMailApiKey: mockedApiContext.ChangeOutgoingMailApiKey, ChangeIncomingMailApiKey: mockedApiContext.ChangeIncomingMailApiKey,
+		Logger: testLogger}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -54,7 +56,8 @@ func TestAdminSetApiKeysHandler_ServeHTTP_IncorrectData(t *testing.T) {
 
 	mockedApiContext := new(mockedForTests.MockedApiConfiguration)
 
-	testee := AdminSetApiKeysHandler{ApiConfiguration: mockedApiContext, Logger: testLogger}
+	testee := SetApiKeysHandler{ChangeOutgoingMailApiKey: mockedApiContext.ChangeOutgoingMailApiKey, ChangeIncomingMailApiKey: mockedApiContext.ChangeIncomingMailApiKey,
+		Logger: testLogger}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -86,12 +89,13 @@ func TestAdminSetApiKeysHandler_ServeHTTP_ValidRequest(t *testing.T) {
 	mockedApiContext.On("ChangeIncomingMailApiKey", mock.Anything).Return(nil)
 	mockedApiContext.On("ChangeOutgoingMailApiKey", mock.Anything).Return(nil)
 
-	testee := AdminSetApiKeysHandler{ApiConfiguration: mockedApiContext, Logger: testLogger}
+	testee := SetApiKeysHandler{ChangeOutgoingMailApiKey: mockedApiContext.ChangeOutgoingMailApiKey, ChangeIncomingMailApiKey: mockedApiContext.ChangeIncomingMailApiKey,
+		Logger: testLogger}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
 	handler.ServeHTTP(rr, req)
-	assert.Equal(t, 200, rr.Code, "Status code 200 should be returned")
+	assert.Equal(t, http.StatusFound, rr.Code, "Status code 302 should be returned")
 
 	mockedApiContext.AssertExpectations(t)
 }
@@ -117,9 +121,10 @@ func TestAdminSetApiKeysHandler_ServeHTTP_ChangeOutgoing_ContextReturnError_500R
 
 	mockedApiContext := new(mockedForTests.MockedApiConfiguration)
 	mockedApiContext.On("ChangeIncomingMailApiKey", mock.Anything).Return(nil)
-	mockedApiContext.On("ChangeOutgoingMailApiKey", mock.Anything).Return(errors.New("Testerror"))
+	mockedApiContext.On("ChangeOutgoingMailApiKey", mock.Anything).Return(errors.New("TestError"))
 
-	testee := AdminSetApiKeysHandler{ApiConfiguration: mockedApiContext, Logger: testLogger}
+	testee := SetApiKeysHandler{ChangeOutgoingMailApiKey: mockedApiContext.ChangeOutgoingMailApiKey, ChangeIncomingMailApiKey: mockedApiContext.ChangeIncomingMailApiKey,
+		Logger: testLogger}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -151,7 +156,8 @@ func TestAdminSetApiKeysHandler_ServeHTTP_ChangeIncoming_ContextReturnError_500R
 	mockedApiContext := new(mockedForTests.MockedApiConfiguration)
 	mockedApiContext.On("ChangeIncomingMailApiKey", mock.Anything).Return(errors.New("TestError"))
 
-	testee := AdminSetApiKeysHandler{ApiConfiguration: mockedApiContext, Logger: testLogger}
+	testee := SetApiKeysHandler{ChangeOutgoingMailApiKey: mockedApiContext.ChangeOutgoingMailApiKey, ChangeIncomingMailApiKey: mockedApiContext.ChangeIncomingMailApiKey,
+		Logger: testLogger}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 

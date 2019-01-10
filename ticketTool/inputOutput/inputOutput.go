@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package inputOutput
 
 import (
@@ -7,26 +8,33 @@ import (
 	"strings"
 )
 
+/*
+	Interface for the input and output.
+*/
 type InputOutput interface {
 	ReadEntry() string
 	Print(text string)
 }
 
+/*
+	Struct for the default input and output implementation.
+*/
 type DefaultInputOutput struct {
 }
 
 /*
-capsulate reading from Console is better to test
+	Capsulates reading from Console.
 */
 func (d *DefaultInputOutput) ReadEntry() string {
 	reader := bufio.NewReader(os.Stdin)
 	value, _ := reader.ReadString('\n')
 	value = strings.TrimRight(value, "\n")
+	value = strings.TrimRight(value, "\r")
 	return value
 }
 
 /*
-capuslate writing to Console is better to test
+	Capuslates writing to Console.
 */
 func (d *DefaultInputOutput) Print(text string) {
 	fmt.Println(text)

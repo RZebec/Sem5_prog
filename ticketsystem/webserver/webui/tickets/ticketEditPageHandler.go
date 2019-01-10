@@ -1,9 +1,10 @@
+// 5894619, 6720876, 9793350
 package tickets
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
@@ -18,8 +19,8 @@ import (
 	Structure for the Tickets Edit Page handler.
 */
 type TicketEditPageHandler struct {
-	TicketContext   ticket.TicketContext
-	UserContext		user.UserContext
+	TicketContext   ticketData.TicketContext
+	UserContext     userData.UserContext
 	Logger          logging.Logger
 	TemplateManager templateManager.TemplateContext
 }
@@ -28,11 +29,12 @@ type TicketEditPageHandler struct {
 	Structure for the Ticket Edit Page Data.
 */
 type ticketEditPageData struct {
-	TicketInfo 		ticket.TicketInfo
-	OtherTickets	[]ticket.TicketInfo
-	Users			[]user.User
-	OtherState1		ticket.TicketState
-	OtherState2		ticket.TicketState
+	TicketInfo                 ticketData.TicketInfo
+	OtherTickets               []ticketData.TicketInfo
+	Users                      []userData.User
+	OtherState1                ticketData.TicketState
+	OtherState2                ticketData.TicketState
+	ShowTicketSpecificControls bool
 	pages.BasePageData
 }
 
@@ -58,7 +60,7 @@ func (t TicketEditPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		ticketExist, editableTicket := t.TicketContext.GetTicketById(ticketId)
 
 		if !ticketExist {
-			t.Logger.LogError("TicketEditPageHandler", errors.New("Ticket doesn´t exist."))
+			t.Logger.LogError("TicketEditPageHandler", errors.New("ticket doesn´t exist"))
 			http.Redirect(w, r, "/", http.StatusNotFound)
 			return
 		}
@@ -74,16 +76,19 @@ func (t TicketEditPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		otherStates := getOtherTicketStates(ticketInfo.State)
 
 		data := ticketEditPageData{
-			TicketInfo: 	ticketInfo,
-			OtherTickets:	otherTickets,
-			Users:			users,
-			OtherState1:	otherStates[0],
-			OtherState2:	otherStates[1],
+			TicketInfo:   ticketInfo,
+			OtherTickets: otherTickets,
+			Users:        users,
+			OtherState1:  otherStates[0],
+			OtherState2:  otherStates[1],
 		}
-		
+
 		data.UserIsAdmin = wrappers.IsAdmin(r.Context())
 		data.UserIsAuthenticated = wrappers.IsAuthenticated(r.Context())
 		data.Active = ""
+
+		currentUserId := wrappers.GetUserId(r.Context())
+		data.ShowTicketSpecificControls = ticketInfo.HasEditor && ticketInfo.Editor.UserId == currentUserId
 
 		templateRenderError := t.TemplateManager.RenderTemplate(w, "TicketEditPage", data)
 
@@ -94,17 +99,17 @@ func (t TicketEditPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func filterOutTicket(ticketInfo ticket.TicketInfo, tickets []ticket.TicketInfo) (result []ticket.TicketInfo) {
+func filterOutTicket(ticketInfo ticketData.TicketInfo, tickets []ticketData.TicketInfo) (result []ticketData.TicketInfo) {
 	for _, t := range tickets {
-		if t.Id != ticketInfo.Id && t.Editor == ticketInfo.Editor {
+		if t.Id != ticketInfo.Id && t.Editor == ticketInfo.Editor && t.HasEditor {
 			result = append(result, t)
 		}
 	}
 	return
 }
 
-func getOtherTicketStates(ticketState ticket.TicketState) (result []ticket.TicketState) {
-	states := []ticket.TicketState{ticket.Open, ticket.Closed, ticket.Processing}
+func getOtherTicketStates(ticketState ticketData.TicketState) (result []ticketData.TicketState) {
+	states := []ticketData.TicketState{ticketData.Open, ticketData.Closed, ticketData.Processing}
 	for _, state := range states {
 		if state != ticketState {
 			result = append(result, state)

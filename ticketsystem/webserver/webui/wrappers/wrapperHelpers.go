@@ -1,9 +1,10 @@
+// 5894619, 6720876, 9793350
 package wrappers
 
 import (
 	"context"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"net/http"
 )
 
@@ -48,7 +49,7 @@ func IsAuthenticated(ctx context.Context) bool {
 
 /*
 	Get the user Id.
- */
+*/
 func GetUserId(ctx context.Context) int {
 	value, ok := ctx.Value(userIdKey).(int)
 	if ok {
@@ -60,7 +61,7 @@ func GetUserId(ctx context.Context) int {
 
 /*
 	Get the user token.
- */
+*/
 func GetUserToken(ctx context.Context) string {
 	value, ok := ctx.Value(userTokenKey).(string)
 	if ok {
@@ -73,7 +74,7 @@ func GetUserToken(ctx context.Context) string {
 /*
 	Function used to check if a user is logged in and if the session of the aforementioned user is valid.
 */
-func UserIsLoggedInCheck(r *http.Request, userContext user.UserContext, accessTokenCookieName string, logger logging.Logger) (isUserLoggedIn bool, isAdmin bool, accessTokenValue string, userId int) {
+func UserIsLoggedInCheck(r *http.Request, userContext userData.UserContext, accessTokenCookieName string, logger logging.Logger) (isUserLoggedIn bool, isAdmin bool, accessTokenValue string, userId int) {
 	userIsLoggedIn := false
 	token := ""
 
@@ -90,5 +91,5 @@ func UserIsLoggedInCheck(r *http.Request, userContext user.UserContext, accessTo
 	token = cookie.Value
 	userIsLoggedIn, userId, _, role, err := userContext.SessionIsValid(token)
 
-	return userIsLoggedIn, role == user.Admin, token, userId
+	return userIsLoggedIn, role == userData.Admin, token, userId
 }

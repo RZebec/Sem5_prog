@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package userSettings
 
 import (
@@ -35,7 +36,7 @@ func TestToggleVacationModeHandler_ServeHTTP_ValidRequest_RedirectedToUserSettin
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	assert.Equal(t, 302, rr.Code, "Status code 302 should be returned")
@@ -67,7 +68,7 @@ func TestToggleVacationModeHandler_ServeHTTP_ValidRequest_DisableVacationMode_Re
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	assert.Equal(t, 302, rr.Code, "Status code 302 should be returned")
@@ -97,7 +98,7 @@ func TestToggleVacationModeHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	assert.Equal(t, 405, rr.Code, "Status code 405 should be returned")
@@ -127,7 +128,7 @@ func TestToggleVacationModeHandler_ServeHTTP_ParsingError(t *testing.T) {
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	assert.Equal(t, http.StatusBadRequest, rr.Code, "Status code 400 should be returned")
@@ -159,7 +160,7 @@ func TestToggleVacationModeHandler_ServeHTTP_EnableVacationModeError(t *testing.
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	assert.Equal(t, http.StatusBadRequest, rr.Code, "Status code 400 should be returned")
@@ -191,7 +192,7 @@ func TestToggleVacationModeHandler_ServeHTTP_DisableVacationModeError(t *testing
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	assert.Equal(t, http.StatusBadRequest, rr.Code, "Status code 400 should be returned")

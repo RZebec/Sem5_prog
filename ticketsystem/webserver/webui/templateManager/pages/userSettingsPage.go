@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package pages
 
 /*
@@ -18,11 +19,11 @@ var UserSettingsPage = `
 					<h2>Vacation Mode</h2>
 					<form id="toggleVacationMode" method="post" name="toggleVacationMode" action="/user_toggle_vacation">
 					{{if .UserIsOnVacation }}
-						<input type="radio" name="vacationMode" id="vacationMode" value="true" checked/> Yes
-						<input type="radio" name="vacationMode" id="vacationMode" value="false"/> No
+						<label>Your user is currently in Vacation Mode</label>
+						<input type="hidden" name="vacationMode" id="vacationMode" value="false"/>
         			{{else}}
-						<input type="radio" name="vacationMode" id="vacationMode" value="true"/> Yes
-						<input type="radio" name="vacationMode" id="vacationMode" value="false" checked/> No
+						<label>Your user is currently not in Vacation Mode</label>
+						<input type="hidden" name="vacationMode" id="vacationMode" value="true"/>
 					{{end}}
 						<button type="submit" id="submitToggle" class="submit-button">Change Vacation Mode</button>
 					</form>
@@ -36,12 +37,19 @@ var UserSettingsPage = `
 						<input type="password" name="new_repeat_password" id="new_repeat_password" />
 						<button type="submit" id="submitChange" class="submit-button" disabled>Change Password</button>
 					</form>
-					{{if .IsChangeFailed }}
+					{{if eq .IsChangeFailed "yes" }}
 					<span class="error-message">
 							Password Change Failed!
 					</span>
 					</br>
-        			{{end}}
+					{{end}}
+					{{if eq .IsChangeFailed "no" }}
+					<span>
+							Password Change Successful!
+					</span>
+					</br>
+					{{end}}
+        			
 					<span id="passwordNotice" class="error-message"></span>
 					<span id="passwordNotTheSameNotice" class="error-message"></span>
 					<span id="oldPasswordNotice" class="error-message"></span>

@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package style
 
 import (
@@ -127,6 +128,9 @@ var centerMain = `
 		color: red;
 	}`
 
+/*
+	The table CSS file.
+*/
 var tableStyle = `
     
     h2 {
@@ -136,8 +140,10 @@ var tableStyle = `
 	table {
 		text-align: left;
     	border-collapse: collapse;
-    	width: 95em;
-		margin: 0.5em 1.5em 0.75em 1.5em;
+    	width: 100%;
+		margin: 0.5em 0.5em 0.75em 0.5em;
+		cellspacing="0";
+		cellpadding="0";
 	}
 
 	table td, table th {
@@ -172,11 +178,14 @@ var tableStyle = `
         background-color: rgba(76, 175, 79, 0.466);
     }`
 
+/*
+	The large main CSS file.
+*/
 var largeMainStyle = `
     
     div.main {
 		text-align: left;
-        width: 75em;
+		width: 40em;
         padding: 0.5em 1.5em 0.75em;
         border: 2px solid gray;
         border-radius: 10px;
@@ -184,6 +193,9 @@ var largeMainStyle = `
         margin-top: 1.5em;
     }`
 
+/*
+	The message CSS file.
+*/
 var messageStyle = `
     
     input[type=text], input[type=password] {
@@ -215,6 +227,7 @@ var messageStyle = `
 	.error-message{
 		color: red;
 	}`
+
 /*
 	The handler for the style(css) files.
 */

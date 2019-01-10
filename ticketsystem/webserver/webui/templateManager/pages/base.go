@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package pages
 
 type BasePageData struct {
@@ -30,16 +31,20 @@ var Base = `
 
 			<a {{if eq .Active "open_tickets" }}class="active"{{end}} href="/open_tickets">Open Tickets</a>
 
+			<a {{if eq .Active "closed_tickets" }}class="active"{{end}} href="/closed_tickets">Closed Tickets</a>
+
+			<a {{if eq .Active "active_tickets" }}class="active"{{end}} href="/active_tickets">Active Tickets</a>
+
 			<a {{if eq .Active "ticket_create" }}class="active"{{end}} href="/ticket_create">Create Ticket</a>
 	
 			<span>OP Ticket System</span>
 
 			{{if .UserIsAuthenticated}}
-				{{if .UserIsAdmin}}
-					<a {{if eq .Active "admin" }}class="active"{{end}} href="/admin">Admin</a>
-				{{end}}
 				<a {{if eq .Active "user_tickets" }}class="active"{{end}} href="/user_tickets">My Tickets</a>
-				<a {{if eq .Active "settings" }}class="active"{{end}} href="/user_settings">Settings</a>
+				{{if .UserIsAdmin}}
+					<a {{if eq .Active "admin" }}class="active"{{end}} href="/admin">Server Settings</a>
+				{{end}}
+				<a {{if eq .Active "settings" }}class="active"{{end}} href="/user_settings">My Settings</a>
 				<a href="/user_logout">Logout</a>
 			{{else}}
 				<a {{if eq .Active "login" }}class="active"{{end}} href="/login">Login</a>

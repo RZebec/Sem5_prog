@@ -1,11 +1,12 @@
+// 5894619, 6720876, 9793350
 package tickets
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/core/validation/mail"
-	mailContext "de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	mailContext "de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"errors"
 	"html"
@@ -19,10 +20,10 @@ import (
 	A handler to append messages to a ticket.
 */
 type TicketAppendMessageHandler struct {
-	UserContext   user.UserContext
+	UserContext   userData.UserContext
 	Logger        logging.Logger
-	TicketContext ticket.TicketContext
-	MailContext	  mailContext.MailContext
+	TicketContext ticketData.TicketContext
+	MailContext   mailContext.MailContext
 }
 
 /*
@@ -91,7 +92,7 @@ func (t TicketAppendMessageHandler) handlerForAuthenticatedUser(w http.ResponseW
 	}
 
 	// Append message to ticket:
-	messageEntry := ticket.MessageEntry{CreatorMail: authenticatedUser.Mail, OnlyInternal: onlyInternal,
+	messageEntry := ticketData.MessageEntry{CreatorMail: authenticatedUser.Mail, OnlyInternal: onlyInternal,
 		Content: content, CreationTime: time.Now()}
 
 	_, err = t.TicketContext.AppendMessageToTicket(ticketId, messageEntry)
@@ -101,21 +102,25 @@ func (t TicketAppendMessageHandler) handlerForAuthenticatedUser(w http.ResponseW
 		return
 	}
 
-	// Notify the creator:
-	sender := strings.ToLower(authenticatedUser.Mail)
-	receiver := strings.ToLower(existingTicket.Info().Creator.Mail)
-	if sender != receiver {
-		subject := mailContext.BuildAppendMessageNotificationMailSubject(ticketId)
-		mailContent := mailContext.BuildAppendMessageNotificationMailContent(receiver, sender, content)
-		err = t.MailContext.CreateNewOutgoingMail(existingTicket.Info().Creator.Mail, subject, mailContent)
-		if err != nil {
-			t.Logger.LogError("TicketAppendMessageHandler", err)
-			http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusInternalServerError)
-			return
+	if !onlyInternal {
+		// Notify the creator:
+		sender := strings.ToLower(authenticatedUser.Mail)
+		receiver := strings.ToLower(existingTicket.Info().Creator.Mail)
+		if sender != receiver {
+			subject := mailContext.BuildAppendMessageNotificationMailSubject(ticketId)
+			mailContent := mailContext.BuildAppendMessageNotificationMailContent(receiver, sender, content)
+			err = t.MailContext.CreateNewOutgoingMail(existingTicket.Info().Creator.Mail, subject, mailContent)
+			if err != nil {
+				t.Logger.LogError("TicketAppendMessageHandler", err)
+				http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusInternalServerError)
+				return
+			}
 		}
 	}
 
 	http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusFound)
+	t.Logger.LogInfo("TicketAppendMessageHandler", "User "+strconv.Itoa(authenticatedUser.UserId)+
+		" appended a message to ticket "+rawTicketId)
 }
 
 /*
@@ -133,7 +138,7 @@ func (t TicketAppendMessageHandler) handlerForNonAuthenticatedUser(w http.Respon
 
 	tickedExists, existingTicket := t.TicketContext.GetTicketById(ticketId)
 	if !tickedExists {
-		t.Logger.LogError("TicketAppendMessageHandler", errors.New("invalid ticket id. ticket does not exist."))
+		t.Logger.LogError("TicketAppendMessageHandler", errors.New("invalid ticket id. ticket does not exist"))
 		http.Redirect(w, r, "/", http.StatusBadRequest)
 		return
 	}
@@ -169,7 +174,7 @@ func (t TicketAppendMessageHandler) handlerForNonAuthenticatedUser(w http.Respon
 	}
 
 	// Append message:
-	messageEntry := ticket.MessageEntry{CreatorMail: rawMail, OnlyInternal: false,
+	messageEntry := ticketData.MessageEntry{CreatorMail: rawMail, OnlyInternal: false,
 		Content: content, CreationTime: time.Now()}
 
 	_, err = t.TicketContext.AppendMessageToTicket(ticketId, messageEntry)
@@ -194,4 +199,5 @@ func (t TicketAppendMessageHandler) handlerForNonAuthenticatedUser(w http.Respon
 	}
 
 	http.Redirect(w, r, "/ticket/"+rawTicketId, http.StatusFound)
+	t.Logger.LogInfo("TicketAppendMessageHandler", rawMail+" appended a message to ticket "+rawTicketId)
 }

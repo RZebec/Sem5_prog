@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package index
 
 import (
@@ -11,7 +12,7 @@ import (
 /*
 	Structure for the Index Page Handler.
 */
-type IndexPageHandler struct {
+type PageHandler struct {
 	Logger          logging.Logger
 	TemplateManager templateManager.TemplateContext
 }
@@ -26,7 +27,7 @@ type indexPageData struct {
 /*
 	The Index Page handler.
 */
-func (i IndexPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (i PageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {

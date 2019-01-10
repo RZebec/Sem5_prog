@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package client
 
 import (
@@ -5,7 +6,7 @@ import (
 	"crypto/x509"
 	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/configuration"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"encoding/json"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
@@ -54,13 +55,13 @@ func AdjustConfigurationToTestServer(t *testing.T, conf configuration.Configurat
 /*
 	Generates some test mails.
 */
-func getTestEmails() []mail.Mail {
-	var eMails []mail.Mail
-	eMails = append(eMails, mail.Mail{Id: "testId1", Sender: "test1@test.de", Receiver: "testReceiver1@test.de",
+func getTestEmails() []mailData.Mail {
+	var eMails []mailData.Mail
+	eMails = append(eMails, mailData.Mail{Id: "testId1", Sender: "test1@test.de", Receiver: "testReceiver1@test.de",
 		Subject: "TestSubject1", Content: "testContent1", SentTime: time.Now().Unix()})
-	eMails = append(eMails, mail.Mail{Id: "testId2", Sender: "test2@test.de", Receiver: "testReceiver2@test.de",
+	eMails = append(eMails, mailData.Mail{Id: "testId2", Sender: "test2@test.de", Receiver: "testReceiver2@test.de",
 		Subject: "TestSubject2", Content: "testContent2", SentTime: time.Now().Unix()})
-	eMails = append(eMails, mail.Mail{Id: "testId3", Sender: "test3@test.de", Receiver: "testReceiver3@test.de",
+	eMails = append(eMails, mailData.Mail{Id: "testId3", Sender: "test3@test.de", Receiver: "testReceiver3@test.de",
 		Subject: "TestSubject3", Content: "testContent3", SentTime: time.Now().Unix()})
 	return eMails
 }
@@ -75,7 +76,7 @@ func TestApiClient_SendMails_ReturnsOk(t *testing.T) {
 	server := CreateTestServer(t, http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		// Decode the mails:
 		decoder := json.NewDecoder(req.Body)
-		var mails []mail.Mail
+		var mails []mailData.Mail
 		err := decoder.Decode(&mails)
 		if err != nil {
 			assert.Nil(t, err, "The received mails should be readable")
@@ -185,9 +186,9 @@ func TestApiClient_ReceiveMails_MailsReturned(t *testing.T) {
 		jsonData, err := json.Marshal(testMails)
 		if err != nil {
 			rw.WriteHeader(500)
+			return
 		}
 		rw.Write(jsonData)
-		rw.WriteHeader(200)
 	}))
 	// Close the server when test finishes
 	defer server.Close()
@@ -214,14 +215,14 @@ func TestApiClient_ReceiveMails_MailsReturned(t *testing.T) {
 /*
 	Sending acknowledgments to the api should work.
 */
-func TestApiClient_AcknowledgeMails_ReurnsOk(t *testing.T) {
+func TestApiClient_AcknowledgeMails_ReturnsOk(t *testing.T) {
 	testAcks := getTestAcknowledgements()
 
 	// The handler function will assert the payload and is passed to the testserver:
 	server := CreateTestServer(t, http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		// Decode the mails:
 		decoder := json.NewDecoder(req.Body)
-		var mails []mail.Acknowledgment
+		var mails []mailData.Acknowledgment
 		err := decoder.Decode(&mails)
 		if err != nil {
 			assert.Nil(t, err, "The received acknowledgements should be readable")
@@ -258,10 +259,10 @@ func TestApiClient_AcknowledgeMails_ReurnsOk(t *testing.T) {
 /*
 	Get Acknowledgments for tests.
 */
-func getTestAcknowledgements() []mail.Acknowledgment {
-	var acks []mail.Acknowledgment
-	acks = append(acks, mail.Acknowledgment{Id: "testId1", Subject: "TestSubject1"})
-	acks = append(acks, mail.Acknowledgment{Id: "testId2", Subject: "TestSubject2"})
-	acks = append(acks, mail.Acknowledgment{Id: "testId3", Subject: "TestSubject3"})
+func getTestAcknowledgements() []mailData.Acknowledgment {
+	var acks []mailData.Acknowledgment
+	acks = append(acks, mailData.Acknowledgment{Id: "testId1", Subject: "TestSubject1"})
+	acks = append(acks, mailData.Acknowledgment{Id: "testId2", Subject: "TestSubject2"})
+	acks = append(acks, mailData.Acknowledgment{Id: "testId3", Subject: "TestSubject3"})
 	return acks
 }

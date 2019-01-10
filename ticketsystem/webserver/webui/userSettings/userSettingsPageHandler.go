@@ -1,23 +1,24 @@
+// 5894619, 6720876, 9793350
 package userSettings
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager/pages"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
+	"html"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
 /*
 	Structure for the User Settings Page handler.
 */
-type UserSettingsPageHandler struct {
+type SettingsPageHandler struct {
 	Logger          logging.Logger
 	TemplateManager templateManager.TemplateContext
-	UserContext		user.UserContext
+	UserContext     userData.UserContext
 }
 
 /*
@@ -25,24 +26,28 @@ type UserSettingsPageHandler struct {
 */
 type userSettingsPageData struct {
 	pages.BasePageData
-	IsChangeFailed bool
+	IsChangeFailed   string
 	UserIsOnVacation bool
 }
 
 /*
 	The User Settings Page handler.
 */
-func (u UserSettingsPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (u SettingsPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if strings.ToLower(r.Method) != "get" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {
 		queryValues := r.URL.Query()
 		queryValue := queryValues.Get("IsChangeFailed")
-		isChangeFailed, parseError := strconv.ParseBool(queryValue)
 
-		if parseError != nil && queryValue != ""{
-			u.Logger.LogError("UserSettingsPageHandler", parseError)
-			isChangeFailed = false
+		queryValue = html.EscapeString(queryValue)
+
+		isChangeFailed := queryValue
+
+		if queryValue == "yes" || queryValue == "no" {
+			isChangeFailed = queryValue
+		} else {
+			isChangeFailed = "NotSet"
 		}
 
 		userId := wrappers.GetUserId(r.Context())
@@ -52,11 +57,11 @@ func (u UserSettingsPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Reques
 		userIsOnVacation := false
 
 		if exist {
-			userIsOnVacation = loggedInUser.State == user.OnVacation
+			userIsOnVacation = loggedInUser.State == userData.OnVacation
 		}
 
 		data := userSettingsPageData{
-			IsChangeFailed: isChangeFailed,
+			IsChangeFailed:   isChangeFailed,
 			UserIsOnVacation: userIsOnVacation,
 		}
 
@@ -67,7 +72,7 @@ func (u UserSettingsPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Reques
 		templateRenderError := u.TemplateManager.RenderTemplate(w, "UserSettingsPage", data)
 
 		if templateRenderError != nil {
-			u.Logger.LogError("UserSettingsPageHandler", templateRenderError)
+			u.Logger.LogError("SettingsPageHandler", templateRenderError)
 			http.Redirect(w, r, "/", http.StatusInternalServerError)
 		}
 	}

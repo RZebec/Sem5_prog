@@ -1,8 +1,9 @@
+// 5894619, 6720876, 9793350
 package userSettings
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/templateManager"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
@@ -23,17 +24,17 @@ func TestUserSettingsPageHandler_ServeHTTP__ValidRequest(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	testLogger := testhelpers.GetTestLogger()
 
-	testUser := user.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
+	testUser := userData.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedUserContext.On("GetUserById", 5).Return(true, testUser)
 
 	data := userSettingsPageData{
-		IsChangeFailed: false,
+		IsChangeFailed:   "NotSet",
 		UserIsOnVacation: false,
 	}
 
@@ -46,7 +47,7 @@ func TestUserSettingsPageHandler_ServeHTTP__ValidRequest(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	testee := UserSettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
+	testee := SettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -67,7 +68,7 @@ func TestUserSettingsPageHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	testLogger := testhelpers.GetTestLogger()
 
@@ -76,7 +77,7 @@ func TestUserSettingsPageHandler_ServeHTTP_WrongRequestMethod(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	testee := UserSettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
+	testee := SettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -97,17 +98,17 @@ func TestUserSettingsPageHandler_ServeHTTP_ContextError(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	testLogger := testhelpers.GetTestLogger()
 
-	testUser := user.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
+	testUser := userData.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedUserContext.On("GetUserById", 5).Return(true, testUser)
 
 	data := userSettingsPageData{
-		IsChangeFailed: false,
+		IsChangeFailed:   "NotSet",
 		UserIsOnVacation: false,
 	}
 
@@ -120,7 +121,7 @@ func TestUserSettingsPageHandler_ServeHTTP_ContextError(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	testee := UserSettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
+	testee := SettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -136,24 +137,24 @@ func TestUserSettingsPageHandler_ServeHTTP_ContextError(t *testing.T) {
 	Page should be returned with valid query parameter set.
 */
 func TestUserSettingsPageHandler_ServeHTTP_ChangePasswordFailed(t *testing.T) {
-	req, err := http.NewRequest("GET", "/user_settings?IsChangeFailed=true", nil)
+	req, err := http.NewRequest("GET", "/user_settings?IsChangeFailed=yes", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	rr := httptest.NewRecorder()
 
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, 5, "")
 
 	testLogger := testhelpers.GetTestLogger()
 
-	testUser := user.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: user.RegisteredUser, State: user.Active}
+	testUser := userData.User{Mail: "Test2@Test.de", UserId: 5, FirstName: "Dieter", LastName: "Dietrich", Role: userData.RegisteredUser, State: userData.Active}
 
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedUserContext.On("GetUserById", 5).Return(true, testUser)
 
 	data := userSettingsPageData{
-		IsChangeFailed: true,
+		IsChangeFailed:   "yes",
 		UserIsOnVacation: false,
 	}
 
@@ -164,7 +165,7 @@ func TestUserSettingsPageHandler_ServeHTTP_ChangePasswordFailed(t *testing.T) {
 	mockedTemplateManager := new(templateManager.MockedTemplateManager)
 	mockedTemplateManager.On("RenderTemplate", mock.Anything, mock.Anything, data).Return(nil)
 
-	testee := UserSettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
+	testee := SettingsPageHandler{UserContext: mockedUserContext, Logger: testLogger, TemplateManager: mockedTemplateManager}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 

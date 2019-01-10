@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package recviever
 
 import (
@@ -6,7 +7,7 @@ import (
 	"de/vorlesung/projekt/IIIDDD/ticketTool/inputOutput"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/acknowledgementStorage"
 	"de/vorlesung/projekt/IIIDDD/ticketTool/recieve/confirm"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"fmt"
 	"strconv"
 )
@@ -28,44 +29,49 @@ func CreateReciever(config configuration.Configuration, io inputOutput.InputOutp
 	return reciever
 }
 
-func (r *Reciever) Run() error {
+func (r *Reciever) Run() (bool, error) {
 	recieveMails, err := r.apiClient.ReceiveMails() //recieve Mails from Server
 	if err != nil {
-		r.io.Print("Transmission is going wrong. Retry? (n,press any key)")
+		r.io.Print("Transmission is going wrong. Retry? (no/press any key)")
 		answer := r.io.ReadEntry() //request if you want to retry the transmission
-		if answer == "n" {
-			return err
+		if answer == "no" {
+			return false, err
+		} else {
+			return true, err
 		}
 	} else {
 		r.io.Print(strconv.Itoa(len(recieveMails)) + " Mails are coming from Server")
+		for _, receivedMail := range recieveMails {
+			r.io.Print("Receiver: " + receivedMail.Receiver + " Subject: " + receivedMail.Subject)
+		}
 		acknowledges := r.confirmator.GetAllAcknowledges(recieveMails) //create Acknowledges from Mails
 		err := r.storage.AppendAcknowledgements(acknowledges)          //store these Acknowledges
 		if err != nil {
 			r.io.Print("mails cant't saved: " + err.Error())
-			return err
+			return false, err
 		}
 		r.io.Print("Save Acknowledges...")
 		allAcknowledges, err := r.storage.ReadAcknowledgements() //read the recieved Acknowledges and previous Acknowledges
 		if err != nil {
 			r.io.Print("couldn't read storaged Acknowledges")
-			return err
+			return false, err
 		} else if len(allAcknowledges) == 0 {
 			r.io.Print("No Emails available")
-			return nil
+			return false, nil
 		}
 		r.io.Print("Available Mails: " + strconv.Itoa(len(allAcknowledges)))
 		if len(allAcknowledges) != 0 {
 			r.allOrSpecifyConfirm(&allAcknowledges)
-			return nil
+			return false, nil
 		}
 	}
-	return nil
+	return false, nil
 }
 
 /*
 you can select between one specify confirm or if you want all confirm
 */
-func (r *Reciever) allOrSpecifyConfirm(allAcknowledges *[]mail.Acknowledgment) {
+func (r *Reciever) allOrSpecifyConfirm(allAcknowledges *[]mailData.Acknowledgment) {
 	for true {
 		r.io.Print("send all Acknowledges or specify Acknowledges to Server. Or stop reciever (all/specify/stop):")
 		answer := r.io.ReadEntry()

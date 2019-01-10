@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package api
 
 import (
@@ -35,7 +36,6 @@ func (h *ApiKeyAuthenticationHandler) ServeHTTP(w http.ResponseWriter, req *http
 				h.Logger.LogInfo("ApiKeyAuthenticationHandler", "Wrong Api Key -> 401")
 				return
 			}
-			break
 		}
 	}
 	w.WriteHeader(401)

@@ -1,24 +1,38 @@
+// 5894619, 6720876, 9793350
 package client
 
 import (
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"github.com/stretchr/testify/mock"
 )
 
+/*
+	A mocked client.
+*/
 type MockedClient struct {
 	mock.Mock
 }
 
-
-func (m *MockedClient) SendMails(mails []mail.Mail) error {
+/*
+	A mocked function.
+*/
+func (m *MockedClient) SendMails(mails []mailData.Mail) error {
 	args := m.Called(mails)
 	return args.Error(0)
 }
-func (m *MockedClient) ReceiveMails() ([]mail.Mail, error) {
+
+/*
+	A mocked function.
+*/
+func (m *MockedClient) ReceiveMails() ([]mailData.Mail, error) {
 	args := m.Called()
-	return args.Get(0).([]mail.Mail), args.Error(1)
+	return args.Get(0).([]mailData.Mail), args.Error(1)
 }
-func (m *MockedClient) AcknowledgeMails(mailsToAcknowledge []mail.Acknowledgment) error {
+
+/*
+	A mocked function.
+*/
+func (m *MockedClient) AcknowledgeMails(mailsToAcknowledge []mailData.Acknowledgment) error {
 	args := m.Called(mailsToAcknowledge)
-	return  args.Error(0)
+	return args.Error(0)
 }

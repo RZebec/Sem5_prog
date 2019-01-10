@@ -1,8 +1,9 @@
+// 5894619, 6720876, 9793350
 package userSettings
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"html"
 	"net/http"
@@ -14,8 +15,8 @@ import (
 	Structure for the Toggle Vacation Mode handler.
 */
 type ToggleVacationModeHandler struct {
-	UserContext     user.UserContext
-	Logger          logging.Logger
+	UserContext userData.UserContext
+	Logger      logging.Logger
 }
 
 /*
@@ -56,5 +57,8 @@ func (v ToggleVacationModeHandler) ServeHTTP(w http.ResponseWriter, r *http.Requ
 		}
 
 		http.Redirect(w, r, "/user_settings", 302)
+		userId := wrappers.GetUserId(r.Context())
+		v.Logger.LogInfo("ToggleVacationModeHandler", "User with id: "+strconv.Itoa(userId)+
+			" vacation mode has been set to "+strconv.FormatBool(vacation))
 	}
 }

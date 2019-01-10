@@ -1,8 +1,8 @@
+// 5894619, 6720876, 9793350
 package admin
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
 	"html"
 	"net/http"
 )
@@ -10,15 +10,16 @@ import (
 /*
 	Structure for the Login handler.
 */
-type AdminSetApiKeysHandler struct {
-	ApiConfiguration config.ApiContext
-	Logger           logging.Logger
+type SetApiKeysHandler struct {
+	Logger                   logging.Logger
+	ChangeIncomingMailApiKey func(newKey string) error
+	ChangeOutgoingMailApiKey func(newKey string) error
 }
 
 /*
 	The Api key post handler.
 */
-func (a AdminSetApiKeysHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (a SetApiKeysHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	} else {
@@ -29,21 +30,22 @@ func (a AdminSetApiKeysHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		outgoingMailApiKey = html.EscapeString(outgoingMailApiKey)
 
 		if len(incomingMailApiKey) >= 128 && len(outgoingMailApiKey) >= 128 {
-			err := a.ApiConfiguration.ChangeIncomingMailApiKey(incomingMailApiKey)
+			err := a.ChangeIncomingMailApiKey(incomingMailApiKey)
 			if err != nil {
-				http.Redirect(w, r, "/admin", http.StatusInternalServerError)
-				a.Logger.LogError("AdminSetApiKeysHandler", err)
+				http.Redirect(w, r, "/admin?IsChangeFailed=yes", http.StatusInternalServerError)
+				a.Logger.LogError("SetApiKeysHandler", err)
 				return
 			}
-			err = a.ApiConfiguration.ChangeOutgoingMailApiKey(outgoingMailApiKey)
+			err = a.ChangeOutgoingMailApiKey(outgoingMailApiKey)
 			if err != nil {
-				http.Redirect(w, r, "/admin", http.StatusInternalServerError)
-				a.Logger.LogError("AdminSetApiKeysHandler", err)
+				http.Redirect(w, r, "/admin?IsChangeFailed=yes", http.StatusInternalServerError)
+				a.Logger.LogError("SetApiKeysHandler", err)
 				return
 			}
-			http.Redirect(w, r, "/admin", 200)
+			a.Logger.LogInfo("SetApiKeysHandler", "Api Keys changed")
+			http.Redirect(w, r, "/admin?IsChangeFailed=no", http.StatusFound)
 		} else {
-			http.Redirect(w, r, "/admin", http.StatusBadRequest)
+			http.Redirect(w, r, "/admin?IsChangeFailed=yes", http.StatusBadRequest)
 		}
 	}
 }

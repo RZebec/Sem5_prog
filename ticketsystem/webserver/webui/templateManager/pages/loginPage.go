@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package pages
 
 /*
@@ -17,7 +18,7 @@ var LoginPage = `
 				<div class="main">
 					<h2>Login</h2>
 					<form id="form_id" method="post" name="myform" action="/user_login">
-						<label>Username:</label>
+						<label>Mail:</label>
 						<input type="text" name="userName" id="userName" />
 						<label>Password:</label>
 						<input type="password" name="password" id="password" />

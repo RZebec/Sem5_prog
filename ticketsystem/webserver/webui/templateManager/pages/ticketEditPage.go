@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package pages
 
 var TicketEditPage = `
@@ -14,9 +15,10 @@ var TicketEditPage = `
 			<div class="container">
 				<div class="main">
 					<h2>Ticket Edit</h2>
-					<form id="merge_form" method="POST" name="merge_form" action="/merge_tickets">
+					{{ if .ShowTicketSpecificControls }}
+						<form id="merge_form" method="POST" name="merge_form" action="/merge_tickets">
 						<label>Merge ticket with:</label>
-						<input type="hidden" name="firstTicketId" value="{{.TicketInfo.Id}}"/>
+						<input type="hidden" name="firstTicketId" id="firstTicketId" value="{{.TicketInfo.Id}}"/>
 						<select name="secondTicketId" id="secondTicketId">
 						{{range .OtherTickets}}	
   							<option value="{{.Id}}">{{.Id}}-{{.Title}}</option>
@@ -34,10 +36,14 @@ var TicketEditPage = `
 						</select>
 						<button type="submit" id="submitChangeState" class="submit-button">Change State</button>
 					</form>
+					{{end}}					
 					<form id="change_editor_form" method="POST" name="change_editor_form" action="/ticket_setEditor">
 						<input type="hidden" name="ticketId" value="{{.TicketInfo.Id}}"/>
 						<label>Editor:</label>
 						<select name="editorUserId" id="editorUserId">
+						{{ if .TicketInfo.HasEditor }}
+							<option value="-1">No Editor</option>
+						{{ end }}
 						{{range .Users}}	
   							<option value="{{.UserId}}">{{.Mail}}</option>
 						{{end}}

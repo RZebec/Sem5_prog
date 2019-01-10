@@ -1,10 +1,11 @@
+// 5894619, 6720876, 9793350
 package wrappers
 
 import (
 	"de/vorlesung/projekt/IIIDDD/shared"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/logging"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/config"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/helpers"
 	"net/http"
 )
@@ -14,8 +15,8 @@ import (
 */
 type EnforceAuthenticationWrapper struct {
 	Next        HttpHandler
-	Config      config.Configuration
-	UserContext user.UserContext
+	Config      config.WebServerConfiguration
+	UserContext userData.UserContext
 	Logger      logging.Logger
 }
 
@@ -24,7 +25,7 @@ type EnforceAuthenticationWrapper struct {
 */
 func (h EnforceAuthenticationWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	userIsLoggedIn, isAdmin, token, userId:= UserIsLoggedInCheck(r, h.UserContext, shared.AccessTokenCookieName, h.Logger)
+	userIsLoggedIn, isAdmin, token, userId := UserIsLoggedInCheck(r, h.UserContext, shared.AccessTokenCookieName, h.Logger)
 
 	if userIsLoggedIn {
 		newToken, err := h.UserContext.RefreshToken(token)
@@ -38,6 +39,6 @@ func (h EnforceAuthenticationWrapper) ServeHTTP(w http.ResponseWriter, r *http.R
 		ctx := NewContextWithAuthenticationInfo(r.Context(), userIsLoggedIn, isAdmin, userId, newToken)
 		h.Next.ServeHTTP(w, r.WithContext(ctx))
 	} else {
-		http.Redirect(w, r, "/", 302)
+		http.Redirect(w, r, "/login", 302)
 	}
 }

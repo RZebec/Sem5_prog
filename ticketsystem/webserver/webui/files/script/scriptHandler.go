@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package script
 
 import (
@@ -47,6 +48,9 @@ var loginScript = `
     	}
 	};`
 
+/*
+	The Javascript file for the register system.
+*/
 var registerScript = `
 
 	function validate() {
@@ -59,7 +63,7 @@ var registerScript = `
 		
 		if (!validatePassword(password)) {
 		    isValid = false;
-		    document.getElementById("passwordNotice").innerHTML = "Password must contain at least one upper case letter, one lower case letter, one number and one special character!\r\n";
+		    document.getElementById("passwordNotice").innerHTML = "Password must contain at least 8 characters, one upper case letter, one lower case letter, one number and one special character!\r\n";
 		} else {
 		    document.getElementById("passwordNotice").innerHTML = "";
 		}
@@ -109,6 +113,9 @@ var registerScript = `
     	}
 	};`
 
+/*
+	The Javascript file for the set api key system.
+*/
 var apiKeyScript = `
 
 	function validate() {
@@ -128,6 +135,9 @@ var apiKeyScript = `
     	}
 	};`
 
+/*
+	The Javascript file for the user settings system.
+*/
 var userSettingsScript = `
 
 	function validate() {
@@ -146,7 +156,7 @@ var userSettingsScript = `
 		
 		if (!validatePassword(new_password)) {
 		    isValid = false;
-		    document.getElementById("passwordNotice").innerHTML = "Password must contain at least one upper case letter, one lower case letter, one number and one special character!\r\n";
+		    document.getElementById("passwordNotice").innerHTML = "Password must contain at least 8 characters, one upper case letter, one lower case letter, one number and one special character!\r\n";
 		} else {
 		    document.getElementById("passwordNotice").innerHTML = "";
 		}
@@ -175,6 +185,9 @@ var userSettingsScript = `
     	}
 	};`
 
+/*
+	The Javascript file for the create ticket system.
+*/
 var createTicketScript = `
 
 	function validate() {
@@ -238,6 +251,9 @@ var createTicketScript = `
     	}
 	};`
 
+/*
+	The Javascript file for the message append system.
+*/
 var messageAppendScript = `
 
 	function validate() {
@@ -276,7 +292,6 @@ var messageAppendScript = `
     	    inputs[i].onblur = validate;
     	}
 	};`
-
 
 /*
 	The handler for the script(Javascript) files.

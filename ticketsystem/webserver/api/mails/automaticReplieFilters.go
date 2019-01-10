@@ -1,14 +1,15 @@
+// 5894619, 6720876, 9793350
 package mails
 
 import (
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"strings"
 )
 
 // Inspired by: https://stackoverflow.com/questions/1027395/detecting-outlook-autoreply-out-of-office-emails
 
 type AutomaticRepliesFilter interface {
-	IsAutomaticResponse(mail mail.Mail) bool
+	IsAutomaticResponse(mail mailData.Mail) bool
 }
 
 /*
@@ -20,7 +21,7 @@ type RepliesFilter struct {
 /*
 	Check if a mail is a automatic response.
 */
-func (r *RepliesFilter) IsAutomaticResponse(mail mail.Mail) bool {
+func (r *RepliesFilter) IsAutomaticResponse(mail mailData.Mail) bool {
 	for _, header := range mail.Headers {
 		if strings.Contains(strings.ToLower(header), "x-autorespond") {
 			return true

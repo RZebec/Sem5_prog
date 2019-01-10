@@ -1,10 +1,11 @@
+// 5894619, 6720876, 9793350
 package admin
 
 import (
 	"de/vorlesung/projekt/IIIDDD/shared"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
@@ -31,7 +32,7 @@ func TestAdminUnlockUserHandlerWrongRequestMethod_ServeHTTP(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 
-	testee := AdminUnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
+	testee := UnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -60,7 +61,7 @@ func TestAdminUnlockUserHandle_ServeHTTP_IncorrectData(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 
-	testee := AdminUnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
+	testee := UnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -84,7 +85,7 @@ func TestAdminUnlockUserHandle_ServeHTTP_ValidRequest(t *testing.T) {
 	cookie := http.Cookie{Name: shared.AccessTokenCookieName, Value: "test"}
 	req.AddCookie(&cookie)
 
-	testUser := user.User{Mail: "TestUser@Test.de", UserId: 1234, FirstName: "Max", LastName: "Muller", Role: user.RegisteredUser, State: user.Active}
+	testUser := userData.User{Mail: "TestUser@Test.de", UserId: 1234, FirstName: "Max", LastName: "Muller", Role: userData.RegisteredUser, State: userData.Active}
 
 	rr := httptest.NewRecorder()
 
@@ -94,13 +95,13 @@ func TestAdminUnlockUserHandle_ServeHTTP_ValidRequest(t *testing.T) {
 	mockedUserContext.On("UnlockAccount", mock.Anything, mock.Anything).Return(true, nil)
 	mockedUserContext.On("GetUserById", 1234).Return(true, testUser)
 
-	mailSubject :=  mail.BuildUnlockUserNotificationMailSubject()
-	mailContent := mail.BuildUnlockUserNotificationMailContent(testUser.FirstName + " " + testUser.LastName)
+	mailSubject := mailData.BuildUnlockUserNotificationMailSubject()
+	mailContent := mailData.BuildUnlockUserNotificationMailContent(testUser.FirstName + " " + testUser.LastName)
 
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedMailContext.On("CreateNewOutgoingMail", testUser.Mail, mailSubject, mailContent).Return(nil)
 
-	testee := AdminUnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
+	testee := UnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -133,7 +134,7 @@ func TestAdminUnlockUserHandle_ServeHTTP_UnlockAccount_ContextReturnError_500Ret
 	mockedUserContext.On("UnlockAccount", mock.Anything, mock.Anything).Return(false, errors.New("TestError"))
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 
-	testee := AdminUnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
+	testee := UnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 
@@ -158,7 +159,7 @@ func TestAdminUnlockUserHandle_ServeHTTP_UnlockAccount_OutgoingMailCreationError
 	cookie := http.Cookie{Name: shared.AccessTokenCookieName, Value: "test"}
 	req.AddCookie(&cookie)
 
-	testUser := user.User{Mail: "TestUser@Test.de", UserId: 1234, FirstName: "Max", LastName: "Muller", Role: user.RegisteredUser, State: user.Active}
+	testUser := userData.User{Mail: "TestUser@Test.de", UserId: 1234, FirstName: "Max", LastName: "Muller", Role: userData.RegisteredUser, State: userData.Active}
 
 	rr := httptest.NewRecorder()
 
@@ -168,13 +169,13 @@ func TestAdminUnlockUserHandle_ServeHTTP_UnlockAccount_OutgoingMailCreationError
 	mockedUserContext.On("UnlockAccount", mock.Anything, mock.Anything).Return(true, nil)
 	mockedUserContext.On("GetUserById", 1234).Return(true, testUser)
 
-	mailSubject :=  mail.BuildUnlockUserNotificationMailSubject()
-	mailContent := mail.BuildUnlockUserNotificationMailContent(testUser.FirstName + " " + testUser.LastName)
+	mailSubject := mailData.BuildUnlockUserNotificationMailSubject()
+	mailContent := mailData.BuildUnlockUserNotificationMailContent(testUser.FirstName + " " + testUser.LastName)
 
 	mockedMailContext := new(mockedForTests.MockedMailContext)
 	mockedMailContext.On("CreateNewOutgoingMail", testUser.Mail, mailSubject, mailContent).Return(errors.New("TestError"))
 
-	testee := AdminUnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
+	testee := UnlockUserHandler{UserContext: mockedUserContext, Logger: testLogger, MailContext: mockedMailContext}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
 

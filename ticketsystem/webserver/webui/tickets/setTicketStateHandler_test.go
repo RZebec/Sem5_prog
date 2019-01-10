@@ -1,9 +1,10 @@
+// 5894619, 6720876, 9793350
 package tickets
 
 import (
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mockedForTests"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticket"
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/user"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/ticketData"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/userData"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/testhelpers"
 	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/webui/wrappers"
 	"github.com/pkg/errors"
@@ -27,13 +28,15 @@ func TestSetTicketStateHandler_ServeHTTP_ValidStateSet(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
 	// The ticket exists:
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
 	// The user exists:
-	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, user.User{UserId: loggedInUserId})
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, userData.User{UserId: loggedInUserId})
 	// Changing the ticket state should be successfull:
-	mockedTicketContext.On("SetTicketState", ticketId, ticket.Closed).Return(&ticket.Ticket{}, nil)
+	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Closed).Return(&ticketData.Ticket{}, nil)
 	// The history message should be appended:
-	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticket.Ticket{}, nil)
+	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticketData.Ticket{}, nil)
+	mockedMailContext.On("CreateNewOutgoingMail", mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("string")).
+		Return(nil)
 
 	testee := SetTicketStateHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -45,7 +48,7 @@ func TestSetTicketStateHandler_ServeHTTP_ValidStateSet(t *testing.T) {
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("newState", "Closed")
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -54,7 +57,7 @@ func TestSetTicketStateHandler_ServeHTTP_ValidStateSet(t *testing.T) {
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	resp := rr.Result()
-	assert.Equal(t,  http.StatusFound, resp.StatusCode, "Should return 302")
+	assert.Equal(t, http.StatusFound, resp.StatusCode, "Should return 302")
 	assert.Equal(t, "/ticket/5", resp.Header.Get("location"))
 
 	mockedUserContext.AssertExpectations(t)
@@ -73,9 +76,9 @@ func TestSetTicketStateHandler_ServeHTTP_InvalidState_InvalidRequest(t *testing.
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
 	// The ticket exists:
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
 	// The user exists:
-	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, user.User{UserId: loggedInUserId})
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, userData.User{UserId: loggedInUserId})
 
 	testee := SetTicketStateHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -87,7 +90,7 @@ func TestSetTicketStateHandler_ServeHTTP_InvalidState_InvalidRequest(t *testing.
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("newState", "perfect")
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -123,7 +126,7 @@ func TestSetTicketStateHandler_ServeHTTP_InvalidTicketId_InvalidRequest(t *testi
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", "asd")
 	req.Form.Add("newState", "perfect")
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -151,7 +154,7 @@ func TestSetTicketStateHandler_ServeHTTP_NonExistingTicket_InvalidRequest(t *tes
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
 	// The ticket exists:
-	mockedTicketContext.On("GetTicketById", ticketId).Return(false, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(false, &ticketData.Ticket{})
 
 	testee := SetTicketStateHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -163,7 +166,7 @@ func TestSetTicketStateHandler_ServeHTTP_NonExistingTicket_InvalidRequest(t *tes
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("newState", "Closed")
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -191,14 +194,14 @@ func TestSetTicketStateHandler_ServeHTTP_ErrorDuringStateChange_Returns500(t *te
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
 	// The ticket exists:
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
 	// Error during state change:
-	mockedTicketContext.On("SetTicketState", ticketId, ticket.Processing).
-		Return(&ticket.Ticket{}, errors.New("TestError"))
+	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Processing).
+		Return(&ticketData.Ticket{}, errors.New("TestError"))
 
 	// The user does exist:
 	mockedUserContext.On("GetUserById", loggedInUserId).
-		Return(true, user.User{UserId: loggedInUserId})
+		Return(true, userData.User{UserId: loggedInUserId})
 
 	testee := SetTicketStateHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -210,7 +213,7 @@ func TestSetTicketStateHandler_ServeHTTP_ErrorDuringStateChange_Returns500(t *te
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("newState", "Processing")
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -238,14 +241,14 @@ func TestSetTicketStateHandler_ServeHTTP_AppendingMessageFailed_Returns500(t *te
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
 	// The ticket exists:
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
 	// The user exists:
-	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, user.User{UserId: loggedInUserId})
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, userData.User{UserId: loggedInUserId})
 	// Changing the ticket state should be successfull:
-	mockedTicketContext.On("SetTicketState", ticketId, ticket.Open).Return(&ticket.Ticket{}, nil)
+	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Open).Return(&ticketData.Ticket{}, nil)
 	// Error during message appending:
 	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).
-		Return(&ticket.Ticket{}, errors.New("TestError"))
+		Return(&ticketData.Ticket{}, errors.New("TestError"))
 
 	testee := SetTicketStateHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -257,7 +260,7 @@ func TestSetTicketStateHandler_ServeHTTP_AppendingMessageFailed_Returns500(t *te
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("newState", "open")
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -285,10 +288,10 @@ func TestSetTicketStateHandler_ServeHTTP_UnknownLoggedInUser_InvalidRequest(t *t
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 
 	// The ticket exists:
-	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticket.Ticket{})
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
 
 	// The user does not exists:
-	mockedUserContext.On("GetUserById", loggedInUserId).Return(false, user.User{UserId: loggedInUserId})
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(false, userData.User{UserId: loggedInUserId})
 
 	testee := SetTicketStateHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
 		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
@@ -300,7 +303,7 @@ func TestSetTicketStateHandler_ServeHTTP_UnknownLoggedInUser_InvalidRequest(t *t
 	req.Form = url.Values{}
 	req.Form.Add("ticketId", strconv.Itoa(ticketId))
 	req.Form.Add("newState", "Closed")
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(testee.ServeHTTP)
@@ -340,6 +343,97 @@ func TestSetTicketStateHandler_InvalidRequestMethod_ValidStateSet(t *testing.T) 
 	resp := rr.Result()
 	assert.Equal(t, http.StatusMethodNotAllowed, resp.StatusCode, "Should return 405")
 	assert.Equal(t, "", resp.Header.Get("location"))
+
+	mockedUserContext.AssertExpectations(t)
+	mockedMailContext.AssertExpectations(t)
+	mockedTicketContext.AssertExpectations(t)
+}
+
+/*
+	Error during mail creation should result in a 500.
+*/
+func TestSetTicketStateHandler_ServeHTTP_MailCreationError_Returns500(t *testing.T) {
+	ticketId := 5
+	loggedInUserId := 3
+	mockedTicketContext := new(mockedForTests.MockedTicketContext)
+	mockedMailContext := new(mockedForTests.MockedMailContext)
+	mockedUserContext := new(mockedForTests.MockedUserContext)
+
+	// The ticket exists:
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
+	// The user exists:
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(true, userData.User{UserId: loggedInUserId})
+	// Changing the ticket state should be successfull:
+	mockedTicketContext.On("SetTicketState", ticketId, ticketData.Closed).Return(&ticketData.Ticket{}, nil)
+	// The history message should be appended:
+	mockedTicketContext.On("AppendMessageToTicket", ticketId, mock.Anything).Return(&ticketData.Ticket{}, nil)
+	mockedMailContext.On("CreateNewOutgoingMail", mock.Anything, mock.AnythingOfType("string"), mock.AnythingOfType("string")).
+		Return(errors.New("TestError"))
+
+	testee := SetTicketStateHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
+		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
+
+	req, err := http.NewRequest("POST", "/test", nil)
+	assert.Nil(t, err)
+
+	// Add the values to the request:
+	req.Form = url.Values{}
+	req.Form.Add("ticketId", strconv.Itoa(ticketId))
+	req.Form.Add("newState", "Closed")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(testee.ServeHTTP)
+
+	// Execute the test:
+	handler.ServeHTTP(rr, req.WithContext(ctx))
+
+	resp := rr.Result()
+	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode, "Should return 500")
+	assert.Equal(t, "/ticket/5", resp.Header.Get("location"))
+
+	mockedUserContext.AssertExpectations(t)
+	mockedMailContext.AssertExpectations(t)
+	mockedTicketContext.AssertExpectations(t)
+}
+
+/*
+	Using a logged in user which does not exist should result in a invalid request. This should never happen.
+*/
+func TestSetTicketStateHandler_ServeHTTP_UnknownUser_InvalidRequest(t *testing.T) {
+	ticketId := 5
+	loggedInUserId := 3
+	mockedTicketContext := new(mockedForTests.MockedTicketContext)
+	mockedMailContext := new(mockedForTests.MockedMailContext)
+	mockedUserContext := new(mockedForTests.MockedUserContext)
+
+	// The ticket exists:
+	mockedTicketContext.On("GetTicketById", ticketId).Return(true, &ticketData.Ticket{})
+
+	// The user should not exist:
+	mockedUserContext.On("GetUserById", loggedInUserId).Return(false, userData.User{UserId: loggedInUserId})
+
+	testee := SetTicketStateHandler{Logger: testhelpers.GetTestLogger(), MailContext: mockedMailContext,
+		TicketContext: mockedTicketContext, UserContext: mockedUserContext}
+
+	req, err := http.NewRequest("POST", "/test", nil)
+	assert.Nil(t, err)
+
+	// Add the values to the request:
+	req.Form = url.Values{}
+	req.Form.Add("ticketId", strconv.Itoa(ticketId))
+	req.Form.Add("newState", "Closed")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), true, false, loggedInUserId, "")
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(testee.ServeHTTP)
+
+	// Execute the test:
+	handler.ServeHTTP(rr, req.WithContext(ctx))
+
+	resp := rr.Result()
+	assert.Equal(t, http.StatusBadRequest, resp.StatusCode, "Should return 400")
+	assert.Equal(t, "/ticket/5", resp.Header.Get("location"))
 
 	mockedUserContext.AssertExpectations(t)
 	mockedMailContext.AssertExpectations(t)

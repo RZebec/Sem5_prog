@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package helpers
 
 import (
@@ -20,14 +21,14 @@ func SetCookie(w http.ResponseWriter, name string, value string) {
 
 /*
 	Remove a cookie.
- */
-func RemoveCookie(w http.ResponseWriter, name string){
+*/
+func RemoveCookie(w http.ResponseWriter, name string) {
 	cookie := http.Cookie{
 		Name:     name,
 		Value:    "",
 		HttpOnly: true,
 		Path:     "/",
-		Expires: time.Now().AddDate(0,-1,0),
+		Expires:  time.Now().AddDate(0, -1, 0),
 	}
 	http.SetCookie(w, &cookie)
 }

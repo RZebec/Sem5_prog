@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package pages
 
 /*
@@ -19,6 +20,9 @@ var TicketViewPage = `
 					<table>
 						<tr>
 							<th>
+								ID
+                            </th>
+							<th>
 								Title
                             </th>
                             <th>
@@ -39,13 +43,16 @@ var TicketViewPage = `
 							<th></th>
 						</tr>
                         <tr>
+							<td>
+                                {{.TicketInfo.Id}}
+                            </td>
                             <td>
                                 {{.TicketInfo.Title}}
                             </td>
                             <td>
                                 {{if .TicketInfo.HasEditor}}
                                     {{.TicketInfo.Editor.LastName}},&nbsp;
-                                    {{.TicketInfo.Editor.FirstName}}&nbsp;
+                                    {{.TicketInfo.Editor.FirstName}},&nbsp;
                                     {{.TicketInfo.Editor.Mail}}
                                 {{else}}
                                     Ticket has no editor
@@ -53,7 +60,7 @@ var TicketViewPage = `
                             </td>
                             <td>
                                 {{.TicketInfo.Creator.LastName}},&nbsp;
-                                {{.TicketInfo.Creator.FirstName}}&nbsp;
+                                {{.TicketInfo.Creator.FirstName}},&nbsp;
                                 {{.TicketInfo.Creator.Mail}}
                             </td>
                             <td id="creationTime">
@@ -73,7 +80,7 @@ var TicketViewPage = `
         							second: "2-digit"
     							};
 								creationTime = creationTime.toLocaleDateString("en-GB", options);
-								lastModificationTime = lastModificationTime.toLocaleDateString("de-DE", options);
+								lastModificationTime = lastModificationTime.toLocaleDateString("en-GB", options);
 								document.getElementById("creationTime").innerHTML = creationTime;
 								document.getElementById("lastModificationTime").innerHTML = lastModificationTime;
 							</script>
@@ -90,24 +97,21 @@ var TicketViewPage = `
 					<table>
 						<tr>
 							<th>
+                                Created on
+                            </th>
+							<th>
 								Creator
                             </th>
                             <th>
                                 Message
                             </th>
-                            <th>
-                                Created on
-                            </th>
+							<th>
+								Internal Only
+							</th>
 						</tr>
                         {{range .Messages}}
                         <tr>
-							<td>
-                                {{.CreatorMail}}
-                            </td>
-                            <td>
-                                {{.Content}}
-                            </td>
-                            <td id="creationTime_{{.Id}}">
+							<td id="creationTime_{{.Id}}">
                             </td>
 							<script>
 								var creationTime = new Date({{.CreationTime}});
@@ -123,6 +127,19 @@ var TicketViewPage = `
 								creationTime = creationTime.toLocaleDateString("en-GB", options);
 								document.getElementById("creationTime_{{.Id}}").innerHTML = creationTime;
 							</script>
+							<td>
+                                {{.CreatorMail}}
+                            </td>
+                            <td>
+                                {{.Content}}
+                            </td>
+							<td>
+								{{if .OnlyInternal}}
+									Yes
+								{{else}}
+									No
+								{{end}}
+							</td>
                         </tr>
 						{{end}}
 					</table>
@@ -136,7 +153,7 @@ var TicketViewPage = `
                             </th>
 							{{if .UserIsAuthenticated}}
 							<th>
-								<label>Internal Only</label>
+								Internal Only
 							</th>
 							{{end}}
                             <th>

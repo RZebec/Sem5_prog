@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package index
 
 import (
@@ -29,10 +30,10 @@ func TestIndexPageHandler_ServeHTTP_ValidRequest(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	testee := IndexPageHandler{Logger: testLogger, TemplateManager: mockedTemplateManager}
+	testee := PageHandler{Logger: testLogger, TemplateManager: mockedTemplateManager}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	handler.ServeHTTP(rr, req)
@@ -58,10 +59,10 @@ func TestIndexPageHandler_ServeHTTP_RenderTemplateError_500Returned(t *testing.T
 
 	rr := httptest.NewRecorder()
 
-	testee := IndexPageHandler{Logger: testLogger, TemplateManager: mockedTemplateManager}
+	testee := PageHandler{Logger: testLogger, TemplateManager: mockedTemplateManager}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	handler.ServeHTTP(rr, req)
@@ -85,10 +86,10 @@ func TestIndexPageHandler_ServeHTTP_WrongRequest(t *testing.T) {
 
 	mockedTemplateManager := new(templateManager.MockedTemplateManager)
 
-	testee := IndexPageHandler{Logger: testLogger, TemplateManager: mockedTemplateManager}
+	testee := PageHandler{Logger: testLogger, TemplateManager: mockedTemplateManager}
 
 	handler := http.HandlerFunc(testee.ServeHTTP)
-	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1,"")
+	ctx := wrappers.NewContextWithAuthenticationInfo(req.Context(), false, false, -1, "")
 	handler.ServeHTTP(rr, req.WithContext(ctx))
 
 	handler.ServeHTTP(rr, req)

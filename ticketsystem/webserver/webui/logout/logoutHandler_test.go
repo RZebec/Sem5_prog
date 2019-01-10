@@ -1,3 +1,4 @@
+// 5894619, 6720876, 9793350
 package logout
 
 import (
@@ -16,7 +17,7 @@ import (
 func TestLogoutHandler_ServeHTTP_UserWasLoggedIn(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
 	cookieValue := "etete3tas"
-	testee := LogoutHandler{UserContext: mockedUserContext, Logger: testhelpers.GetTestLogger()}
+	testee := UserLogoutHandler{UserContext: mockedUserContext, Logger: testhelpers.GetTestLogger()}
 	mockedUserContext.On("Logout", cookieValue)
 
 	req, err := http.NewRequest("GET", "/logout", nil)
@@ -48,7 +49,7 @@ func TestLogoutHandler_ServeHTTP_UserWasLoggedIn(t *testing.T) {
 */
 func TestLogoutHandler_ServeHTTP_UserWasNotLoggedIn(t *testing.T) {
 	mockedUserContext := new(mockedForTests.MockedUserContext)
-	testee := LogoutHandler{UserContext: mockedUserContext, Logger: testhelpers.GetTestLogger()}
+	testee := UserLogoutHandler{UserContext: mockedUserContext, Logger: testhelpers.GetTestLogger()}
 
 	req, err := http.NewRequest("GET", "/logout", nil)
 	if err != nil {

@@ -1,14 +1,15 @@
+// 5894619, 6720876, 9793350
 package confirm
 
 import (
-	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mail"
+	"de/vorlesung/projekt/IIIDDD/ticketsystem/webserver/data/mailData"
 	"fmt"
 )
 
 type Confirmation interface {
-	GetAllAcknowledges(mails []mail.Mail) []mail.Acknowledgment
-	GetSingleAcknowledges(allAcknowledges []mail.Acknowledgment, answer string) ([]mail.Acknowledgment, []mail.Acknowledgment)
-	ShowAllEmailAcks(allAcknowledges []mail.Acknowledgment)
+	GetAllAcknowledges(mails []mailData.Mail) []mailData.Acknowledgment
+	GetSingleAcknowledges(allAcknowledges []mailData.Acknowledgment, answer string) ([]mailData.Acknowledgment, []mailData.Acknowledgment)
+	ShowAllEmailAcks(allAcknowledges []mailData.Acknowledgment)
 }
 
 type Confirmator struct {
@@ -17,8 +18,8 @@ type Confirmator struct {
 /*
 put emails in and create acknowledges
 */
-func (c *Confirmator) GetAllAcknowledges(mails []mail.Mail) []mail.Acknowledgment {
-	acknowledge := make([]mail.Acknowledgment, len(mails))
+func (c *Confirmator) GetAllAcknowledges(mails []mailData.Mail) []mailData.Acknowledgment {
+	acknowledge := make([]mailData.Acknowledgment, len(mails))
 	for i := 0; i < len(mails); i++ {
 		acknowledge[i].Id = mails[i].Id
 		acknowledge[i].Subject = mails[i].Subject
@@ -32,8 +33,8 @@ put emails in and a string with subject of this Acknowledge which you wanna get 
 delete the selected Acknowledge from the list of all Acknowledges
 if the subject is not found get a empty array and all Ackowledges, with the selected back
 */
-func (c *Confirmator) GetSingleAcknowledges(allAcknowledges []mail.Acknowledgment, answer string) ([]mail.Acknowledgment, []mail.Acknowledgment) {
-	acknowledge := make([]mail.Acknowledgment, 1)
+func (c *Confirmator) GetSingleAcknowledges(allAcknowledges []mailData.Acknowledgment, answer string) ([]mailData.Acknowledgment, []mailData.Acknowledgment) {
+	acknowledge := make([]mailData.Acknowledgment, 1)
 	for i := 0; i < len(allAcknowledges); i++ {
 		if answer == allAcknowledges[i].Subject {
 			acknowledge[0].Id = allAcknowledges[i].Id
@@ -43,11 +44,11 @@ func (c *Confirmator) GetSingleAcknowledges(allAcknowledges []mail.Acknowledgmen
 		}
 	}
 	fmt.Println("Subject not found")
-	return allAcknowledges, make([]mail.Acknowledgment, 0)
+	return allAcknowledges, make([]mailData.Acknowledgment, 0)
 
 }
 
-func (c *Confirmator) ShowAllEmailAcks(allAcknowledges []mail.Acknowledgment) {
+func (c *Confirmator) ShowAllEmailAcks(allAcknowledges []mailData.Acknowledgment) {
 	fmt.Println("All Emails: ")
 	for i := 0; i < len(allAcknowledges); i++ {
 		fmt.Println("ID: " + allAcknowledges[i].Id + " | Subject: " + allAcknowledges[i].Subject)
@@ -58,8 +59,8 @@ func (c *Confirmator) ShowAllEmailAcks(allAcknowledges []mail.Acknowledgment) {
 /*
 helper Function for GetSingleAcknowledges
 */
-func (c *Confirmator) deleteFromArray(allAcknowledges []mail.Acknowledgment, element mail.Acknowledgment) []mail.Acknowledgment {
-	newAcknowledges := make([]mail.Acknowledgment, len(allAcknowledges)-1)
+func (c *Confirmator) deleteFromArray(allAcknowledges []mailData.Acknowledgment, element mailData.Acknowledgment) []mailData.Acknowledgment {
+	newAcknowledges := make([]mailData.Acknowledgment, len(allAcknowledges)-1)
 	j := 0
 	for i := 0; i < len(allAcknowledges); i++ {
 		if allAcknowledges[i].Id != element.Id {
